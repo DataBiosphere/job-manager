@@ -1,0 +1,6 @@
+swagger-codegen-cli.jar
+
+.venv
+venv/
+.tox/
+*.egg-info
