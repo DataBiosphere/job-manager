@@ -85,26 +85,6 @@ paths:
           required: true
           type: string
           in: path
-        - name: includeKey
-          description: >
-            When specified key(s) to include from the metadata. Matches any key starting with the value. May not be
-            used with excludeKey.
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: multi
-          in: query
-        - name: excludeKey
-          description: >
-            When specified key(s) to exclude from the metadata. Matches any key starting with the value. May not be
-            used with includeKey.
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: multi
-          in: query
       tags:
         - Workflows
       responses:
