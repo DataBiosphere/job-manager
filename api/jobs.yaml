@@ -239,7 +239,9 @@ definitions:
         format: string
         description: >
           Returns only workflows with the given parent ID. This parameter may be
-          unsupported for some backends or required for others.
+          unsupported for some API implementations or required for others. If
+          the presence of this parameter is incompatible with the server, it may
+          return a 400 HTTP status.
   WorkflowQueryResponse:
     description: Response to a workflow query
     required:
