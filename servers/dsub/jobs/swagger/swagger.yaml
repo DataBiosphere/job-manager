@@ -1,0 +1,265 @@
+---
+swagger: "2.0"
+info:
+  description: "Job Monitor API for interacting with asynchronous batch jobs and workflows."
+  version: "0.0.1"
+  title: "Job Monitor Service"
+  license:
+    name: "BSD"
+    url: "http://opensource.org/licenses/BSD-3-Clause"
+produces:
+- "application/json"
+paths:
+  /jobs/{id}/abort:
+    post:
+      summary: "Abort a job by ID"
+      operationId: "abort_job"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Job ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful Request"
+          schema:
+            $ref: "#/definitions/JobAbortResponse"
+        400:
+          description: "Malformed Job ID"
+        403:
+          description: "Job in terminal status"
+        404:
+          description: "Job ID Not Found"
+        500:
+          description: "Internal Error"
+      x-swagger-router-controller: "jobs.controllers.jobs_controller"
+  /jobs/query:
+    post:
+      summary: "Query jobs by start dates, end dates, names, ids, or statuses."
+      operationId: "query_jobs"
+      parameters:
+      - in: "body"
+        name: "parameters"
+        required: true
+        schema:
+          $ref: "#/definitions/JobQueryRequest"
+      responses:
+        200:
+          description: "Successful Request"
+          schema:
+            $ref: "#/definitions/JobQueryResponse"
+        400:
+          description: "Malformed Request"
+        500:
+          description: "Internal Error"
+      x-swagger-router-controller: "jobs.controllers.jobs_controller"
+  /jobs/{id}:
+    get:
+      summary: "Query for job and task-level metadata for a specified job"
+      operationId: "get_job"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Job ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful Request"
+          schema:
+            $ref: "#/definitions/JobMetadataResponse"
+        400:
+          description: "Malformed Job ID"
+        404:
+          description: "Job ID Not Found"
+        500:
+          description: "Internal Error"
+      x-swagger-router-controller: "jobs.controllers.jobs_controller"
+definitions:
+  JobAbortResponse:
+    required:
+    - "id"
+    - "status"
+    properties:
+      id:
+        type: "string"
+        description: "The identifier of the job"
+      status:
+        type: "string"
+        description: "The status of the job"
+  JobMetadataResponse:
+    required:
+    - "id"
+    - "status"
+    - "submission"
+    properties:
+      id:
+        type: "string"
+        description: "The identifier of the job"
+      status:
+        type: "string"
+        description: "The status of the job"
+      submission:
+        type: "string"
+        format: "date-time"
+        description: "Submission datetime of the job in ISO8601 format with milliseconds"
+      start:
+        type: "string"
+        format: "date-time"
+        description: "Start datetime of the job in ISO8601 format with milliseconds"
+      end:
+        type: "string"
+        format: "date-time"
+        description: "End datetime of the job in ISO8601 format with milliseconds"
+      inputs:
+        type: "object"
+        description: "Map of input keys to input values"
+        properties: {}
+      outputs:
+        type: "object"
+        description: "Map of output keys to output values"
+        properties: {}
+      labels:
+        type: "object"
+        description: "Custom job labels with string values"
+        properties: {}
+      tasks:
+        $ref: "#/definitions/TaskMetadata"
+      failures:
+        type: "array"
+        items:
+          $ref: "#/definitions/FailureMessage"
+    description: "Job and task level metadata"
+  TaskMetadata:
+    required:
+    - "executionStatus"
+    - "inputs"
+    properties:
+      inputs:
+        type: "object"
+        description: "Mapping of input fully qualified names to stringified values"
+        properties: {}
+      executionStatus:
+        type: "string"
+        description: "Status in Cromwell execution terms."
+      start:
+        type: "string"
+        format: "date-time"
+        description: "Start datetime of the task execution in ISO8601 format with\
+          \ milliseconds"
+      end:
+        type: "string"
+        format: "date-time"
+        description: "End datetime of the task execution in ISO8601 format with milliseconds"
+      jobId:
+        type: "string"
+        description: "Backend-specific job ID"
+      failures:
+        type: "array"
+        items:
+          $ref: "#/definitions/FailureMessage"
+      returnCode:
+        type: "integer"
+        description: "Task execution return code"
+      stdout:
+        type: "string"
+        description: "Path to the standard output file for this task"
+      stderr:
+        type: "string"
+        description: "Path to the standard error file for this task"
+    description: "Task level metadata"
+  FailureMessage:
+    required:
+    - "failure"
+    - "timestamp"
+    properties:
+      failure:
+        type: "string"
+        description: "The failure message"
+      timestamp:
+        type: "string"
+        format: "date-time"
+        description: "The time at which this failure occurred"
+    description: "Failure messages"
+  JobQueryRequest:
+    properties:
+      start:
+        type: "string"
+        format: "date-time"
+        description: "Returns only jobs with an equal or later start datetime.  Can\
+          \ be specified at most once. If both start and end date are specified, start\
+          \ date must be before or equal to end date.\n"
+      end:
+        type: "string"
+        format: "date-time"
+        description: "Returns only jobs with an equal or earlier end datetime.  Can\
+          \ be specified at most once. If both start and end date are specified, start\
+          \ date must be before or equal to end date.\n"
+      statuses:
+        type: "array"
+        description: "Returns only jobs with the specified status.  If specified multiple\
+          \ times, returns jobs in any of the specified statuses.\n"
+        items:
+          type: "string"
+          enum:
+          - "Submitted"
+          - "Running"
+          - "Aborting"
+          - "Failed"
+          - "Succeeded"
+          - "Aborted"
+      name:
+        type: "string"
+        description: "Returns only jobs with the specified name.  If specified multiple\
+          \ times, returns jobs with any of the specified names.\n"
+        pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+        x-regex: "^[a-zA-Z][a-zA-Z0-9_]*$"
+        x-modifiers: []
+      parentId:
+        type: "string"
+        format: "string"
+        description: "Returns only jobs with the given parent ID. This parameter may\
+          \ be unsupported for some API implementations or required for others depending\
+          \ on whether there exists a logical noun above a job in the resource hierarchy\
+          \ (for example, a cloud project). If the presence of this parameter is incompatible\
+          \ with the server, it may return a 400 HTTP status.\n"
+    description: "Job query parameters"
+  JobQueryResponse:
+    required:
+    - "results"
+    properties:
+      results:
+        type: "array"
+        items:
+          $ref: "#/definitions/JobQueryResult"
+    description: "Response to a job query"
+  JobQueryResult:
+    required:
+    - "id"
+    - "name"
+    - "start"
+    - "status"
+    properties:
+      id:
+        type: "string"
+        description: "Job ID"
+      name:
+        type: "string"
+        description: "Job name"
+      status:
+        type: "string"
+        description: "Job status"
+      start:
+        type: "string"
+        format: "date-time"
+        description: "Job start datetime"
+      end:
+        type: "string"
+        format: "date-time"
+        description: "Job end datetime"
+      labels:
+        type: "object"
+        description: "Custom job labels with string values"
+        properties: {}
+    description: "Result for an individual job returned by a job query"
