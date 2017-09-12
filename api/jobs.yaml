@@ -141,6 +141,9 @@ definitions:
       outputs:
         type: object
         description: Map of output keys to output values
+      labels:
+        type: object
+        description: Custom workflow labels with string values
       calls:
         $ref: '#/definitions/CallMetadata'
       failures:
@@ -231,6 +234,16 @@ definitions:
         description: >
           Returns only workflows with the specified name.  If specified multiple times,
           returns workflows with any of the specified names.
+      parentId:
+        type: string
+        format: string
+        description: >
+          Returns only workflows with the given parent ID. This parameter may be
+          unsupported for some API implementations or required for others
+          depending on whether there exists a logical noun above a workflow
+          in the resource hierarchy (for example, a cloud project). If the
+          presence of this parameter is incompatible with the server, it may
+          return a 400 HTTP status.
   WorkflowQueryResponse:
     description: Response to a workflow query
     required:
@@ -265,3 +278,6 @@ definitions:
         type: string
         format: date-time
         description: Workflow end datetime
+      labels:
+        type: object
+        description: Custom workflow labels with string values
