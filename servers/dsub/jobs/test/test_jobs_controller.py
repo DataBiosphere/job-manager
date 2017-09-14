@@ -4,7 +4,7 @@ from __future__ import absolute_import
 
 from jobs.models.job_abort_response import JobAbortResponse
 from jobs.models.job_metadata_response import JobMetadataResponse
-from jobs.models.job_query_parameter import JobQueryParameter
+from jobs.models.job_query_request import JobQueryRequest
 from jobs.models.job_query_response import JobQueryResponse
 from . import BaseTestCase
 from six import BytesIO
