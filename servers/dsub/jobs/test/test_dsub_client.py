@@ -1,10 +1,12 @@
 from __future__ import absolute_import
 
+from werkzeug.exceptions import BadRequest
+from jobs.controllers.errors import JobNotFound
 from jobs.models.query_jobs_request import QueryJobsRequest
 from unittest import TestCase
 from dsub.providers import base
 from dsub.providers import stub
-from jobs.dsub_client import *
+from jobs.controllers.dsub_client import *
 from mock import MagicMock
 
 
@@ -77,18 +79,23 @@ class TestDSubClient(TestCase):
 
     def tearDown(self):
         # Reset any methods which are mocked in tests
-        self.PROVIDER.delete_jobs.reset_mock()
+        # self.PROVIDER.delete_jobs.reset_mock()
         super(TestDSubClient, self).tearDown()
 
+    def _filter_empty_fields(self, tasks):
+        return [dict((k, v) for k, v in t.iteritems() if v) for t in tasks]
+
     def test_get_job(self):
-        t1 = self.CLIENT.get_job(self.PROVIDER, 'job-1', 'task-1')
-        t2 = self.CLIENT.get_job(self.PROVIDER, 'job-1', 'task-2')
-        t3 = self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-1')
-        t4 = self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-2')
-        t5 = self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-3')
-        t6 = self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-4')
-        t7 = self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-5')
-        self.assertEqual([t1, t2, t3, t4, t5, t6, t7], self.OPS)
+        tasks = [
+            self.CLIENT.get_job(self.PROVIDER, 'job-1', 'task-1'),
+            self.CLIENT.get_job(self.PROVIDER, 'job-1', 'task-2'),
+            self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-1'),
+            self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-2'),
+            self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-3'),
+            self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-4'),
+            self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-5'),
+        ]
+        self.assertEqual(self._filter_empty_fields(tasks), self.OPS)
 
     def test_get_job_conflicting_id(self):
         self.PROVIDER.set_operations([{
@@ -108,13 +115,14 @@ class TestDSubClient(TestCase):
                 'different_key': 'some_other_value'
             }
         }])
-        with self.assertRaises(ConflictingId):
+        with self.assertRaises(BadRequest):
             self.CLIENT.get_job(self.PROVIDER, 'job-1', 'task-1')
 
     def test_get_job_does_not_exist(self):
-        with self.assertRaises(DoesNotExist):
+        with self.assertRaises(JobNotFound):
             self.CLIENT.get_job(self.PROVIDER, 'missing', 'task-1')
 
+    #
     def test_abort_job(self):
         # We can remove this mock if this issue is resolved:
         # https://github.com/googlegenomics/dsub/issues/65
@@ -124,19 +132,19 @@ class TestDSubClient(TestCase):
                                                      ['task-2'], None, None)
 
     def test_abort_job_does_not_exist(self):
-        with self.assertRaises(DoesNotExist):
+        with self.assertRaises(JobNotFound):
             self.CLIENT.get_job(self.PROVIDER, 'nope', 'task-1')
 
     def test_query_job_by_name(self):
-        tasks_named_foo = self.CLIENT.query_jobs(
+        tasks_foo = self.CLIENT.query_jobs(
             self.PROVIDER, QueryJobsRequest(name='foo'))
-        tasks_named_bar = self.CLIENT.query_jobs(
+        tasks_bar = self.CLIENT.query_jobs(
             self.PROVIDER, QueryJobsRequest(name='bar'))
-        tasks_named_blah = self.CLIENT.query_jobs(
+        tasks_blah = self.CLIENT.query_jobs(
             self.PROVIDER, QueryJobsRequest(name='blah'))
-        self.assertEqual(tasks_named_foo, self.OPS[0:2])
-        self.assertEqual(tasks_named_bar, self.OPS[2:])
-        self.assertEqual(tasks_named_blah, [])
+        self.assertEqual(self._filter_empty_fields(tasks_foo), self.OPS[0:2])
+        self.assertEqual(self._filter_empty_fields(tasks_bar), self.OPS[2:])
+        self.assertEqual(self._filter_empty_fields(tasks_blah), [])
 
     def test_query_job_by_status(self):
         running_tasks = self.CLIENT.query_jobs(
@@ -145,11 +153,13 @@ class TestDSubClient(TestCase):
             self.PROVIDER, QueryJobsRequest(statuses=['Aborted']))
         failed_tasks = self.CLIENT.query_jobs(
             self.PROVIDER, QueryJobsRequest(statuses=['Failed']))
-        self.assertEqual(running_tasks, [
-            self.OPS[0], self.OPS[3], self.OPS[4], self.OPS[5], self.OPS[6]
-        ])
-        self.assertEqual(aborted_tasks, [self.OPS[2]])
-        self.assertEqual(failed_tasks, [self.OPS[1]])
+        self.assertEqual(
+            self._filter_empty_fields(running_tasks),
+            [self.OPS[0], self.OPS[3], self.OPS[4], self.OPS[5], self.OPS[6]])
+        self.assertEqual(
+            self._filter_empty_fields(aborted_tasks), [self.OPS[2]])
+        self.assertEqual(
+            self._filter_empty_fields(failed_tasks), [self.OPS[1]])
 
     # TODO(bryancrampton) Add support to dsub's StubJobProvider for lookup
     # by create_time and job_name_list and add tests around that here
