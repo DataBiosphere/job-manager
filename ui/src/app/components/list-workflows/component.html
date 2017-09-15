@@ -1,0 +1,44 @@
+<button (click)="toggleActive(true)"
+        class="show-status-option" [class.selected-status]="active">ACTIVE JOBS</button>
+<button (click)="toggleActive(false)"
+        class="show-status-option" [class.selected-status]="!active">COMPLETED</button>
+<table>
+  <tr>
+    <th class="first-column">Job</th>
+    <th>Owner</th>
+    <th class="status-cell">Status</th>
+    <th>Submitted</th>
+    <th>Label</th>
+    <th>Label</th>
+    <th>Label</th>
+    <th>Comments</th>
+  </tr>
+  <ng-container *ngFor="let w of workflows">
+    <tr *ngIf="shouldDisplayWorkflow(w)" [class.selected-row]="isSelected(w)">
+      <td class="job-names">
+        <label>
+          <input type="checkbox" [checked]="isSelected(w)" (change)="toggleSelect(w)">
+        </label>
+        {{w.name}}
+      </td>
+      <td>{{w.owner}}</td>
+      <td class="status-cell"><img src="{{getStatusUrl(w.status)}}"></td>
+      <td>{{w.submitTime}}</td>
+      <td>value</td>
+      <td>value</td>
+      <td>value</td>
+      <td>{{w.comments}}</td>
+    </tr>
+  </ng-container>
+
+</table>
+
+<div class="group-options" *ngIf="selectedWorkflows.length > 0">
+  {{selectedWorkflows.length}} jobs selected
+  <button type="button" class="group-button"*ngIf="areRunning(selectedWorkflows)"
+          (click)="onPauseWorkflows(selectedWorkflows)">Pause Jobs</button>
+  <button type="button" class="group-button" *ngIf="areActive(selectedWorkflows)"
+          (click)="onAbortWorkflows(selectedWorkflows)">Delete Jobs</button>
+  <button type="button" class="group-button"
+          (click)="onGroupWorkflows(selectedWorkflows)">Group Jobs</button>
+</div>
