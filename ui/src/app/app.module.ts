@@ -10,7 +10,7 @@ import {AppRoutingModule} from './app-routing.module';
 import { AppComponent } from './app.component';
 import {JobMonitorService} from './job-monitor.service';
 import {newDefaultMockJobMonitorService, MockJobMonitorService} from './mock-job-monitor.service';
-import {ListWorkflowsComponent} from './components/list-workflows/component';
+import {ListJobsComponent} from './components/list-jobs/component';
 
 export function httpFactory(backend: MockBackend, options: BaseRequestOptions,
                             service: MockJobMonitorService) {
@@ -27,7 +27,7 @@ export function httpFactory(backend: MockBackend, options: BaseRequestOptions,
   ],
   declarations: [
     AppComponent,
-    ListWorkflowsComponent,
+    ListJobsComponent,
   ],
   providers: [
     JobMonitorService,

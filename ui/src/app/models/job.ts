@@ -1,5 +1,4 @@
-// A workflow with associated metadata.
-export class Workflow {
+export class Job {
   id: string;
   name: string;
   owner: string;
@@ -7,7 +6,7 @@ export class Workflow {
   start: string;
   end?: string;
   labels?: object;
-  comments: string;
+  comments?: string;
 }
 
 export enum Status {
@@ -20,12 +19,12 @@ export enum Status {
   aborted = 6
 }
 
-export class WorkflowAbortResponse {
+export class JobAbortResponse {
   id: string;
   status: Status;
 }
 
-export class WorkflowMetadataResponse {
+export class JobMetadataResponse {
   id: string;
   status: string;
   submission: string;
@@ -34,11 +33,11 @@ export class WorkflowMetadataResponse {
   inputs?: object;
   outputs?: object;
   labels?: object;
-  calls?: CallMetadata;
+  calls?: TaskMetadata;
   failures?: FailureMessage[];
 }
 
-export class CallMetadata {
+export class TaskMetadata {
   inputs: object;
   executionStatus: string;
   start?: string;
@@ -55,7 +54,7 @@ export class FailureMessage {
   timestamp: string;
 }
 
-export class WorkflowQueryParameter {
+export class JobQueryParameter {
   start?: string;
   end?: string;
   status?: Status;
@@ -63,6 +62,6 @@ export class WorkflowQueryParameter {
   parentId?: string;
 }
 
-export class WorkflowQueryResponse {
-  results: Workflow[];
+export class JobQueryResponse {
+  results: Job[];
 }

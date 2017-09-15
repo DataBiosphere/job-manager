@@ -3,11 +3,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-import {ListWorkflowsComponent} from './components/list-workflows/component';
+import {ListJobsComponent} from './components/list-jobs/component';
 
 const routes: Routes = [
-  {path: '', redirectTo: '/workflows', pathMatch: 'full'},
-  {path: 'workflows', component:ListWorkflowsComponent},
+  {path: '', redirectTo: '/jobs', pathMatch: 'full'},
+  {path: 'jobs', component:ListJobsComponent},
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

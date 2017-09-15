@@ -5,9 +5,9 @@ import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 
 import {
-  Workflow, WorkflowAbortResponse, WorkflowQueryParameter,
-  WorkflowQueryResponse
-} from './models/workflow';
+  Job, JobAbortResponse, JobQueryParameter,
+  JobQueryResponse
+} from './models/job';
 
 /** Service wrapper for accessing the job monitor API. */
 @Injectable()
@@ -17,23 +17,23 @@ export class JobMonitorService {
 
   constructor(private http: Http) {}
 
-  listAllWorkflows(): Promise<WorkflowQueryResponse> {
-    return this.http.get(`${this.apiUrl}/workflows`,
+  listAllJobs(): Promise<JobQueryResponse> {
+    return this.http.get(`${this.apiUrl}/jobs`,
       new RequestOptions({headers: this.headers}))
       .toPromise()
-      .then(response => response.json() as WorkflowQueryResponse)
+      .then(response => response.json() as JobQueryResponse)
       .catch(this.handleError);
   }
 
-  abortWorkflow(id: string): Promise<WorkflowAbortResponse> {
-    return this.http.get(`${this.apiUrl}/workflows/${id}/abort`,
+  abortJob(id: string): Promise<JobAbortResponse> {
+    return this.http.get(`${this.apiUrl}/jobs/${id}/abort`,
       new RequestOptions({headers: this.headers}))
       .toPromise()
-      .then(response => response.json() as WorkflowAbortResponse)
+      .then(response => response.json() as JobAbortResponse)
       .catch(this.handleError);
   }
 
-  // TODO(alanhwang): Implement queryWorkflows
+  // TODO(alanhwang): Implement queryJobs
 
   private handleError(error: any): Promise<any> {
     // TODO(alanhwang): Implement real error handling.
