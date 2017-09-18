@@ -33,15 +33,15 @@ export class JobMetadataResponse {
   inputs?: object;
   outputs?: object;
   labels?: object;
-  calls?: TaskMetadata;
+  tasks?: TaskMetadata;
   failures?: FailureMessage[];
 }
 
 export class TaskMetadata {
   inputs: object;
   executionStatus: string;
-  start?: string;
-  end?: string;
+  start?: Date;
+  end?: Date;
   jobId?: string;
   failures?: FailureMessage[];
   returnCode?: number;

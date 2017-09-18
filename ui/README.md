@@ -1,6 +1,10 @@
-# Ui
+# Job Manager UI
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.4.1.
+
+## Setup
+
+Install the Angular CLI following the instructions in [Step 1](https://angular.io/guide/quickstart#devenv) of the Angular QuickStart guide.
 
 ## Development server
 
