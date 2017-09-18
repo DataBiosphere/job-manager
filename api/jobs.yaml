@@ -5,113 +5,89 @@ info:
   license:
     name: BSD
     url: 'http://opensource.org/licenses/BSD-3-Clause'
-  version: ''
+  version: '0.0.1'
 produces:
   - application/json
 paths:
-  '/api/workflows/{version}/{id}/abort':
+  '/jobs/{id}/abort':
     post:
-      summary: Abort a workflow based on workflow id
+      summary: Abort a job by ID
       parameters:
-        - name: version
-          description: API Version
-          required: true
-          type: string
-          in: path
-          default: v1
         - name: id
-          description: Workflow ID
+          description: Job ID
           required: true
           type: string
           in: path
-      tags:
-        - Workflows
       responses:
         '200':
           description: Successful Request
           schema:
-            $ref: '#/definitions/WorkflowAbortResponse'
+            $ref: '#/definitions/JobAbortResponse'
         '400':
-          description: Malformed Workflow ID
+          description: Malformed Job ID
         '403':
-          description: Workflow in terminal status
+          description: Job in terminal status
         '404':
-          description: Workflow ID Not Found
+          description: Job ID Not Found
         '500':
           description: Internal Error
-  '/api/workflows/{version}/query':
+  '/jobs/query':
     post:
-      summary: Query workflows by start dates, end dates, names, ids, or statuses.
+      summary: Query jobs by start dates, end dates, names, ids, or statuses.
       parameters:
-        - name: version
-          description: API version
-          required: true
-          type: string
-          in: path
-          default: v1
         - name: parameters
           required: true
           in: body
           schema:
             type: array
             items:
-              $ref: '#/definitions/WorkflowQueryParameter'
+              $ref: '#/definitions/JobQueryParameter'
           description: >
             Same query parameters as GET /query endpoint, submitted as a json list.
             Example: [{"status":"Success"},{"status":"Failed"}]
-      tags:
-        - Workflows
       responses:
         '200':
           description: Successful Request
           schema:
-            $ref: '#/definitions/WorkflowQueryResponse'
+            $ref: '#/definitions/JobQueryResponse'
         '400':
           description: Malformed Request
         '500':
           description: Internal Error
-  '/api/workflows/{version}/{id}/metadata':
+  '/jobs/{id}':
     get:
-      summary: Query for workflow and call-level metadata for a specified workflow
+      summary: Query for job and task-level metadata for a specified job
       parameters:
-        - name: version
-          description: API Version
-          required: true
-          type: string
-          in: path
-          default: v2
         - name: id
-          description: Workflow ID
+          description: Job ID
           required: true
           type: string
           in: path
-      tags:
-        - Workflows
       responses:
         '200':
           description: Successful Request
           schema:
-            $ref: '#/definitions/WorkflowMetadataResponse'
+            $ref: '#/definitions/JobMetadataResponse'
         '400':
-          description: Malformed Workflow ID
+          description: Malformed Job ID
         '404':
-          description: Workflow ID Not Found
+          description: Job ID Not Found
         '500':
           description: Internal Error
 definitions:
-  WorkflowAbortResponse:
+  JobAbortResponse:
     required:
       - id
       - status
     properties:
       id:
         type: string
-        description: The identifier of the workflow
+        description: The identifier of the job
       status:
         type: string
-        description: The status of the workflow
-  WorkflowMetadataResponse:
-    description: Workflow and call level metadata
+        description: The status of the job
+  JobMetadataResponse:
+    description: Job and task level metadata
     required:
       - id
       - status
@@ -119,22 +95,22 @@ definitions:
     properties:
       id:
         type: string
-        description: The identifier of the workflow
+        description: The identifier of the job
       status:
         type: string
-        description: The status of the workflow
+        description: The status of the job
       submission:
         type: string
         format: date-time
-        description: Submission datetime of the workflow in ISO8601 format with milliseconds
+        description: Submission datetime of the job in ISO8601 format with milliseconds
       start:
         type: string
         format: date-time
-        description: Start datetime of the workflow in ISO8601 format with milliseconds
+        description: Start datetime of the job in ISO8601 format with milliseconds
       end:
         type: string
         format: date-time
-        description: End datetime of the workflow in ISO8601 format with milliseconds
+        description: End datetime of the job in ISO8601 format with milliseconds
       inputs:
         type: object
         description: Map of input keys to input values
@@ -143,15 +119,15 @@ definitions:
         description: Map of output keys to output values
       labels:
         type: object
-        description: Custom workflow labels with string values
-      calls:
-        $ref: '#/definitions/CallMetadata'
+        description: Custom job labels with string values
+      tasks:
+        $ref: '#/definitions/TaskMetadata'
       failures:
         type: array
         items:
           $ref: '#/definitions/FailureMessage'
-  CallMetadata:
-    description: Call level metadata
+  TaskMetadata:
+    description: Task level metadata
     required:
       - inputs
       - executionStatus
@@ -165,11 +141,11 @@ definitions:
       start:
         type: string
         format: date-time
-        description: Start datetime of the call execution in ISO8601 format with milliseconds
+        description: Start datetime of the task execution in ISO8601 format with milliseconds
       end:
         type: string
         format: date-time
-        description: End datetime of the call execution in ISO8601 format with milliseconds
+        description: End datetime of the task execution in ISO8601 format with milliseconds
       jobId:
         type: string
         description: Backend-specific job ID
@@ -179,13 +155,13 @@ definitions:
           $ref: '#/definitions/FailureMessage'
       returnCode:
         type: integer
-        description: Call execution return code
+        description: Task execution return code
       stdout:
         type: string
-        description: Path to the standard output file for this call
+        description: Path to the standard output file for this task
       stderr:
         type: string
-        description: Path to the standard error file for this call
+        description: Path to the standard error file for this task
   FailureMessage:
     description: Failure messages
     required:
@@ -199,8 +175,8 @@ definitions:
         type: string
         format: date-time
         description: The time at which this failure occurred
-  WorkflowQueryParameter:
-    description: Workflow query parameters
+  JobQueryParameter:
+    description: Job query parameters
     minProperties: 1
     maxProperties: 1
     properties:
@@ -208,13 +184,13 @@ definitions:
         type: string
         format: date-time
         description: >
-          Returns only workflows with an equal or later start datetime.  Can be specified at most once.
+          Returns only jobs with an equal or later start datetime.  Can be specified at most once.
           If both start and end date are specified, start date must be before or equal to end date.
       end:
         type: string
         format: date-time
         description: >
-          Returns only workflows with an equal or earlier end datetime.  Can be specified at most once.
+          Returns only jobs with an equal or earlier end datetime.  Can be specified at most once.
           If both start and end date are specified, start date must be before or equal to end date.
       status:
         type: string
@@ -226,35 +202,35 @@ definitions:
           - Succeeded
           - Aborted
         description: >
-          Returns only workflows with the specified status.  If specified multiple times,
-          returns workflows in any of the specified statuses.
+          Returns only jobs with the specified status.  If specified multiple times,
+          returns jobs in any of the specified statuses.
       name:
         type: string
         pattern: ^[a-zA-Z][a-zA-Z0-9_]*$
         description: >
-          Returns only workflows with the specified name.  If specified multiple times,
-          returns workflows with any of the specified names.
+          Returns only jobs with the specified name.  If specified multiple times,
+          returns jobs with any of the specified names.
       parentId:
         type: string
         format: string
         description: >
-          Returns only workflows with the given parent ID. This parameter may be
+          Returns only jobs with the given parent ID. This parameter may be
           unsupported for some API implementations or required for others
-          depending on whether there exists a logical noun above a workflow
+          depending on whether there exists a logical noun above a job
           in the resource hierarchy (for example, a cloud project). If the
           presence of this parameter is incompatible with the server, it may
           return a 400 HTTP status.
-  WorkflowQueryResponse:
-    description: Response to a workflow query
+  JobQueryResponse:
+    description: Response to a job query
     required:
       - results
     properties:
       results:
         type: array
         items:
-          $ref: '#/definitions/WorkflowQueryResult'
-  WorkflowQueryResult:
-    description: Result for an individual workflow returned by a workflow query
+          $ref: '#/definitions/JobQueryResult'
+  JobQueryResult:
+    description: Result for an individual job returned by a job query
     required:
       - id
       - name
@@ -263,21 +239,21 @@ definitions:
     properties:
       id:
         type: string
-        description: Workflow ID
+        description: Job ID
       name:
         type: string
-        description: Workflow name
+        description: Job name
       status:
         type: string
-        description: Workflow status
+        description: Job status
       start:
         type: string
         format: date-time
-        description: Workflow start datetime
+        description: Job start datetime
       end:
         type: string
         format: date-time
-        description: Workflow end datetime
+        description: Job end datetime
       labels:
         type: object
-        description: Custom workflow labels with string values
+        description: Custom job labels with string values
