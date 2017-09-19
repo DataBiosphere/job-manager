@@ -4,7 +4,6 @@ import argparse
 import connexion
 import logging
 import os
-from flask_cors import CORS
 from .encoder import JSONEncoder
 
 app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=False)
