@@ -3,11 +3,8 @@
 import 'rxjs/add/operator/toPromise';
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
-
-import {
-  Job, JobAbortResponse, JobQueryParameter,
-  JobQueryResponse
-} from './models/job';
+import {JobQueryResponse} from './model/JobQueryResponse';
+import {JobAbortResponse} from './model/JobAbortResponse';
 
 /** Service wrapper for accessing the job monitor API. */
 @Injectable()
