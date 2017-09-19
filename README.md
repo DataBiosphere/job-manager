@@ -7,6 +7,7 @@ workflows.
 ```
 sudo pip install yapf
 ln -s -f ../../hooks/pre-commit .git/hooks/pre-commit
+```
 
 ## requirements.txt
 
