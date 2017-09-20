@@ -38,7 +38,8 @@ paths:
     post:
       tags:
       - "Jobs"
-      summary: "Query jobs by various filter criteria."
+      summary: "Query jobs by various filter criteria. Returned jobs are ordered from\n\
+        newest to oldest submission time.\n"
       operationId: "query_jobs"
       parameters:
       - in: "body"
@@ -208,6 +209,17 @@ definitions:
         pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
         x-regex: "^[a-zA-Z][a-zA-Z0-9_]*$"
         x-modifiers: []
+      pageSize:
+        type: "integer"
+        format: "int32"
+        description: "The maximum number of results to return in a single page. If\
+          \ unspecified,\na server default will be used. Note that the server may\
+          \ elect to\nreturn fewer results per page than requested.\n"
+      pageToken:
+        type: "string"
+        description: "The continuation token, which is used to page through large\
+          \ result\nsets. To get the next page of results, set this parameter to the\
+          \ value\nof `nextPageToken` from the previous response.\n"
       parentId:
         type: "string"
         description: "Returns only jobs with the given parent ID. This parameter may\
@@ -224,6 +236,12 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/QueryJobsResult"
+      nextPageToken:
+        type: "string"
+        description: "The continuation token, which is used to page through large\
+          \ result\nsets. Provide this value in a subsequent request to return the\
+          \ next\npage of results. This field will be empty if there aren't any\n\
+          additional results.\n"
     description: "Response to a job query"
   QueryJobsResult:
     required:
