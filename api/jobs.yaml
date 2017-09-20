@@ -34,10 +34,10 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
-  '/jobs/{id}/setLabels'
+  '/jobs/{id}/updateLabels'
     post:
-      operationId: SetJobLabels
-      summary: Set labels on a job.
+      operationId: UpdateJobLabels
+      summary: Update labels on a job.
       parameters:
         - name: id
           description: Job ID
@@ -48,12 +48,12 @@ paths:
           required: true
           in: body
           schema:
-            $ref: '#/definitions/SetJobLabelsRequest'
+            $ref: '#/definitions/UpdateJobLabelsRequest'
       responses:
         '200':
           description: Success
           schema:
-            $ref: '#/definitions/SetJobLabelsResponse'
+            $ref: '#/definitions/UpdateJobLabelsResponse'
         '400':
           $ref: '#/responses/BadRequest'
         '404':
@@ -217,8 +217,8 @@ definitions:
         type: string
         format: date-time
         description: The time at which this failure occurred
-  SetJobLabelsRequest:
-    description: Set labels on a job
+  UpdateJobLabelsRequest:
+    description: Update labels on a job
     properties:
       labels:
         type: object
@@ -226,8 +226,8 @@ definitions:
           Labels to be merged into the existing job labels. Overwrites the label
           values for all given keys. Existing labels on the job which are not
           referenced in this request are left unmodified.
-  SetJobLabelsResponse:
-    description: Response to a set labels request
+  UpdateJobLabelsResponse:
+    description: Response to an update labels request
     properties:
       labels:
         type: object
