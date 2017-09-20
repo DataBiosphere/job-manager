@@ -28,4 +28,6 @@ setup(
     include_package_data=True,
     long_description="""\
     Job Monitor API for interacting with asynchronous batch jobs and workflows.
-    """)
+    """
+)
+
