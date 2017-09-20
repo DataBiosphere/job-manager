@@ -32,7 +32,6 @@ paths:
           $ref: '#/responses/ServerError'
   '/jobs/query':
     post:
-      # TODO(calbach): Reconcile QueryJobsResult with JobMetadata.
       # TODO(calbach): Add pagination support.
       operationId: QueryJobs
       summary: Query jobs by various filter criteria.
@@ -213,13 +212,12 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/QueryJobsResult'
+  # TODO(calbach): Reconcile QueryJobsResult with JobMetadata.
   QueryJobsResult:
     description: Result for an individual job returned by a job query
     required:
       - id
-      - name
       - status
-      - start
     properties:
       id:
         type: string
