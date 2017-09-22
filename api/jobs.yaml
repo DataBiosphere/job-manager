@@ -30,6 +30,8 @@ paths:
           description: Job in terminal status
         '500':
           $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
   '/jobs/query':
     post:
       # TODO(calbach): Add pagination support.
@@ -50,6 +52,8 @@ paths:
           $ref: '#/responses/BadRequest'
         '500':
           $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
   '/jobs/{id}':
     get:
       operationId: GetJob
@@ -71,6 +75,8 @@ paths:
           $ref: '#/responses/NotFound'
         '500':
           $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
 definitions:
   JobMetadataResponse:
     description: Job and task level metadata

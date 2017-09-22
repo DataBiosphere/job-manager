@@ -12,6 +12,8 @@ produces:
 paths:
   /jobs/{id}/abort:
     post:
+      tags:
+      - "Jobs"
       summary: "Abort a job by ID"
       operationId: "abort_job"
       parameters:
@@ -34,6 +36,8 @@ paths:
       x-swagger-router-controller: "jobs.controllers.jobs_controller"
   /jobs/query:
     post:
+      tags:
+      - "Jobs"
       summary: "Query jobs by various filter criteria."
       operationId: "query_jobs"
       parameters:
@@ -54,6 +58,8 @@ paths:
       x-swagger-router-controller: "jobs.controllers.jobs_controller"
   /jobs/{id}:
     get:
+      tags:
+      - "Jobs"
       summary: "Query for job and task-level metadata for a specified job"
       operationId: "get_job"
       parameters:
@@ -134,6 +140,9 @@ definitions:
         type: "object"
         description: "Mapping of input fully qualified names to stringified values"
         properties: {}
+      executionStatus:
+        type: "string"
+        description: "Backend-specific task status."
       start:
         type: "string"
         format: "date-time"
