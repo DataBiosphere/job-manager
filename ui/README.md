@@ -27,20 +27,6 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 Before running the tests make sure you are serving the app via `ng serve`.
 
-## Updating the API using swagger-codegen
-
-We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to automatically implement the API as defined in ../api/jobs.yaml.
-Whenever the API is updated, follow these steps to update the UI implementation:
-
-If you do not already have the jar, you can download it using `wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar`
-
-Regenerate the definitions using `java -jar swagger-codegen-cli.jar generate -i job-monitor/api/jobs.yaml -l typescript-angular2 -o job-monitor/ui/src/app`
-
-
-Clean up unnecessary generated fluff using `rm -r job-monitor/ui/src/app/.gitignore job-monitor/ui/src/app/.swagger-codegen-ignore job-monitor/ui/src/app/git_push.sh job-monitor/ui/src/app/index.ts job-monitor/ui/src/app/.swagger-codegen/`
-
-Finally, update the UI implementation to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
-
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

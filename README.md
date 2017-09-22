@@ -21,14 +21,22 @@ pip freeze | sort > servers/dsub/requirements.txt
 deactivate
 ```
 
-## Swagger codegen
+## Updating the API using swagger-codegen
 
-```
-wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to automatically implement the API as defined in ../api/jobs.yaml.
+Whenever the API is updated, follow these steps to update the UI implementation:
 
-java -jar swagger-codegen-cli.jar generate \
-  -i api/jobs.yaml \
-  -l python-flask \
-  -o servers/dsub \
-  -DsupportPython2=true,packageName=jobs
-```
+If you do not already have the jar, you can download it here:
+
+```wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar```
+
+Regenerate the definitions:
+
+```java -jar swagger-codegen-cli.jar generate -i job-monitor/api/jobs.yaml -l typescript-angular2 -o job-monitor/ui/src/app```
+
+
+Clean up unnecessary generated fluff: 
+
+```rm -r job-monitor/ui/src/app/.gitignore job-monitor/ui/src/app/.swagger-codegen-ignore job-monitor/ui/src/app/git_push.sh job-monitor/ui/src/app/index.ts job-monitor/ui/src/app/.swagger-codegen/```
+
+Finally, update the UI implementation to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
