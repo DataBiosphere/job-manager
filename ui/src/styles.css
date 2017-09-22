@@ -1,0 +1,109 @@
+/* You can add global styles to this file, and also import other style files */
+/* TODO(alahwa): Use rem instead of px for accessibility */
+
+*:focus {
+  outline: none;
+}
+
+.branding {
+  font-family: 'Roboto', sans-serif;
+  background: #dddddd;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  margin-left: 12px;
+  margin-top: 24px;
+  margin-right: 12px;
+  margin-bottom: 30px;
+  border-radius: 6px;
+  width: 200px;
+  text-align: center;
+}
+
+/* Active/Completed toggle buttons */
+
+.show-status-option {
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  color: #25272B;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  padding-bottom: 8px;
+}
+
+.selected-status {
+  color: #000000 !important;
+  border-bottom: 2px solid #111111;
+}
+
+/* Job Monitor table */
+
+table {
+  font-family: 'Roboto', sans-serif;
+  border-collapse: collapse;
+  border: 1px solid #dddddd;
+  width:100%;
+  box-shadow: 2px 2px 1px #bbbbbb;
+}
+
+.first-column {
+  border: 1px solid #dddddd;
+}
+
+.job-names {
+  border: 1px solid #dddddd;
+  text-decoration: underline;
+}
+
+.selected-row {
+  background-color: #E8F0FE !important;
+}
+
+
+th {
+  color: #888888 !important;
+  font-weight: normal;
+}
+
+td, th {
+  color: #25272B;
+  border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+  text-align: left;
+  padding: 12px;
+}
+
+.status-cell {
+  text-align: center !important;
+}
+
+/*Pause, Delete, and Group buttons*/
+
+.group-options {
+  float: right;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 11px;
+  padding: 12px;
+}
+
+.group-button {
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 11px;
+  text-transform: uppercase;
+  border:none;
+  padding: 10px;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin: 4px;
+  color: #008CBA;
+  border-radius: 3px;
+  background-color: #f6f6f6;
+  box-shadow: 2px 2px 1px #bbbbbb;
+}
+
+.group-button:active {
+  background-color: #f0f0f0;
+  box-shadow: 1px 1px 1px #bbbbbb;
+}
