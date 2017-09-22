@@ -5,9 +5,6 @@ import {JobQueryResult} from './model/JobQueryResult';
 import {JobQueryResponse} from './model/JobQueryResponse';
 import {JobQueryRequest} from './model/JobQueryRequest';
 import StatusesEnum = JobQueryRequest.StatusesEnum;
-import {JobMetadataResponse} from './model/JobMetadataResponse';
-import {TaskMetadata} from './model/TaskMetadata';
-import {FailureMessage} from './model/FailureMessage';
 
 /**
 * MockJobMonitorService implements an in-memory fake job monitor server via
@@ -23,12 +20,10 @@ export class MockJobMonitorService {
       const url = c.request.url;
       let body;
       if (url == "/v1/jobs") {
-        // listAllJobs
         body = new JobQueryResponseImpl();
         body.results = this.jobs.slice();
       }
-      else if (url.endsWith("abort")) {
-        // abortJob
+      if (url.endsWith("abort")) {
         let job = this.jobs
           .find((j) => j.id.endsWith(url.split('/')[3]));
         if (!job) {
@@ -40,21 +35,6 @@ export class MockJobMonitorService {
         body = new JobAbortResponseImpl();
         body.id = job.id;
         body.status = job.status;
-      } else if (url.startsWith("/v1/jobs/") && url.split('/').length == 4) {
-        // getJob
-        let job = this.jobs
-          .find((j) => j.id.endsWith(url.split('/')[3]));
-        if (!job) {
-          c.mockRespond(new Response(new ResponseOptions({status: 404})));
-          return;
-        }
-        body = new JobMetadataResponseImpl();
-        body.id = job.id;
-        body.status = job.status;
-        body.start = job.start;
-        body.end = job.end;
-        body.labels = job.labels;
-        body.tasks = this.getTasks(job);
       }
       c.mockRespond(new Response(new ResponseOptions({
         'status': 200,
@@ -62,41 +42,6 @@ export class MockJobMonitorService {
       })));
     });
   }
-
-  private getTasks(job: JobQueryResult): TaskMetadataImpl[] {
-      let tasks: TaskMetadataImpl[] = [];
-      tasks.push(this.createTask(job.start, "Task 1", 15,
-        StatusesEnum[StatusesEnum.Succeeded]));
-      tasks.push(this.createTask(job.start, "Task 2", 30,
-        StatusesEnum[StatusesEnum.Succeeded]));
-      tasks.push(this.createTask(job.start, "Task 3", 45,
-        job.status));
-      tasks.push(this.createTask(job.start, "Task 4", 60,
-        job.status));
-      return tasks;
-  }
-
-  private createTask(start: Date, jobId: string, runTime: number,
-                     executionStatus: string ): TaskMetadataImpl {
-    let task: TaskMetadataImpl = new TaskMetadataImpl();
-    task.inputs = "Inputs";
-    task.executionStatus = executionStatus;
-    task.jobId = jobId;
-    task.start = start;
-    if (executionStatus != StatusesEnum[StatusesEnum.Running]) {
-      task.end = new Date(start.getMonth(), start.getDay(),
-        start.getFullYear(), start.getHours()+1,
-        start.getMinutes() + runTime, start.getSeconds());
-    }
-    return task;
-  }
-}
-
-class JobQueryResultImpl implements JobQueryResult {
-  id: string;
-  name: string;
-  status: string;
-  start: Date;
 }
 
 class JobQueryResponseImpl implements JobQueryResponse {
@@ -108,29 +53,8 @@ class JobAbortResponseImpl implements JobAbortResponse {
   "status": string;
 }
 
-class JobMetadataResponseImpl implements JobMetadataResponse {
-  id: string;
-  status: string;
-  submission: Date;
-  start?: Date;
-  end?: Date;
-  inputs?: any;
-  outputs?: any;
-  labels?: any;
-  tasks?: Array<TaskMetadata>;
-  failures?: Array<FailureMessage>;
-}
-
-class TaskMetadataImpl implements TaskMetadata {
-  inputs: any;
-  executionStatus: string;
-  start?: Date;
-  end?: Date;
-  jobId?: string;
-}
-
 export function newDefaultMockJobMonitorService(): MockJobMonitorService {
-  let jobTemplates: JobQueryResult[] =
+  return new MockJobMonitorService(
     [
       { id: 'JOB1',
         name: 'TCG-NBL-7357',
@@ -138,7 +62,7 @@ export function newDefaultMockJobMonitorService(): MockJobMonitorService {
         start: new Date("11:44 PM Sep 9")},
       { id: 'JOB2',
         name: 'AML-G4-CHEN',
-        status: StatusesEnum[StatusesEnum.Submitted],
+        status: StatusesEnum[StatusesEnum.Running],
         start: new Date("7:16 AM Sep 10")},
       { id: 'JOB3',
         name: 'TCG-NBL-B887',
@@ -169,13 +93,6 @@ export function newDefaultMockJobMonitorService(): MockJobMonitorService {
         name: 'AML-B2-CHEN',
         status: StatusesEnum[StatusesEnum.Failed],
         start: new Date("6:45 PM Sep 10")},
-    ];
-  let mockJobs: JobQueryResult[] = [];
-  for (let i = 0; i < 200; i++) {
-    let job: JobQueryResult = new JobQueryResultImpl();
-    Object.assign(job, jobTemplates[i%jobTemplates.length]);
-    job.id = 'JOB'+ i;
-    job.name += i;
-    mockJobs.push(job)}
-  return new MockJobMonitorService(mockJobs);
+    ]
+  )
 }

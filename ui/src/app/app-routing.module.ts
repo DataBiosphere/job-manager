@@ -3,11 +3,11 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-import {MainComponent} from './components/main/main';
+import {ListJobsComponent} from './components/list-jobs/component';
 
 const routes: Routes = [
   {path: '', redirectTo: '/jobs', pathMatch: 'full'},
-  {path: 'jobs', component:MainComponent},
+  {path: 'jobs', component:ListJobsComponent},
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
