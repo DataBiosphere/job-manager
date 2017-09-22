@@ -128,8 +128,11 @@ definitions:
       inputs:
         type: object
         description: Mapping of input fully qualified names to stringified values
-      # TODO(Broad): Add executionStatus/status back in with a well-documented
-      # enum (or JobStatus, if possible).
+      # TODO: Define a generalized enum for this. For details, see
+      # https://github.com/bvprivate/job-monitor/pull/14.
+      executionStatus:
+        type: string
+        description: Backend-specific task status.
       start:
         type: string
         format: date-time
