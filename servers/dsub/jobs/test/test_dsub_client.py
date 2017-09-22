@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from jobs.models.job_query_request import JobQueryRequest
+from jobs.models.query_jobs_request import QueryJobsRequest
 from unittest import TestCase
 from dsub.providers import base
 from dsub.providers import stub
@@ -129,22 +129,22 @@ class TestDSubClient(TestCase):
 
     def test_query_job_by_name(self):
         tasks_named_foo = self.CLIENT.query_jobs(
-            self.PROVIDER, JobQueryRequest(name='foo'))
+            self.PROVIDER, QueryJobsRequest(name='foo'))
         tasks_named_bar = self.CLIENT.query_jobs(
-            self.PROVIDER, JobQueryRequest(name='bar'))
+            self.PROVIDER, QueryJobsRequest(name='bar'))
         tasks_named_blah = self.CLIENT.query_jobs(
-            self.PROVIDER, JobQueryRequest(name='blah'))
+            self.PROVIDER, QueryJobsRequest(name='blah'))
         self.assertEqual(tasks_named_foo, self.OPS[0:2])
         self.assertEqual(tasks_named_bar, self.OPS[2:])
         self.assertEqual(tasks_named_blah, [])
 
     def test_query_job_by_status(self):
         running_tasks = self.CLIENT.query_jobs(
-            self.PROVIDER, JobQueryRequest(statuses=['Running']))
+            self.PROVIDER, QueryJobsRequest(statuses=['Running']))
         aborted_tasks = self.CLIENT.query_jobs(
-            self.PROVIDER, JobQueryRequest(statuses=['Aborted']))
+            self.PROVIDER, QueryJobsRequest(statuses=['Aborted']))
         failed_tasks = self.CLIENT.query_jobs(
-            self.PROVIDER, JobQueryRequest(statuses=['Failed']))
+            self.PROVIDER, QueryJobsRequest(statuses=['Failed']))
         self.assertEqual(running_tasks, [
             self.OPS[0], self.OPS[3], self.OPS[4], self.OPS[5], self.OPS[6]
         ])
