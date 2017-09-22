@@ -21,36 +21,39 @@ paths:
           in: path
       responses:
         '200':
-          description: Successful Request
-          schema:
-            $ref: '#/definitions/JobAbortResponse'
+          description: Success
         '400':
-          description: Malformed Job ID
-        '403':
-          description: Job in terminal status
+          $ref: '#/responses/BadRequest'
         '404':
-          description: Job ID Not Found
+          $ref: '#/responses/NotFound'
+        '412':
+          description: Job in terminal status
         '500':
-          description: Internal Error
+          $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
   '/jobs/query':
     post:
+      # TODO(calbach): Add pagination support.
       operationId: QueryJobs
-      summary: Query jobs by start dates, end dates, names, ids, or statuses.
+      summary: Query jobs by various filter criteria.
       parameters:
         - name: parameters
           required: true
           in: body
           schema:
-            $ref: '#/definitions/JobQueryRequest'
+            $ref: '#/definitions/QueryJobsRequest'
       responses:
         '200':
-          description: Successful Request
+          description: Success
           schema:
-            $ref: '#/definitions/JobQueryResponse'
+            $ref: '#/definitions/QueryJobsResponse'
         '400':
-          description: Malformed Request
+          $ref: '#/responses/BadRequest'
         '500':
-          description: Internal Error
+          $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
   '/jobs/{id}':
     get:
       operationId: GetJob
@@ -63,27 +66,18 @@ paths:
           in: path
       responses:
         '200':
-          description: Successful Request
+          description: Success
           schema:
             $ref: '#/definitions/JobMetadataResponse'
         '400':
-          description: Malformed Job ID
+          $ref: '#/responses/BadRequest'
         '404':
-          description: Job ID Not Found
+          $ref: '#/responses/NotFound'
         '500':
-          description: Internal Error
+          $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
 definitions:
-  JobAbortResponse:
-    required:
-      - id
-      - status
-    properties:
-      id:
-        type: string
-        description: The identifier of the job
-      status:
-        type: string
-        description: The status of the job
   JobMetadataResponse:
     description: Job and task level metadata
     required:
@@ -95,8 +89,7 @@ definitions:
         type: string
         description: The identifier of the job
       status:
-        type: string
-        description: The status of the job
+        $ref: '#/definitions/JobStatus'
       submission:
         type: string
         format: date-time
@@ -119,23 +112,33 @@ definitions:
         type: object
         description: Custom job labels with string values
       tasks:
-        $ref: '#/definitions/TaskMetadata'
+        type: array
+        items:
+          $ref: '#/definitions/TaskMetadata'
       failures:
         type: array
         items:
           $ref: '#/definitions/FailureMessage'
+  JobStatus:
+    type: string
+    enum:
+      - Submitted
+      - Running
+      - Aborting
+      - Failed
+      - Succeeded
+      - Aborted
   TaskMetadata:
     description: Task level metadata
-    required:
-      - inputs
-      - executionStatus
     properties:
       inputs:
         type: object
         description: Mapping of input fully qualified names to stringified values
+      # TODO: Define a generalized enum for this. For details, see
+      # https://github.com/bvprivate/job-monitor/pull/14.
       executionStatus:
         type: string
-        description: Status in Cromwell execution terms.
+        description: Backend-specific task status.
       start:
         type: string
         format: date-time
@@ -164,7 +167,6 @@ definitions:
     description: Failure messages
     required:
       - failure
-      - timestamp
     properties:
       failure:
         type: string
@@ -173,7 +175,7 @@ definitions:
         type: string
         format: date-time
         description: The time at which this failure occurred
-  JobQueryRequest:
+  QueryJobsRequest:
     description: Job query parameters
     properties:
       start:
@@ -191,14 +193,7 @@ definitions:
       statuses:
         type: array
         items:
-          type: string
-          enum:
-            - Submitted
-            - Running
-            - Aborting
-            - Failed
-            - Succeeded
-            - Aborted
+          $ref: '#/definitions/JobStatus'
         description: >
           Returns only jobs with the specified status.  If specified multiple times,
           returns jobs in any of the specified statuses.
@@ -210,7 +205,6 @@ definitions:
           returns jobs with any of the specified names.
       parentId:
         type: string
-        format: string
         description: >
           Returns only jobs with the given parent ID. This parameter may be
           unsupported for some API implementations or required for others
@@ -218,7 +212,7 @@ definitions:
           in the resource hierarchy (for example, a cloud project). If the
           presence of this parameter is incompatible with the server, it may
           return a 400 HTTP status.
-  JobQueryResponse:
+  QueryJobsResponse:
     description: Response to a job query
     required:
       - results
@@ -226,14 +220,13 @@ definitions:
       results:
         type: array
         items:
-          $ref: '#/definitions/JobQueryResult'
-  JobQueryResult:
+          $ref: '#/definitions/QueryJobsResult'
+  # TODO(calbach): Reconcile QueryJobsResult with JobMetadata.
+  QueryJobsResult:
     description: Result for an individual job returned by a job query
     required:
       - id
-      - name
       - status
-      - start
     properties:
       id:
         type: string
@@ -242,8 +235,7 @@ definitions:
         type: string
         description: Job name
       status:
-        type: string
-        description: Job status
+        $ref: '#/definitions/JobStatus'
       start:
         type: string
         format: date-time
@@ -255,3 +247,10 @@ definitions:
       labels:
         type: object
         description: Custom job labels with string values
+responses:
+  BadRequest:
+    description: 'Bad request'
+  ServerError:
+    description: 'Internal server error'
+  NotFound:
+    description: 'Job not found'

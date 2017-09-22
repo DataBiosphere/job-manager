@@ -102,8 +102,6 @@ class TaskMetadata(Model):
         :param inputs: The inputs of this TaskMetadata.
         :type inputs: object
         """
-        if inputs is None:
-            raise ValueError("Invalid value for `inputs`, must not be `None`")
 
         self._inputs = inputs
 
@@ -111,7 +109,7 @@ class TaskMetadata(Model):
     def execution_status(self):
         """
         Gets the execution_status of this TaskMetadata.
-        Status in Cromwell execution terms.
+        Backend-specific task status.
 
         :return: The execution_status of this TaskMetadata.
         :rtype: str
@@ -122,13 +120,11 @@ class TaskMetadata(Model):
     def execution_status(self, execution_status):
         """
         Sets the execution_status of this TaskMetadata.
-        Status in Cromwell execution terms.
+        Backend-specific task status.
 
         :param execution_status: The execution_status of this TaskMetadata.
         :type execution_status: str
         """
-        if execution_status is None:
-            raise ValueError("Invalid value for `execution_status`, must not be `None`")
 
         self._execution_status = execution_status
 

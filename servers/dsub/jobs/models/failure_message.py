@@ -91,8 +91,6 @@ class FailureMessage(Model):
         :param timestamp: The timestamp of this FailureMessage.
         :type timestamp: datetime
         """
-        if timestamp is None:
-            raise ValueError("Invalid value for `timestamp`, must not be `None`")
 
         self._timestamp = timestamp
 

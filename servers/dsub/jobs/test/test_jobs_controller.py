@@ -2,10 +2,9 @@
 
 from __future__ import absolute_import
 
-from jobs.models.job_abort_response import JobAbortResponse
 from jobs.models.job_metadata_response import JobMetadataResponse
-from jobs.models.job_query_request import JobQueryRequest
-from jobs.models.job_query_response import JobQueryResponse
+from jobs.models.query_jobs_request import QueryJobsRequest
+from jobs.models.query_jobs_response import QueryJobsResponse
 from . import BaseTestCase
 from six import BytesIO
 from flask import json
@@ -14,9 +13,9 @@ from flask import json
 class TestJobsController(BaseTestCase):
     """ DefaultController integration test stubs """
 
-    def test_jobs_id_abort_post(self):
+    def test_abort_job(self):
         """
-        Test case for jobs_id_abort_post
+        Test case for abort_job
 
         Abort a job by ID
         """
@@ -25,9 +24,9 @@ class TestJobsController(BaseTestCase):
         self.assert200(response,
                        "Response body is : " + response.data.decode('utf-8'))
 
-    def test_jobs_id_get(self):
+    def test_get_job(self):
         """
-        Test case for jobs_id_get
+        Test case for get_job
 
         Query for job and task-level metadata for a specified job
         """
@@ -36,13 +35,13 @@ class TestJobsController(BaseTestCase):
         self.assert200(response,
                        "Response body is : " + response.data.decode('utf-8'))
 
-    def test_jobs_query_post(self):
+    def test_query_jobs(self):
         """
-        Test case for jobs_query_post
+        Test case for query_jobs
 
-        Query jobs by start dates, end dates, names, ids, or statuses.
+        Query jobs by various filter criteria.
         """
-        parameters = [JobQueryRequest()]
+        parameters = QueryJobsRequest()
         response = self.client.open(
             '/jobs/query',
             method='POST',

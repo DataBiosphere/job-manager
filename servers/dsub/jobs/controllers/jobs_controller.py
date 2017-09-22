@@ -1,8 +1,7 @@
 import connexion
-from jobs.models.job_abort_response import JobAbortResponse
 from jobs.models.job_metadata_response import JobMetadataResponse
-from jobs.models.job_query_request import JobQueryRequest
-from jobs.models.job_query_response import JobQueryResponse
+from jobs.models.query_jobs_request import QueryJobsRequest
+from jobs.models.query_jobs_response import QueryJobsResponse
 from datetime import date, datetime
 from typing import List, Dict
 from six import iteritems
@@ -16,7 +15,7 @@ def abort_job(id):
     :param id: Job ID
     :type id: str
 
-    :rtype: JobAbortResponse
+    :rtype: None
     """
     return 'do some magic!'
 
@@ -35,13 +34,13 @@ def get_job(id):
 
 def query_jobs(parameters):
     """
-    Query jobs by start dates, end dates, names, ids, or statuses.
+    Query jobs by various filter criteria.
 
-    :param parameters: Same query parameters as GET /query endpoint, submitted as a json list. Example: [{"status":"Success"},{"status":"Failed"}]
-    :type parameters: list | bytes
+    :param parameters:
+    :type parameters: dict | bytes
 
-    :rtype: JobQueryResponse
+    :rtype: QueryJobsResponse
     """
     if connexion.request.is_json:
-        parameters = JobQueryRequest.from_dict(connexion.request.get_json())
+        parameters = QueryJobsRequest.from_dict(connexion.request.get_json())
     return 'do some magic!'

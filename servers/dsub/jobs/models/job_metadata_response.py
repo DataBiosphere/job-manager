@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 from jobs.models.failure_message import FailureMessage
+from jobs.models.job_status import JobStatus
 from jobs.models.task_metadata import TaskMetadata
 from .base_model_ import Model
 from datetime import date, datetime
@@ -21,7 +22,7 @@ class JobMetadataResponse(Model):
         :param id: The id of this JobMetadataResponse.
         :type id: str
         :param status: The status of this JobMetadataResponse.
-        :type status: str
+        :type status: JobStatus
         :param submission: The submission of this JobMetadataResponse.
         :type submission: datetime
         :param start: The start of this JobMetadataResponse.
@@ -35,20 +36,20 @@ class JobMetadataResponse(Model):
         :param labels: The labels of this JobMetadataResponse.
         :type labels: object
         :param tasks: The tasks of this JobMetadataResponse.
-        :type tasks: TaskMetadata
+        :type tasks: List[TaskMetadata]
         :param failures: The failures of this JobMetadataResponse.
         :type failures: List[FailureMessage]
         """
         self.swagger_types = {
             'id': str,
-            'status': str,
+            'status': JobStatus,
             'submission': datetime,
             'start': datetime,
             'end': datetime,
             'inputs': object,
             'outputs': object,
             'labels': object,
-            'tasks': TaskMetadata,
+            'tasks': List[TaskMetadata],
             'failures': List[FailureMessage]
         }
 
@@ -117,10 +118,9 @@ class JobMetadataResponse(Model):
     def status(self):
         """
         Gets the status of this JobMetadataResponse.
-        The status of the job
 
         :return: The status of this JobMetadataResponse.
-        :rtype: str
+        :rtype: JobStatus
         """
         return self._status
 
@@ -128,10 +128,9 @@ class JobMetadataResponse(Model):
     def status(self, status):
         """
         Sets the status of this JobMetadataResponse.
-        The status of the job
 
         :param status: The status of this JobMetadataResponse.
-        :type status: str
+        :type status: JobStatus
         """
         if status is None:
             raise ValueError("Invalid value for `status`, must not be `None`")
@@ -284,7 +283,7 @@ class JobMetadataResponse(Model):
         Gets the tasks of this JobMetadataResponse.
 
         :return: The tasks of this JobMetadataResponse.
-        :rtype: TaskMetadata
+        :rtype: List[TaskMetadata]
         """
         return self._tasks
 
@@ -294,7 +293,7 @@ class JobMetadataResponse(Model):
         Sets the tasks of this JobMetadataResponse.
 
         :param tasks: The tasks of this JobMetadataResponse.
-        :type tasks: TaskMetadata
+        :type tasks: List[TaskMetadata]
         """
 
         self._tasks = tasks
