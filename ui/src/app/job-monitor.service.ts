@@ -30,10 +30,10 @@ export class JobMonitorService {
       .catch(this.handleError);
   }
 
-  // TODO(alanhwang): Implement queryJobs
+  // TODO(alahwa): Implement queryJobs
 
   private handleError(error: any): Promise<any> {
-    // TODO(alanhwang): Implement real error handling.
+    // TODO(alahwa): Implement real error handling.
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);
   }

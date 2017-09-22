@@ -37,7 +37,7 @@ export function httpFactory(backend: MockBackend, options: BaseRequestOptions,
       provide: MockJobMonitorService,
       useFactory: newDefaultMockJobMonitorService,
     },
-    // TODO(alanhwang): Support communication with real backends.
+    // TODO(alahwa): Support communication with real backends.
     {
       provide: Http,
       useFactory: httpFactory,
