@@ -16,23 +16,17 @@
 
 .selected-status {
   color: #000000 !important;
-  border-bottom: 2px solid #111111;
 }
 
 /* Job Monitor table */
 
 .first-column {
-  margin-right: 20px;
+  margin-right: 2rem;
 }
 
 .job-names {
   text-decoration: underline;
   position: relative;
-}
-
-.task-names {
-  text-align: center;
-  border: 1px solid #dddddd;
 }
 
 .selected-row {
@@ -63,13 +57,13 @@
   float: left;
   font-family: 'Roboto', sans-serif;
   font-weight: bold;
-  font-size: 11px;
-  padding: 12px;
+  font-size: .65rem;
+  padding: .65rem;
 }
 
 .group-button {
   font-weight: bold;
-  font-size: 11px;
+  font-size: .65rem;
   text-transform: uppercase;
-  margin: 4px;
+  margin: .65rem;
 }
