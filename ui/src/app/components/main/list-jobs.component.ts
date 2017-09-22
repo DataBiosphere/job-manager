@@ -8,7 +8,6 @@ import {JobMonitorService} from '../../job-monitor.service';
 import {JobQueryResult} from '../../model/JobQueryResult';
 import {JobQueryRequest} from '../../model/JobQueryRequest';
 import StatusesEnum = JobQueryRequest.StatusesEnum;
-import {JobMetadataResponse} from '../../model/JobMetadataResponse';
 import {MdPaginator} from '@angular/material';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
@@ -30,7 +29,6 @@ export class ListJobsComponent implements OnChanges, OnInit {
   private selectedJobs: JobQueryResult[] = [];
   private isActive: boolean = true;
   private expandedJob: JobQueryResult;
-  private expandedJobMetadata: JobMetadataResponse;
   private mouseoverJobs: JobQueryResult[] = [];
   private allSelected: boolean = false;
 
@@ -109,15 +107,8 @@ export class ListJobsComponent implements OnChanges, OnInit {
     return false;
   }
 
-  setExpandedJob(job: JobQueryResult): void {
-    if (job === this.expandedJob) {
-      this.expandedJob = null;
-      this.expandedJobMetadata = null;
-    } else {
-      this.expandedJob = job;
-      this.jobMonitorService.getJob(job.id)
-        .then(response => this.expandedJobMetadata = response);
-    }
+  showExpandedJob(job: JobQueryResult): void {
+    // TODO(alahwa): Implement
   }
 
   areRunning(jobs: JobQueryResult[]): boolean {

@@ -23,7 +23,7 @@
         {{j.name}}
       </md-checkbox>
       <img *ngIf="isMouseOver(j)" class = "dropdown-arrow" src="{{getDropdownArrowUrl(j)}}"
-      (click)="setExpandedJob(j)">
+      (click)="showExpandedJob(j)">
     </md-cell>
   </ng-container>
 
