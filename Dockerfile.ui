@@ -1,0 +1,5 @@
+FROM node
+
+WORKDIR /app
+ADD ui/package.json /app/
+RUN npm install

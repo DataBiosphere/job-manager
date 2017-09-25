@@ -1,6 +1,16 @@
 version: '2'
 services:
-  jobs:
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    command: ["npm", "run-script", "ng", "--", "serve", "--host", "ui"]
+    volumes:
+      - ./ui:/app
+      # Hide this subdirectory from the above volume; just use what's already on
+      # the docker image so we don't need to reinstall node modules every time.
+      - /app/node_modules
+  dsub-server:
     # dsub creates the local provider folder in /tmp/dsub-local which can only
     # be written to by the owner. Unless dsub changes the permissions on this
     # folder the docker container must be 'privileged'
@@ -16,6 +26,7 @@ services:
     command: ["-b", ":8190"]
     environment:
       - PROVIDER_TYPE=local
+      - PATH_PREFIX=/api
       # Avoid writing .pyc files back to the volume. Files generated this way
       # have restricted permissions set which cause errors on subsequent docker
       # builds.
@@ -28,3 +39,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8190:8190
+  jobs-proxy:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    links:
+      - ui
+      - dsub-server
+    ports:
+      - 4200:4200
+
