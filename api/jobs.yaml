@@ -34,9 +34,11 @@ paths:
         - Jobs
   '/jobs/query':
     post:
-      # TODO(calbach): Add pagination support.
+      # TODO(calbach): Parameterize sort ordering.
       operationId: QueryJobs
-      summary: Query jobs by various filter criteria.
+      summary: |
+        Query jobs by various filter criteria. Returned jobs are ordered from
+        newest to oldest submission time.
       parameters:
         - name: parameters
           required: true
@@ -203,6 +205,19 @@ definitions:
         description: >
           Returns only jobs with the specified name.  If specified multiple times,
           returns jobs with any of the specified names.
+      pageSize:
+        type: integer
+        format: int32
+        description: |
+          The maximum number of results to return in a single page. If unspecified,
+          a server default will be used. Note that the server may elect to
+          return fewer results per page than requested.
+      pageToken:
+        type: string
+        description: |
+          The continuation token, which is used to page through large result
+          sets. To get the next page of results, set this parameter to the value
+          of `nextPageToken` from the previous response.
       parentId:
         type: string
         description: >
@@ -221,6 +236,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/QueryJobsResult'
+      nextPageToken:
+        type: string
+        description: |
+          The continuation token, which is used to page through large result
+          sets. Provide this value in a subsequent request to return the next
+          page of results. This field will be empty if there aren't any
+          additional results.
   # TODO(calbach): Reconcile QueryJobsResult with JobMetadata.
   QueryJobsResult:
     description: Result for an individual job returned by a job query
