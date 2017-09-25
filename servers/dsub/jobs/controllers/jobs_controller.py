@@ -1,46 +1,97 @@
 import connexion
+from flask import current_app
+from werkzeug.exceptions import BadRequest
+from dsub.providers import google
+from dsub.providers import local
+from dsub.providers import stub
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_response import QueryJobsResponse
-from datetime import date, datetime
-from typing import List, Dict
-from six import iteritems
-from ..util import deserialize_date, deserialize_datetime
+from jobs.models.query_jobs_result import QueryJobsResult
+from dsub_client import ProviderType
+import job_statuses
+import job_ids
+
+
+def provider_type():
+    return current_app.config['PROVIDER_TYPE']
+
+
+def client():
+    return current_app.config['CLIENT']
 
 
 def abort_job(id):
-    """
-    Abort a job by ID
+    """Abort a job by API Job ID.
 
-    :param id: Job ID
-    :type id: str
+    Args:
+        id (str): Job ID to be aborted
 
-    :rtype: None
+    Returns: None
     """
-    return 'do some magic!'
+    project_id, job_id, task_id = job_ids.api_to_dsub(id, provider_type())
+    provider = _get_provider(project_id)
+    task = client().abort_job(provider, job_id, task_id)
 
 
 def get_job(id):
+    """Get a job's metadata by API Job ID.
+
+    Args:
+        id (str): Job ID to get
+
+    Returns:
+        JobMetadataResponse: Response containing relevant metadata
     """
-    Query for job and task-level metadata for a specified job
+    project_id, job_id, task_id = job_ids.api_to_dsub(id, provider_type())
+    provider = _get_provider(project_id)
+    job = client().get_job(provider, job_id, task_id)
 
-    :param id: Job ID
-    :type id: str
+    return JobMetadataResponse(
+        id=id,
+        status=job_statuses.dsub_to_api(job.get('status')),
+        submission=job.get('create-time'),
+        start=job.get('create-time'),
+        end=job.get('end-time'),
+        inputs=job.get('inputs', {}),
+        outputs=job.get('outputs', {}),
+        labels=job.get('labels', {}))
 
-    :rtype: JobMetadataResponse
-    """
-    return 'do some magic!'
 
-
-def query_jobs(parameters):
+def query_jobs():
     """
     Query jobs by various filter criteria.
 
-    :param parameters:
-    :type parameters: dict | bytes
-
-    :rtype: QueryJobsResponse
+    Returns:
+        QueryJobsResponse: Response containing results from query
     """
-    if connexion.request.is_json:
-        parameters = QueryJobsRequest.from_dict(connexion.request.get_json())
-    return 'do some magic!'
+    if not connexion.request.is_json:
+        raise BadRequest("Request body is not JSON formatted")
+
+    query = QueryJobsRequest.from_dict(connexion.request.get_json())
+    jobs = client().query_jobs(_get_provider(query.parent_id), query)
+    results = [_query_result(j) for j in jobs]
+    return QueryJobsResponse(results=results)
+
+
+def _query_result(job, project_id=None):
+    return QueryJobsResult(
+        id=job_ids.dsub_to_api(project_id,
+                               job.get('job-id'), job.get('task-id')),
+        name=job.get('job-name'),
+        status=job_statuses.dsub_to_api(job.get('status')),
+        start=job.get('create-time'),
+        end=job.get('end-time'),
+        labels=job.get('labels', {}))
+
+
+def _get_provider(project_id=None):
+    if provider_type() == ProviderType.GOOGLE:
+        return google.GoogleJobProvider(False, False, project_id)
+    elif provider_type() == ProviderType.LOCAL and not project_id:
+        return local.LocalJobProvider()
+    elif provider_type() == ProviderType.STUB and not project_id:
+        return stub.StubJobProvider()
+    else:
+        raise BadRequest(
+            'Project ID can only be specified for the google dsub provider')

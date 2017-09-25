@@ -1,6 +1,13 @@
 version: '2'
 services:
   jobs:
+    # dsub creates the local provider folder in /tmp/dsub-local which can only
+    # be written to by the owner. Unless dsub changes the permissions on this
+    # folder the docker container must be 'privileged'
+    privileged: true
+    # This shares the host PID address space with the container so that host
+    # processes can be checked on and killed
+    pid: host
     build:
       context: .
       dockerfile: Dockerfile.dsub
@@ -8,6 +15,7 @@ services:
     # http://docs.gunicorn.org/en/stable/run.html#commonly-used-arguments
     command: ["-b", ":8190"]
     environment:
+      - PROVIDER_TYPE=local
       # Avoid writing .pyc files back to the volume. Files generated this way
       # have restricted permissions set which cause errors on subsequent docker
       # builds.
@@ -16,5 +24,7 @@ services:
       # Mount the python source so that code changes don't require rebuilding
       # the image. Changes to requirements.txt will still require rebuilds.
       - ./servers/dsub/jobs:/app/jobs
+      - /tmp/dsub-local:/tmp/dsub-local
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8190:8190

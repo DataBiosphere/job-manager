@@ -8,11 +8,13 @@ from jobs.models.query_jobs_response import QueryJobsResponse
 from . import BaseTestCase
 from six import BytesIO
 from flask import json
+import unittest
 
 
 class TestJobsController(BaseTestCase):
     """ DefaultController integration test stubs """
 
+    @unittest.skip("not implemented")
     def test_abort_job(self):
         """
         Test case for abort_job
@@ -24,6 +26,7 @@ class TestJobsController(BaseTestCase):
         self.assert200(response,
                        "Response body is : " + response.data.decode('utf-8'))
 
+    @unittest.skip("not implemented")
     def test_get_job(self):
         """
         Test case for get_job
@@ -35,6 +38,7 @@ class TestJobsController(BaseTestCase):
         self.assert200(response,
                        "Response body is : " + response.data.decode('utf-8'))
 
+    @unittest.skip("not implemented")
     def test_query_jobs(self):
         """
         Test case for query_jobs
