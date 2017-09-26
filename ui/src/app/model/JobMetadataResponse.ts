@@ -21,6 +21,11 @@ export interface JobMetadataResponse {
     id: string;
 
     /**
+     * The name of the job
+     */
+    name: string;
+
+    /**
      * The status of the job
      */
     status: string;

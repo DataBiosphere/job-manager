@@ -35,7 +35,7 @@ export class JobMonitorService {
     return this.http.get(`${this.apiUrl}/jobs/${id}`,
       new RequestOptions({headers: this.headers}))
       .toPromise()
-      .then(response => response.json() as JobAbortResponse)
+      .then(response => response.json() as JobMetadataResponse)
       .catch(this.handleError);
   }
 

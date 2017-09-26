@@ -1,0 +1,54 @@
+<div class="content">
+  <div class="header">
+    <p class="title">Tasks</p>
+    <md-tab-group>
+      <md-tab label = "List view"></md-tab>
+      <md-tab label = "Graph view"></md-tab>
+    </md-tab-group>
+  </div>
+
+  <md-table #table [dataSource]="dataSource">
+    <!-- Task name column -->
+    <ng-container mdColumnDef="name">
+      <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
+      <md-cell *mdCellDef="let t">
+        {{t.jobId}}
+      </md-cell>
+    </ng-container>
+
+    <!-- Status column -->
+    <ng-container mdColumnDef="status">
+      <md-header-cell *mdHeaderCellDef> Status </md-header-cell>
+      <md-cell *mdCellDef="let t">
+        <button md-icon-button disabled>
+          <img mdTooltip="{{t.executionStatus}}" mdTooltipPosition="before"
+               src="{{getStatusUrl(t.executionStatus)}}">
+        </button>
+      </md-cell>
+    </ng-container>
+
+    <!-- Example columns -->
+    <ng-container mdColumnDef="shard">
+      <md-header-cell *mdHeaderCellDef> Shard </md-header-cell>
+      <md-cell *mdCellDef="let j" class = "column">
+        value
+      </md-cell>
+    </ng-container>
+    <ng-container mdColumnDef="label1">
+      <md-header-cell *mdHeaderCellDef> Label </md-header-cell>
+      <md-cell *mdCellDef="let j" class = "column">
+        value
+      </md-cell>
+    </ng-container>
+    <ng-container mdColumnDef="label2">
+      <md-header-cell *mdHeaderCellDef> Label </md-header-cell>
+      <md-cell *mdCellDef="let j"  class = "column">
+        value
+      </md-cell>
+    </ng-container>
+
+    <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
+    <md-row *mdRowDef="let t; columns: displayedColumns;"></md-row>
+
+  </md-table>
+</div>

@@ -1,0 +1,124 @@
+<form class = "filter-form">
+  <md-form-field class = "filter-input" color="accent">
+    <input mdInput #filter placeholder="Filter jobs">
+  </md-form-field>
+</form>
+
+<md-tab-group (selectChange)="toggleActive($event)">
+  <md-tab label = "{{statusGroupStringMap.get(0)}}"></md-tab>
+  <md-tab label = "{{statusGroupStringMap.get(1)}}"></md-tab>
+  <md-tab label = "{{statusGroupStringMap.get(2)}}"></md-tab>
+</md-tab-group>
+
+<md-table #table [dataSource]="dataSource">
+
+  <!-- Job name column -->
+  <ng-container mdColumnDef="jobName">
+    <md-header-cell *mdHeaderCellDef class="first-column">
+      <md-checkbox class = "checkbox" [checked]="allSelected" (change)="toggleSelectAll()">
+      </md-checkbox>
+      Job
+    </md-header-cell>
+    <md-cell *mdCellDef="let j" class="column first-column">
+      <md-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
+      </md-checkbox>
+      <button md-button class="job-details-button"
+        routerLink="/jobs/{{j.id}}" routerLinkActive="active">
+        {{j.name}}
+      </button>
+      <button md-icon-button class = "jobs-dropdown-arrow" [class.invisible]="!isMouseOver(j)">
+        <img src="{{getDropdownArrowUrl()}}">
+      </button>
+    </md-cell>
+  </ng-container>
+
+  <!-- Owner column -->
+  <ng-container mdColumnDef="owner">
+    <md-header-cell *mdHeaderCellDef> Owner </md-header-cell>
+    <md-cell *mdCellDef="let j" class = "column">
+      alahwa
+      <button md-icon-button [class.invisible]="!isMouseOver(j)">
+        <img src="{{getDropdownArrowUrl()}}">
+      </button>
+    </md-cell>
+  </ng-container>
+
+  <!-- Status column -->
+  <ng-container mdColumnDef="status">
+    <md-header-cell *mdHeaderCellDef> Status </md-header-cell>
+    <md-cell *mdCellDef="let j" class = "column">
+      <button md-icon-button disabled>
+        <img mdTooltip="{{j.status}}" mdTooltipPosition="before" src="{{getStatusUrl(j.status)}}">
+      </button>
+      <button md-icon-button [class.invisible]="!isMouseOver(j)">
+        <img src="{{getDropdownArrowUrl()}}">
+      </button>
+    </md-cell>
+  </ng-container>
+
+  <!-- Example label columns -->
+  <ng-container mdColumnDef="label1">
+    <md-header-cell *mdHeaderCellDef> Label </md-header-cell>
+    <md-cell *mdCellDef="let j" class = "column">
+      value
+      <button md-icon-button [class.invisible]="!isMouseOver(j)">
+        <img src="{{getDropdownArrowUrl()}}">
+      </button>
+    </md-cell>
+  </ng-container>
+  <ng-container mdColumnDef="label2">
+    <md-header-cell *mdHeaderCellDef> Label </md-header-cell>
+    <md-cell *mdCellDef="let j" class = "column">
+      value
+      <button md-icon-button [class.invisible]="!isMouseOver(j)">
+        <img src="{{getDropdownArrowUrl()}}">
+      </button>
+    </md-cell>
+  </ng-container>
+  <ng-container mdColumnDef="label3">
+    <md-header-cell *mdHeaderCellDef> Label </md-header-cell>
+    <md-cell *mdCellDef="let j"  class = "column">
+      value
+      <button md-icon-button [class.invisible]="!isMouseOver(j)">
+        <img src="{{getDropdownArrowUrl()}}">
+      </button>
+    </md-cell>
+  </ng-container>
+
+  <!-- Comments column -->
+  <ng-container mdColumnDef="comments">
+    <md-header-cell *mdHeaderCellDef> Comments </md-header-cell>
+    <md-cell *mdCellDef="let j" class = "column">
+      <form class="example-form">
+        <md-form-field floatPlaceholder="never">
+          <input mdInput placeholder="Add comments">
+        </md-form-field>
+      </form>
+    </md-cell>
+  </ng-container>
+
+  <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
+  <md-row (mouseenter) ="toggleMouseOver(j)"
+          (mouseleave) ="toggleMouseOver(j)"
+          [class.selected-row]="isSelected(j)"
+          class = "md-row"
+          *mdRowDef="let j; columns: displayedColumns;"></md-row>
+
+</md-table>
+
+<div class="group-options" *ngIf="selectedJobs.length > 0">
+  {{selectedJobs.length}} jobs selected
+  <button md-raised-button color="accent" class="group-button" *ngIf="areRunning(selectedJobs)"
+          (click)="onPauseJobs(selectedJobs)">Pause Jobs</button>
+  <button md-raised-button color="accent" class="group-button" *ngIf="currentStatusGroup==0"
+          (click)="onAbortJobs(selectedJobs)">Abort Jobs</button>
+  <button md-raised-button color="accent" class="group-button"
+          (click)="onGroupJobs(selectedJobs)">Group Jobs</button>
+</div>
+
+<md-paginator #paginator
+              [length]="jobs.length"
+              [pageIndex]="0"
+              [pageSize]="10"
+              [pageSizeOptions]="[5, 10, 25, 100]">
+</md-paginator>

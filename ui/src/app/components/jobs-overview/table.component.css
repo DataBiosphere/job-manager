@@ -1,6 +1,6 @@
 .filter-form {
-  min-width: 150px;
-  max-width: 500px;
+  min-width: 15px;
+  max-width: 50rem;
   width: 100%;
 }
 
@@ -9,7 +9,7 @@
 }
 
 .show-status-option {
-  font-size: 11px;
+  font-size: .7rem;
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -19,14 +19,32 @@
 }
 
 /* Job Monitor table */
-
-.first-column {
-  margin-right: 2rem;
+.mat-table {
+  display: table;
+  width: 100%;
 }
 
-.job-names {
+.mat-header-row, .mat-row {
+  display: table-row;
+  padding: 0;
+  border: none;
+}
+
+.mat-header-cell, .mat-cell {
+  display: table-cell;
+  height: 48px;
+  vertical-align: middle;
+  padding: 0 8px;
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.column {
+  position: sticky;
+}
+
+.job-details-button {
   text-decoration: underline;
-  position: relative;
 }
 
 .selected-row {
@@ -37,18 +55,10 @@
   background-color: #F5F5F5;
 }
 
-.dropdown-arrow {
-  position: relative;
-  float: right;
-}
-
-.status-cell {
-  text-align: center;
-}
-
-
-.status-arrow {
+.jobs-dropdown-arrow {
   position: absolute;
+  margin-left: 15px;
+  right: 1rem;
 }
 
 /*Pause, Delete, and Group buttons*/
@@ -66,4 +76,12 @@
   font-size: .65rem;
   text-transform: uppercase;
   margin: .65rem;
+}
+
+.checkbox {
+  margin-right: 1rem;
+}
+
+.invisible {
+  visibility: hidden !important;
 }

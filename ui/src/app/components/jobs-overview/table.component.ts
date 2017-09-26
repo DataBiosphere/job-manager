@@ -8,7 +8,7 @@ import {JobMonitorService} from '../../job-monitor.service';
 import {JobQueryResult} from '../../model/JobQueryResult';
 import {JobQueryRequest} from '../../model/JobQueryRequest';
 import StatusesEnum = JobQueryRequest.StatusesEnum;
-import {MdPaginator} from '@angular/material';
+import {MdPaginator, MdTabChangeEvent} from '@angular/material';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
@@ -20,22 +20,38 @@ import 'rxjs/add/observable/fromEvent';
 
 @Component({
   selector: 'list-jobs',
-  templateUrl: './list-jobs.component.html',
-  styleUrls: ['./list-jobs.component.css'],
+  templateUrl: './table.component.html',
+  styleUrls: ['./table.component.css'],
 })
-export class ListJobsComponent implements OnChanges, OnInit {
+export class JobsTableComponent implements OnChanges, OnInit {
   @Input() jobs: JobQueryResult[] = [];
-  @Output() updateJobs: EventEmitter<boolean> = new EventEmitter();
+  @Output() updateJobs: EventEmitter<StatusGroup> = new EventEmitter();
   private selectedJobs: JobQueryResult[] = [];
-  private isActive: boolean = true;
   private expandedJob: JobQueryResult;
   private mouseoverJobs: JobQueryResult[] = [];
   private allSelected: boolean = false;
+  private currentStatusGroup: StatusGroup = StatusGroup.Active;
+  private statusGroupStringMap: Map<StatusGroup, string> = new Map([
+    [StatusGroup.Active, "Active Jobs"],
+    [StatusGroup.Failed, "Failed"],
+    [StatusGroup.Completed, "Completed"]
+  ]);
+  private reverseStatusGroupStringMap: Map<string, StatusGroup> = new Map([
+    ["Active Jobs", StatusGroup.Active],
+    ["Failed", StatusGroup.Failed],
+    ["Completed", StatusGroup.Completed]
+  ]);
 
-  // New stuff
   database = new JobsDatabase(this.jobs);
   dataSource: JobsDataSource | null;
-  displayedColumns = ['jobName', 'owner', 'status', 'label1', 'label2', 'label3'];
+  displayedColumns = [
+    'jobName',
+    'owner',
+    'status',
+    'label1',
+    'label2',
+    'label3',
+    'comments'];
 
   @ViewChild(MdPaginator) paginator: MdPaginator;
   @ViewChild('filter') filter: ElementRef;
@@ -44,7 +60,6 @@ export class ListJobsComponent implements OnChanges, OnInit {
     private jobMonitorService: JobMonitorService
   ) {}
 
-  // New stuff
   ngOnInit() {
     this.dataSource = new JobsDataSource(this.database, this.paginator);
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
@@ -59,6 +74,10 @@ export class ListJobsComponent implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges) {
     this.jobs = changes.jobs.currentValue;
     this.database.dataChange.next(this.jobs);
+  }
+
+  navigateToDetails(job: JobQueryResult): void {
+
   }
 
   abortJob(job: JobQueryResult): void {
@@ -86,8 +105,8 @@ export class ListJobsComponent implements OnChanges, OnInit {
     }
   }
 
-  toggleActive(): void {
-    this.isActive = !this.isActive;
+  toggleActive(event: MdTabChangeEvent): void {
+    this.currentStatusGroup = this.reverseStatusGroupStringMap.get(event.tab.textLabel);
     this.onJobsChanged();
   }
 
@@ -122,11 +141,8 @@ export class ListJobsComponent implements OnChanges, OnInit {
 
   showMetadata(job: JobQueryResult): void {}
 
-  getDropdownArrowUrl(job: JobQueryResult): string {
-    if (job === this.expandedJob) {
-      return "https://www.gstatic.com/images/icons/material/system/1x/keyboard_arrow_up_grey600_24dp.png"
-    }
-    return "https://www.gstatic.com/images/icons/material/system/1x/keyboard_arrow_down_grey600_24dp.png"
+  getDropdownArrowUrl(): string {
+    return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
   }
 
   getStatusUrl(status: StatusesEnum): string {
@@ -186,15 +202,13 @@ export class ListJobsComponent implements OnChanges, OnInit {
   }
 
   private onJobsChanged(): void {
-    this.updateJobs.emit(this.isActive);
+    this.updateJobs.emit(this.currentStatusGroup);
     this.allSelected = false;
     this.selectedJobs = [];
     this.expandedJob = null;
     this.paginator.pageIndex = 0;
   }
 }
-
-// New stuff
 
 /** Simple database an observable list of jobs to be subscribed to by the
  *  DataSource. */
@@ -244,4 +258,10 @@ export class JobsDataSource extends DataSource<any> {
   }
 
   disconnect() {}
+}
+
+export enum StatusGroup {
+  Active = 0,
+  Failed = 1,
+  Completed = 2
 }
