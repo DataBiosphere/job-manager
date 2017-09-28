@@ -9,12 +9,12 @@ import {JobMetadataResponse} from './model/JobMetadataResponse';
 /** Service wrapper for accessing the job monitor API. */
 @Injectable()
 export class JobMonitorService {
-  private apiUrl = '/api';
+  private apiUrl = '/api/v1';
   private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http) {}
 
-  listJobs(parentId?: string): Promise<JobQueryResponse> {
+  listAllJobs(parentId?: string): Promise<QueryJobsResponse> {
     return this.http.post(
       `${this.apiUrl}/jobs/query`,
       {

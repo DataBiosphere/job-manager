@@ -29,7 +29,7 @@ services:
     command: ["-b", ":8190"]
     environment:
       - PROVIDER_TYPE=local
-      - PATH_PREFIX=/api
+      - PATH_PREFIX=/api/v1
       # Avoid writing .pyc files back to the volume. Files generated this way
       # have restricted permissions set which cause errors on subsequent docker
       # builds.
