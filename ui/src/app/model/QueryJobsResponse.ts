@@ -15,7 +15,12 @@ import * as models from './models';
 /**
  * Response to a job query
  */
-export interface JobQueryResponse {
-    results: Array<models.JobQueryResult>;
+export interface QueryJobsResponse {
+    results: Array<models.QueryJobsResult>;
+
+    /**
+     * The continuation token, which is used to page through large result sets. Provide this value in a subsequent request to return the next page of results. This field will be empty if there aren't any additional results. 
+     */
+    nextPageToken?: string;
 
 }

@@ -21,10 +21,7 @@ export interface JobMetadataResponse {
      */
     id: string;
 
-    /**
-     * The status of the job
-     */
-    status: string;
+    status: models.JobStatus;
 
     /**
      * Submission datetime of the job in ISO8601 format with milliseconds
@@ -56,7 +53,7 @@ export interface JobMetadataResponse {
      */
     labels?: any;
 
-    tasks?: models.TaskMetadata;
+    tasks?: Array<models.TaskMetadata>;
 
     failures?: Array<models.FailureMessage>;
 

@@ -19,12 +19,12 @@ export interface TaskMetadata {
     /**
      * Mapping of input fully qualified names to stringified values
      */
-    inputs: any;
+    inputs?: any;
 
     /**
-     * Status in Cromwell execution terms.
+     * Backend-specific task status.
      */
-    executionStatus: string;
+    executionStatus?: string;
 
     /**
      * Start datetime of the task execution in ISO8601 format with milliseconds

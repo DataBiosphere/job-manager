@@ -15,7 +15,7 @@ import * as models from './models';
 /**
  * Job query parameters
  */
-export interface JobQueryRequest {
+export interface QueryJobsRequest {
     /**
      * Returns only jobs with an equal or later start datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
      */
@@ -29,7 +29,7 @@ export interface JobQueryRequest {
     /**
      * Returns only jobs with the specified status.  If specified multiple times, returns jobs in any of the specified statuses. 
      */
-    statuses?: Array<JobQueryRequest.StatusesEnum>;
+    statuses?: Array<models.JobStatus>;
 
     /**
      * Returns only jobs with the specified name.  If specified multiple times, returns jobs with any of the specified names. 
@@ -37,18 +37,18 @@ export interface JobQueryRequest {
     name?: string;
 
     /**
+     * The maximum number of results to return in a single page. If unspecified, a server default will be used. Note that the server may elect to return fewer results per page than requested. 
+     */
+    pageSize?: number;
+
+    /**
+     * The continuation token, which is used to page through large result sets. To get the next page of results, set this parameter to the value of `nextPageToken` from the previous response. 
+     */
+    pageToken?: string;
+
+    /**
      * Returns only jobs with the given parent ID. This parameter may be unsupported for some API implementations or required for others depending on whether there exists a logical noun above a job in the resource hierarchy (for example, a cloud project). If the presence of this parameter is incompatible with the server, it may return a 400 HTTP status. 
      */
     parentId?: string;
 
-}
-export namespace JobQueryRequest {
-    export enum StatusesEnum {
-        Submitted = <any> 'Submitted',
-        Running = <any> 'Running',
-        Aborting = <any> 'Aborting',
-        Failed = <any> 'Failed',
-        Succeeded = <any> 'Succeeded',
-        Aborted = <any> 'Aborted'
-    }
 }
