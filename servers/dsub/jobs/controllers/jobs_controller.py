@@ -58,9 +58,12 @@ def get_job(id):
         labels=job.get('labels', {}))
 
 
-def query_jobs():
+def query_jobs(body):
     """
     Query jobs by various filter criteria.
+
+    Args:
+        body (dict): The JSON request body.
 
     Returns:
         QueryJobsResponse: Response containing results from query
@@ -68,7 +71,7 @@ def query_jobs():
     if not connexion.request.is_json:
         raise BadRequest("Request body is not JSON formatted")
 
-    query = QueryJobsRequest.from_dict(connexion.request.get_json())
+    query = QueryJobsRequest.from_dict(body)
     jobs = client().query_jobs(_get_provider(query.parent_id), query)
     results = [_query_result(j) for j in jobs]
     return QueryJobsResponse(results=results)

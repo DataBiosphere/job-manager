@@ -91,9 +91,14 @@ class DSubClient:
         # https://github.com/googlegenomics/dsub/issues/67
         # Eventually, the pipelines API and dsub should support this query .
 
+        # TODO(https://github.com/googlegenomics/dsub/issues/69): Move this
+        # logic into dsub.
+        statuses = dstat_params['statuses']
+        if not statuses:
+            statuses = ['*']
         jobs = dstat.dstat_job_producer(
             provider=provider,
-            status_list=dstat_params['statuses'],
+            status_list=statuses,
             create_time=dstat_params['create_time'],
             job_name_list=dstat_params['job_name_list'],
             full_output=True).next()

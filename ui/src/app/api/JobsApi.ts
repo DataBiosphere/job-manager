@@ -76,10 +76,10 @@ export class JobsApi {
     /**
      * 
      * @summary Query jobs by various filter criteria. Returned jobs are ordered from newest to oldest submission time. 
-     * @param parameters 
+     * @param body 
      */
-    public queryJobs(parameters: models.QueryJobsRequest, extraHttpRequestParams?: any): Observable<models.QueryJobsResponse> {
-        return this.queryJobsWithHttpInfo(parameters, extraHttpRequestParams)
+    public queryJobs(body: models.QueryJobsRequest, extraHttpRequestParams?: any): Observable<models.QueryJobsResponse> {
+        return this.queryJobsWithHttpInfo(body, extraHttpRequestParams)
             .map((response: Response) => {
                 if (response.status === 204) {
                     return undefined;
@@ -169,16 +169,16 @@ export class JobsApi {
     /**
      * Query jobs by various filter criteria. Returned jobs are ordered from newest to oldest submission time. 
      * 
-     * @param parameters 
+     * @param body 
      */
-    public queryJobsWithHttpInfo(parameters: models.QueryJobsRequest, extraHttpRequestParams?: any): Observable<Response> {
+    public queryJobsWithHttpInfo(body: models.QueryJobsRequest, extraHttpRequestParams?: any): Observable<Response> {
         const path = this.basePath + '/jobs/query';
 
         let queryParameters = new URLSearchParams();
         let headers = new Headers(this.defaultHeaders.toJSON()); // https://github.com/angular/angular/issues/6845
-        // verify required parameter 'parameters' is not null or undefined
-        if (parameters === null || parameters === undefined) {
-            throw new Error('Required parameter parameters was null or undefined when calling queryJobs.');
+        // verify required parameter 'body' is not null or undefined
+        if (body === null || body === undefined) {
+            throw new Error('Required parameter body was null or undefined when calling queryJobs.');
         }
         // to determine the Content-Type header
         let consumes: string[] = [
@@ -194,7 +194,7 @@ export class JobsApi {
         let requestOptions: RequestOptionsArgs = new RequestOptions({
             method: RequestMethod.Post,
             headers: headers,
-            body: parameters == null ? '' : JSON.stringify(parameters), // https://github.com/angular/angular/issues/10612
+            body: body == null ? '' : JSON.stringify(body), // https://github.com/angular/angular/issues/10612
             search: queryParameters,
             withCredentials:this.configuration.withCredentials
         });

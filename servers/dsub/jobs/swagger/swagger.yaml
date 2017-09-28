@@ -43,7 +43,7 @@ paths:
       operationId: "query_jobs"
       parameters:
       - in: "body"
-        name: "parameters"
+        name: "body"
         required: true
         schema:
           $ref: "#/definitions/QueryJobsRequest"
