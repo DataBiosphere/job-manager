@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {JobMonitorService} from '../../job-monitor.service';
-import {JobQueryResult} from '../../model/JobQueryResult';
-import {JobQueryRequest} from '../../model/JobQueryRequest';
-import StatusesEnum = JobQueryRequest.StatusesEnum;
+import {QueryJobsResult} from '../../model/QueryJobsResult';
 import {StatusGroup} from './table.component';
+import {JobStatus} from '../../model/JobStatus';
 
 @Component({
   templateUrl: './list-jobs.component.html',
@@ -12,7 +11,7 @@ import {StatusGroup} from './table.component';
 })
 export class ListJobsComponent implements OnInit {
 
-  private jobs: JobQueryResult[] = [];
+  private jobs: QueryJobsResult[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -29,20 +28,20 @@ export class ListJobsComponent implements OnInit {
         this.jobs = this.filterJobsByStatus(response.results, statusGroup));
   }
 
-  private filterJobsByStatus(jobs: JobQueryResult[], statusGroup: StatusGroup): JobQueryResult[] {
+  private filterJobsByStatus(jobs: QueryJobsResult[], statusGroup: StatusGroup): QueryJobsResult[] {
     switch(statusGroup) {
       case StatusGroup.Active: {
         return jobs.filter(
-          (j) => j.status != StatusesEnum[StatusesEnum.Failed] &&
-            j.status != StatusesEnum[StatusesEnum.Succeeded]);
+          (j) => j.status != JobStatus.Failed &&
+            j.status != JobStatus.Succeeded);
       }
       case StatusGroup.Completed: {
         return jobs.filter(
-          (j) => j.status == StatusesEnum[StatusesEnum.Succeeded]);
+          (j) => j.status == JobStatus.Succeeded);
       }
       case StatusGroup.Failed: {
         return jobs.filter(
-          (j) => j.status == StatusesEnum[StatusesEnum.Failed]);
+          (j) => j.status == JobStatus.Failed);
       }
       default: {
         return jobs;

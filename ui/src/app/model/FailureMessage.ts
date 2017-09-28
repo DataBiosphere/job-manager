@@ -24,6 +24,6 @@ export interface FailureMessage {
     /**
      * The time at which this failure occurred
      */
-    timestamp: Date;
+    timestamp?: Date;
 
 }

@@ -6,9 +6,9 @@ import {TaskMetadata} from '../../model/TaskMetadata';
 import {DataSource} from '@angular/cdk/collections';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import {JobQueryRequest} from '../../model/JobQueryRequest';
-import StatusesEnum = JobQueryRequest.StatusesEnum;
 import {isNullOrUndefined} from 'util';
+import {JobStatus} from '../../model/JobStatus';
+import {JobStatusImage} from '../../model/JobStatusImage';
 
 @Component({
   selector: 'tasks',
@@ -36,21 +36,8 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     this.database.dataChange.next(this.tasks);
   }
 
-  getStatusUrl(status: string): string {
-    switch(StatusesEnum[status]) {
-      case StatusesEnum.Submitted:
-        return "https://www.gstatic.com/images/icons/material/system/1x/file_upload_grey600_24dp.png";
-      case StatusesEnum.Running:
-        return "https://www.gstatic.com/images/icons/material/system/1x/autorenew_grey600_24dp.png";
-      case StatusesEnum.Aborting:
-        return "https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png";
-      case StatusesEnum.Failed:
-        return "https://www.gstatic.com/images/icons/material/system/1x/close_grey600_24dp.png";
-      case StatusesEnum.Aborted:
-        return "https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png";
-      case StatusesEnum.Succeeded:
-        return "https://www.gstatic.com/images/icons/material/system/1x/done_grey600_24dp.png";
-    }
+  getStatusUrl(status: JobStatus): string {
+    return JobStatusImage[status];
   }
 }
 

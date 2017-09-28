@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {JobMonitorService} from '../../job-monitor.service';
-import {ActivatedRoute, ParamMap} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {JobMetadataResponse} from '../../model/JobMetadataResponse';
-import {TaskMetadata} from '../../model/TaskMetadata';
+import {JobMetadataResponseImpl} from '../../model/ModelImpls';
 
 @Component({
   templateUrl: './job-details.component.html',
@@ -20,15 +20,4 @@ export class JobDetailsComponent implements OnInit {
     this.jobMonitorService.getJob(this.route.snapshot.params['id'])
       .then(response => this.job = response);
   }
-}
-
-class JobMetadataResponseImpl implements JobMetadataResponse {
-  id: string;
-  name: string;
-  status: string;
-  submission: Date;
-  start?: Date;
-  end?: Date;
-  labels?: any;
-  tasks?: Array<TaskMetadata>;
 }

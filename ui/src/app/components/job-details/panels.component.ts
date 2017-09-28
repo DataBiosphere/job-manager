@@ -1,11 +1,9 @@
 import {
-  Component, Input, OnChanges, OnInit,
-  SimpleChanges
+  Component, Input, OnChanges, SimpleChanges
 } from '@angular/core';
 import {JobMetadataResponse} from '../../model/JobMetadataResponse';
 import {TaskMetadata} from '../../model/TaskMetadata';
-import {JobQueryRequest} from '../../model/JobQueryRequest';
-import StatusesEnum = JobQueryRequest.StatusesEnum;
+import {JobStatus} from '../../model/JobStatus';
 
 @Component({
   selector: 'panels',
@@ -24,7 +22,7 @@ export class JobPanelsComponent implements OnChanges {
     if (this.tasks) {
       this.numTasks = this.tasks.length;
       for (let task of this.tasks) {
-        if (task.executionStatus == StatusesEnum[StatusesEnum.Succeeded]) {
+        if (task.executionStatus == JobStatus[JobStatus.Succeeded]) {
           this.numCompletedTasks++;
         }
       }

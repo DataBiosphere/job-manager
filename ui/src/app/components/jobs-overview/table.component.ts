@@ -5,9 +5,6 @@ import {
 
 import {DataSource} from '@angular/cdk/collections';
 import {JobMonitorService} from '../../job-monitor.service';
-import {JobQueryResult} from '../../model/JobQueryResult';
-import {JobQueryRequest} from '../../model/JobQueryRequest';
-import StatusesEnum = JobQueryRequest.StatusesEnum;
 import {MdPaginator, MdTabChangeEvent} from '@angular/material';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
@@ -17,6 +14,9 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
+import {JobStatus} from '../../model/JobStatus';
+import {QueryJobsResult} from '../../model/QueryJobsResult';
+import {JobStatusImage} from '../../model/JobStatusImage';
 
 @Component({
   selector: 'list-jobs',
@@ -24,11 +24,11 @@ import 'rxjs/add/observable/fromEvent';
   styleUrls: ['./table.component.css'],
 })
 export class JobsTableComponent implements OnChanges, OnInit {
-  @Input() jobs: JobQueryResult[] = [];
+  @Input() jobs: QueryJobsResult[] = [];
   @Output() updateJobs: EventEmitter<StatusGroup> = new EventEmitter();
-  private selectedJobs: JobQueryResult[] = [];
-  private expandedJob: JobQueryResult;
-  private mouseoverJobs: JobQueryResult[] = [];
+  private selectedJobs: QueryJobsResult[] = [];
+  private expandedJob: QueryJobsResult;
+  private mouseoverJobs: QueryJobsResult[] = [];
   private allSelected: boolean = false;
   private currentStatusGroup: StatusGroup = StatusGroup.Active;
   private statusGroupStringMap: Map<StatusGroup, string> = new Map([
@@ -77,12 +77,16 @@ export class JobsTableComponent implements OnChanges, OnInit {
     this.database.dataChange.next(this.jobs);
   }
 
-  abortJob(job: JobQueryResult): void {
+  abortJob(job: QueryJobsResult): void {
+    let success: boolean;
     this.jobMonitorService.abortJob(job.id)
-      .then(response => job.status = response.status);
+      .then(response => success = response);
+    if (success) {
+      job.status = JobStatus.Aborted
+    }
   }
 
-  toggleSelect(job: JobQueryResult): void {
+  toggleSelect(job: QueryJobsResult): void {
     if (this.isSelected(job)) {
       this.selectedJobs
         .splice(this.selectedJobs.indexOf(job), 1);
@@ -107,7 +111,7 @@ export class JobsTableComponent implements OnChanges, OnInit {
     this.onJobsChanged();
   }
 
-  toggleMouseOver(job: JobQueryResult): void {
+  toggleMouseOver(job: QueryJobsResult): void {
     let i: number = this.mouseoverJobs.indexOf(job);
     if (i > -1) {
       this.mouseoverJobs.splice(i, 1);
@@ -116,71 +120,58 @@ export class JobsTableComponent implements OnChanges, OnInit {
     }
   }
 
-  isMouseOver(job: JobQueryResult): boolean {
+  isMouseOver(job: QueryJobsResult): boolean {
     if (this.mouseoverJobs.indexOf(job) > -1 || this.expandedJob == job) {
       return true;
     }
     return false;
   }
 
-  showExpandedJob(job: JobQueryResult): void {
+  showExpandedJob(job: QueryJobsResult): void {
     // TODO(alahwa): Implement
   }
 
-  areRunning(jobs: JobQueryResult[]): boolean {
+  areRunning(jobs: QueryJobsResult[]): boolean {
     for (let job of jobs) {
-      if (job.status != StatusesEnum[StatusesEnum.Running]) {
+      if (job.status != JobStatus.Running) {
         return false;
       }
     }
     return true;
   }
 
-  showMetadata(job: JobQueryResult): void {}
+  showMetadata(job: QueryJobsResult): void {}
 
   getDropdownArrowUrl(): string {
     return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
   }
 
-  getStatusUrl(status: StatusesEnum): string {
-    switch(status) {
-      case StatusesEnum.Submitted:
-        return "https://www.gstatic.com/images/icons/material/system/1x/file_upload_grey600_24dp.png";
-      case StatusesEnum.Running:
-        return "https://www.gstatic.com/images/icons/material/system/1x/autorenew_grey600_24dp.png";
-      case StatusesEnum.Aborting:
-        return "https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png";
-      case StatusesEnum.Failed:
-        return "https://www.gstatic.com/images/icons/material/system/1x/close_grey600_24dp.png";
-      case StatusesEnum.Aborted:
-        return "https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png";
-      case StatusesEnum.Succeeded:
-        return "https://www.gstatic.com/images/icons/material/system/1x/done_grey600_24dp.png";
-    }
+  getStatusUrl(status: JobStatus): string {
+    return JobStatusImage[status];
   }
 
-  onPauseJob(job: JobQueryResult): void {
+  onPauseJob(job: QueryJobsResult): void {
     this.onPauseJobs([job]);
   }
 
-  onPauseJobs(jobs: JobQueryResult[]): void {
+  onPauseJobs(jobs: QueryJobsResult[]): void {
     // TODO (Implement)
     this.onJobsChanged();
   }
 
-  onAbortJobs(jobs: JobQueryResult[]): void {
+  onAbortJobs(jobs: QueryJobsResult[]): void {
     for (let job of jobs) {
       this.abortJob(job);
     }
     this.onJobsChanged();
   }
 
-  onGroupJobs(jobs: JobQueryResult[]): void {
+  onGroupJobs(jobs: QueryJobsResult[]): void {
     // TODO (Implement)
     this.onJobsChanged();
   }
 
-  isSelected(job: JobQueryResult): boolean {
+  isSelected(job: QueryJobsResult): boolean {
     return this.selectedJobs.indexOf(job) > -1;
   }
 
@@ -196,12 +187,12 @@ export class JobsTableComponent implements OnChanges, OnInit {
 /** Simple database an observable list of jobs to be subscribed to by the
  *  DataSource. */
 export class JobsDatabase {
-  private jobs: JobQueryResult[];
+  private jobs: QueryJobsResult[];
   /** Stream that emits whenever the data has been modified. */
-  dataChange: BehaviorSubject<JobQueryResult[]> = new BehaviorSubject<JobQueryResult[]>(this.jobs);
-  get data(): JobQueryResult[] { return this.dataChange.value; }
+  dataChange: BehaviorSubject<QueryJobsResult[]> = new BehaviorSubject<QueryJobsResult[]>(this.jobs);
+  get data(): QueryJobsResult[] { return this.dataChange.value; }
 
-  constructor(jobs: JobQueryResult[]) {
+  constructor(jobs: QueryJobsResult[]) {
     this.jobs = jobs;
     this.dataChange.next(this.jobs);
   }
@@ -209,7 +200,7 @@ export class JobsDatabase {
 
 /** DataSource providing the list of jobs to be rendered in the table. */
 export class JobsDataSource extends DataSource<any> {
-  visibleJobs: JobQueryResult[];
+  visibleJobs: QueryJobsResult[];
   _filterChange = new BehaviorSubject('');
   get filter(): string { return this._filterChange.value; }
   set filter(filter: string) { this._filterChange.next(filter); }
@@ -218,7 +209,7 @@ export class JobsDataSource extends DataSource<any> {
     super();
   }
 
-  connect(): Observable<JobQueryResult[]> {
+  connect(): Observable<QueryJobsResult[]> {
     const displayDataChanges = [
       this._db.dataChange,
       this._paginator.page,
@@ -231,7 +222,7 @@ export class JobsDataSource extends DataSource<any> {
       // Get only the requested page
       const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
       this.visibleJobs = data
-        .filter((job: JobQueryResult) => {
+        .filter((job: QueryJobsResult) => {
           let searchStr = (job.name + job.status).toLowerCase();
           return searchStr.indexOf(this.filter.toLowerCase()) != -1;
         })

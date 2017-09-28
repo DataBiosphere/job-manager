@@ -1,13 +1,11 @@
 import {MockBackend, MockConnection} from '@angular/http/testing';
 import {ResponseOptions, Response} from '@angular/http';
-import {JobAbortResponse} from './model/JobAbortResponse';
-import {JobQueryResult} from './model/JobQueryResult';
-import {JobQueryResponse} from './model/JobQueryResponse';
-import {JobQueryRequest} from './model/JobQueryRequest';
-import StatusesEnum = JobQueryRequest.StatusesEnum;
-import {JobMetadataResponse} from './model/JobMetadataResponse';
-import {TaskMetadata} from './model/TaskMetadata';
-import {FailureMessage} from './model/FailureMessage';
+import {QueryJobsResult} from './model/QueryJobsResult';
+import {JobStatus} from './model/JobStatus';
+import {
+  JobMetadataResponseImpl, QueryJobResultImpl, QueryJobsResponseImpl,
+  TaskMetadataImpl
+} from './model/ModelImpls';
 
 /**
 * MockJobMonitorService implements an in-memory fake job monitor server via
@@ -15,7 +13,7 @@ import {FailureMessage} from './model/FailureMessage';
 */
 export class MockJobMonitorService {
   constructor(
-    private jobs:JobQueryResult[],
+    private jobs:QueryJobsResult[],
   ){}
 
   subscribe(backend: MockBackend): void {
@@ -24,7 +22,7 @@ export class MockJobMonitorService {
       let body;
       if (url == "/v1/jobs") {
         // listAllJobs
-        body = new JobQueryResponseImpl();
+        body = new QueryJobsResponseImpl();
         body.results = this.jobs.slice();
       }
       else if (url.endsWith("abort")) {
@@ -36,10 +34,7 @@ export class MockJobMonitorService {
           return;
         }
         this.jobs[this.jobs.indexOf(job)].status =
-          StatusesEnum[StatusesEnum.Aborted];
-        body = new JobAbortResponseImpl();
-        body.id = job.id;
-        body.status = job.status;
+          JobStatus.Aborted;
       } else if (url.startsWith("/v1/jobs/") && url.split('/').length == 4) {
         // getJob
         let job = this.jobs
@@ -50,7 +45,6 @@ export class MockJobMonitorService {
         }
         body = new JobMetadataResponseImpl();
         body.id = job.id;
-        body.name = job.name;
         body.status = job.status;
         body.submission = job.start;
         body.start = job.start;
@@ -65,16 +59,16 @@ export class MockJobMonitorService {
     });
   }
 
-  private getTasks(job: JobQueryResult): TaskMetadataImpl[] {
+  private getTasks(job: QueryJobsResult): TaskMetadataImpl[] {
       let tasks: TaskMetadataImpl[] = [];
       tasks.push(this.createTask(job.start, "Task 1", 15,
-        StatusesEnum[StatusesEnum.Succeeded]));
+        JobStatus[JobStatus.Aborted]));
       tasks.push(this.createTask(job.start, "Task 2", 30,
-        StatusesEnum[StatusesEnum.Succeeded]));
+        JobStatus[JobStatus.Succeeded]));
       tasks.push(this.createTask(job.start, "Task 3", 45,
-        job.status));
+        JobStatus[job.status]));
       tasks.push(this.createTask(job.start, "Task 4", 60,
-        job.status));
+        JobStatus[job.status]));
       return tasks;
   }
 
@@ -85,7 +79,7 @@ export class MockJobMonitorService {
     task.executionStatus = executionStatus;
     task.jobId = jobId;
     task.start = start;
-    if (executionStatus != StatusesEnum[StatusesEnum.Running]) {
+    if (executionStatus != JobStatus[JobStatus.Running]) {
       task.end = new Date(start.getMonth(), start.getDay(),
         start.getFullYear(), start.getHours()+1,
         start.getMinutes() + runTime, start.getSeconds());
@@ -94,87 +88,52 @@ export class MockJobMonitorService {
   }
 }
 
-class JobQueryResultImpl implements JobQueryResult {
-  id: string;
-  name: string;
-  status: string;
-  start: Date;
-}
-
-class JobQueryResponseImpl implements JobQueryResponse {
-  results: JobQueryResult[];
-}
-
-class JobAbortResponseImpl implements JobAbortResponse {
-  id: string;
-  status: string;
-}
-
-class JobMetadataResponseImpl implements JobMetadataResponse {
-  id: string;
-  name: string;
-  status: string;
-  submission: Date;
-  start?: Date;
-  end?: Date;
-  labels?: any;
-  tasks?: Array<TaskMetadata>;
-}
-
-class TaskMetadataImpl implements TaskMetadata {
-  inputs: any;
-  executionStatus: string;
-  start?: Date;
-  end?: Date;
-  jobId?: string;
-}
-
 export function newDefaultMockJobMonitorService(): MockJobMonitorService {
-  let jobTemplates: JobQueryResult[] =
+  let jobTemplates: QueryJobsResult[] =
     [
       { id: 'JOB1',
         name: 'TCG-NBL-7357',
-        status: StatusesEnum[StatusesEnum.Running],
+        status: JobStatus.Running,
         start: new Date(new Date().getTime() - 1200000)},
       { id: 'JOB2',
         name: 'AML-G4-CHEN',
-        status: StatusesEnum[StatusesEnum.Submitted],
+        status: JobStatus.Submitted,
         start: new Date(new Date().getTime() - 2200300)},
       { id: 'JOB3',
         name: 'TCG-NBL-B887',
-        status: StatusesEnum[StatusesEnum.Running],
+        status: JobStatus.Running,
         start: new Date(new Date().getTime() - 7364000)},
       { id: 'JOB4',
         name: 'TARGET-CCSK',
-        status: StatusesEnum[StatusesEnum.Running],
+        status: JobStatus.Running,
         start: new Date(new Date().getTime() - 9291800)},
       { id: 'JOB5',
         name: '1543LKF678',
-        status: StatusesEnum[StatusesEnum.Running],
+        status: JobStatus.Running,
         start: new Date(new Date().getTime() - 6240000)},
       { id: 'JOB6',
         name: '1543LKF674',
-        status: StatusesEnum[StatusesEnum.Submitted],
+        status: JobStatus.Submitted,
         start: new Date(new Date().getTime() - 800000)},
       { id: 'JOB7',
         name: 'TCG-NBL-644C',
-        status: StatusesEnum[StatusesEnum.Aborted],
+        status: JobStatus.Aborted,
         start: new Date(new Date().getTime() - 21099000),
         end: new Date(new Date().getTime() - 25844000)},
       { id: 'JOB8',
         name: 'TCG-NBL-6588',
-        status: StatusesEnum[StatusesEnum.Succeeded],
+        status: JobStatus.Succeeded,
         start: new Date(new Date().getTime() - 11099000),
         end: new Date(new Date().getTime() - 15844000)},
       { id: 'JOB9',
         name: 'AML-B2-CHEN',
-        status: StatusesEnum[StatusesEnum.Failed],
+        status: JobStatus.Failed,
         start: new Date(new Date().getTime() - 10099000),
         end: new Date(new Date().getTime() - 11844000)},
     ];
-  let mockJobs: JobQueryResult[] = [];
+  let mockJobs: QueryJobsResult[] = [];
   for (let i = 0; i < 200; i++) {
-    let job: JobQueryResult = new JobQueryResultImpl();
+    let job: QueryJobsResult = new QueryJobResultImpl();
     Object.assign(job, jobTemplates[i%jobTemplates.length]);
     job.id = 'JOB'+ i;
     job.name += i;
