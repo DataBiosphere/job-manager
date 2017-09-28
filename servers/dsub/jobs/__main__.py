@@ -19,7 +19,7 @@ parser.add_argument(
 parser.add_argument(
     '--path_prefix',
     type=str,
-    help='Path prefix, e.g. /api to serve from',
+    help='Path prefix, e.g. /api/v1, to serve from',
     default=os.environ.get('PATH_PREFIX'))
 
 if __name__ == '__main__':

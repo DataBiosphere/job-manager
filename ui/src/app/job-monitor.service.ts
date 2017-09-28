@@ -5,18 +5,18 @@ import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
 import {QueryJobsResponse} from './model/QueryJobsResponse';
 import {JobMetadataResponse} from './model/JobMetadataResponse';
+import {environment} from '../environments/environment';
 
 /** Service wrapper for accessing the job monitor API. */
 @Injectable()
 export class JobMonitorService {
-  private apiUrl = '/api/v1';
   private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http) {}
 
   listAllJobs(parentId?: string): Promise<QueryJobsResponse> {
     return this.http.post(
-      `${this.apiUrl}/jobs/query`,
+      `${environment.apiUrl}/jobs/query`,
       {
         parentId: parentId,
       },
@@ -28,8 +28,8 @@ export class JobMonitorService {
       .catch(this.handleError);
   }
 
-  abortJob(id: string): Promise<boolean> {
-    return this.http.get(`${this.apiUrl}/jobs/${id}/abort`,
+  abortJob(id: string): Promise<void> {
+    return this.http.post(`${environment.apiUrl}/jobs/${id}/abort`,
       new RequestOptions({headers: this.headers}))
       .toPromise()
       .then(response => response.status == 200)
