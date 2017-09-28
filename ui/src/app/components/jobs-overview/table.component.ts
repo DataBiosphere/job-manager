@@ -44,6 +44,7 @@ export class JobsTableComponent implements OnChanges, OnInit {
 
   database = new JobsDatabase(this.jobs);
   dataSource: JobsDataSource | null;
+  // TODO(alanhwang): Allow these columns to be configured by the user
   displayedColumns = [
     'jobName',
     'owner',
@@ -74,10 +75,6 @@ export class JobsTableComponent implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges) {
     this.jobs = changes.jobs.currentValue;
     this.database.dataChange.next(this.jobs);
-  }
-
-  navigateToDetails(job: JobQueryResult): void {
-
   }
 
   abortJob(job: JobQueryResult): void {
@@ -160,20 +157,6 @@ export class JobsTableComponent implements OnChanges, OnInit {
       case StatusesEnum.Succeeded:
         return "https://www.gstatic.com/images/icons/material/system/1x/done_grey600_24dp.png";
     }
-  }
-
-  getLocaleString(date: Date): string {
-    if (date != null) {
-      return date.toLocaleString();
-    }
-    return null;
-  }
-
-  getLocaleTimeString(date: Date): string {
-    if (date != null) {
-      return date.toLocaleTimeString();
-    }
-    return null;
   }
 
   onPauseJob(job: JobQueryResult): void {

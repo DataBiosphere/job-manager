@@ -6,7 +6,6 @@ import {JobMetadataResponse} from '../../model/JobMetadataResponse';
 import {TaskMetadata} from '../../model/TaskMetadata';
 import {JobQueryRequest} from '../../model/JobQueryRequest';
 import StatusesEnum = JobQueryRequest.StatusesEnum;
-import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'panels',
@@ -22,7 +21,7 @@ export class JobPanelsComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.job = changes.job.currentValue;
     this.tasks = this.job.tasks;
-    if (!isNullOrUndefined(this.tasks)) {
+    if (this.tasks) {
       this.numTasks = this.tasks.length;
       for (let task of this.tasks) {
         if (task.executionStatus == StatusesEnum[StatusesEnum.Succeeded]) {
@@ -34,8 +33,8 @@ export class JobPanelsComponent implements OnChanges {
 
   getDuration(): String {
     let duration: number;
-    if (!isNullOrUndefined(this.job.start)) {
-      if (!isNullOrUndefined(this.job.end)) {
+    if (this.job.start) {
+      if (this.job.end) {
         duration = this.job.end.getTime()-this.job.start.getTime();
       } else {
         duration = new Date().getTime() - this.job.start.getTime();
@@ -47,9 +46,6 @@ export class JobPanelsComponent implements OnChanges {
   }
 
   getLocaleString(date: Date): string {
-    if (!isNullOrUndefined(date)) {
-      return date.toLocaleString();
-    }
-    return "";
+    return date ? date.toLocaleString() : "";
   }
 }

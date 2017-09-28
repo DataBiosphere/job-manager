@@ -27,16 +27,19 @@ We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to auto
 Whenever the API is updated, follow these steps to update the UI implementation:
 
 If you do not already have the jar, you can download it here:
-
-```wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar```
+```
+wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+```
 
 Regenerate the definitions:
-
-```java -jar swagger-codegen-cli.jar generate -i job-monitor/api/jobs.yaml -l typescript-angular2 -o job-monitor/ui/src/app```
+```
+java -jar swagger-codegen-cli.jar generate -i api/jobs.yaml -l typescript-angular2 -o ui/src/app
+```
 
 
 Clean up unnecessary generated fluff: 
-
-```rm -r job-monitor/ui/src/app/.gitignore job-monitor/ui/src/app/.swagger-codegen-ignore job-monitor/ui/src/app/git_push.sh job-monitor/ui/src/app/index.ts job-monitor/ui/src/app/.swagger-codegen/```
+```
+rm -r ui/src/app/.gitignore ui/src/app/.swagger-codegen-ignore ui/src/app/git_push.sh ui/src/app/index.ts ui/src/app/.swagger-codegen/
+```
 
 Finally, update the UI implementation to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
