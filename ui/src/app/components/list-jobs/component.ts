@@ -2,14 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params} from '@angular/router';
 
 import {JobMonitorService} from '../../job-monitor.service';
-import {JobQueryResult} from '../../model/JobQueryResult';
-import {JobQueryRequest} from '../../model/JobQueryRequest';
-import StatusesEnum = JobQueryRequest.StatusesEnum;
+import {QueryJobsResult} from '../../model/QueryJobsResult';
+import {QueryJobsRequest} from '../../model/QueryJobsRequest';
+import {JobStatus} from '../../model/JobStatus';
 
 @Component({templateUrl: './component.html'})
 export class ListJobsComponent implements OnInit {
-  private jobs: JobQueryResult[] = [];
-  private selectedJobs: JobQueryResult[] = [];
+  private jobs: QueryJobsResult[] = [];
+  private selectedJobs: QueryJobsResult[] = [];
   private active: boolean = true;
 
   constructor(
@@ -21,7 +21,7 @@ export class ListJobsComponent implements OnInit {
       .then(response => this.jobs = response.results);
   }
 
-  toggleSelect(job: JobQueryResult): void {
+  toggleSelect(job: QueryJobsResult): void {
     if (this.isSelected(job)) {
       this.selectedJobs
         .splice(this.selectedJobs.indexOf(job), 1);
@@ -38,16 +38,16 @@ export class ListJobsComponent implements OnInit {
 
   }
 
-  areRunning(jobs: JobQueryResult[]): boolean {
+  areRunning(jobs: QueryJobsResult[]): boolean {
     for (let job of jobs) {
-      if (job.status != StatusesEnum[StatusesEnum.Running]) {
+      if (job.status != JobStatus.Running) {
         return false;
       }
     }
     return true;
   }
 
-  areActive(jobs: JobQueryResult[]): boolean {
+  areActive(jobs: QueryJobsResult[]): boolean {
     for (let job of jobs) {
       if (this.isFinished(job)) {
         return false;
@@ -56,59 +56,59 @@ export class ListJobsComponent implements OnInit {
     return true;
   }
 
-  shouldDisplayJob(job: JobQueryResult): boolean {
+  shouldDisplayJob(job: QueryJobsResult): boolean {
     return this.isFinished(job) != this.active;
   }
 
-  private isFinished(job: JobQueryResult): boolean {
-    return job.status == StatusesEnum[StatusesEnum.Aborting] ||
-      job.status == StatusesEnum[StatusesEnum.Failed] ||
-      job.status == StatusesEnum[StatusesEnum.Succeeded] ||
-      job.status == StatusesEnum[StatusesEnum.Aborted];
+  private isFinished(job: QueryJobsResult): boolean {
+    return job.status == JobStatus.Aborting ||
+      job.status == JobStatus.Failed ||
+      job.status == JobStatus.Succeeded ||
+      job.status == JobStatus.Aborted;
   }
 
-  getStatusUrl(status: StatusesEnum): string {
+  getStatusUrl(status: JobStatus): string {
     switch(status) {
-      case StatusesEnum.Submitted:
+      case JobStatus.Submitted:
         return "https://www.gstatic.com/images/icons/material/system/1x/file_upload_grey600_24dp.png";
-      case StatusesEnum.Running:
+      case JobStatus.Running:
         return "https://www.gstatic.com/images/icons/material/system/1x/autorenew_grey600_24dp.png";
-      case StatusesEnum.Aborting:
+      case JobStatus.Aborting:
         return "https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png";
-      case StatusesEnum.Failed:
+      case JobStatus.Failed:
         return "https://www.gstatic.com/images/icons/material/system/1x/close_grey600_24dp.png";
-      case StatusesEnum.Aborted:
+      case JobStatus.Aborted:
         return "https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png";
-      case StatusesEnum.Succeeded:
+      case JobStatus.Succeeded:
         return "https://www.gstatic.com/images/icons/material/system/1x/done_grey600_24dp.png";
     }
   }
 
-  onPauseJob(job: JobQueryResult): void {
+  onPauseJob(job: QueryJobsResult): void {
     this.onPauseJobs([job]);
   }
 
-  onPauseJobs(jobs: JobQueryResult[]): void {
+  onPauseJobs(jobs: QueryJobsResult[]): void {
     // TODO (Implement)
   }
 
-  onAbortJob(job: JobQueryResult): void {
+  onAbortJob(job: QueryJobsResult): void {
     this.jobMonitorService.abortJob(job.id)
-      .then(response => job.status = response.status);
+      .then(response => job.status = JobStatus.Aborted);
   }
 
-  onAbortJobs(jobs: JobQueryResult[]): void {
+  onAbortJobs(jobs: QueryJobsResult[]): void {
     for (let job of jobs) {
       this.onAbortJob(job);
     }
     this.selectedJobs = [];
   }
 
-  onGroupJobs(jobs: JobQueryResult[]): void {
+  onGroupJobs(jobs: QueryJobsResult[]): void {
     // TODO (Implement)
   }
 
-  isSelected(job: JobQueryResult): boolean {
+  isSelected(job: QueryJobsResult): boolean {
     return this.selectedJobs.indexOf(job) > -1;
   }
 }

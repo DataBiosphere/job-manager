@@ -15,7 +15,7 @@ import * as models from './models';
 /**
  * Result for an individual job returned by a job query
  */
-export interface JobQueryResult {
+export interface QueryJobsResult {
     /**
      * Job ID
      */
@@ -24,17 +24,14 @@ export interface JobQueryResult {
     /**
      * Job name
      */
-    name: string;
+    name?: string;
 
-    /**
-     * Job status
-     */
-    status: string;
+    status: models.JobStatus;
 
     /**
      * Job start datetime
      */
-    start: Date;
+    start?: Date;
 
     /**
      * Job end datetime
