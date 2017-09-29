@@ -79,7 +79,7 @@ class DSubClient:
         """Query dsub jobs or tasks based on their metadata
 
         Args:
-            params (QueryJobsResult): defined in swagger API spec
+            params (QueryJobsRequest): defined in swagger API spec
 
         Returns:
             list<dict>: A list of raw metadata for all jobs matching the query.
