@@ -84,12 +84,16 @@ definitions:
     description: Job and task level metadata
     required:
       - id
+      - name
       - status
       - submission
     properties:
       id:
         type: string
         description: The identifier of the job
+      name:
+        type: string
+        description: The name of the job
       status:
         $ref: '#/definitions/JobStatus'
       submission:

@@ -21,6 +21,11 @@ export interface JobMetadataResponse {
      */
     id: string;
 
+    /**
+     * The name of the job
+     */
+    name: string;
+
     status: models.JobStatus;
 
     /**
