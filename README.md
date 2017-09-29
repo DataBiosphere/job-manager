@@ -7,6 +7,10 @@ Job Monitor API and UI for interacting with asynchronous batch jobs.
 ```
 docker-compose up
 ```
+## Install the Angular CLI
+
+Install the Angular CLI following the instructions in [Step 1](https://angular.io/guide/quickstart#devenv) of the Angular QuickStart guide.
+
 
 Navigate to http://localhost:4200.
 
@@ -61,13 +65,31 @@ java -jar swagger-codegen-cli.jar generate \
 
 Finally, update the UI implementation to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
+## Run the server
+
+```
+docker-compose up
+```
+
+To see the Swagger API definition, open your browser to:
+
+```
+http://localhost:9189
+```
+
 ## Job Monitor UI
 
-UI-specific documentation can be found in the [ui/ folder](ui/README.md).
+### Running the development UI server
+
+From the /ui directory, run `ng serve --open` to build, run a dev server, and navigate to an instance in your browser. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+### Building
+
+From the /ui directory, run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
 ### Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+From the /ui directory, run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ### Running end-to-end tests
 
