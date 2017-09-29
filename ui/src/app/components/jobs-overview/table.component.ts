@@ -184,12 +184,13 @@ export class JobsTableComponent implements OnChanges, OnInit {
   }
 }
 
-/** Simple database an observable list of jobs to be subscribed to by the
+/** Simple database with an observable list of jobs to be subscribed to by the
  *  DataSource. */
 export class JobsDatabase {
   private jobs: QueryJobsResult[];
   /** Stream that emits whenever the data has been modified. */
-  dataChange: BehaviorSubject<QueryJobsResult[]> = new BehaviorSubject<QueryJobsResult[]>(this.jobs);
+  dataChange: BehaviorSubject<QueryJobsResult[]> =
+    new BehaviorSubject<QueryJobsResult[]>(this.jobs);
   get data(): QueryJobsResult[] { return this.dataChange.value; }
 
   constructor(jobs: QueryJobsResult[]) {

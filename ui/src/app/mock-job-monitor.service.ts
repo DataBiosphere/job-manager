@@ -2,10 +2,7 @@ import {MockBackend, MockConnection} from '@angular/http/testing';
 import {ResponseOptions, Response} from '@angular/http';
 import {QueryJobsResult} from './model/QueryJobsResult';
 import {JobStatus} from './model/JobStatus';
-import {
-  JobMetadataResponseImpl, QueryJobResultImpl, QueryJobsResponseImpl,
-  TaskMetadataImpl
-} from './model/ModelImpls';
+import {TaskMetadata} from './model/TaskMetadata';
 
 /**
 * MockJobMonitorService implements an in-memory fake job monitor server via
@@ -22,8 +19,9 @@ export class MockJobMonitorService {
       let body;
       if (url == "/v1/jobs") {
         // listAllJobs
-        body = new QueryJobsResponseImpl();
-        body.results = this.jobs.slice();
+        body = {
+          results: this.jobs.slice()
+        };
       }
       else if (url.endsWith("abort")) {
         // abortJob
@@ -43,14 +41,15 @@ export class MockJobMonitorService {
           c.mockRespond(new Response(new ResponseOptions({status: 404})));
           return;
         }
-        body = new JobMetadataResponseImpl();
-        body.id = job.id;
-        body.status = job.status;
-        body.submission = job.start;
-        body.start = job.start;
-        body.end = job.end;
-        body.labels = job.labels;
-        body.tasks = this.getTasks(job);
+        body = {
+          id: job.id,
+          status: job.status,
+          submission: job.start,
+          start: job.start,
+          end: job.end,
+          labels: job.labels,
+          tasks: this.getTasks(job)
+        };
       }
       c.mockRespond(new Response(new ResponseOptions({
         'status': 200,
@@ -59,8 +58,8 @@ export class MockJobMonitorService {
     });
   }
 
-  private getTasks(job: QueryJobsResult): TaskMetadataImpl[] {
-      let tasks: TaskMetadataImpl[] = [];
+  private getTasks(job: QueryJobsResult): TaskMetadata[] {
+      let tasks: TaskMetadata[] = [];
       tasks.push(this.createTask(job.start, "Task 1", 15,
         JobStatus[JobStatus.Aborted]));
       tasks.push(this.createTask(job.start, "Task 2", 30,
@@ -73,8 +72,13 @@ export class MockJobMonitorService {
   }
 
   private createTask(start: Date, jobId: string, runTime: number,
-                     executionStatus: string ): TaskMetadataImpl {
-    let task: TaskMetadataImpl = new TaskMetadataImpl();
+                     executionStatus: string ): TaskMetadata {
+    let task: TaskMetadata = {
+      inputs: "Inputs",
+      executionStatus: executionStatus,
+      jobId: jobId,
+      start: start
+    };
     task.inputs = "Inputs";
     task.executionStatus = executionStatus;
     task.jobId = jobId;
@@ -133,7 +137,11 @@ export function newDefaultMockJobMonitorService(): MockJobMonitorService {
     ];
   let mockJobs: QueryJobsResult[] = [];
   for (let i = 0; i < 200; i++) {
-    let job: QueryJobsResult = new QueryJobResultImpl();
+    let job: QueryJobsResult = {
+      id: "",
+      name: "",
+      status: null
+    };
     Object.assign(job, jobTemplates[i%jobTemplates.length]);
     job.id = 'JOB'+ i;
     job.name += i;

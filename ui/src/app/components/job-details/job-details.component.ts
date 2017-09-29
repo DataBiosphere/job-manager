@@ -2,14 +2,19 @@ import {Component, OnInit} from '@angular/core';
 import {JobMonitorService} from '../../job-monitor.service';
 import {ActivatedRoute} from '@angular/router';
 import {JobMetadataResponse} from '../../model/JobMetadataResponse';
-import {JobMetadataResponseImpl} from '../../model/ModelImpls';
 
 @Component({
   templateUrl: './job-details.component.html',
   styleUrls: ['./job-details.component.css'],
 })
 export class JobDetailsComponent implements OnInit {
-  private job: JobMetadataResponse = new JobMetadataResponseImpl();
+  private job: JobMetadataResponse = {
+    id: "",
+    status: null,
+    tasks: [],
+    submission: null,
+    start: null
+  };
 
   constructor(
     private route: ActivatedRoute,

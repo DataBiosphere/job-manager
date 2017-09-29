@@ -41,12 +41,13 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
   }
 }
 
-/** Simple database an observable list of jobs to be subscribed to by the
+/** Simple database with an observable list of jobs to be subscribed to by the
  *  DataSource. */
 export class TasksDatabase {
   private tasks: TaskMetadata[];
   /** Stream that emits whenever the data has been modified. */
-  dataChange: BehaviorSubject<TaskMetadata[]> = new BehaviorSubject<TaskMetadata[]>(this.tasks);
+  dataChange: BehaviorSubject<TaskMetadata[]> =
+    new BehaviorSubject<TaskMetadata[]>(this.tasks);
   get data(): TaskMetadata[] { return this.dataChange.value; }
 
   constructor(tasks: TaskMetadata[]) {
