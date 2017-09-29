@@ -40,7 +40,7 @@ paths:
         Query jobs by various filter criteria. Returned jobs are ordered from
         newest to oldest submission time.
       parameters:
-        - name: parameters
+        - name: body
           required: true
           in: body
           schema:
