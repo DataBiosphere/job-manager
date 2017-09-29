@@ -12,15 +12,11 @@
 
 import * as models from './models';
 
-export interface JobAbortResponse {
-    /**
-     * The identifier of the job
-     */
-    id: string;
-
-    /**
-     * The status of the job
-     */
-    status: string;
-
+export enum JobStatus {
+    Submitted = <any> 'Submitted',
+    Running = <any> 'Running',
+    Aborting = <any> 'Aborting',
+    Failed = <any> 'Failed',
+    Succeeded = <any> 'Succeeded',
+    Aborted = <any> 'Aborted'
 }

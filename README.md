@@ -21,14 +21,45 @@ pip freeze | sort > servers/dsub/requirements.txt
 deactivate
 ```
 
-## Swagger codegen
+## Updating the API using swagger-codegen
 
+We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to automatically implement the API as defined in api/jobs.yaml.
+Whenever the API is updated, follow these steps to update the UI implementation:
+
+If you do not already have the jar, you can download it here:
 ```
 wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
-
-java -jar swagger-codegen-cli.jar generate \
-  -i api/jobs.yaml \
-  -l python-flask \
-  -o servers/dsub \
-  -DsupportPython2=true,packageName=jobs
 ```
+
+Clear out existing generated models:
+```
+rm ui/src/app/api/* ui/src/app/model/*
+```
+
+Regenerate both the python and angular definitions.
+```
+java -jar swagger-codegen-cli.jar generate \
+ -i api/jobs.yaml \
+ -l typescript-angular2 \
+ -o ui/src/app
+java -jar swagger-codegen-cli.jar generate \
+ -i api/jobs.yaml \
+ -l python-flask \
+ -o servers/dsub \
+ -DsupportPython2=true,packageName=jobs
+```
+
+Finally, update the UI implementation to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
+
+## Job Monitor UI
+
+UI-specific documentation can be found in the [ui/ folder](ui/README.md).
+
+### Running unit tests
+
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+### Running end-to-end tests
+
+Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Before running the tests make sure you are serving the app via `ng serve`.

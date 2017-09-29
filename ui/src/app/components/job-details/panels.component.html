@@ -1,0 +1,40 @@
+<div class="content">
+  <div>
+    <p class="header">Job Name</p>
+    <p class="job-id">Job ID: <b>{{job.id}}</b></p>
+    <a class = "text-info">Submitted by: <b>alahwa</b></a>
+    <a class = "text-info">Project: <b>projectName</b></a>
+    <a class = "text-info">Otherlabel: <b>labelValue</b></a>
+    <a class = "text-info">Otherlabel: <b>labelValue</b></a>
+  </div>
+
+  <!-- TODO(alanhwang): Provide actual functionality to replace these static cards. -->
+  <md-card>
+    <md-card-title>Status</md-card-title>
+    <md-card-content>
+      <p><b>{{job.status}}: {{numCompletedTasks}} of {{numTasks}} tasks completed </b></p>
+      <p>Submitted {{getLocaleString(job.submission)}}</p>
+      <p>Started {{getLocaleString(job.start)}} ({{getDuration()}})</p>
+      <p>Estimated completion 10:35 AM</p>
+    </md-card-content>
+  </md-card>
+
+  <md-card>
+    <md-card-title>Input/Output</md-card-title>
+    <md-card-content>
+      <p>Workflow source <b><u>View</u></b></p>
+      <p>Creator version <b>1498754805</b></p>
+      <p>Output files <b><u>View</u></b></p>
+    </md-card-content>
+  </md-card>
+
+  <md-card>
+    <md-card-title>Server</md-card-title>
+    <md-card-content>
+      <p>Host <b>vpicard05.broadinstitute.org</b></p>
+      <p>Database <b>jdbc:oracle:thin[...]1521:seqprod</b></p>
+      <p>Log directory <b><u>View</u></b></p>
+    </md-card-content>
+  </md-card>
+
+</div>

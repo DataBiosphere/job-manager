@@ -3,8 +3,8 @@
 import 'rxjs/add/operator/toPromise';
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
-import {JobQueryResponse} from './model/JobQueryResponse';
-import {JobAbortResponse} from './model/JobAbortResponse';
+import {QueryJobsResponse} from './model/QueryJobsResponse';
+import {JobMetadataResponse} from './model/JobMetadataResponse';
 
 /** Service wrapper for accessing the job monitor API. */
 @Injectable()
@@ -14,23 +14,31 @@ export class JobMonitorService {
 
   constructor(private http: Http) {}
 
-  listAllJobs(): Promise<JobQueryResponse> {
+  listAllJobs(): Promise<QueryJobsResponse> {
     return this.http.get(`${this.apiUrl}/jobs`,
       new RequestOptions({headers: this.headers}))
       .toPromise()
-      .then(response => response.json() as JobQueryResponse)
+      .then(response => response.json() as QueryJobsResponse)
       .catch(this.handleError);
   }
 
-  abortJob(id: string): Promise<JobAbortResponse> {
+  abortJob(id: string): Promise<boolean> {
     return this.http.get(`${this.apiUrl}/jobs/${id}/abort`,
       new RequestOptions({headers: this.headers}))
       .toPromise()
-      .then(response => response.json() as JobAbortResponse)
+      .then(response => response.status == 200)
       .catch(this.handleError);
   }
 
-  // TODO(alahwa): Implement queryJobs
+  getJob(id: string): Promise<JobMetadataResponse> {
+    return this.http.get(`${this.apiUrl}/jobs/${id}`,
+      new RequestOptions({headers: this.headers}))
+      .toPromise()
+      .then(response => response.json() as JobMetadataResponse)
+      .catch(this.handleError);
+  }
+
+  // TODO(alanhwang): Implement queryJobs
 
   private handleError(error: any): Promise<any> {
     // TODO(alahwa): Implement real error handling.

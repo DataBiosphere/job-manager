@@ -26,7 +26,7 @@ import { Configuration }                                     from '../configurat
 
 
 @Injectable()
-export class DefaultApi {
+export class JobsApi {
 
     protected basePath = 'https://localhost';
     public defaultHeaders: Headers = new Headers();
@@ -46,7 +46,7 @@ export class DefaultApi {
      * @summary Abort a job by ID
      * @param id Job ID
      */
-    public abortJob(id: string, extraHttpRequestParams?: any): Observable<models.JobAbortResponse> {
+    public abortJob(id: string, extraHttpRequestParams?: any): Observable<{}> {
         return this.abortJobWithHttpInfo(id, extraHttpRequestParams)
             .map((response: Response) => {
                 if (response.status === 204) {
@@ -75,10 +75,10 @@ export class DefaultApi {
 
     /**
      * 
-     * @summary Query jobs by start dates, end dates, names, ids, or statuses.
+     * @summary Query jobs by various filter criteria. Returned jobs are ordered from newest to oldest submission time. 
      * @param parameters 
      */
-    public queryJobs(parameters: models.JobQueryRequest, extraHttpRequestParams?: any): Observable<models.JobQueryResponse> {
+    public queryJobs(parameters: models.QueryJobsRequest, extraHttpRequestParams?: any): Observable<models.QueryJobsResponse> {
         return this.queryJobsWithHttpInfo(parameters, extraHttpRequestParams)
             .map((response: Response) => {
                 if (response.status === 204) {
@@ -167,11 +167,11 @@ export class DefaultApi {
     }
 
     /**
-     * Query jobs by start dates, end dates, names, ids, or statuses.
+     * Query jobs by various filter criteria. Returned jobs are ordered from newest to oldest submission time. 
      * 
      * @param parameters 
      */
-    public queryJobsWithHttpInfo(parameters: models.JobQueryRequest, extraHttpRequestParams?: any): Observable<Response> {
+    public queryJobsWithHttpInfo(parameters: models.QueryJobsRequest, extraHttpRequestParams?: any): Observable<Response> {
         const path = this.basePath + '/jobs/query';
 
         let queryParameters = new URLSearchParams();

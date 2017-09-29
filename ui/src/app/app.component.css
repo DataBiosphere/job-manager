@@ -1,0 +1,14 @@
+.branding {
+  font-family: 'Roboto', sans-serif;
+  background: #dddddd;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  margin-left: .7rem;
+  margin-top: 1rem;
+  margin-right: 100%;
+  margin-bottom: 1.2rem;
+  border-radius: .3rem;
+  width: 14rem;
+  text-align: center;
+  float: left;
+}

@@ -28,6 +28,8 @@ venv/
 *.launch
 .settings/
 *.sublime-workspace
+*.iml
+.idea/
 
 # IDE - VSCode
 .vscode/*
