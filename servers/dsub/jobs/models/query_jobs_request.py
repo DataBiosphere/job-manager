@@ -16,21 +16,21 @@ class QueryJobsRequest(Model):
     """
     def __init__(self, start=None, end=None, statuses=None, name=None, page_size=None, page_token=None, parent_id=None):
         """
-        QueryJobsResult - a model defined in Swagger
+        QueryJobsRequest - a model defined in Swagger
 
-        :param start: The start of this QueryJobsResult.
+        :param start: The start of this QueryJobsRequest.
         :type start: datetime
-        :param end: The end of this QueryJobsResult.
+        :param end: The end of this QueryJobsRequest.
         :type end: datetime
-        :param statuses: The statuses of this QueryJobsResult.
+        :param statuses: The statuses of this QueryJobsRequest.
         :type statuses: List[JobStatus]
-        :param name: The name of this QueryJobsResult.
+        :param name: The name of this QueryJobsRequest.
         :type name: str
-        :param page_size: The page_size of this QueryJobsResult.
+        :param page_size: The page_size of this QueryJobsRequest.
         :type page_size: int
-        :param page_token: The page_token of this QueryJobsResult.
+        :param page_token: The page_token of this QueryJobsRequest.
         :type page_token: str
-        :param parent_id: The parent_id of this QueryJobsResult.
+        :param parent_id: The parent_id of this QueryJobsRequest.
         :type parent_id: str
         """
         self.swagger_types = {
@@ -68,7 +68,7 @@ class QueryJobsRequest(Model):
 
         :param dikt: A dict.
         :type: dict
-        :return: The QueryJobsResult of this QueryJobsResult.
+        :return: The QueryJobsRequest of this QueryJobsRequest.
         :rtype: QueryJobsRequest
         """
         return deserialize_model(dikt, cls)
@@ -76,10 +76,10 @@ class QueryJobsRequest(Model):
     @property
     def start(self):
         """
-        Gets the start of this QueryJobsResult.
+        Gets the start of this QueryJobsRequest.
         Returns only jobs with an equal or later start datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
 
-        :return: The start of this QueryJobsResult.
+        :return: The start of this QueryJobsRequest.
         :rtype: datetime
         """
         return self._start
@@ -87,10 +87,10 @@ class QueryJobsRequest(Model):
     @start.setter
     def start(self, start):
         """
-        Sets the start of this QueryJobsResult.
+        Sets the start of this QueryJobsRequest.
         Returns only jobs with an equal or later start datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
 
-        :param start: The start of this QueryJobsResult.
+        :param start: The start of this QueryJobsRequest.
         :type start: datetime
         """
 
@@ -99,10 +99,10 @@ class QueryJobsRequest(Model):
     @property
     def end(self):
         """
-        Gets the end of this QueryJobsResult.
+        Gets the end of this QueryJobsRequest.
         Returns only jobs with an equal or earlier end datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
 
-        :return: The end of this QueryJobsResult.
+        :return: The end of this QueryJobsRequest.
         :rtype: datetime
         """
         return self._end
@@ -110,10 +110,10 @@ class QueryJobsRequest(Model):
     @end.setter
     def end(self, end):
         """
-        Sets the end of this QueryJobsResult.
+        Sets the end of this QueryJobsRequest.
         Returns only jobs with an equal or earlier end datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
 
-        :param end: The end of this QueryJobsResult.
+        :param end: The end of this QueryJobsRequest.
         :type end: datetime
         """
 
@@ -122,10 +122,10 @@ class QueryJobsRequest(Model):
     @property
     def statuses(self):
         """
-        Gets the statuses of this QueryJobsResult.
+        Gets the statuses of this QueryJobsRequest.
         Returns only jobs with the specified status.  If specified multiple times, returns jobs in any of the specified statuses. 
 
-        :return: The statuses of this QueryJobsResult.
+        :return: The statuses of this QueryJobsRequest.
         :rtype: List[JobStatus]
         """
         return self._statuses
@@ -133,10 +133,10 @@ class QueryJobsRequest(Model):
     @statuses.setter
     def statuses(self, statuses):
         """
-        Sets the statuses of this QueryJobsResult.
+        Sets the statuses of this QueryJobsRequest.
         Returns only jobs with the specified status.  If specified multiple times, returns jobs in any of the specified statuses. 
 
-        :param statuses: The statuses of this QueryJobsResult.
+        :param statuses: The statuses of this QueryJobsRequest.
         :type statuses: List[JobStatus]
         """
 
@@ -145,10 +145,10 @@ class QueryJobsRequest(Model):
     @property
     def name(self):
         """
-        Gets the name of this QueryJobsResult.
+        Gets the name of this QueryJobsRequest.
         Returns only jobs with the specified name.  If specified multiple times, returns jobs with any of the specified names. 
 
-        :return: The name of this QueryJobsResult.
+        :return: The name of this QueryJobsRequest.
         :rtype: str
         """
         return self._name
@@ -156,10 +156,10 @@ class QueryJobsRequest(Model):
     @name.setter
     def name(self, name):
         """
-        Sets the name of this QueryJobsResult.
+        Sets the name of this QueryJobsRequest.
         Returns only jobs with the specified name.  If specified multiple times, returns jobs with any of the specified names. 
 
-        :param name: The name of this QueryJobsResult.
+        :param name: The name of this QueryJobsRequest.
         :type name: str
         """
         if name is not None and not re.search('^[a-zA-Z][a-zA-Z0-9_]*$', name):
@@ -170,10 +170,10 @@ class QueryJobsRequest(Model):
     @property
     def page_size(self):
         """
-        Gets the page_size of this QueryJobsResult.
+        Gets the page_size of this QueryJobsRequest.
         The maximum number of results to return in a single page. If unspecified, a server default will be used. Note that the server may elect to return fewer results per page than requested. 
 
-        :return: The page_size of this QueryJobsResult.
+        :return: The page_size of this QueryJobsRequest.
         :rtype: int
         """
         return self._page_size
@@ -181,10 +181,10 @@ class QueryJobsRequest(Model):
     @page_size.setter
     def page_size(self, page_size):
         """
-        Sets the page_size of this QueryJobsResult.
+        Sets the page_size of this QueryJobsRequest.
         The maximum number of results to return in a single page. If unspecified, a server default will be used. Note that the server may elect to return fewer results per page than requested. 
 
-        :param page_size: The page_size of this QueryJobsResult.
+        :param page_size: The page_size of this QueryJobsRequest.
         :type page_size: int
         """
 
@@ -193,10 +193,10 @@ class QueryJobsRequest(Model):
     @property
     def page_token(self):
         """
-        Gets the page_token of this QueryJobsResult.
+        Gets the page_token of this QueryJobsRequest.
         The continuation token, which is used to page through large result sets. To get the next page of results, set this parameter to the value of `nextPageToken` from the previous response. 
 
-        :return: The page_token of this QueryJobsResult.
+        :return: The page_token of this QueryJobsRequest.
         :rtype: str
         """
         return self._page_token
@@ -204,10 +204,10 @@ class QueryJobsRequest(Model):
     @page_token.setter
     def page_token(self, page_token):
         """
-        Sets the page_token of this QueryJobsResult.
+        Sets the page_token of this QueryJobsRequest.
         The continuation token, which is used to page through large result sets. To get the next page of results, set this parameter to the value of `nextPageToken` from the previous response. 
 
-        :param page_token: The page_token of this QueryJobsResult.
+        :param page_token: The page_token of this QueryJobsRequest.
         :type page_token: str
         """
 
@@ -216,10 +216,10 @@ class QueryJobsRequest(Model):
     @property
     def parent_id(self):
         """
-        Gets the parent_id of this QueryJobsResult.
+        Gets the parent_id of this QueryJobsRequest.
         Returns only jobs with the given parent ID. This parameter may be unsupported for some API implementations or required for others depending on whether there exists a logical noun above a job in the resource hierarchy (for example, a cloud project). If the presence of this parameter is incompatible with the server, it may return a 400 HTTP status. 
 
-        :return: The parent_id of this QueryJobsResult.
+        :return: The parent_id of this QueryJobsRequest.
         :rtype: str
         """
         return self._parent_id
@@ -227,10 +227,10 @@ class QueryJobsRequest(Model):
     @parent_id.setter
     def parent_id(self, parent_id):
         """
-        Sets the parent_id of this QueryJobsResult.
+        Sets the parent_id of this QueryJobsRequest.
         Returns only jobs with the given parent ID. This parameter may be unsupported for some API implementations or required for others depending on whether there exists a logical noun above a job in the resource hierarchy (for example, a cloud project). If the presence of this parameter is incompatible with the server, it may return a 400 HTTP status. 
 
-        :param parent_id: The parent_id of this QueryJobsResult.
+        :param parent_id: The parent_id of this QueryJobsRequest.
         :type parent_id: str
         """
 

@@ -31,6 +31,11 @@ If you do not already have the jar, you can download it here:
 wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
 ```
 
+Clear out existing generated models:
+```
+rm ui/src/app/api/* ui/src/app/model/*
+```
+
 Regenerate both the python and angular definitions.
 ```
 java -jar swagger-codegen-cli.jar generate \

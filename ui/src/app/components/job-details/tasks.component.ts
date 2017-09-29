@@ -8,7 +8,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {isNullOrUndefined} from 'util';
 import {JobStatus} from '../../model/JobStatus';
-import {JobStatusImage} from '../../model/JobStatusImage';
+import {JobStatusImage} from '../../app.component';
 
 @Component({
   selector: 'tasks',

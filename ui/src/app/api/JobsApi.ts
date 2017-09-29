@@ -78,7 +78,7 @@ export class JobsApi {
      * @summary Query jobs by various filter criteria. Returned jobs are ordered from newest to oldest submission time. 
      * @param parameters 
      */
-    public queryJobs(parameters: models.QueryJobsResult, extraHttpRequestParams?: any): Observable<models.QueryJobsResponse> {
+    public queryJobs(parameters: models.QueryJobsRequest, extraHttpRequestParams?: any): Observable<models.QueryJobsResponse> {
         return this.queryJobsWithHttpInfo(parameters, extraHttpRequestParams)
             .map((response: Response) => {
                 if (response.status === 204) {
@@ -171,7 +171,7 @@ export class JobsApi {
      * 
      * @param parameters 
      */
-    public queryJobsWithHttpInfo(parameters: models.QueryJobsResult, extraHttpRequestParams?: any): Observable<Response> {
+    public queryJobsWithHttpInfo(parameters: models.QueryJobsRequest, extraHttpRequestParams?: any): Observable<Response> {
         const path = this.basePath + '/jobs/query';
 
         let queryParameters = new URLSearchParams();

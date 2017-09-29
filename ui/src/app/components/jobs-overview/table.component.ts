@@ -16,7 +16,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 import {JobStatus} from '../../model/JobStatus';
 import {QueryJobsResult} from '../../model/QueryJobsResult';
-import {JobStatusImage} from '../../model/JobStatusImage';
+import {JobStatusImage} from '../../app.component';
 
 @Component({
   selector: 'list-jobs',

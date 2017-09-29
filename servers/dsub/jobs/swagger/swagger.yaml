@@ -46,7 +46,7 @@ paths:
         name: "parameters"
         required: true
         schema:
-          $ref: "#/definitions/QueryJobsResult"
+          $ref: "#/definitions/QueryJobsRequest"
       responses:
         200:
           description: "Success"
