@@ -1,5 +1,5 @@
 FROM node
 
-WORKDIR /app
-ADD ui/package.json /app/
+WORKDIR /ui
+ADD ui/package-lock.json ui/package.json /ui/
 RUN npm install

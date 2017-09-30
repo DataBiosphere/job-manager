@@ -14,7 +14,7 @@ export class JobMonitorService {
 
   constructor(private http: Http) {}
 
-  listAllJobs(parentId?: string): Promise<QueryJobsResponse> {
+  listJobs(parentId?: string): Promise<QueryJobsResponse> {
     return this.http.post(
       `${environment.apiUrl}/jobs/query`,
       {
@@ -37,7 +37,7 @@ export class JobMonitorService {
   }
 
   getJob(id: string): Promise<JobMetadataResponse> {
-    return this.http.get(`${this.apiUrl}/jobs/${id}`,
+    return this.http.get(`${environment.apiUrl}/jobs/${id}`,
       new RequestOptions({headers: this.headers}))
       .toPromise()
       .then(response => response.json() as JobMetadataResponse)

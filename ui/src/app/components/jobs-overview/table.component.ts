@@ -78,12 +78,8 @@ export class JobsTableComponent implements OnChanges, OnInit {
   }
 
   abortJob(job: QueryJobsResult): void {
-    let success: boolean;
     this.jobMonitorService.abortJob(job.id)
-      .then(response => success = response);
-    if (success) {
-      job.status = JobStatus.Aborted
-    }
+      .then(() => job.status = JobStatus.Aborted);
   }
 
   toggleSelect(job: QueryJobsResult): void {

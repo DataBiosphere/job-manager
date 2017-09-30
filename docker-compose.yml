@@ -9,10 +9,15 @@ services:
     # errors. See also https://github.com/angular/angular-cli/issues/6349.
     command: ["npm", "run-script", "ng", "--", "serve", "--host", "ui"]
     volumes:
-      - ./ui:/app
-      # Hide this subdirectory from the above volume; just use what's already on
-      # the docker image so we don't need to reinstall node modules every time.
-      - /app/node_modules
+      # Only mount a whitelist of top-level /ui files/directories; specifically
+      # node_modules must not be included here. Mount only files required to run
+      # the dev server. Anything required to install dependencies (npm install)
+      # should instead be added via the Dockerfile. Updating dependencies
+      # requires use of the slower docker-compose build.
+      - ./ui/src:/ui/src
+      - ./ui/tsconfig.json:/ui/tsconfig.json
+      - ./ui/tslint.json:/ui/tslint.json
+      - ./ui/.angular-cli.json:/ui/.angular-cli.json
   dsub-server:
     # dsub creates the local provider folder in /tmp/dsub-local which can only
     # be written to by the owner. Unless dsub changes the permissions on this

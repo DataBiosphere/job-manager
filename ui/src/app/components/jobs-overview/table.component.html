@@ -36,7 +36,8 @@
   <ng-container mdColumnDef="owner">
     <md-header-cell *mdHeaderCellDef> Owner </md-header-cell>
     <md-cell *mdCellDef="let j" class = "column">
-      alahwa
+      <!-- TODO(calbach): Factor this into label-config. -->
+      {{j?.labels['user-id']}}
       <button md-icon-button [class.invisible]="!isMouseOver(j)">
         <img src="{{getDropdownArrowUrl()}}">
       </button>
