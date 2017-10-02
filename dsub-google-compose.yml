@@ -1,0 +1,22 @@
+version: '2'
+services:
+  ui:
+    extends:
+      file: common-compose.yml
+      service: ui
+  dsub:
+    extends:
+      file: common-compose.yml
+      service: dsub
+    environment:
+      - PROVIDER_TYPE=google
+      - GOOGLE_APPLICATION_CREDENTIALS=/usr/adc.json
+    volumes:
+      - ~/.config/gcloud/application_default_credentials.json:/usr/adc.json
+  jobs-proxy:
+    extends:
+      file: common-compose.yml
+      service: jobs-proxy
+    links:
+      - ui
+      - dsub:api

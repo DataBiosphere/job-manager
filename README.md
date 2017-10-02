@@ -4,6 +4,16 @@ Job Monitor API and UI for interacting with asynchronous batch jobs.
 
 ## Development
 
+Prequisite: the following commands assume you have symlinked your preferred
+local API backend docker compose file as `docker-compose.yml` (alternatively,
+use `docker-compose -f dsub-google-compose.yml CMD`), e.g.:
+
+```
+ln -sf dsub-local-compose.yml docker-compose.yml
+```
+
+Then...
+
 ```
 docker-compose up
 ```
