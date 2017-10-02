@@ -1,6 +1,24 @@
 version: '2'
 services:
-  jobs:
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.ui
+    # Use --host "ui" to match the container name, as this is how nginx will
+    # access the UI on the network. This must match to avoid "Invalid Host"
+    # errors. See also https://github.com/angular/angular-cli/issues/6349.
+    command: ["npm", "run-script", "ng", "--", "serve", "--host", "ui"]
+    volumes:
+      # Only mount a whitelist of top-level /ui files/directories; specifically
+      # node_modules must not be included here. Mount only files required to run
+      # the dev server. Anything required to install dependencies (npm install)
+      # should instead be added via the Dockerfile. Updating dependencies
+      # requires use of the slower docker-compose build.
+      - ./ui/src:/ui/src
+      - ./ui/tsconfig.json:/ui/tsconfig.json
+      - ./ui/tslint.json:/ui/tslint.json
+      - ./ui/.angular-cli.json:/ui/.angular-cli.json
+  dsub-server:
     # dsub creates the local provider folder in /tmp/dsub-local which can only
     # be written to by the owner. Unless dsub changes the permissions on this
     # folder the docker container must be 'privileged'
@@ -16,6 +34,7 @@ services:
     command: ["-b", ":8190"]
     environment:
       - PROVIDER_TYPE=local
+      - PATH_PREFIX=/api/v1
       # Avoid writing .pyc files back to the volume. Files generated this way
       # have restricted permissions set which cause errors on subsequent docker
       # builds.
@@ -28,3 +47,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8190:8190
+  jobs-proxy:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    links:
+      - ui
+      - dsub-server
+    ports:
+      - 4200:4200
+

@@ -6,7 +6,6 @@ import {TaskMetadata} from '../../model/TaskMetadata';
 import {DataSource} from '@angular/cdk/collections';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import {isNullOrUndefined} from 'util';
 import {JobStatus} from '../../model/JobStatus';
 import {JobStatusImage} from '../../app.component';
 
@@ -70,8 +69,9 @@ export class TasksDataSource extends DataSource<any> {
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {
-      if (!isNullOrUndefined(this._db.data))
-      return this._db.data.slice();
+      if (this._db.data) {
+        return this._db.data.slice();
+      }
     });
   }
 

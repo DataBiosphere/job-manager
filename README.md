@@ -2,6 +2,29 @@
 
 Job Monitor API and UI for interacting with asynchronous batch jobs.
 
+## Development
+
+```
+docker-compose up
+```
+
+Navigate to http://localhost:4200.
+
+Note: websocket reload on code change does not work in docker-compose (see
+https://github.com/angular/angular-cli/issues/6349).
+
+Changes to `package.json` or `requirements.txt` require a rebuild:
+
+```
+docker-compose up --rebuild
+```
+
+Alternatively, rebuild a single component:
+
+```
+docker-compose build ui
+```
+
 ## Setup Lint Git Hook:
 ```
 sudo pip install yapf
@@ -78,4 +101,3 @@ pip install -r servers/dsub/requirements-to-freeze.txt
 pip freeze | sort > servers/dsub/requirements.txt
 deactivate
 ```
-

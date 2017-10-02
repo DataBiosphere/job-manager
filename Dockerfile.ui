@@ -1,0 +1,5 @@
+FROM node
+
+WORKDIR /ui
+ADD ui/package-lock.json ui/package.json /ui/
+RUN npm install
