@@ -65,18 +65,6 @@ java -jar swagger-codegen-cli.jar generate \
 
 Finally, update the UI implementation to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
-## Run the server
-
-```
-docker-compose up
-```
-
-To see the Swagger API definition, open your browser to:
-
-```
-http://localhost:9189
-```
-
 ## Job Monitor UI
 
 ### Running the development UI server
