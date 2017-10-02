@@ -49,6 +49,7 @@ def get_job(id):
 
     return JobMetadataResponse(
         id=id,
+        name=job.get('job-name'),
         status=job_statuses.dsub_to_api(job.get('status')),
         submission=job.get('create-time'),
         start=job.get('create-time'),

@@ -29,6 +29,11 @@ export interface JobMetadataResponse {
     submission: Date;
 
     /**
+     * The name of the job
+     */
+    name?: string;
+
+    /**
      * Start datetime of the job in ISO8601 format with milliseconds
      */
     start?: Date;
