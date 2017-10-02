@@ -43,6 +43,7 @@ export class MockJobMonitorService {
         }
         body = {
           id: job.id,
+          name: job.name,
           status: job.status,
           submission: job.start,
           start: job.start,

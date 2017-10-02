@@ -10,6 +10,7 @@ import {JobMetadataResponse} from '../../model/JobMetadataResponse';
 export class JobDetailsComponent implements OnInit {
   private job: JobMetadataResponse = {
     id: "",
+    name: "",
     status: null,
     tasks: [],
     submission: null,
