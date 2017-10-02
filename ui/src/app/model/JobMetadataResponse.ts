@@ -21,17 +21,17 @@ export interface JobMetadataResponse {
      */
     id: string;
 
-    /**
-     * The name of the job
-     */
-    name: string;
-
     status: models.JobStatus;
 
     /**
      * Submission datetime of the job in ISO8601 format with milliseconds
      */
     submission: Date;
+
+    /**
+     * The name of the job
+     */
+    name?: string;
 
     /**
      * Start datetime of the job in ISO8601 format with milliseconds
