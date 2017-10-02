@@ -23,7 +23,7 @@ export class ListJobsComponent implements OnInit {
   }
 
   private updateJobs(statusGroup: StatusGroup): void {
-    this.jobMonitorService.listJobs(this.route.snapshot.params['parentId'])
+    this.jobMonitorService.listJobs(this.route.snapshot.queryParams['parentId'])
       .then(response =>
         this.jobs = this.filterJobsByStatus(response.results, statusGroup));
   }
