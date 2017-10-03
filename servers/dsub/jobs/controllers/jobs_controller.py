@@ -74,7 +74,7 @@ def query_jobs(body):
 
     query = QueryJobsRequest.from_dict(body)
     jobs = client().query_jobs(_get_provider(query.parent_id), query)
-    results = [_query_result(j) for j in jobs]
+    results = [_query_result(j, query.parent_id) for j in jobs]
     return QueryJobsResponse(results=results)
 
 
