@@ -3,6 +3,7 @@
 import 'rxjs/add/operator/toPromise';
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
+import {QueryJobsRequest} from './model/QueryJobsRequest';
 import {QueryJobsResponse} from './model/QueryJobsResponse';
 import {JobMetadataResponse} from './model/JobMetadataResponse';
 import {environment} from '../environments/environment';
@@ -14,12 +15,10 @@ export class JobMonitorService {
 
   constructor(private http: Http) {}
 
-  listJobs(parentId?: string): Promise<QueryJobsResponse> {
+  queryJobs(req: QueryJobsRequest): Promise<QueryJobsResponse> {
     return this.http.post(
       `${environment.apiUrl}/jobs/query`,
-      {
-        parentId: parentId,
-      },
+      req,
       new RequestOptions({
         headers: this.headers,
       }))
@@ -43,8 +42,6 @@ export class JobMonitorService {
       .then(response => response.json() as JobMetadataResponse)
       .catch(this.handleError);
   }
-
-  // TODO(alanhwang): Implement queryJobs
 
   private handleError(error: any): Promise<any> {
     // TODO(alahwa): Implement real error handling.
