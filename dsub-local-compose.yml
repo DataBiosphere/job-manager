@@ -8,7 +8,7 @@ services:
     extends:
       file: common-compose.yml
       service: dsub
-    # privileged is needed in order to run ddel to kill local processes.
+    # privileged is needed in order to interact with the mounted docker socket.
     privileged: true
     # This shares the host PID address space with the container so that host
     # processes can be checked on and killed

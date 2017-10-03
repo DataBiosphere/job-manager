@@ -35,6 +35,19 @@ Alternatively, rebuild a single component:
 docker-compose build ui
 ```
 
+### Google dsub provider
+
+The Google dsub provider requires making authorized calls to the Google Genomics
+Pipelines API. The dsub shim server authorizes via [application default
+credentials](https://developers.google.com/identity/protocols/application-default-credentials).
+On your workstation, you'll need to first login via [gcloud](https://cloud.google.com/sdk/docs/quickstarts).
+
+```
+gcloud auth application-default login
+ln -sf dsub-local-compose.yml docker-compose.yml
+docker-compose up
+```
+
 ## Setup Lint Git Hook:
 ```
 sudo pip install yapf
