@@ -48,6 +48,8 @@ ln -sf dsub-local-compose.yml docker-compose.yml
 docker-compose up
 ```
 
+Navigate to http://localhost:4200?parentId=MY_CLOUD_PROJECT_ID.
+
 ## Setup Lint Git Hook:
 ```
 sudo pip install yapf
