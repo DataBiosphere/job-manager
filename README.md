@@ -4,6 +4,16 @@ Job Monitor API and UI for interacting with asynchronous batch jobs.
 
 ## Development
 
+Prequisite: the following commands assume you have symlinked your preferred
+local API backend docker compose file as `docker-compose.yml` (alternatively,
+use `docker-compose -f dsub-google-compose.yml CMD`), e.g.:
+
+```
+ln -sf dsub-local-compose.yml docker-compose.yml
+```
+
+Then...
+
 ```
 docker-compose up
 ```
@@ -24,6 +34,21 @@ Alternatively, rebuild a single component:
 ```
 docker-compose build ui
 ```
+
+### Google dsub provider
+
+The Google dsub provider requires making authorized calls to the Google Genomics
+Pipelines API. The dsub shim server authorizes via [application default
+credentials](https://developers.google.com/identity/protocols/application-default-credentials).
+On your workstation, you'll need to first login via [gcloud](https://cloud.google.com/sdk/docs/quickstarts).
+
+```
+gcloud auth application-default login
+ln -sf dsub-local-compose.yml docker-compose.yml
+docker-compose up
+```
+
+Navigate to http://localhost:4200?parentId=MY_CLOUD_PROJECT_ID.
 
 ## Setup Lint Git Hook:
 ```
