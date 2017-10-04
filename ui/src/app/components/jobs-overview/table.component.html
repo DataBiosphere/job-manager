@@ -26,7 +26,10 @@
         routerLink="/jobs/{{j.id}}" routerLinkActive="active">
         {{j.name}}
       </button>
-      <!-- TODO(calbach): Implement drop-down arrow with job details. -->
+      <!-- TODO(alahwa): Implement visible drop-down arrow with job details. -->
+      <button md-icon-button class="jobs-dropdown-arrow invisible">
+        <img src="{{getDropdownArrowUrl()}}">
+      </button>
     </md-cell>
   </ng-container>
 
