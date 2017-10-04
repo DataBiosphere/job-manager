@@ -23,28 +23,27 @@ export class ListJobsComponent implements OnInit {
   }
 
   private updateJobs(statusGroup: StatusGroup): void {
-    this.jobMonitorService.listJobs(this.route.snapshot.queryParams['parentId'])
-      .then(response =>
-        this.jobs = this.filterJobsByStatus(response.results, statusGroup));
+    this.jobMonitorService.queryJobs({
+      parentId: this.route.snapshot.queryParams['parentId'],
+      statuses: this.statusGroupToJobStatuses(statusGroup)
+    })
+      .then(response => this.jobs = response.results);
   }
 
-  private filterJobsByStatus(jobs: QueryJobsResult[], statusGroup: StatusGroup): QueryJobsResult[] {
+  private statusGroupToJobStatuses(statusGroup: StatusGroup): JobStatus[] {
     switch(statusGroup) {
       case StatusGroup.Active: {
-        return jobs.filter(
-          (j) => j.status != JobStatus.Failed &&
-            j.status != JobStatus.Succeeded);
+        return [JobStatus.Submitted, JobStatus.Running,
+                JobStatus.Aborting, JobStatus.Aborted];
       }
       case StatusGroup.Completed: {
-        return jobs.filter(
-          (j) => j.status == JobStatus.Succeeded);
+        return [JobStatus.Succeeded];
       }
       case StatusGroup.Failed: {
-        return jobs.filter(
-          (j) => j.status == JobStatus.Failed);
+        return [JobStatus.Failed];
       }
       default: {
-        return jobs;
+        return [];
       }
     }
   }

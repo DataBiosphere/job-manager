@@ -26,21 +26,19 @@
         routerLink="/jobs/{{j.id}}" routerLinkActive="active">
         {{j.name}}
       </button>
-      <button md-icon-button class = "jobs-dropdown-arrow" [class.invisible]="!isMouseOver(j)">
+      <!-- TODO(alahwa): Implement visible drop-down arrow with job details. -->
+      <button md-icon-button class="jobs-dropdown-arrow invisible">
         <img src="{{getDropdownArrowUrl()}}">
       </button>
     </md-cell>
   </ng-container>
 
   <!-- Owner column -->
+  <!-- TODO(calbach): Factor these columns into a label-config. -->
   <ng-container mdColumnDef="owner">
     <md-header-cell *mdHeaderCellDef> Owner </md-header-cell>
     <md-cell *mdCellDef="let j" class = "column">
-      <!-- TODO(calbach): Factor this into label-config. -->
       {{j?.labels['user-id']}}
-      <button md-icon-button [class.invisible]="!isMouseOver(j)">
-        <img src="{{getDropdownArrowUrl()}}">
-      </button>
     </md-cell>
   </ng-container>
 
@@ -51,50 +49,22 @@
       <button md-icon-button disabled>
         <img mdTooltip="{{j.status}}" mdTooltipPosition="before" src="{{getStatusUrl(j.status)}}">
       </button>
-      <button md-icon-button [class.invisible]="!isMouseOver(j)">
-        <img src="{{getDropdownArrowUrl()}}">
-      </button>
     </md-cell>
   </ng-container>
 
-  <!-- Example label columns -->
-  <ng-container mdColumnDef="label1">
-    <md-header-cell *mdHeaderCellDef> Label </md-header-cell>
+  <!-- Submitted column -->
+  <ng-container mdColumnDef="submitted">
+    <md-header-cell *mdHeaderCellDef> Submitted </md-header-cell>
     <md-cell *mdCellDef="let j" class = "column">
-      value
-      <button md-icon-button [class.invisible]="!isMouseOver(j)">
-        <img src="{{getDropdownArrowUrl()}}">
-      </button>
-    </md-cell>
-  </ng-container>
-  <ng-container mdColumnDef="label2">
-    <md-header-cell *mdHeaderCellDef> Label </md-header-cell>
-    <md-cell *mdCellDef="let j" class = "column">
-      value
-      <button md-icon-button [class.invisible]="!isMouseOver(j)">
-        <img src="{{getDropdownArrowUrl()}}">
-      </button>
-    </md-cell>
-  </ng-container>
-  <ng-container mdColumnDef="label3">
-    <md-header-cell *mdHeaderCellDef> Label </md-header-cell>
-    <md-cell *mdCellDef="let j"  class = "column">
-      value
-      <button md-icon-button [class.invisible]="!isMouseOver(j)">
-        <img src="{{getDropdownArrowUrl()}}">
-      </button>
+      {{j?.start}}
     </md-cell>
   </ng-container>
 
-  <!-- Comments column -->
-  <ng-container mdColumnDef="comments">
-    <md-header-cell *mdHeaderCellDef> Comments </md-header-cell>
+  <!-- Ended column -->
+  <ng-container mdColumnDef="ended">
+    <md-header-cell *mdHeaderCellDef> Ended </md-header-cell>
     <md-cell *mdCellDef="let j" class = "column">
-      <form class="example-form">
-        <md-form-field floatPlaceholder="never">
-          <input mdInput placeholder="Add comments">
-        </md-form-field>
-      </form>
+      {{j?.end}}
     </md-cell>
   </ng-container>
 
@@ -109,12 +79,8 @@
 
 <div class="group-options" *ngIf="selectedJobs.length > 0">
   {{selectedJobs.length}} jobs selected
-  <button md-raised-button color="accent" class="group-button" *ngIf="areRunning(selectedJobs)"
-          (click)="onPauseJobs(selectedJobs)">Pause Jobs</button>
   <button md-raised-button color="accent" class="group-button" *ngIf="currentStatusGroup==0"
           (click)="onAbortJobs(selectedJobs)">Abort Jobs</button>
-  <button md-raised-button color="accent" class="group-button"
-          (click)="onGroupJobs(selectedJobs)">Group Jobs</button>
 </div>
 
 <md-paginator #paginator

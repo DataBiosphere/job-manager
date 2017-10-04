@@ -27,7 +27,6 @@ export class JobsTableComponent implements OnChanges, OnInit {
   @Input() jobs: QueryJobsResult[] = [];
   @Output() updateJobs: EventEmitter<StatusGroup> = new EventEmitter();
   private selectedJobs: QueryJobsResult[] = [];
-  private expandedJob: QueryJobsResult;
   private mouseoverJobs: QueryJobsResult[] = [];
   private allSelected: boolean = false;
   private currentStatusGroup: StatusGroup = StatusGroup.Active;
@@ -49,10 +48,9 @@ export class JobsTableComponent implements OnChanges, OnInit {
     'jobName',
     'owner',
     'status',
-    'label1',
-    'label2',
-    'label3',
-    'comments'];
+    'submitted',
+    'ended'
+  ];
 
   @ViewChild(MdPaginator) paginator: MdPaginator;
   @ViewChild('filter') filter: ElementRef;
@@ -116,28 +114,6 @@ export class JobsTableComponent implements OnChanges, OnInit {
     }
   }
 
-  isMouseOver(job: QueryJobsResult): boolean {
-    if (this.mouseoverJobs.indexOf(job) > -1 || this.expandedJob == job) {
-      return true;
-    }
-    return false;
-  }
-
-  showExpandedJob(job: QueryJobsResult): void {
-    // TODO(alahwa): Implement
-  }
-
-  areRunning(jobs: QueryJobsResult[]): boolean {
-    for (let job of jobs) {
-      if (job.status != JobStatus.Running) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  showMetadata(job: QueryJobsResult): void {}
-
   getDropdownArrowUrl(): string {
     return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
   }
@@ -146,24 +122,10 @@ export class JobsTableComponent implements OnChanges, OnInit {
     return JobStatusImage[status];
   }
 
-  onPauseJob(job: QueryJobsResult): void {
-    this.onPauseJobs([job]);
-  }
-
-  onPauseJobs(jobs: QueryJobsResult[]): void {
-    // TODO (Implement)
-    this.onJobsChanged();
-  }
-
   onAbortJobs(jobs: QueryJobsResult[]): void {
     for (let job of jobs) {
       this.abortJob(job);
     }
-    this.onJobsChanged();
-  }
-
-  onGroupJobs(jobs: QueryJobsResult[]): void {
-    // TODO (Implement)
     this.onJobsChanged();
   }
 
@@ -175,7 +137,6 @@ export class JobsTableComponent implements OnChanges, OnInit {
     this.updateJobs.emit(this.currentStatusGroup);
     this.allSelected = false;
     this.selectedJobs = [];
-    this.expandedJob = null;
     this.paginator.pageIndex = 0;
   }
 }
