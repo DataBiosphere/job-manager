@@ -44,7 +44,7 @@ On your workstation, you'll need to first login via [gcloud](https://cloud.googl
 
 ```
 gcloud auth application-default login
-ln -sf dsub-local-compose.yml docker-compose.yml
+ln -sf dsub-google-compose.yml docker-compose.yml
 docker-compose up
 ```
 
