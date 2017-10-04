@@ -8,14 +8,7 @@ import {JobMetadataResponse} from '../../model/JobMetadataResponse';
   styleUrls: ['./job-details.component.css'],
 })
 export class JobDetailsComponent implements OnInit {
-  private job: JobMetadataResponse = {
-    id: "",
-    name: "",
-    status: null,
-    tasks: [],
-    submission: null,
-    start: null
-  };
+  private job: JobMetadataResponse;
 
   constructor(
     private route: ActivatedRoute,

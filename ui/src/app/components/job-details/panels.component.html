@@ -5,13 +5,13 @@
       <a class = "text-info">Submitted by: <b>{{job?.labels['user-id']}}</b></a>
   </div>
 
-  <!-- TODO(alanhwang): Provide actual functionality to replace these static cards. -->
   <md-card>
     <md-card-title>Status</md-card-title>
     <md-card-content>
-      <p><b>{{job.status}}: {{numCompletedTasks}} of {{numTasks}} tasks completed </b></p>
-      <p>Submitted {{getLocaleString(job.submission)}}</p>
-      <p>Started {{getLocaleString(job.start)}} ({{getDuration()}})</p>
+      <p><b>{{job?.status}}: {{numCompletedTasks}} of {{numTasks}} tasks completed </b></p>
+      <p>Submitted {{getLocaleString(job?.submission)}}</p>
+      <!-- TODO(alanhwang): Include duration here when dsub returns proper end times. -->
+      <p>Started {{getLocaleString(job?.start)}}</p>
     </md-card-content>
   </md-card>
 
