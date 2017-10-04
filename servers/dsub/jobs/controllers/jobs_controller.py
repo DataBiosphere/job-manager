@@ -83,11 +83,15 @@ def _query_result(job, project_id=None):
     # user-id is not a first-class concept in the common jobs API.
     if 'user-id' in job:
         labels['user-id'] = job['user-id']
+
+    # TODO(calbach): Use 'start-time' for start via dsub instead of
+    # 'create-time', per https://github.com/googlegenomics/dsub/issues/74.
     return QueryJobsResult(
         id=job_ids.dsub_to_api(project_id,
                                job.get('job-id'), job.get('task-id')),
         name=job.get('job-name'),
         status=job_statuses.dsub_to_api(job.get('status')),
+        submission=job.get('create-time'),
         start=job.get('create-time'),
         end=job.get('end-time'),
         labels=labels)
