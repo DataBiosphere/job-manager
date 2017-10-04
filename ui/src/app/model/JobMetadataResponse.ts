@@ -24,7 +24,7 @@ export interface JobMetadataResponse {
     status: models.JobStatus;
 
     /**
-     * Submission datetime of the job in ISO8601 format with milliseconds
+     * Submission datetime of the job in ISO8601 format
      */
     submission: Date;
 
@@ -34,12 +34,12 @@ export interface JobMetadataResponse {
     name?: string;
 
     /**
-     * Start datetime of the job in ISO8601 format with milliseconds
+     * Start datetime of the job in ISO8601 format
      */
     start?: Date;
 
     /**
-     * End datetime of the job in ISO8601 format with milliseconds
+     * End datetime of the job in ISO8601 format
      */
     end?: Date;
 

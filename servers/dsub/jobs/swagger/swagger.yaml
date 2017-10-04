@@ -96,18 +96,18 @@ definitions:
       submission:
         type: "string"
         format: "date-time"
-        description: "Submission datetime of the job in ISO8601 format with milliseconds"
+        description: "Submission datetime of the job in ISO8601 format"
       name:
         type: "string"
         description: "The name of the job"
       start:
         type: "string"
         format: "date-time"
-        description: "Start datetime of the job in ISO8601 format with milliseconds"
+        description: "Start datetime of the job in ISO8601 format"
       end:
         type: "string"
         format: "date-time"
-        description: "End datetime of the job in ISO8601 format with milliseconds"
+        description: "End datetime of the job in ISO8601 format"
       inputs:
         type: "object"
         description: "Map of input keys to input values"
@@ -250,6 +250,7 @@ definitions:
     required:
     - "id"
     - "status"
+    - "submission"
     properties:
       id:
         type: "string"
@@ -259,14 +260,18 @@ definitions:
         description: "Job name"
       status:
         $ref: "#/definitions/JobStatus"
+      submission:
+        type: "string"
+        format: "date-time"
+        description: "Submission datetime in ISO8601 format"
       start:
         type: "string"
         format: "date-time"
-        description: "Job start datetime"
+        description: "Job start datetime in ISO8601 format"
       end:
         type: "string"
         format: "date-time"
-        description: "Job end datetime"
+        description: "Job end datetime in ISO8601 format"
       labels:
         type: "object"
         description: "Custom job labels with string values"

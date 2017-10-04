@@ -29,12 +29,17 @@ export interface QueryJobsResult {
     status: models.JobStatus;
 
     /**
-     * Job start datetime
+     * Submission datetime in ISO8601 format
+     */
+    submission: Date;
+
+    /**
+     * Job start datetime in ISO8601 format
      */
     start?: Date;
 
     /**
-     * Job end datetime
+     * Job end datetime in ISO8601 format
      */
     end?: Date;
 

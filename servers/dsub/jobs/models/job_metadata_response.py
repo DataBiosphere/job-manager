@@ -146,7 +146,7 @@ class JobMetadataResponse(Model):
     def submission(self):
         """
         Gets the submission of this JobMetadataResponse.
-        Submission datetime of the job in ISO8601 format with milliseconds
+        Submission datetime of the job in ISO8601 format
 
         :return: The submission of this JobMetadataResponse.
         :rtype: datetime
@@ -157,7 +157,7 @@ class JobMetadataResponse(Model):
     def submission(self, submission):
         """
         Sets the submission of this JobMetadataResponse.
-        Submission datetime of the job in ISO8601 format with milliseconds
+        Submission datetime of the job in ISO8601 format
 
         :param submission: The submission of this JobMetadataResponse.
         :type submission: datetime
@@ -194,7 +194,7 @@ class JobMetadataResponse(Model):
     def start(self):
         """
         Gets the start of this JobMetadataResponse.
-        Start datetime of the job in ISO8601 format with milliseconds
+        Start datetime of the job in ISO8601 format
 
         :return: The start of this JobMetadataResponse.
         :rtype: datetime
@@ -205,7 +205,7 @@ class JobMetadataResponse(Model):
     def start(self, start):
         """
         Sets the start of this JobMetadataResponse.
-        Start datetime of the job in ISO8601 format with milliseconds
+        Start datetime of the job in ISO8601 format
 
         :param start: The start of this JobMetadataResponse.
         :type start: datetime
@@ -217,7 +217,7 @@ class JobMetadataResponse(Model):
     def end(self):
         """
         Gets the end of this JobMetadataResponse.
-        End datetime of the job in ISO8601 format with milliseconds
+        End datetime of the job in ISO8601 format
 
         :return: The end of this JobMetadataResponse.
         :rtype: datetime
@@ -228,7 +228,7 @@ class JobMetadataResponse(Model):
     def end(self, end):
         """
         Sets the end of this JobMetadataResponse.
-        End datetime of the job in ISO8601 format with milliseconds
+        End datetime of the job in ISO8601 format
 
         :param end: The end of this JobMetadataResponse.
         :type end: datetime
