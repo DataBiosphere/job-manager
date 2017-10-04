@@ -79,6 +79,10 @@ def query_jobs(body):
 
 
 def _query_result(job, project_id=None):
+    labels = job.get('labels', {})
+    # user-id is not a first-class concept in the common jobs API.
+    if 'user-id' in job:
+        labels['user-id'] = job['user-id']
     return QueryJobsResult(
         id=job_ids.dsub_to_api(project_id,
                                job.get('job-id'), job.get('task-id')),
@@ -86,7 +90,7 @@ def _query_result(job, project_id=None):
         status=job_statuses.dsub_to_api(job.get('status')),
         start=job.get('create-time'),
         end=job.get('end-time'),
-        labels=job.get('labels', {}))
+        labels=labels)
 
 
 def _get_provider(project_id=None):
