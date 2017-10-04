@@ -88,6 +88,7 @@ def _query_result(job, project_id=None):
                                job.get('job-id'), job.get('task-id')),
         name=job.get('job-name'),
         status=job_statuses.dsub_to_api(job.get('status')),
+        submission=job.get('create-time'),
         start=job.get('create-time'),
         end=job.get('end-time'),
         labels=labels)
