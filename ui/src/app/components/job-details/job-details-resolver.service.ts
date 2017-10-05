@@ -12,13 +12,14 @@ export class JobDetailsResolver implements Resolve<JobMetadataResponse> {
 
   resolve(route: ActivatedRouteSnapshot,
           state: RouterStateSnapshot): Promise<JobMetadataResponse> {
-    return this.jobMonitorService.getJob(route.params['id']).then(response => {
-      if (response) {
+    return this.jobMonitorService.getJob(route.params['id'])
+      .then(response => {
         return response;
-      } else { // id not found
+      })
+      .catch(error => {
+        // TODO(alanhwang): Handle the client-facing error here
         this.router.navigate(['/jobs']);
         return null;
-      }
-    });
+      });
   }
 }
