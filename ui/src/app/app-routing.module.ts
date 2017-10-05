@@ -5,14 +5,18 @@ import {RouterModule, Routes} from '@angular/router';
 
 import {ListJobsComponent} from './components/jobs-overview/list-jobs.component';
 import {JobDetailsComponent} from './components/job-details/job-details.component';
+import {JobDetailsResolver} from './components/job-details/job-details-resolver.service';
 
 const routes: Routes = [
   {path: '', redirectTo: '/jobs', pathMatch: 'full'},
   {path: 'jobs', component:ListJobsComponent},
-  {path: 'jobs/:id', component: JobDetailsComponent},
+  {path: 'jobs/:id', component: JobDetailsComponent, resolve: {
+    job: JobDetailsResolver
+  }},
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
+  providers: [JobDetailsResolver]
 })
 export class AppRoutingModule {}

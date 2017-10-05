@@ -27,6 +27,7 @@ import {JobDetailsComponent} from './components/job-details/job-details.componen
 import {JobPanelsComponent} from './components/job-details/panels.component';
 import {JobsTableComponent} from './components/jobs-overview/table.component';
 import {TaskDetailsComponent} from './components/job-details/tasks.component';
+import {JobDetailsResolver} from './components/job-details/job-details-resolver.service';
 
 @NgModule({
   exports: [
@@ -64,6 +65,7 @@ export class MaterialModule {}
   ],
   providers: [
     JobMonitorService,
+    JobDetailsResolver,
   ],
   // This specifies the top-level component, to load first.
   bootstrap: [AppComponent]

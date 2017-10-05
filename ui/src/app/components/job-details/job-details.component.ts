@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {JobMonitorService} from '../../job-monitor.service';
 import {ActivatedRoute} from '@angular/router';
 import {JobMetadataResponse} from '../../model/JobMetadataResponse';
 
@@ -10,13 +9,13 @@ import {JobMetadataResponse} from '../../model/JobMetadataResponse';
 export class JobDetailsComponent implements OnInit {
   private job: JobMetadataResponse;
 
-  constructor(
-    private route: ActivatedRoute,
-    private jobMonitorService: JobMonitorService
-  ) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.jobMonitorService.getJob(this.route.snapshot.params['id'])
-      .then(response => this.job = response);
+    // this.route.data
+    //   .subscribe((data: {job: JobMetadataResponse}) => {
+    //     this.job = data.job;
+    //   })
+    this.job = this.route.snapshot.data['job'];
   }
 }

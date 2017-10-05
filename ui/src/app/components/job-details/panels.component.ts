@@ -18,7 +18,7 @@ export class JobPanelsComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.job = changes.job.currentValue;
-    if (this.job && this.job.tasks) {
+    if (this.job.tasks) {
       this.tasks = this.job.tasks;
       this.numTasks = this.tasks.length;
       for (let task of this.tasks) {
@@ -42,9 +42,5 @@ export class JobPanelsComponent implements OnChanges {
         Math.round(duration/60000)%60 + "m";
     }
     return "";
-  }
-
-  getLocaleString(date: Date): string {
-    return date ? date.toLocaleString() : "";
   }
 }
