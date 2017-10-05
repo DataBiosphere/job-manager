@@ -32,15 +32,12 @@ export class JobPanelsComponent implements OnChanges {
 
   getDuration(): String {
     let duration: number;
-    if (this.job) {
-      if (this.job.end) {
-        duration = new Date(this.job.end).getTime() - new Date(this.job.start).getTime();
-      } else {
-        duration = new Date().getTime() - new Date(this.job.start).getTime();
-      }
-      return Math.round(duration/3600000) + "h " +
-        Math.round(duration/60000)%60 + "m";
+    if (this.job.end) {
+      duration = new Date(this.job.end).getTime() - new Date(this.job.start).getTime();
+    } else {
+      duration = new Date().getTime() - new Date(this.job.start).getTime();
     }
-    return "";
+    return Math.round(duration/3600000) + "h " +
+      Math.round(duration/60000)%60 + "m";
   }
 }

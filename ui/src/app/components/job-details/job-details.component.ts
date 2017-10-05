@@ -12,10 +12,6 @@ export class JobDetailsComponent implements OnInit {
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    // this.route.data
-    //   .subscribe((data: {job: JobMetadataResponse}) => {
-    //     this.job = data.job;
-    //   })
     this.job = this.route.snapshot.data['job'];
   }
 }
