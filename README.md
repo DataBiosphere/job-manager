@@ -10,6 +10,9 @@ use `docker-compose -f dsub-google-compose.yml CMD`), e.g.:
 
 ```
 ln -sf dsub-local-compose.yml docker-compose.yml
+
+# For dsub local, also create a local tmp dir before continuing:
+mkdir /tmp/dsub-local
 ```
 
 Then...
