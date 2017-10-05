@@ -14,8 +14,7 @@
           {{numCompletedTasks}} of {{numTasks}} tasks completed
         </ng-container>
       </b></p>
-      <p>Submitted {{job.submission}}</p>
-      <!-- TODO(alanhwang): Include duration here when dsub returns proper end times. -->
+      <p>Submitted {{job.submission}} ({{getDuration()}})</p>
       <p>Started {{job.start}}</p>
     </md-card-content>
   </md-card>
