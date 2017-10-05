@@ -55,8 +55,8 @@ def get_job(id):
         start=job.get('create-time'),
         end=job.get('end-time'),
         inputs=job.get('inputs', {}),
-        outputs=job.get('outputs', {}),
-        labels=job.get('labels', {}))
+        outputs=_populate_outputs(job),
+        labels=_populate_labels(job))
 
 
 def query_jobs(body):
@@ -79,11 +79,6 @@ def query_jobs(body):
 
 
 def _query_result(job, project_id=None):
-    labels = job.get('labels', {})
-    # user-id is not a first-class concept in the common jobs API.
-    if 'user-id' in job:
-        labels['user-id'] = job['user-id']
-
     # TODO(calbach): Use 'start-time' for start via dsub instead of
     # 'create-time', per https://github.com/googlegenomics/dsub/issues/74.
     return QueryJobsResult(
@@ -94,7 +89,29 @@ def _query_result(job, project_id=None):
         submission=job.get('create-time'),
         start=job.get('create-time'),
         end=job.get('end-time'),
-        labels=labels)
+        labels=_populate_labels(job))
+
+
+def _populate_labels(job):
+    labels = job.get('labels', {})
+    if 'status-detail' in job:
+        labels['status-detail'] = job['status-detail']
+    if 'last-update' in job:
+        labels['last-update'] = job['last-update']
+    # user-id is not a first-class concept in the common jobs API.
+    if 'user-id' in job:
+        labels['user-id'] = job['user-id']
+    return labels
+
+
+def _populate_outputs(job):
+    outputs = job.get('outputs', {})
+    if 'logging' in job and job['logging'].endswith('.log'):
+        base_log_path = job.get('logging')[:-4]
+        outputs['log-file-controller'] = '{}.log'.format(base_log_path)
+        outputs['log-file-stderr'] = '{}-stderr.log'.format(base_log_path)
+        outputs['log-file-stdout'] = '{}-stdout.log'.format(base_log_path)
+    return outputs
 
 
 def _get_provider(project_id=None):
