@@ -1,17 +1,21 @@
 <div class="content">
   <div>
-      <p class="header">{{job?.name}}</p>
-      <p class="job-id">Job ID: <b>{{job?.id}}</b></p>
-      <a class = "text-info">Submitted by: <b>{{job?.labels['user-id']}}</b></a>
+      <p class="header">{{job.name}}</p>
+      <p class="job-id">Job ID: <b>{{job.id}}</b></p>
+      <a class = "text-info">Submitted by: <b>{{job.labels['user-id']}}</b></a>
   </div>
 
-  <!-- TODO(alanhwang): Provide actual functionality to replace these static cards. -->
   <md-card>
     <md-card-title>Status</md-card-title>
     <md-card-content>
-      <p><b>{{job.status}}: {{numCompletedTasks}} of {{numTasks}} tasks completed </b></p>
-      <p>Submitted {{getLocaleString(job.submission)}}</p>
-      <p>Started {{getLocaleString(job.start)}} ({{getDuration()}})</p>
+      <p><b>
+        {{job.status}}
+        <ng-container *ngIf="numTasks > 0">
+          {{numCompletedTasks}} of {{numTasks}} tasks completed
+        </ng-container>
+      </b></p>
+      <p>Submitted {{job.submission}} ({{getDuration()}})</p>
+      <p>Started {{job.start}}</p>
     </md-card-content>
   </md-card>
 

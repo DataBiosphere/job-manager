@@ -22,8 +22,7 @@
     <md-cell *mdCellDef="let j" class="column first-column">
       <md-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
       </md-checkbox>
-      <button md-button class="job-details-button"
-        routerLink="/jobs/{{j.id}}" routerLinkActive="active">
+      <button md-button class="job-details-button" [routerLink]="[j.id]">
         {{j.name}}
       </button>
       <!-- TODO(alahwa): Implement visible drop-down arrow with job details. -->
