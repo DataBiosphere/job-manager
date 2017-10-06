@@ -48,8 +48,8 @@ export class JobsTableComponent implements OnChanges, OnInit {
     'jobName',
     'owner',
     'status',
+    'status-detail',
     'submitted',
-    'ended'
   ];
 
   @ViewChild(MdPaginator) paginator: MdPaginator;
