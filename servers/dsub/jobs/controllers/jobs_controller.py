@@ -55,8 +55,8 @@ def get_job(id):
         start=job.get('create-time'),
         end=job.get('end-time'),
         inputs=job.get('inputs', {}),
-        outputs=_populate_outputs(job),
-        labels=_populate_labels(job))
+        outputs=_job_to_api_outputs(job),
+        labels=_job_to_api_labels(job))
 
 
 def query_jobs(body):
@@ -89,28 +89,32 @@ def _query_result(job, project_id=None):
         submission=job.get('create-time'),
         start=job.get('create-time'),
         end=job.get('end-time'),
-        labels=_populate_labels(job))
+        labels=_job_to_api_labels(job))
 
 
-def _populate_labels(job):
-    labels = job.get('labels', {})
+def _job_to_api_labels(job):
+    # Put any dsub specific information into the labels. These fields are
+    # candidates for the common jobs API
+    labels = job.get('labels', {}).copy()
     if 'status-detail' in job:
         labels['status-detail'] = job['status-detail']
     if 'last-update' in job:
         labels['last-update'] = job['last-update']
-    # user-id is not a first-class concept in the common jobs API.
     if 'user-id' in job:
         labels['user-id'] = job['user-id']
     return labels
 
 
-def _populate_outputs(job):
-    outputs = job.get('outputs', {})
+def _job_to_api_outputs(job):
+    outputs = job.get('outputs', {}).copy()
+    # https://cloud.google.com/genomics/v1alpha2/pipelines-api-troubleshooting#pipeline_operation_log_files
+    # TODO(https://github.com/googlegenomics/dsub/issues/75) drop this
+    # workaround once the pipelines API and dsub support returning all log files
     if 'logging' in job and job['logging'].endswith('.log'):
-        base_log_path = job.get('logging')[:-4]
-        outputs['log-file-controller'] = '{}.log'.format(base_log_path)
-        outputs['log-file-stderr'] = '{}-stderr.log'.format(base_log_path)
-        outputs['log-file-stdout'] = '{}-stdout.log'.format(base_log_path)
+        base_log_path = job['logging'][:-4]
+        outputs['log-controller'] = '{}.log'.format(base_log_path)
+        outputs['log-stderr'] = '{}-stderr.log'.format(base_log_path)
+        outputs['log-stdout'] = '{}-stdout.log'.format(base_log_path)
     return outputs
 
 
