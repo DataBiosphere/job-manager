@@ -1,2 +1,3 @@
 <panels [job]="job"></panels>
-<tasks [tasks]="job.tasks"></tasks>
+<!-- Only show the tasks table if there is at least 1 task. -->
+<tasks *ngIf="hasTasks()" [tasks]="job.tasks"></tasks>

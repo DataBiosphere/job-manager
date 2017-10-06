@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {JobMetadataResponse} from '../../model/JobMetadataResponse';
+import {TaskMetadata} from '../../model/TaskMetadata';
 
 @Component({
   templateUrl: './job-details.component.html',
@@ -13,5 +14,10 @@ export class JobDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.job = this.route.snapshot.data['job'];
+  }
+
+  hasTasks(): boolean {
+    let tasks: TaskMetadata[] = this.job.tasks || [];
+    return tasks.length > 0;
   }
 }
