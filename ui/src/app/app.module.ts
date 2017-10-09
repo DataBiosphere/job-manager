@@ -18,6 +18,7 @@ import {
   MdTableModule,
   MdTabsModule,
   MdTooltipModule,
+  MdDialogModule,
 } from '@angular/material';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -26,6 +27,7 @@ import {JobMonitorService} from './job-monitor.service';
 import {ListJobsComponent} from './components/jobs-overview/list-jobs.component';
 import {JobDetailsComponent} from './components/job-details/job-details.component';
 import {JobPanelsComponent} from './components/job-details/panels.component';
+import {ResourceDialogComponent} from './components/job-details/resources-dialog.component';
 import {JobsTableComponent} from './components/jobs-overview/table.component';
 import {TaskDetailsComponent} from './components/job-details/tasks.component';
 import {JobDetailsResolver} from './components/job-details/job-details-resolver.service';
@@ -44,6 +46,7 @@ import {JobDetailsResolver} from './components/job-details/job-details-resolver.
     MdTableModule,
     MdTabsModule,
     MdTooltipModule,
+    MdDialogModule,
   ]
 })
 export class MaterialModule {}
@@ -64,7 +67,9 @@ export class MaterialModule {}
     JobPanelsComponent,
     JobsTableComponent,
     TaskDetailsComponent,
+    ResourceDialogComponent,
   ],
+  entryComponents: [ ResourceDialogComponent, ],
   providers: [
     JobMonitorService,
     JobDetailsResolver,

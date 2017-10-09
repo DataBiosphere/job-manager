@@ -1,6 +1,8 @@
 import {
   Component, Input, OnChanges, SimpleChanges
 } from '@angular/core';
+import {MdDialog} from '@angular/material';
+import {ResourceDialogComponent} from './resources-dialog.component'
 import {JobMetadataResponse} from '../../model/JobMetadataResponse';
 import {TaskMetadata} from '../../model/TaskMetadata';
 import {JobStatus} from '../../model/JobStatus';
@@ -16,6 +18,11 @@ export class JobPanelsComponent implements OnChanges {
   numCompletedTasks: number = 0;
   numTasks: number = 0;
 
+  inputs: Map<String, String> = new Map<String, String>();
+  outputs: Map<String, String> = new Map<String, String>();
+
+  constructor(public dialog: MdDialog) { }
+
   ngOnChanges(changes: SimpleChanges) {
     this.job = changes.job.currentValue;
     if (this.job.tasks) {
@@ -28,6 +35,16 @@ export class JobPanelsComponent implements OnChanges {
       }
     }
 
+    this.inputs.clear();
+    this.outputs.clear();
+
+    for (let key in this.job.inputs) {
+      this.inputs.set(key, this.job.inputs[key]);
+    }
+
+    for (let key in this.job.outputs) {
+      this.outputs.set(key, this.job.outputs[key]);
+    }
   }
 
   getDuration(): String {
@@ -39,5 +56,9 @@ export class JobPanelsComponent implements OnChanges {
     }
     return Math.round(duration/3600000) + "h " +
       Math.round(duration/60000)%60 + "m";
+  }
+
+  showDialog(resource: Map<String, String>): void {
+    let dialogRef = this.dialog.open(ResourceDialogComponent, {data: resource});
   }
 }

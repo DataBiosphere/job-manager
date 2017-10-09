@@ -1,0 +1,7 @@
+<md-list>
+  <md-list-item max-width=100% *ngFor="let key of resourceKeys">
+    <div layout="row">
+      <button md-button class="resource-button" (click)="onResourceClicked(key)">{{ key }}</button>
+    </div>
+  </md-list-item>
+ </md-list>
