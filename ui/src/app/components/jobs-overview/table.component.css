@@ -1,24 +1,4 @@
-.filter-form {
-  min-width: 15px;
-  max-width: 50rem;
-  width: 100%;
-}
-
-.filter-input {
-  width: 100%;
-}
-
-.show-status-option {
-  font-size: .7rem;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.selected-status {
-  color: #000000 !important;
-}
-
-/* Job Monitor table */
+/* Job monitor table */
 .mat-table {
   display: table;
   width: 100%;
@@ -35,12 +15,7 @@
   height: 48px;
   vertical-align: middle;
   padding: 0 8px;
-
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.column {
-  position: sticky;
 }
 
 .job-details-button {
@@ -55,14 +30,39 @@
   background-color: #F5F5F5;
 }
 
-.jobs-dropdown-arrow {
-  position: absolute;
-  margin-left: 15px;
-  right: 1rem;
+.checkbox {
+  margin-right: 1rem;
 }
 
-/*Pause, Delete, and Group buttons*/
+/* Search/filter */
+.filter-form {
+  min-width: 15px;
+  max-width: 50rem;
+  width: 100%;
+}
 
+.filter-input {
+  width: 100%;
+}
+
+/* Job details dropdown */
+.jobs-dropdown-arrow {
+  visibility: hidden;
+  float: right;
+  margin-right: 4rem;
+  display: inline-block;
+}
+
+.visible {
+  visibility: visible !important;
+}
+
+.mat-card {
+  box-shadow: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* Pause, Delete, and Group buttons */
 .group-options {
   float: left;
   font-family: 'Roboto', sans-serif;
@@ -76,12 +76,4 @@
   font-size: .65rem;
   text-transform: uppercase;
   margin: .65rem;
-}
-
-.checkbox {
-  margin-right: 1rem;
-}
-
-.invisible {
-  visibility: hidden !important;
 }
