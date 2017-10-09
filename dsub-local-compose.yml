@@ -5,6 +5,9 @@ services:
       file: common-compose.yml
       service: ui
   dsub:
+    build:
+      context: .
+      dockerfile: servers/dsub/Dockerfile.dsub.local
     extends:
       file: common-compose.yml
       service: dsub
