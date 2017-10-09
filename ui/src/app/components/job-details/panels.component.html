@@ -21,18 +21,29 @@
 
   <md-card>
     <md-card-title>Input/Output</md-card-title>
-      <p>
+      <p *ngIf="showInputsButton(j)">
         Input files
-        <button md-button class="view-resources-button" (click)="showDialog(inputs)">
+        <button md-button class="view-resources-button" [mdMenuTriggerFor]="inputsMenu">
           View
         </button>
       </p>
-      <p>
+      <md-menu #inputsMenu="mdMenu">
+        <a md-menu-item *ngFor="let i of inputs" href="{{getInputResourceURL(i)}}">
+          <span>{{ i }}</span>
+        </a>
+      </md-menu>
+      <p *ngIf="showOutputsButton(j)">
         Output files
-        <button md-button class="view-resources-button" (click)="showDialog(outputs)">
+        <button md-button class="view-resources-button" [mdMenuTriggerFor]="outputsMenu">
           View
         </button>
       </p>
+      <md-menu #outputsMenu="mdMenu">
+        <a md-menu-item *ngFor="let o of outputs" href="{{getOutputResourceURL(o)}}">
+          <span>{{ o }}</span>
+        </a>
+      </md-menu>
+
     <md-card-content>
     </md-card-content>
   </md-card>

@@ -1,8 +1,6 @@
 import {
   Component, Input, OnChanges, SimpleChanges
 } from '@angular/core';
-import {MdDialog} from '@angular/material';
-import {ResourceDialogComponent} from './resources-dialog.component'
 import {JobMetadataResponse} from '../../model/JobMetadataResponse';
 import {TaskMetadata} from '../../model/TaskMetadata';
 import {JobStatus} from '../../model/JobStatus';
@@ -18,10 +16,10 @@ export class JobPanelsComponent implements OnChanges {
   numCompletedTasks: number = 0;
   numTasks: number = 0;
 
-  inputs: Map<String, String> = new Map<String, String>();
-  outputs: Map<String, String> = new Map<String, String>();
+  gcsPrefix: string = "https://console.cloud.google.com/storage/browser/";
 
-  constructor(public dialog: MdDialog) { }
+  inputs: Array<String>;
+  outputs: Array<String>;
 
   ngOnChanges(changes: SimpleChanges) {
     this.job = changes.job.currentValue;
@@ -35,16 +33,8 @@ export class JobPanelsComponent implements OnChanges {
       }
     }
 
-    this.inputs.clear();
-    this.outputs.clear();
-
-    for (let key in this.job.inputs) {
-      this.inputs.set(key, this.job.inputs[key]);
-    }
-
-    for (let key in this.job.outputs) {
-      this.outputs.set(key, this.job.outputs[key]);
-    }
+    this.inputs = Object.keys(this.job.inputs).sort();
+    this.outputs = Object.keys(this.job.outputs).sort();
   }
 
   getDuration(): String {
@@ -57,8 +47,33 @@ export class JobPanelsComponent implements OnChanges {
     return Math.round(duration/3600000) + "h " +
       Math.round(duration/60000)%60 + "m";
   }
+  
+  showInputsButton(): boolean {
+    return this.inputs.length > 0;
+  }
+  
+  showOutputsButton(): boolean {
+    return this.outputs.length > 0;
+  }
 
-  showDialog(resource: Map<String, String>): void {
-    let dialogRef = this.dialog.open(ResourceDialogComponent, {data: resource});
+  getInputResourceURL(key: string): string {
+    return this.getResourceURL(this.job.inputs, key);
+  }
+
+  getOutputResourceURL(key: string): string {
+    return this.getResourceURL(this.job.outputs, key);
+  }
+
+  getResourceURL(resources: object, key: string): string {
+    let resourceParts = resources[key].split("/");
+    if (resourceParts[0] != "gs:" || resourceParts[1] != "") {
+      // TODO(bryancrampton): Handle invalid resource URL gracefully
+      return;
+    }
+    
+    // This excludes the object from the link to show the enclosing directory. 
+    // This is valid with wildcard glob (bucket/path/*) and directories 
+    // (bucket/path/dir/) as well, the * or empty string will be trimmed.
+    return this.gcsPrefix + resourceParts.slice(2,-1).join("/");
   }
 }
