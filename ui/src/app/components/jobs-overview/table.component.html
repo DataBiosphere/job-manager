@@ -35,7 +35,7 @@
         <md-card>
           <md-card-title>{{j.name}}</md-card-title>
           <p>{{j.status}}</p>
-          <p>Started: {{j.start}}</p>
+          <p>Submitted: {{j.submission}}</p>
         </md-card>
 
         <button md-menu-item [routerLink]="[j.id]">
@@ -61,7 +61,7 @@
   <ng-container mdColumnDef="owner">
     <md-header-cell *mdHeaderCellDef> Owner </md-header-cell>
     <md-cell *mdCellDef="let j">
-      {{j?.labels['user-id']}}
+      {{j.labels['user-id']}}
     </md-cell>
   </ng-container>
 
@@ -87,7 +87,7 @@
   <ng-container mdColumnDef="submitted">
     <md-header-cell *mdHeaderCellDef> Submitted </md-header-cell>
     <md-cell *mdCellDef="let j">
-      {{j?.submission}}
+      {{j.submission}}
     </md-cell>
   </ng-container>
 

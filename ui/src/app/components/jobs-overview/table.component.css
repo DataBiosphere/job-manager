@@ -16,7 +16,6 @@
   vertical-align: middle;
   padding: 0 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  /*position: sticky;*/
 }
 
 .job-details-button {
@@ -56,11 +55,6 @@
 
 .visible {
   visibility: visible !important;
-}
-
-.details-menu {
-  background: blue !important;
-  box-shadow: 0px 30px 30px 0px rgba(0,0,0,0.2) !important;
 }
 
 .mat-card {
