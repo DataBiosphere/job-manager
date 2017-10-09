@@ -17,6 +17,7 @@ import 'rxjs/add/observable/fromEvent';
 import {JobStatus} from '../../model/JobStatus';
 import {QueryJobsResult} from '../../model/QueryJobsResult';
 import {JobStatusImage} from '../../app.component';
+import {JobMetadataResponse} from '../../model/JobMetadataResponse';
 
 @Component({
   selector: 'list-jobs',
@@ -26,8 +27,9 @@ import {JobStatusImage} from '../../app.component';
 export class JobsTableComponent implements OnChanges, OnInit {
   @Input() jobs: QueryJobsResult[] = [];
   @Output() updateJobs: EventEmitter<StatusGroup> = new EventEmitter();
+  private expandedJob: QueryJobsResult;
   private selectedJobs: QueryJobsResult[] = [];
-  private mouseoverJobs: QueryJobsResult[] = [];
+  private mouseoverJob: QueryJobsResult;
   private allSelected: boolean = false;
   private currentStatusGroup: StatusGroup = StatusGroup.Active;
   private statusGroupStringMap: Map<StatusGroup, string> = new Map([
@@ -106,12 +108,15 @@ export class JobsTableComponent implements OnChanges, OnInit {
   }
 
   toggleMouseOver(job: QueryJobsResult): void {
-    let i: number = this.mouseoverJobs.indexOf(job);
-    if (i > -1) {
-      this.mouseoverJobs.splice(i, 1);
+    if (this.mouseoverJob == job) {
+      this.mouseoverJob = null;
     } else {
-      this.mouseoverJobs.push(job);
+      this.mouseoverJob = job;
     }
+  }
+
+  showDropdownArrow(job: QueryJobsResult): boolean {
+    return job == this.mouseoverJob || job == this.expandedJob;
   }
 
   getDropdownArrowUrl(): string {
@@ -127,6 +132,10 @@ export class JobsTableComponent implements OnChanges, OnInit {
       this.abortJob(job);
     }
     this.onJobsChanged();
+  }
+
+  canAbort(job: QueryJobsResult): boolean {
+    return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
   }
 
   isSelected(job: QueryJobsResult): boolean {

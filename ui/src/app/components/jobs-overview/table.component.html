@@ -14,21 +14,45 @@
 
   <!-- Job name column -->
   <ng-container mdColumnDef="jobName">
-    <md-header-cell *mdHeaderCellDef class="first-column">
+    <md-header-cell *mdHeaderCellDef>
       <md-checkbox class = "checkbox" [checked]="allSelected" (change)="toggleSelectAll()">
       </md-checkbox>
       Job
     </md-header-cell>
-    <md-cell *mdCellDef="let j" class="column first-column">
+    <md-cell *mdCellDef="let j">
       <md-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
       </md-checkbox>
       <button md-button class="job-details-button" [routerLink]="[j.id]">
         {{j.name}}
       </button>
-      <!-- TODO(alahwa): Implement visible drop-down arrow with job details. -->
-      <button md-icon-button class="jobs-dropdown-arrow invisible">
+
+      <button md-icon-button class="jobs-dropdown-arrow"
+              [class.visible]="showDropdownArrow(j)"
+              [mdMenuTriggerFor]="menu">
         <img src="{{getDropdownArrowUrl()}}">
       </button>
+      <md-menu #menu="mdMenu" class="details-menu">
+        <md-card>
+          <md-card-title>{{j.name}}</md-card-title>
+          <p>{{j.status}}</p>
+          <p>Started: {{j.start}}</p>
+        </md-card>
+
+        <button md-menu-item [routerLink]="[j.id]">
+          <button md-icon-button>
+            <img src="https://www.gstatic.com/images/icons/material/system/1x/arrow_forward_grey600_24dp.png">
+          </button>
+          <span>Job details</span>
+        </button>
+
+        <button md-menu-item *ngIf="canAbort(j)" (click)="abortJob(j)">
+          <button md-icon-button>
+            <img src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_24dp.png">
+          </button>
+          <span>Abort job</span>
+        </button>
+      </md-menu>
+
     </md-cell>
   </ng-container>
 
@@ -36,15 +60,15 @@
   <!-- TODO(calbach): Factor these columns into a label-config. -->
   <ng-container mdColumnDef="owner">
     <md-header-cell *mdHeaderCellDef> Owner </md-header-cell>
-    <md-cell *mdCellDef="let j" class = "column">
-      {{j.labels['user-id']}}
+    <md-cell *mdCellDef="let j">
+      {{j?.labels['user-id']}}
     </md-cell>
   </ng-container>
 
   <!-- Status column -->
   <ng-container mdColumnDef="status">
     <md-header-cell *mdHeaderCellDef> Status </md-header-cell>
-    <md-cell *mdCellDef="let j" class = "column">
+    <md-cell *mdCellDef="let j">
       <button md-icon-button disabled>
         <img mdTooltip="{{j.status}}" mdTooltipPosition="before" src="{{getStatusUrl(j.status)}}">
       </button>
@@ -62,8 +86,8 @@
   <!-- Submitted column -->
   <ng-container mdColumnDef="submitted">
     <md-header-cell *mdHeaderCellDef> Submitted </md-header-cell>
-    <md-cell *mdCellDef="let j" class = "column">
-      {{j.submission}}
+    <md-cell *mdCellDef="let j">
+      {{j?.submission}}
     </md-cell>
   </ng-container>
 
