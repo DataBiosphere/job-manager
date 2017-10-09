@@ -22,9 +22,9 @@
     <md-cell *mdCellDef="let j">
       <md-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
       </md-checkbox>
-      <button md-button class="job-details-button" [routerLink]="[j.id]">
+      <a md-button class="job-details-button" [routerLink]="[j.id]">
         {{j.name}}
-      </button>
+      </a>
 
       <button md-icon-button class="jobs-dropdown-arrow"
               [class.visible]="showDropdownArrow(j)"
@@ -38,12 +38,12 @@
           <p>Submitted: {{j.submission}}</p>
         </md-card>
 
-        <button md-menu-item [routerLink]="[j.id]">
+        <a md-menu-item [routerLink]="[j.id]">
           <button md-icon-button>
             <img src="https://www.gstatic.com/images/icons/material/system/1x/arrow_forward_grey600_24dp.png">
           </button>
           <span>Job details</span>
-        </button>
+        </a>
 
         <button md-menu-item *ngIf="canAbort(j)" (click)="abortJob(j)">
           <button md-icon-button>
