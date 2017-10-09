@@ -19,9 +19,6 @@ services:
       - ./ui/tslint.json:/ui/tslint.json
       - ./ui/.angular-cli.json:/ui/.angular-cli.json
   dsub:
-    build:
-      context: .
-      dockerfile: Dockerfile.dsub
     # Flags to gunicorn:
     # http://docs.gunicorn.org/en/stable/run.html#commonly-used-arguments
     command: ["-b", ":8190"]
