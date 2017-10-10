@@ -1,5 +1,6 @@
 import connexion
-from werkzeug.exceptions import BadRequest
+import json
+from werkzeug.exceptions import BadRequest, NotFound, Forbidden, InternalServerError
 from dsub.providers import local
 from dsub.providers import google
 from dsub.providers import stub
@@ -7,7 +8,9 @@ from dsub.commands import dstat
 from dsub.commands import ddel
 from jobs.common import enum
 from errors import *
+import apiclient
 import job_statuses
+import requests
 
 ProviderType = enum(GOOGLE='google', LOCAL='local', STUB='stub')
 
@@ -96,14 +99,23 @@ class DSubClient:
         statuses = dstat_params['statuses']
         if not statuses:
             statuses = ['*']
-        jobs = dstat.dstat_job_producer(
-            provider=provider,
-            status_list=statuses,
-            create_time=dstat_params['create_time'],
-            job_name_list=dstat_params['job_name_list'],
-            full_output=True).next()
-
-        return jobs
+        try:
+            return dstat.dstat_job_producer(
+                provider=provider,
+                status_list=statuses,
+                create_time=dstat_params['create_time'],
+                job_name_list=dstat_params['job_name_list'],
+                full_output=True).next()
+        except apiclient.errors.HttpError as e:
+            # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
+            # provider-specific error translation down into dstat.
+            if e.resp.status == requests.codes.not_found:
+                raise NotFound(
+                    'project "{}" not found'.format(query.parent_id))
+            elif e.resp.status == requests.codes.forbidden:
+                raise Forbidden('permission denied for project "{}"'.format(
+                    query.parent_id))
+            raise InternalServerError("unexpected failure querying dsub jobs")
 
     def _query_parameters(self, query):
         dstat_params = {
