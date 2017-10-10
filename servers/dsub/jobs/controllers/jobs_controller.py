@@ -95,8 +95,8 @@ def _query_result(job, project_id=None):
 
 
 def _parse_job_datetimes(j):
-    # TODO(https://github.com/googlegenomics/dsub/issues/77) remove NA check
-    # TODO(https://github.com/googlegenomics/dsub/issues/74) Use 'start-time'
+    # TODO(https://github.com/googlegenomics/dsub/issues/77): remove NA check
+    # TODO(https://github.com/googlegenomics/dsub/issues/74): Use 'start-time'
     # for start via dsub instead of create-time
     return (_parse_datetime(j['create-time'])
             if 'create-time' in j else None, _parse_datetime(j['create-time'])
@@ -105,7 +105,7 @@ def _parse_job_datetimes(j):
 
 
 def _parse_datetime(d):
-    # TODO(https://github.com/googlegenomics/dsub/issues/77) remove parsing
+    # TODO(https://github.com/googlegenomics/dsub/issues/77): remove parsing
     # (dsub should just return a datetime object) This date-time format is
     # specific to dsub (https://github.com/googlegenomics/dsub/blob/master/dsub/providers/google.py#L1324)
     return datetime.strptime(d, '%Y-%m-%d %H:%M:%S').replace(tzinfo=tzlocal())
@@ -127,7 +127,7 @@ def _job_to_api_labels(job):
 def _job_to_api_outputs(job):
     outputs = job.get('outputs', {}).copy()
     # https://cloud.google.com/genomics/v1alpha2/pipelines-api-troubleshooting#pipeline_operation_log_files
-    # TODO(https://github.com/googlegenomics/dsub/issues/75) drop this
+    # TODO(https://github.com/googlegenomics/dsub/issues/75): drop this
     # workaround once the pipelines API and dsub support returning all log files
     if 'logging' in job and job['logging'].endswith('.log'):
         base_log_path = job['logging'][:-4]

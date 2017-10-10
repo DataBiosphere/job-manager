@@ -161,7 +161,7 @@ class TestDSubClient(TestCase):
         self.assertEqual(
             self._filter_empty_fields(failed_tasks), [self.OPS[1]])
 
-    # TODO(bryancrampton) Add support to dsub's StubJobProvider for lookup
+    # TODO(bryancrampton): Add support to dsub's StubJobProvider for lookup
     # by create_time and job_name_list and add tests around that here
 
 
