@@ -57,16 +57,16 @@ export class JobPanelsComponent implements OnChanges {
   }
 
   getInputResourceURL(key: string): string {
-    return this.getResourceURL(this.job.inputs, key);
+    return this.getResourceURL(this.job.inputs[key]);
   }
 
   getOutputResourceURL(key: string): string {
-    return this.getResourceURL(this.job.outputs, key);
+    return this.getResourceURL(this.job.outputs[key]);
   }
 
-  getResourceURL(resources: object, key: string): string {
-    let resourceParts = resources[key].split("/");
-    if (resourceParts[0] != "gs:" || resourceParts[1] != "") {
+  getResourceURL(url: string): string {
+    let parts = url.split("/");
+    if (parts[0] != "gs:" || parts[1] != "") {
       // TODO(bryancrampton): Handle invalid resource URL gracefully
       return;
     }
@@ -74,6 +74,6 @@ export class JobPanelsComponent implements OnChanges {
     // This excludes the object from the link to show the enclosing directory. 
     // This is valid with wildcard glob (bucket/path/*) and directories 
     // (bucket/path/dir/) as well, the * or empty string will be trimmed.
-    return this.gcsPrefix + resourceParts.slice(2,-1).join("/");
+    return this.gcsPrefix + parts.slice(2,-1).join("/");
   }
 }
