@@ -35,7 +35,7 @@
         <md-card>
           <md-card-title>{{j.name}}</md-card-title>
           <p>{{j.status}}</p>
-          <p>Submitted: {{j.submission}}</p>
+          <p>Submitted: {{j.submission | date:'short'}}</p>
         </md-card>
 
         <a md-menu-item [routerLink]="[j.id]">
@@ -87,7 +87,7 @@
   <ng-container mdColumnDef="submitted">
     <md-header-cell *mdHeaderCellDef> Submitted </md-header-cell>
     <md-cell *mdCellDef="let j">
-      {{j.submission}}
+      {{j.submission | date:'short'}}
     </md-cell>
   </ng-container>
 

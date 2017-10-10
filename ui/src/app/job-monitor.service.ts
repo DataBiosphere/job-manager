@@ -23,7 +23,7 @@ export class JobMonitorService {
         headers: this.headers,
       }))
       .toPromise()
-      .then(response => response.json() as QueryJobsResponse)
+      .then(response => this.convertToQueryJobsResponse(response.json()))
       .catch(this.handleError);
   }
 
@@ -39,7 +39,7 @@ export class JobMonitorService {
     return this.http.get(`${environment.apiUrl}/jobs/${id}`,
       new RequestOptions({headers: this.headers}))
       .toPromise()
-      .then(response => response.json() as JobMetadataResponse)
+      .then(response => this.convertToJobMetadataResponse(response.json()))
       .catch(this.handleError);
   }
 
@@ -47,5 +47,31 @@ export class JobMonitorService {
     // TODO(alahwa): Implement real error handling.
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);
+  }
+
+  private convertToJobMetadataResponse(json: object): JobMetadataResponse {
+    var metadata: JobMetadataResponse = json as JobMetadataResponse;
+    metadata.submission = new Date(metadata.submission);
+    if (metadata.start) {
+      metadata.start = new Date(metadata.start);
+    }
+    if (metadata.end) {
+      metadata.end = new Date(metadata.end);
+    }
+    return metadata;
+  }
+
+  private convertToQueryJobsResponse(json: object): QueryJobsResponse {
+    var response: QueryJobsResponse = json as QueryJobsResponse;
+    for (var result of response.results) {
+      result.submission = new Date(result.submission);
+      if (result.start) {
+        result.start = new Date(result.start);
+      }
+      if (result.end) {
+        result.submission = new Date(result.end);
+      }
+    }
+    return response;
   }
 }

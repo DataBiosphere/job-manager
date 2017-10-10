@@ -15,7 +15,7 @@ ProviderType = enum(GOOGLE='google', LOCAL='local', STUB='stub')
 class DSubClient:
     """Light dsub wrapper which enables easy execution of dstat + ddel commands"""
 
-    # TODO(bryancrampton) support injecting credentials for Google provider type
+    # TODO(bryancrampton): support injecting credentials for Google provider type
 
     def get_job(self, provider, job_id, task_id):
         """Get metadata for a particular dsub job or task (if it exists).
@@ -68,7 +68,7 @@ class DSubClient:
         # If task-id is not specified, pass None instead of [None]
         task_list = [task_id] if task_id else None
 
-        # TODO(bryancrampton) Add flag to ddel to support deleting only
+        # TODO(bryancrampton): Add flag to ddel to support deleting only
         # 'singleton' tasks. For now, this will raise an error if more than one
         # jobs or no jobs are found for the given job-id and task-id
         self.get_job(provider, job_id, task_id)
@@ -86,7 +86,7 @@ class DSubClient:
         """
         dstat_params = self._query_parameters(query)
 
-        # TODO(bryancrampton) support 'end_time' query parameter. First update
+        # TODO(bryancrampton): support 'end_time' query parameter. First update
         # to filter by end_time once dsub LocalJobsProvider supports it.
         # https://github.com/googlegenomics/dsub/issues/67
         # Eventually, the pipelines API and dsub should support this query .
