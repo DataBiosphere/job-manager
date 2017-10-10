@@ -98,10 +98,12 @@ def _parse_job_datetimes(j):
     # TODO(https://github.com/googlegenomics/dsub/issues/77): remove NA check
     # TODO(https://github.com/googlegenomics/dsub/issues/74): Use 'start-time'
     # for start via dsub instead of create-time
-    return (_parse_datetime(j['create-time'])
-            if 'create-time' in j else None, _parse_datetime(j['create-time'])
-            if 'create-time' in j else None, _parse_datetime(j['end-time'])
-            if 'end-time' in j and j['end-time'] != 'NA' else None)
+    submission = _parse_datetime(
+        j['create-time']) if 'create-time' in j else None
+    start = _parse_datetime(j['create-time']) if 'create-time' in j else None
+    end = _parse_datetime(
+        j['end-time']) if 'end-time' in j and j['end-time'] != 'NA' else None
+    return submission, start, end
 
 
 def _parse_datetime(d):
