@@ -33,11 +33,10 @@ export class ListJobsComponent implements OnInit {
   private statusGroupToJobStatuses(statusGroup: StatusGroup): JobStatus[] {
     switch(statusGroup) {
       case StatusGroup.Active: {
-        return [JobStatus.Submitted, JobStatus.Running,
-                JobStatus.Aborting, JobStatus.Aborted];
+        return [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
       }
       case StatusGroup.Completed: {
-        return [JobStatus.Succeeded];
+        return [JobStatus.Succeeded, JobStatus.Aborted];
       }
       case StatusGroup.Failed: {
         return [JobStatus.Failed];
