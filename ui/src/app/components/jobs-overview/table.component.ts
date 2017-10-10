@@ -17,7 +17,6 @@ import 'rxjs/add/observable/fromEvent';
 import {JobStatus} from '../../model/JobStatus';
 import {QueryJobsResult} from '../../model/QueryJobsResult';
 import {JobStatusImage} from '../../app.component';
-import {JobMetadataResponse} from '../../model/JobMetadataResponse';
 
 @Component({
   selector: 'list-jobs',
