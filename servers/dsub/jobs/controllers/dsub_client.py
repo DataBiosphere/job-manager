@@ -114,9 +114,8 @@ class DSubClient:
         }
 
         if query.statuses:
-            status_set = set(query.statuses)
-            dstat_params['statuses'] = [
-                job_statuses.api_to_dsub(s) for s in status_set
-            ]
+            status_set = set(
+                [job_statuses.api_to_dsub(s) for s in query.statuses])
+            dstat_params['statuses'] = list(status_set)
 
         return dstat_params
