@@ -1,6 +1,8 @@
 import connexion
 from flask import current_app
 from werkzeug.exceptions import BadRequest
+from datetime import datetime
+from dateutil.tz import tzlocal
 from dsub.providers import google
 from dsub.providers import local
 from dsub.providers import stub
@@ -46,14 +48,15 @@ def get_job(id):
     project_id, job_id, task_id = job_ids.api_to_dsub(id, provider_type())
     provider = _get_provider(project_id)
     job = client().get_job(provider, job_id, task_id)
+    submission, start, end = _parse_job_datetimes(job)
 
     return JobMetadataResponse(
         id=id,
         name=job.get('job-name'),
         status=job_statuses.dsub_to_api(job.get('status')),
-        submission=job.get('create-time'),
-        start=job.get('create-time'),
-        end=job.get('end-time'),
+        submission=submission,
+        start=start,
+        end=end,
         inputs=job.get('inputs', {}),
         outputs=_job_to_api_outputs(job),
         labels=_job_to_api_labels(job))
@@ -79,17 +82,33 @@ def query_jobs(body):
 
 
 def _query_result(job, project_id=None):
-    # TODO(calbach): Use 'start-time' for start via dsub instead of
-    # 'create-time', per https://github.com/googlegenomics/dsub/issues/74.
+    submission, start, end = _parse_job_datetimes(job)
     return QueryJobsResult(
         id=job_ids.dsub_to_api(project_id,
                                job.get('job-id'), job.get('task-id')),
         name=job.get('job-name'),
         status=job_statuses.dsub_to_api(job.get('status')),
-        submission=job.get('create-time'),
-        start=job.get('create-time'),
-        end=job.get('end-time'),
+        submission=submission,
+        start=start,
+        end=end,
         labels=_job_to_api_labels(job))
+
+
+def _parse_job_datetimes(j):
+    # TODO(https://github.com/googlegenomics/dsub/issues/77) remove NA check
+    # TODO(https://github.com/googlegenomics/dsub/issues/74) Use 'start-time'
+    # for start via dsub instead of create-time
+    return (_parse_datetime(j['create-time'])
+            if 'create-time' in j else None, _parse_datetime(j['create-time'])
+            if 'create-time' in j else None, _parse_datetime(j['end-time'])
+            if 'end-time' in j and j['end-time'] != 'NA' else None)
+
+
+def _parse_datetime(d):
+    # TODO(https://github.com/googlegenomics/dsub/issues/77) remove parsing
+    # (dsub should just return a datetime object) This date-time format is
+    # specific to dsub (https://github.com/googlegenomics/dsub/blob/master/dsub/providers/google.py#L1324)
+    return datetime.strptime(d, '%Y-%m-%d %H:%M:%S').replace(tzinfo=tzlocal())
 
 
 def _job_to_api_labels(job):

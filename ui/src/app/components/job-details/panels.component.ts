@@ -40,18 +40,18 @@ export class JobPanelsComponent implements OnChanges {
   getDuration(): String {
     let duration: number;
     if (this.job.end) {
-      duration = new Date(this.job.end).getTime() - new Date(this.job.start).getTime();
+      duration = this.job.end.getTime() - this.job.submission.getTime();
     } else {
-      duration = new Date().getTime() - new Date(this.job.start).getTime();
+      duration = new Date().getTime() - this.job.submission.getTime();
     }
     return Math.round(duration/3600000) + "h " +
       Math.round(duration/60000)%60 + "m";
   }
-  
+
   showInputsButton(): boolean {
     return this.inputs.length > 0;
   }
-  
+
   showOutputsButton(): boolean {
     return this.outputs.length > 0;
   }
@@ -70,9 +70,9 @@ export class JobPanelsComponent implements OnChanges {
       // TODO(bryancrampton): Handle invalid resource URL gracefully
       return;
     }
-    
-    // This excludes the object from the link to show the enclosing directory. 
-    // This is valid with wildcard glob (bucket/path/*) and directories 
+
+    // This excludes the object from the link to show the enclosing directory.
+    // This is valid with wildcard glob (bucket/path/*) and directories
     // (bucket/path/dir/) as well, the * or empty string will be trimmed.
     return this.gcsPrefix + parts.slice(2,-1).join("/");
   }
