@@ -5,57 +5,24 @@ import {
 } from '@angular/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BrowserModule} from '@angular/platform-browser';
-import {
-  MdButtonModule,
-  MdCardModule,
-  MdCheckboxModule,
-  MdExpansionModule,
-  MdIconModule,
-  MdInputModule,
-  MdMenuModule,
-  MdPaginatorModule,
-  MdSortModule,
-  MdTableModule,
-  MdTabsModule,
-  MdTooltipModule,
-} from '@angular/material';
-
 import {AppRoutingModule} from './app-routing.module';
 import { AppComponent } from './app.component';
-import {JobMonitorService} from './job-monitor.service';
-import {ListJobsComponent} from './components/jobs-overview/list-jobs.component';
-import {JobDetailsComponent} from './components/job-details/job-details.component';
-import {JobPanelsComponent} from './components/job-details/panels.component';
-import {JobsTableComponent} from './components/jobs-overview/table.component';
-import {TaskDetailsComponent} from './components/job-details/tasks.component';
-import {JobDetailsResolver} from './components/job-details/job-details-resolver.service';
-
-@NgModule({
-  exports: [
-    MdButtonModule,
-    MdCardModule,
-    MdCheckboxModule,
-    MdExpansionModule,
-    MdIconModule,
-    MdInputModule,
-    MdMenuModule,
-    MdPaginatorModule,
-    MdSortModule,
-    MdTableModule,
-    MdTabsModule,
-    MdTooltipModule,
-  ]
-})
-export class MaterialModule {}
+import {ListJobsComponent} from './jobs-overview/list-jobs.component';
+import {JobDetailsComponent} from './job-details/job-details.component';
+import {JobPanelsComponent} from './job-details/panels/panels.component';
+import {JobsTableComponent} from './jobs-overview/table/table.component';
+import {TaskDetailsComponent} from './job-details/tasks/tasks.component';
+import {JobDetailsResolver} from './job-details/job-details-resolver.service';
+import {CoreModule} from './core/core.module';
 
 @NgModule({
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
+    CoreModule,
     FormsModule,
     HttpModule,
-    MaterialModule,
   ],
   declarations: [
     AppComponent,
@@ -66,7 +33,6 @@ export class MaterialModule {}
     TaskDetailsComponent,
   ],
   providers: [
-    JobMonitorService,
     JobDetailsResolver,
   ],
   // This specifies the top-level component, to load first.

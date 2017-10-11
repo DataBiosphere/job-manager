@@ -3,9 +3,9 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-import {ListJobsComponent} from './components/jobs-overview/list-jobs.component';
-import {JobDetailsComponent} from './components/job-details/job-details.component';
-import {JobDetailsResolver} from './components/job-details/job-details-resolver.service';
+import {ListJobsComponent} from './jobs-overview/list-jobs.component';
+import {JobDetailsComponent} from './job-details/job-details.component';
+import {JobDetailsResolver} from './job-details/job-details-resolver.service';
 
 const routes: Routes = [
   {path: '', redirectTo: '/jobs', pathMatch: 'full'},
