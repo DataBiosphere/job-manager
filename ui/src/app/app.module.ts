@@ -7,13 +7,9 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {JobListComponent} from './job-list/job-list.component';
-import {JobDetailsComponent} from './job-details/job-details.component';
-import {JobPanelsComponent} from './job-details/panels/panels.component';
-import {JobsTableComponent} from './job-list/table/table.component';
-import {TaskDetailsComponent} from './job-details/tasks/tasks.component';
-import {JobDetailsResolver} from './job-details/job-details-resolver.service';
 import {CoreModule} from './core/core.module';
+import {JobListModule} from './job-list/job-list.module';
+import {JobDetailsModule} from './job-details/job-details.module';
 
 @NgModule({
   imports: [
@@ -23,18 +19,10 @@ import {CoreModule} from './core/core.module';
     CoreModule,
     FormsModule,
     HttpModule,
+    JobDetailsModule,
+    JobListModule,
   ],
-  declarations: [
-    AppComponent,
-    JobDetailsComponent,
-    JobListComponent,
-    JobPanelsComponent,
-    JobsTableComponent,
-    TaskDetailsComponent,
-  ],
-  providers: [
-    JobDetailsResolver,
-  ],
+  declarations: [AppComponent],
   // This specifies the top-level component, to load first.
   bootstrap: [AppComponent]
 })

@@ -1,38 +1,11 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
 import {JobMonitorService} from './job-monitor.service';
-import {
-  MdButtonModule,
-  MdCardModule,
-  MdCheckboxModule,
-  MdExpansionModule,
-  MdIconModule,
-  MdInputModule,
-  MdMenuModule,
-  MdPaginatorModule,
-  MdSortModule,
-  MdTableModule,
-  MdTabsModule,
-  MdTooltipModule,
-} from '@angular/material';
 
 /** Provides all of the common singleton components and services that can be
  *  shared across the app and should only ever be instantiated once. */
 @NgModule({
   imports: [],
-  exports: [
-    MdButtonModule,
-    MdCardModule,
-    MdCheckboxModule,
-    MdExpansionModule,
-    MdIconModule,
-    MdInputModule,
-    MdMenuModule,
-    MdPaginatorModule,
-    MdSortModule,
-    MdTableModule,
-    MdTabsModule,
-    MdTooltipModule,
-  ],
+  exports: [],
   declarations: [],
   providers: [JobMonitorService]
 })
