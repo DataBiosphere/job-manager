@@ -6,10 +6,10 @@ import {StatusGroup} from './table/table.component';
 import {JobStatus} from '../shared/model/JobStatus';
 
 @Component({
-  templateUrl: './list-jobs.component.html',
-  styleUrls: ['./list-jobs.component.css'],
+  templateUrl: './job-list.component.html',
+  styleUrls: ['./job-list.component.css'],
 })
-export class ListJobsComponent implements OnInit {
+export class JobListComponent implements OnInit {
 
   private jobs: QueryJobsResult[] = [];
 

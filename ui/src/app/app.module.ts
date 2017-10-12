@@ -7,7 +7,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {ListJobsComponent} from './job-list/list-jobs.component';
+import {JobListComponent} from './job-list/job-list.component';
 import {JobDetailsComponent} from './job-details/job-details.component';
 import {JobPanelsComponent} from './job-details/panels/panels.component';
 import {JobsTableComponent} from './job-list/table/table.component';
@@ -27,7 +27,7 @@ import {CoreModule} from './core/core.module';
   declarations: [
     AppComponent,
     JobDetailsComponent,
-    ListJobsComponent,
+    JobListComponent,
     JobPanelsComponent,
     JobsTableComponent,
     TaskDetailsComponent,

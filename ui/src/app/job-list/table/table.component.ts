@@ -19,7 +19,7 @@ import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {JobStatusImage} from '../../app.component';
 
 @Component({
-  selector: 'list-jobs',
+  selector: 'job-list-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
