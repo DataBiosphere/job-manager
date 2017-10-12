@@ -79,7 +79,7 @@ Regenerate both the python and angular definitions.
 java -jar swagger-codegen-cli.jar generate \
  -i api/jobs.yaml \
  -l typescript-angular2 \
- -o ui/src/app
+ -o ui/src/app/shared
 java -jar swagger-codegen-cli.jar generate \
  -i api/jobs.yaml \
  -l python-flask \

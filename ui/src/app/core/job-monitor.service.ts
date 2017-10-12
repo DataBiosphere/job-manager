@@ -3,10 +3,10 @@
 import 'rxjs/add/operator/toPromise';
 import {Injectable} from '@angular/core';
 import {Headers, Http, RequestOptions} from '@angular/http';
-import {QueryJobsRequest} from './model/QueryJobsRequest';
-import {QueryJobsResponse} from './model/QueryJobsResponse';
-import {JobMetadataResponse} from './model/JobMetadataResponse';
-import {environment} from '../environments/environment';
+import {QueryJobsRequest} from '../shared/model/QueryJobsRequest';
+import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
+import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
+import {environment} from '../../environments/environment';
 
 /** Service wrapper for accessing the job monitor API. */
 @Injectable()

@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {JobMonitorService} from '../../job-monitor.service';
-import {QueryJobsResult} from '../../model/QueryJobsResult';
-import {StatusGroup} from './table.component';
-import {JobStatus} from '../../model/JobStatus';
+import {JobMonitorService} from '../core/job-monitor.service';
+import {QueryJobsResult} from '../shared/model/QueryJobsResult';
+import {StatusGroup} from './table/table.component';
+import {JobStatus} from '../shared/model/JobStatus';
 
 @Component({
-  templateUrl: './list-jobs.component.html',
-  styleUrls: ['./list-jobs.component.css'],
+  templateUrl: './job-list.component.html',
+  styleUrls: ['./job-list.component.css'],
 })
-export class ListJobsComponent implements OnInit {
+export class JobListComponent implements OnInit {
 
   private jobs: QueryJobsResult[] = [];
 
@@ -24,9 +24,9 @@ export class ListJobsComponent implements OnInit {
 
   private updateJobs(statusGroup: StatusGroup): void {
     this.jobMonitorService.queryJobs({
-      parentId: this.route.snapshot.queryParams['parentId'],
-      statuses: this.statusGroupToJobStatuses(statusGroup)
-    })
+        parentId: this.route.snapshot.queryParams['parentId'],
+        statuses: this.statusGroupToJobStatuses(statusGroup)
+      })
       .then(response => this.jobs = response.results);
   }
 
