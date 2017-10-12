@@ -14,8 +14,8 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
-import {JobStatus} from '../../model/JobStatus';
-import {QueryJobsResult} from '../../model/QueryJobsResult';
+import {JobStatus} from '../../shared/model/JobStatus';
+import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {JobStatusImage} from '../../app.component';
 
 @Component({

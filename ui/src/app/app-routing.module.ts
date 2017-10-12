@@ -3,7 +3,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-import {ListJobsComponent} from './jobs-overview/list-jobs.component';
+import {ListJobsComponent} from './job-list/list-jobs.component';
 import {JobDetailsComponent} from './job-details/job-details.component';
 import {JobDetailsResolver} from './job-details/job-details-resolver.service';
 

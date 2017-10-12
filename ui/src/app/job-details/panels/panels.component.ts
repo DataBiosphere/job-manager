@@ -1,9 +1,9 @@
 import {
   Component, Input, OnChanges, SimpleChanges
 } from '@angular/core';
-import {JobMetadataResponse} from '../../model/JobMetadataResponse';
-import {TaskMetadata} from '../../model/TaskMetadata';
-import {JobStatus} from '../../model/JobStatus';
+import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
+import {TaskMetadata} from '../../shared/model/TaskMetadata';
+import {JobStatus} from '../../shared/model/JobStatus';
 
 @Component({
   selector: 'panels',

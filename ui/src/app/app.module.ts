@@ -6,11 +6,11 @@ import {
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
-import { AppComponent } from './app.component';
-import {ListJobsComponent} from './jobs-overview/list-jobs.component';
+import {AppComponent} from './app.component';
+import {ListJobsComponent} from './job-list/list-jobs.component';
 import {JobDetailsComponent} from './job-details/job-details.component';
 import {JobPanelsComponent} from './job-details/panels/panels.component';
-import {JobsTableComponent} from './jobs-overview/table/table.component';
+import {JobsTableComponent} from './job-list/table/table.component';
 import {TaskDetailsComponent} from './job-details/tasks/tasks.component';
 import {JobDetailsResolver} from './job-details/job-details-resolver.service';
 import {CoreModule} from './core/core.module';
