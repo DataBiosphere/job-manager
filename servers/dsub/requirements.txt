@@ -4,7 +4,7 @@ chardet==3.0.4
 click==6.7
 clickclick==1.2.2
 connexion==1.1.13
--e git+https://github.com/bfcrampton/dsub.git@2347f0a724fe9f81f25de780b615c87420ed59ca#egg=dsub-master
+-e git+https://github.com/bfcrampton/dsub.git#egg=dsub-master
 Flask==0.12.2
 functools32==3.2.3-2
 google-api-python-client==1.6.4
