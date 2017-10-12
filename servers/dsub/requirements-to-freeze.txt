@@ -1,4 +1,5 @@
 connexion == 1.1.13
 gunicorn == 19.7.1
+google-api-python-client == 1.6.4
 # TODO(bryancrampton): Update this once a new version of dsub is released
 -e git+https://github.com/bfcrampton/dsub.git#egg=dsub

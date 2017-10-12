@@ -72,9 +72,6 @@ def query_jobs(body):
     Returns:
         QueryJobsResponse: Response containing results from query
     """
-    if not connexion.request.is_json:
-        raise BadRequest("Request body is not JSON formatted")
-
     query = QueryJobsRequest.from_dict(body)
     jobs = client().query_jobs(_get_provider(query.parent_id), query)
     results = [_query_result(j, query.parent_id) for j in jobs]
@@ -139,13 +136,15 @@ def _job_to_api_outputs(job):
     return outputs
 
 
-def _get_provider(project_id=None):
+def _get_provider(parent_id=None):
     if provider_type() == ProviderType.GOOGLE:
-        return google.GoogleJobProvider(False, False, project_id)
-    elif provider_type() == ProviderType.LOCAL and not project_id:
+        if not parent_id:
+            raise BadRequest('missing required field parentId')
+        return google.GoogleJobProvider(False, False, parent_id)
+    elif provider_type() == ProviderType.LOCAL and not parent_id:
         return local.LocalJobProvider()
-    elif provider_type() == ProviderType.STUB and not project_id:
+    elif provider_type() == ProviderType.STUB and not parent_id:
         return stub.StubJobProvider()
     else:
         raise BadRequest(
-            'Project ID can only be specified for the google dsub provider')
+            'parentId can only be specified for the google dsub provider')
