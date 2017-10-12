@@ -107,10 +107,18 @@ def _parse_job_datetimes(j):
 
 
 def _parse_datetime(d):
-    # TODO(https://github.com/googlegenomics/dsub/issues/77): remove parsing
-    # (dsub should just return a datetime object) This date-time format is
-    # specific to dsub (https://github.com/googlegenomics/dsub/blob/master/dsub/providers/google.py#L1324)
-    return datetime.strptime(d, '%Y-%m-%d %H:%M:%S').replace(tzinfo=tzlocal())
+    # TODO(https://github.com/googlegenomics/dsub/issues/77): remove conditional
+    # parsing by provider and date type (dsub should always return a datetime
+    # object in the python API). This format is specific to dsub
+    # https://github.com/googlegenomics/dsub/blob/master/dsub/providers/google.py#L1324
+    if (isinstance(d, datetime)):
+        return d
+    elif provider_type() == ProviderType.GOOGLE:
+        return datetime.strptime(d, '%Y-%m-%d %H:%M:%S').replace(
+            tzinfo=tzlocal())
+    else:
+        return datetime.strptime(d, '%Y-%m-%d %H:%M:%S.%f').replace(
+            tzinfo=tzlocal())
 
 
 def _job_to_api_labels(job):
