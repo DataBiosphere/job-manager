@@ -116,9 +116,8 @@ def _parse_datetime(d):
     elif provider_type() == ProviderType.GOOGLE:
         return datetime.strptime(d, '%Y-%m-%d %H:%M:%S').replace(
             tzinfo=tzlocal())
-    else:
-        return datetime.strptime(d, '%Y-%m-%d %H:%M:%S.%f').replace(
-            tzinfo=tzlocal())
+    return datetime.strptime(d, '%Y-%m-%d %H:%M:%S.%f').replace(
+        tzinfo=tzlocal())
 
 
 def _job_to_api_labels(job):
