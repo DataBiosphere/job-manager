@@ -2,9 +2,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 @Pipe({
-  name: 'customTime'
+  name: 'shortDateTime'
 })
-export class CustomTimePipe extends DatePipe implements PipeTransform {
+export class ShortDateTimePipe extends DatePipe implements PipeTransform {
 
   transform(date: Date): string {
     if (this.isToday(date)) {
@@ -20,5 +20,5 @@ export class CustomTimePipe extends DatePipe implements PipeTransform {
     return date.getUTCDate() == today.getUTCDate() &&
         date.getUTCMonth() == today.getUTCMonth() &&
         date.getUTCFullYear() == today.getUTCFullYear();
-}
+  }
 }

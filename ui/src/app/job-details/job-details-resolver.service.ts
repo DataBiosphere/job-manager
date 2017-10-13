@@ -3,7 +3,7 @@ import 'rxjs/add/operator/take';
 import { Injectable }             from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot,
   ActivatedRouteSnapshot } from '@angular/router';
-import {JobMetadataResponse} from '../shared/api/model/JobMetadataResponse';
+import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {JobMonitorService} from '../core/job-monitor.service';
 
 @Injectable()

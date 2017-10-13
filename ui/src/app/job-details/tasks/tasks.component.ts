@@ -2,11 +2,11 @@ import {
   Component, Input, OnChanges, OnInit,
   SimpleChanges
 } from '@angular/core';
-import {TaskMetadata} from '../../shared/api/model/TaskMetadata';
+import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {DataSource} from '@angular/cdk/collections';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
-import {JobStatus} from '../../shared/api/model/JobStatus';
+import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusImage} from '../../shared/common';
 
 @Component({

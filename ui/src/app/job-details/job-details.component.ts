@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {JobMetadataResponse} from '../shared/api/model/JobMetadataResponse';
-import {TaskMetadata} from '../shared/api/model/TaskMetadata';
+import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
+import {TaskMetadata} from '../shared/model/TaskMetadata';
 
 @Component({
   templateUrl: './job-details.component.html',

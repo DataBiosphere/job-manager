@@ -71,7 +71,7 @@ wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagge
 
 Clear out existing generated models:
 ```
-rm ui/src/app/shared/api/model/*
+rm ui/src/app/shared/model/*
 ```
 
 Regenerate both the python and angular definitions.
@@ -79,7 +79,7 @@ Regenerate both the python and angular definitions.
 java -jar swagger-codegen-cli.jar generate \
  -i api/jobs.yaml \
  -l typescript-angular2 \
- -o ui/src/app/shared/api
+ -o ui/src/app/shared
 java -jar swagger-codegen-cli.jar generate \
  -i api/jobs.yaml \
  -l python-flask \

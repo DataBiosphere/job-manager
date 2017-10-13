@@ -2,3 +2,5 @@
 git_push.sh
 index.ts
 api/
+configuration.ts
+variables.ts

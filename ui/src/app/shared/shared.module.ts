@@ -1,16 +1,16 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {CustomTimePipe} from "./custom-time.pipe";
+import {ShortDateTimePipe} from "./short-date-time.pipe";
 
 @NgModule({
   imports: [
     CommonModule,],
   declarations: [
-    CustomTimePipe,
+    ShortDateTimePipe,
   ],
   providers: [],
   exports: [
-    CustomTimePipe,
+    ShortDateTimePipe,
   ],
 })
 export class SharedModule {}

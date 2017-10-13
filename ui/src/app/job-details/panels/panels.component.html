@@ -14,9 +14,9 @@
           {{numCompletedTasks}} of {{numTasks}} tasks completed
         </ng-container>
       </b></p>
-      <p>Submitted {{job.submission | customTime}}</p>
-      <p>Started {{job.start | customTime}} ({{getDuration()}})</p>
-      <p *ngIf="job.end">Ended {{job.end | customTime}}</p>
+      <p>Submitted {{job.submission | shortDateTime}}</p>
+      <p>Started {{job.start | shortDateTime}} ({{getDuration()}})</p>
+      <p *ngIf="job.end">Ended {{job.end | shortDateTime}}</p>
     </md-card-content>
   </md-card>
 
