@@ -187,27 +187,27 @@ definitions:
         type: string
         format: date-time
         description: >
-          Returns only jobs with an equal or later start datetime.  Can be specified at most once.
-          If both start and end date are specified, start date must be before or equal to end date.
+          Returns only jobs with an equal or later start datetime. If both start
+          and end date are specified, start date must be before or equal to end
+          date.
       end:
         type: string
         format: date-time
         description: >
-          Returns only jobs with an equal or earlier end datetime.  Can be specified at most once.
-          If both start and end date are specified, start date must be before or equal to end date.
+          Returns only jobs with an equal or earlier end datetime. If both start
+          and end date are specified, start date must be before or equal to end
+          date.
       statuses:
         type: array
         items:
           $ref: '#/definitions/JobStatus'
         description: >
-          Returns only jobs with the specified status.  If specified multiple times,
-          returns jobs in any of the specified statuses.
+          If specified, returns only jobs matching any of these statuses.
       name:
         type: string
         pattern: ^[a-zA-Z][a-zA-Z0-9_]*$
         description: >
-          Returns only jobs with the specified name.  If specified multiple times,
-          returns jobs with any of the specified names.
+          Returns only jobs with the specified name.
       pageSize:
         type: integer
         format: int32
