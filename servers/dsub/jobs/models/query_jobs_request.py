@@ -151,7 +151,7 @@ class QueryJobsRequest(Model):
     def labels(self):
         """
         Gets the labels of this QueryJobsRequest.
-        If specified, returns only jobs matching all of these labels. 
+        If specified, returns only jobs containing labels with exact string matches to each of these labels. 
 
         :return: The labels of this QueryJobsRequest.
         :rtype: object
@@ -162,7 +162,7 @@ class QueryJobsRequest(Model):
     def labels(self, labels):
         """
         Sets the labels of this QueryJobsRequest.
-        If specified, returns only jobs matching all of these labels. 
+        If specified, returns only jobs containing labels with exact string matches to each of these labels. 
 
         :param labels: The labels of this QueryJobsRequest.
         :type labels: object

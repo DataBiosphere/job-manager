@@ -206,7 +206,8 @@ definitions:
       labels:
         type: object
         description: >
-          If specified, returns only jobs matching all of these labels.
+          If specified, returns only jobs containing labels with exact string
+          matches to each of these labels.
       name:
         type: string
         pattern: ^[a-zA-Z][a-zA-Z0-9_]*$
