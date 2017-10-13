@@ -30,7 +30,7 @@ paths:
         404:
           description: "Job not found"
         412:
-          description: "Job in terminal status"
+          description: "Job already in terminal status"
         500:
           description: "Internal server error"
       x-swagger-router-controller: "jobs.controllers.jobs_controller"
@@ -278,6 +278,8 @@ definitions:
 responses:
   BadRequest:
     description: "Bad request"
+  JobTerminal:
+    description: "Job already in terminal status"
   NotFound:
     description: "Job not found"
   ServerError:

@@ -1,22 +1,20 @@
 from __future__ import absolute_import
 
 import os
+import shutil
 import tempfile
 import time
-import shutil
+import unittest
+from . import BaseTestCase
 from flask import current_app
 from jobs.controllers.job_statuses import ApiStatus
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
-from . import BaseTestCase
 from six import BytesIO
-import unittest
 
 
 class TestJobsController(BaseTestCase):
-    """ DefaultController integration test stubs """
-
-    DOCKER_IMAGE = 'ubuntu:14.04'
+    """ JobsController integration tests for local provider """
 
     def setUp(self):
         self.job_path = tempfile.mkdtemp()

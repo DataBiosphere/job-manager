@@ -27,7 +27,7 @@ paths:
         '404':
           $ref: '#/responses/NotFound'
         '412':
-          description: Job in terminal status
+          $ref: '#/responses/JobTerminal'
         '500':
           $ref: '#/responses/ServerError'
       tags:
@@ -284,3 +284,5 @@ responses:
     description: 'Internal server error'
   NotFound:
     description: 'Job not found'
+  JobTerminal:
+    description: 'Job already in terminal status'

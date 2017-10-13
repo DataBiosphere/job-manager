@@ -36,7 +36,7 @@ def abort_job(id):
     """
     project_id, job_id, task_id = job_ids.api_to_dsub(id, provider_type())
     provider = _get_provider(project_id)
-    task = client().abort_job(provider, job_id, task_id)
+    client().abort_job(provider, job_id, task_id)
 
 
 def get_job(id):

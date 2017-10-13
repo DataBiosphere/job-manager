@@ -99,7 +99,7 @@ class TestDSubClient(TestCase):
         ]
         self.assertEqual(self._filter_empty_fields(tasks), self.OPS)
 
-    def test_get_job_conflicting_id(self):
+    def test_get_job_conflicting_id_fails(self):
         self.PROVIDER.set_operations([{
             'job-id': 'job-1',
             'job-name': 'foo',
@@ -120,19 +120,22 @@ class TestDSubClient(TestCase):
         with self.assertRaises(BadRequest):
             self.CLIENT.get_job(self.PROVIDER, 'job-1', 'task-1')
 
-    def test_get_job_does_not_exist(self):
+    def test_get_job_does_not_exist_fails(self):
         with self.assertRaises(JobNotFound):
             self.CLIENT.get_job(self.PROVIDER, 'missing', 'task-1')
 
     def test_abort_job(self):
-        # We can remove this mock if this issue is resolved:
-        # https://github.com/googlegenomics/dsub/issues/65
-        self.PROVIDER.delete_jobs = MagicMock(return_value=(self.OPS[1:2], []))
-        self.CLIENT.abort_job(self.PROVIDER, 'job-1', 'task-2')
+        # TODO(https://github.com/googlegenomics/dsub/issues/65) remove mock
+        self.PROVIDER.delete_jobs = MagicMock(return_value=(self.OPS[0:1], []))
+        self.CLIENT.abort_job(self.PROVIDER, 'job-1', 'task-1')
         self.PROVIDER.delete_jobs.assert_called_with(None, ['job-1'],
-                                                     ['task-2'], None, None)
+                                                     ['task-1'], None, None)
 
-    def test_abort_job_does_not_exist(self):
+    def test_abort_terminal_job_fails(self):
+        with self.assertRaises(PreconditionFailed):
+            self.CLIENT.abort_job(self.PROVIDER, 'job-1', 'task-2')
+
+    def test_abort_job_does_not_exist_fails(self):
         with self.assertRaises(JobNotFound):
             self.CLIENT.get_job(self.PROVIDER, 'nope', 'task-1')
 
