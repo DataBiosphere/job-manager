@@ -27,7 +27,7 @@ export interface QueryJobsRequest {
     end?: Date;
 
     /**
-     * Returns only jobs with the specified status. If specified multiple times, returns jobs in any of the specified statuses. 
+     * If specified, returns only jobs matching any of these statuses. 
      */
     statuses?: Array<models.JobStatus>;
 
