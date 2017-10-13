@@ -109,7 +109,7 @@ class DSubClient:
           (number) the pagination offset
         """
         # Pad the token out to be divisible by 4.
-        padded_token = token + '=' * (-len(token) % 4)
+        padded_token = token + '=' * (4 - (len(token) % 4))
         tok = base64.urlsafe_b64decode(padded_token)
         tok_dict = json.loads(tok)
         offset = tok_dict.get('of')
@@ -144,6 +144,8 @@ class DSubClient:
             raise ValueError("page_size must be positive")
 
         offset = 0
+        # Request one extra job to confirm whether there's more data to return
+        # in a subsequent page.
         max_tasks = query.page_size + 1
         if query.page_token:
             offset = self._decode_jobs_page_token(query.page_token)
@@ -183,7 +185,7 @@ class DSubClient:
         if len(jobs) <= offset:
             return [], None
         next_offset = offset + query.page_size
-        if query.page_size and len(jobs) > next_offset:
+        if len(jobs) > next_offset:
             return jobs[offset:next_offset], self._encode_jobs_page_token(
                 next_offset)
         return jobs[offset:], None

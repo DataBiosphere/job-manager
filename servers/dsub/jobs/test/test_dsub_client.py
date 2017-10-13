@@ -169,17 +169,19 @@ class TestDSubClient(TestCase):
         self.assertEqual(self._filter_empty_fields(aborted_tasks), [OPS[2]])
         self.assertEqual(self._filter_empty_fields(failed_tasks), [OPS[1]])
 
-    @parameterized.expand([('page size {}'.format(i), i)
-                           for i in range(1, len(OPS) + 1)] + [
-                               ('page size large', 99999, 1),
-                           ])
+    PAGE_TEST_PARAMS = [('page size {}'.format(i), i)
+                        for i in range(1, len(OPS) + 1)]
+
+    @parameterized.expand(PAGE_TEST_PARAMS + [
+        ('page size large', 99999, 1),
+    ])
     def test_query_jobs_pagination(self, _, page_size, expected_pages=None):
         if not expected_pages:
             expected_pages = math.ceil(float(len(OPS)) / page_size)
         got = []
         got_pages = 0
         page_token = None
-        for _ in range(100):
+        for _ in range(10 * expected_pages):
             jobs, page_token = self.CLIENT.query_jobs(
                 self.PROVIDER,
                 QueryJobsRequest(page_token=page_token, page_size=page_size))
@@ -189,8 +191,8 @@ class TestDSubClient(TestCase):
             if not page_token:
                 break
 
-        self.assertItemsEqual(OPS, self._filter_empty_fields(got))
-        self.assertEquals(expected_pages, got_pages)
+        self.assertItemsEqual(self._filter_empty_fields(got), OPS)
+        self.assertEquals(got_pages, expected_pages)
 
     @parameterized.expand([
         ('missing page size', QueryJobsRequest()),
