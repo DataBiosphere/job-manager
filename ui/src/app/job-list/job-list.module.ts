@@ -16,6 +16,7 @@ import {
   MdTooltipModule,
 } from '@angular/material';
 import {RouterModule} from '@angular/router';
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -31,6 +32,7 @@ import {RouterModule} from '@angular/router';
     MdTabsModule,
     MdTooltipModule,
     RouterModule,
+    SharedModule,
   ],
   declarations: [
     JobListComponent,

@@ -1,8 +1,8 @@
 import {MockBackend, MockConnection} from '@angular/http/testing';
 import {ResponseOptions, Response} from '@angular/http';
-import {QueryJobsResult} from './model/QueryJobsResult';
-import {JobStatus} from './model/JobStatus';
-import {TaskMetadata} from './model/TaskMetadata';
+import {QueryJobsResult} from './api/model/QueryJobsResult';
+import {JobStatus} from './api/model/JobStatus';
+import {TaskMetadata} from './api/model/TaskMetadata';
 
 /**
 * MockJobMonitorService implements an in-memory fake job monitor server via

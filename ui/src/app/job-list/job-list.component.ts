@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {JobMonitorService} from '../core/job-monitor.service';
-import {QueryJobsResult} from '../shared/model/QueryJobsResult';
+import {QueryJobsResult} from '../shared/api/model/QueryJobsResult';
 import {StatusGroup} from './table/table.component';
-import {JobStatus} from '../shared/model/JobStatus';
+import {JobStatus} from '../shared/api/model/JobStatus';
 
 @Component({
   templateUrl: './job-list.component.html',
