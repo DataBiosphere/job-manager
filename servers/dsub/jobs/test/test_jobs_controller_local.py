@@ -18,7 +18,6 @@ class TestJobsController(BaseTestCase):
 
     def setUp(self):
         self.job_path = tempfile.mkdtemp()
-        print "JOB PATH:" + self.job_path
         # Set env variable read by dsub to store files for the local provider
         tempfile.tempdir = self.job_path
         # Create logging directory
