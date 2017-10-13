@@ -11,3 +11,8 @@ class BaseTestCase(TestCase):
         app.app.json_encoder = JSONEncoder
         app.add_api('swagger.yaml')
         return app.app
+
+    def assertStatus(self, response, want, desc=None):
+        if not desc:
+            desc = 'Response body is : ' + response.data.decode('utf-8')
+        super(BaseTestCase, self).assertStatus(response, want, desc)

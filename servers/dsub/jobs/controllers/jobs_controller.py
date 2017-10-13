@@ -14,6 +14,9 @@ from dsub_client import ProviderType
 import job_statuses
 import job_ids
 
+_DEFAULT_PAGE_SIZE = 64
+_MAX_PAGE_SIZE = 64
+
 
 def provider_type():
     return current_app.config['PROVIDER_TYPE']
@@ -73,9 +76,14 @@ def query_jobs(body):
         QueryJobsResponse: Response containing results from query
     """
     query = QueryJobsRequest.from_dict(body)
-    jobs = client().query_jobs(_get_provider(query.parent_id), query)
+    if not query.page_size:
+        query.page_size = _DEFAULT_PAGE_SIZE
+    query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
+
+    jobs, next_page_token = client().query_jobs(
+        _get_provider(query.parent_id), query)
     results = [_query_result(j, query.parent_id) for j in jobs]
-    return QueryJobsResponse(results=results)
+    return QueryJobsResponse(results=results, next_page_token=next_page_token)
 
 
 def _query_result(job, project_id=None):
@@ -96,10 +104,10 @@ def _parse_job_datetimes(j):
     # TODO(https://github.com/googlegenomics/dsub/issues/74): Use 'start-time'
     # for start via dsub instead of create-time
     submission = _parse_datetime(
-        j['create-time']) if 'create-time' in j else None
-    start = _parse_datetime(j['create-time']) if 'create-time' in j else None
+        j['create-time']) if j.get('create-time') else None
+    start = _parse_datetime(j['create-time']) if j.get('create-time') else None
     end = _parse_datetime(
-        j['end-time']) if 'end-time' in j and j['end-time'] != 'NA' else None
+        j['end-time']) if j.get('end-time') and j['end-time'] != 'NA' else None
     return submission, start, end
 
 
