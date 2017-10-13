@@ -123,7 +123,7 @@ class QueryJobsRequest(Model):
     def statuses(self):
         """
         Gets the statuses of this QueryJobsRequest.
-        Returns only jobs with the specified status. If specified multiple times, returns jobs in any of the specified statuses. 
+        If specified, returns only jobs matching any of these statuses. 
 
         :return: The statuses of this QueryJobsRequest.
         :rtype: List[JobStatus]
@@ -134,7 +134,7 @@ class QueryJobsRequest(Model):
     def statuses(self, statuses):
         """
         Sets the statuses of this QueryJobsRequest.
-        Returns only jobs with the specified status. If specified multiple times, returns jobs in any of the specified statuses. 
+        If specified, returns only jobs matching any of these statuses. 
 
         :param statuses: The statuses of this QueryJobsRequest.
         :type statuses: List[JobStatus]
