@@ -1,8 +1,13 @@
+import {
+  ActivatedRouteSnapshot,
+  Router,
+  Resolve,
+  RouterStateSnapshot
+} from '@angular/router';
+import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
-import { Injectable }             from '@angular/core';
-import { Router, Resolve, RouterStateSnapshot,
-  ActivatedRouteSnapshot } from '@angular/router';
+
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {JobMonitorService} from '../core/job-monitor.service';
 

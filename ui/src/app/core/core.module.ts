@@ -1,6 +1,6 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
+
 import {JobMonitorService} from './job-monitor.service';
-import {ShortDateTimePipe} from '../shared/short-date-time.pipe';
 
 /** Provides all of the common singleton components and services that can be
  *  shared across the app and should only ever be instantiated once. */

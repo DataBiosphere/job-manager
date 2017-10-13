@@ -1,7 +1,8 @@
 import {MockBackend, MockConnection} from '@angular/http/testing';
 import {ResponseOptions, Response} from '@angular/http';
-import {QueryJobsResult} from './model/QueryJobsResult';
+
 import {JobStatus} from './model/JobStatus';
+import {QueryJobsResult} from './model/QueryJobsResult';
 import {TaskMetadata} from './model/TaskMetadata';
 
 /**
