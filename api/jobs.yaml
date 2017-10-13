@@ -203,6 +203,10 @@ definitions:
           $ref: '#/definitions/JobStatus'
         description: >
           If specified, returns only jobs matching any of these statuses.
+      labels:
+        type: object
+        description: >
+          If specified, returns only jobs matching all of these labels.
       name:
         type: string
         pattern: ^[a-zA-Z][a-zA-Z0-9_]*$
