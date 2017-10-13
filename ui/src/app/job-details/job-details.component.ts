@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {TaskMetadata} from '../shared/model/TaskMetadata';
 

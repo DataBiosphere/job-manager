@@ -1,25 +1,27 @@
 import {
-  Component, Input, OnChanges, SimpleChanges
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges
 } from '@angular/core';
+
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
-import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobStatus} from '../../shared/model/JobStatus';
+import {TaskMetadata} from '../../shared/model/TaskMetadata';
 
 @Component({
-  selector: 'panels',
+  selector: 'jm-panels',
   templateUrl: './panels.component.html',
   styleUrls: ['./panels.component.css'],
 })
 export class JobPanelsComponent implements OnChanges {
   @Input() job: JobMetadataResponse;
-  tasks: TaskMetadata[];
+  gcsPrefix: string = "https://console.cloud.google.com/storage/browser/";
+  inputs: Array<String>;
   numCompletedTasks: number = 0;
   numTasks: number = 0;
-
-  gcsPrefix: string = "https://console.cloud.google.com/storage/browser/";
-
-  inputs: Array<String>;
   outputs: Array<String>;
+  tasks: TaskMetadata[];
 
   ngOnChanges(changes: SimpleChanges) {
     this.job = changes.job.currentValue;
@@ -48,14 +50,6 @@ export class JobPanelsComponent implements OnChanges {
       Math.round(duration/60000)%60 + "m";
   }
 
-  showInputsButton(): boolean {
-    return this.inputs.length > 0;
-  }
-
-  showOutputsButton(): boolean {
-    return this.outputs.length > 0;
-  }
-
   getInputResourceURL(key: string): string {
     return this.getResourceURL(this.job.inputs[key]);
   }
@@ -75,5 +69,13 @@ export class JobPanelsComponent implements OnChanges {
     // This is valid with wildcard glob (bucket/path/*) and directories
     // (bucket/path/dir/) as well, the * or empty string will be trimmed.
     return this.gcsPrefix + parts.slice(2,-1).join("/");
+  }
+
+  showInputsButton(): boolean {
+    return this.inputs.length > 0;
+  }
+
+  showOutputsButton(): boolean {
+    return this.outputs.length > 0;
   }
 }

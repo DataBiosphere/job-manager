@@ -1,10 +1,17 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import {DatePipe} from '@angular/common';
+import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
   name: 'shortDateTime'
 })
 export class ShortDateTimePipe extends DatePipe implements PipeTransform {
+
+  isToday(date: Date): boolean {
+    let today: Date = new Date();
+    return date.getUTCDate() == today.getUTCDate() &&
+      date.getUTCMonth() == today.getUTCMonth() &&
+      date.getUTCFullYear() == today.getUTCFullYear();
+  }
 
   transform(date: Date): string {
     if (this.isToday(date)) {
@@ -13,12 +20,5 @@ export class ShortDateTimePipe extends DatePipe implements PipeTransform {
     return super.transform(date, 'MMM dd') +
       ' \u00B7 ' + // Middle dot
       super.transform(date, 'shortTime');
-  }
-
-  isToday(date: Date): boolean {
-    let today: Date = new Date();
-    return date.getUTCDate() == today.getUTCDate() &&
-        date.getUTCMonth() == today.getUTCMonth() &&
-        date.getUTCFullYear() == today.getUTCFullYear();
   }
 }

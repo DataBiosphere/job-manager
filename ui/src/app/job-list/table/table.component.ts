@@ -1,12 +1,17 @@
-import {
-  Component, ElementRef, EventEmitter, Input, OnChanges, OnInit,
-  Output, SimpleChanges, ViewChild
-} from '@angular/core';
-
-import {DataSource} from '@angular/cdk/collections';
-import {JobMonitorService} from '../../core/job-monitor.service';
-import {MdPaginator, MdTabChangeEvent} from '@angular/material';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
+import {DataSource} from '@angular/cdk/collections';
+import {MdPaginator, MdTabChangeEvent} from '@angular/material';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
@@ -14,12 +19,14 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
+
+import {JobMonitorService} from '../../core/job-monitor.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {JobStatusImage} from '../../shared/common';
 
 @Component({
-  selector: 'job-list-table',
+  selector: 'jm-job-list-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
@@ -76,9 +83,57 @@ export class JobsTableComponent implements OnChanges, OnInit {
     this.database.dataChange.next(this.jobs);
   }
 
+  private onJobsChanged(): void {
+    this.updateJobs.emit(this.currentStatusGroup);
+    this.allSelected = false;
+    this.selectedJobs = [];
+    this.paginator.pageIndex = 0;
+  }
+
   abortJob(job: QueryJobsResult): void {
     this.jobMonitorService.abortJob(job.id)
       .then(() => job.status = JobStatus.Aborted);
+  }
+
+  canAbort(job: QueryJobsResult): boolean {
+    return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
+  }
+
+  getDropdownArrowUrl(): string {
+    return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
+  }
+
+  getStatusUrl(status: JobStatus): string {
+    return JobStatusImage[status];
+  }
+
+  isSelected(job: QueryJobsResult): boolean {
+    return this.selectedJobs.indexOf(job) > -1;
+  }
+
+  onAbortJobs(jobs: QueryJobsResult[]): void {
+    for (let job of jobs) {
+      this.abortJob(job);
+    }
+    this.onJobsChanged();
+  }
+
+  showDropdownArrow(job: QueryJobsResult): boolean {
+    return job == this.mouseoverJob || job == this.expandedJob;
+  }
+
+
+  toggleActive(event: MdTabChangeEvent): void {
+    this.currentStatusGroup = this.reverseStatusGroupStringMap.get(event.tab.textLabel);
+    this.onJobsChanged();
+  }
+
+  toggleMouseOver(job: QueryJobsResult): void {
+    if (this.mouseoverJob == job) {
+      this.mouseoverJob = null;
+    } else {
+      this.mouseoverJob = job;
+    }
   }
 
   toggleSelect(job: QueryJobsResult): void {
@@ -99,53 +154,6 @@ export class JobsTableComponent implements OnChanges, OnInit {
       this.selectedJobs = this.jobs.slice();
       this.allSelected = true;
     }
-  }
-
-  toggleActive(event: MdTabChangeEvent): void {
-    this.currentStatusGroup = this.reverseStatusGroupStringMap.get(event.tab.textLabel);
-    this.onJobsChanged();
-  }
-
-  toggleMouseOver(job: QueryJobsResult): void {
-    if (this.mouseoverJob == job) {
-      this.mouseoverJob = null;
-    } else {
-      this.mouseoverJob = job;
-    }
-  }
-
-  showDropdownArrow(job: QueryJobsResult): boolean {
-    return job == this.mouseoverJob || job == this.expandedJob;
-  }
-
-  getDropdownArrowUrl(): string {
-    return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
-  }
-
-  getStatusUrl(status: JobStatus): string {
-    return JobStatusImage[status];
-  }
-
-  onAbortJobs(jobs: QueryJobsResult[]): void {
-    for (let job of jobs) {
-      this.abortJob(job);
-    }
-    this.onJobsChanged();
-  }
-
-  canAbort(job: QueryJobsResult): boolean {
-    return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
-  }
-
-  isSelected(job: QueryJobsResult): boolean {
-    return this.selectedJobs.indexOf(job) > -1;
-  }
-
-  private onJobsChanged(): void {
-    this.updateJobs.emit(this.currentStatusGroup);
-    this.allSelected = false;
-    this.selectedJobs = [];
-    this.paginator.pageIndex = 0;
   }
 }
 

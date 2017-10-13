@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+
 import {JobMonitorService} from '../core/job-monitor.service';
+import {JobStatus} from '../shared/model/JobStatus';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {StatusGroup} from './table/table.component';
-import {JobStatus} from '../shared/model/JobStatus';
 
 @Component({
   templateUrl: './job-list.component.html',
@@ -22,14 +23,6 @@ export class JobListComponent implements OnInit {
     this.updateJobs(StatusGroup.Active);
   }
 
-  private updateJobs(statusGroup: StatusGroup): void {
-    this.jobMonitorService.queryJobs({
-        parentId: this.route.snapshot.queryParams['parentId'],
-        statuses: this.statusGroupToJobStatuses(statusGroup)
-      })
-      .then(response => this.jobs = response.results);
-  }
-
   private statusGroupToJobStatuses(statusGroup: StatusGroup): JobStatus[] {
     switch(statusGroup) {
       case StatusGroup.Active: {
@@ -45,5 +38,13 @@ export class JobListComponent implements OnInit {
         return [];
       }
     }
+  }
+
+  private updateJobs(statusGroup: StatusGroup): void {
+    this.jobMonitorService.queryJobs({
+        parentId: this.route.snapshot.queryParams['parentId'],
+        statuses: this.statusGroupToJobStatuses(statusGroup)
+      })
+      .then(response => this.jobs = response.results);
   }
 }
