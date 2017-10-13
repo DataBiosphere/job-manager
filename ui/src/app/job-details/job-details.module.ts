@@ -11,6 +11,7 @@ import {
   MdTabsModule,
   MdTooltipModule,
 } from '@angular/material';
+import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import {
     MdTableModule,
     MdTabsModule,
     MdTooltipModule,
+    SharedModule,
   ],
   declarations: [
     JobDetailsComponent,

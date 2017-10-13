@@ -71,7 +71,7 @@ wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagge
 
 Clear out existing generated models:
 ```
-rm ui/src/app/api/* ui/src/app/model/*
+rm ui/src/app/shared/model/*
 ```
 
 Regenerate both the python and angular definitions.

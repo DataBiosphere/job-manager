@@ -7,7 +7,7 @@ import {DataSource} from '@angular/cdk/collections';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {JobStatus} from '../../shared/model/JobStatus';
-import {JobStatusImage} from '../../app.component';
+import {JobStatusImage} from '../../shared/common';
 
 @Component({
   selector: 'tasks',
