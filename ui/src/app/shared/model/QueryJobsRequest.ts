@@ -17,22 +17,22 @@ import * as models from './models';
  */
 export interface QueryJobsRequest {
     /**
-     * Returns only jobs with an equal or later start datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
+     * Returns only jobs with an equal or later start datetime. If both start and end date are specified, start date must be before or equal to end date. 
      */
     start?: Date;
 
     /**
-     * Returns only jobs with an equal or earlier end datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
+     * Returns only jobs with an equal or earlier end datetime. If both start and end date are specified, start date must be before or equal to end date. 
      */
     end?: Date;
 
     /**
-     * Returns only jobs with the specified status.  If specified multiple times, returns jobs in any of the specified statuses. 
+     * Returns only jobs with the specified status. If specified multiple times, returns jobs in any of the specified statuses. 
      */
     statuses?: Array<models.JobStatus>;
 
     /**
-     * Returns only jobs with the specified name.  If specified multiple times, returns jobs with any of the specified names. 
+     * Returns only jobs with the specified name. 
      */
     name?: string;
 

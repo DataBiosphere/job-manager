@@ -77,7 +77,7 @@ class QueryJobsRequest(Model):
     def start(self):
         """
         Gets the start of this QueryJobsRequest.
-        Returns only jobs with an equal or later start datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
+        Returns only jobs with an equal or later start datetime. If both start and end date are specified, start date must be before or equal to end date. 
 
         :return: The start of this QueryJobsRequest.
         :rtype: datetime
@@ -88,7 +88,7 @@ class QueryJobsRequest(Model):
     def start(self, start):
         """
         Sets the start of this QueryJobsRequest.
-        Returns only jobs with an equal or later start datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
+        Returns only jobs with an equal or later start datetime. If both start and end date are specified, start date must be before or equal to end date. 
 
         :param start: The start of this QueryJobsRequest.
         :type start: datetime
@@ -100,7 +100,7 @@ class QueryJobsRequest(Model):
     def end(self):
         """
         Gets the end of this QueryJobsRequest.
-        Returns only jobs with an equal or earlier end datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
+        Returns only jobs with an equal or earlier end datetime. If both start and end date are specified, start date must be before or equal to end date. 
 
         :return: The end of this QueryJobsRequest.
         :rtype: datetime
@@ -111,7 +111,7 @@ class QueryJobsRequest(Model):
     def end(self, end):
         """
         Sets the end of this QueryJobsRequest.
-        Returns only jobs with an equal or earlier end datetime.  Can be specified at most once. If both start and end date are specified, start date must be before or equal to end date. 
+        Returns only jobs with an equal or earlier end datetime. If both start and end date are specified, start date must be before or equal to end date. 
 
         :param end: The end of this QueryJobsRequest.
         :type end: datetime
@@ -123,7 +123,7 @@ class QueryJobsRequest(Model):
     def statuses(self):
         """
         Gets the statuses of this QueryJobsRequest.
-        Returns only jobs with the specified status.  If specified multiple times, returns jobs in any of the specified statuses. 
+        Returns only jobs with the specified status. If specified multiple times, returns jobs in any of the specified statuses. 
 
         :return: The statuses of this QueryJobsRequest.
         :rtype: List[JobStatus]
@@ -134,7 +134,7 @@ class QueryJobsRequest(Model):
     def statuses(self, statuses):
         """
         Sets the statuses of this QueryJobsRequest.
-        Returns only jobs with the specified status.  If specified multiple times, returns jobs in any of the specified statuses. 
+        Returns only jobs with the specified status. If specified multiple times, returns jobs in any of the specified statuses. 
 
         :param statuses: The statuses of this QueryJobsRequest.
         :type statuses: List[JobStatus]
@@ -146,7 +146,7 @@ class QueryJobsRequest(Model):
     def name(self):
         """
         Gets the name of this QueryJobsRequest.
-        Returns only jobs with the specified name.  If specified multiple times, returns jobs with any of the specified names. 
+        Returns only jobs with the specified name. 
 
         :return: The name of this QueryJobsRequest.
         :rtype: str
@@ -157,7 +157,7 @@ class QueryJobsRequest(Model):
     def name(self, name):
         """
         Sets the name of this QueryJobsRequest.
-        Returns only jobs with the specified name.  If specified multiple times, returns jobs with any of the specified names. 
+        Returns only jobs with the specified name. 
 
         :param name: The name of this QueryJobsRequest.
         :type name: str
