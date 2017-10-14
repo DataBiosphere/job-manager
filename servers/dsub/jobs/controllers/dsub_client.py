@@ -3,11 +3,9 @@ import connexion
 import json
 import numbers
 from werkzeug.exceptions import BadRequest, NotFound, Forbidden, InternalServerError, PreconditionFailed
-from dsub.providers import local
-from dsub.providers import google
-from dsub.providers import stub
-from dsub.commands import dstat
-from dsub.commands import ddel
+from dsub.lib import param_util
+from dsub.providers import google, local, stub
+from dsub.commands import dstat, ddel
 from jobs.common import enum
 from jobs.controllers.job_statuses import DsubStatus
 from errors import *
@@ -169,6 +167,7 @@ class DSubClient:
                 status_list=statuses,
                 create_time=dstat_params['create_time'],
                 job_name_list=dstat_params['job_name_list'],
+                label_list=dstat_params['label_list'],
                 full_output=True,
                 max_tasks=max_tasks).next()
         except apiclient.errors.HttpError as e:
@@ -207,11 +206,17 @@ class DSubClient:
             'end_time': query.end,
             'job_name_list': [query.name] if query.name else None,
             'statuses': None,
+            'label_list': None
         }
 
         if query.statuses:
             status_set = set(
                 [job_statuses.api_to_dsub(s) for s in query.statuses])
             dstat_params['statuses'] = list(status_set)
+
+        if query.labels:
+            dstat_params['label_list'] = [
+                param_util.LabelParam(k, v) for (k, v) in query.labels.items()
+            ]
 
         return dstat_params

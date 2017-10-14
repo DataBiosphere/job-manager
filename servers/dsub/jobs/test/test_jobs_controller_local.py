@@ -86,29 +86,57 @@ class TestJobsControllerLocal(BaseTestCase):
     # the google provider tests)
 
     def test_query_jobs_by_name(self):
-        job = self.start_job('echo FOO', name='TEST_JOB', wait=True)
-        parameters = QueryJobsRequest(name='TEST_JOB')
+        name_job = self.start_job('echo NAME', name='NAME_JOB')
+        other_name_job = self.start_job('echo OTHER', name='OTHER_JOB')
+        no_name_job = self.start_job('echo NO_NAME')
+        parameters = QueryJobsRequest(name='NAME_JOB')
         response = self.must_query_jobs(parameters)
         self.assertEqual(len(response.results), 1)
         result = response.results[0]
-        self.assertEqual(result.id, job['job-id'])
-        self.assertEqual(result.labels['user-id'], job['user-id'])
-        self.assertEqual(result.status, ApiStatus.SUCCEEDED)
+        self.assertEqual(result.id, name_job['job-id'])
+        self.assertEqual(result.labels['user-id'], name_job['user-id'])
 
     def test_query_jobs_by_status(self):
-        job = self.start_job('echo FOO', wait=True)
-        parameters = QueryJobsRequest(statuses=[ApiStatus.SUCCEEDED])
+        suc_job = self.start_job('echo SUCCEEDED', wait=True)
+        run_job = self.start_job('echo RUNNING && sleep 30')
+        self.wait_for_job_status(run_job['job-id'], ApiStatus.RUNNING)
+        suc_params = QueryJobsRequest(statuses=[ApiStatus.SUCCEEDED])
+        run_params = QueryJobsRequest(statuses=[ApiStatus.RUNNING])
+        suc_response = self.must_query_jobs(suc_params)
+        run_response = self.must_query_jobs(run_params)
+        self.assertEqual(len(suc_response.results), 1)
+        self.assertEqual(len(run_response.results), 1)
+        suc_result = suc_response.results[0]
+        run_result = run_response.results[0]
+        self.assertEqual(suc_result.id, suc_job['job-id'])
+        self.assertEqual(suc_result.labels['user-id'], suc_job['user-id'])
+        self.assertEqual(run_result.id, run_job['job-id'])
+        self.assertEqual(run_result.labels['user-id'], run_job['user-id'])
+
+    def test_query_jobs_by_label(self):
+        labels = {'label_key': 'the_label_value'}
+        other_labels = {'diff_label_key': 'other_label_value'}
+        label_job = self.start_job(
+            'echo LABEL', labels=labels, name='labeljob')
+        other_label_job = self.start_job(
+            'echo OTHER', labels=other_labels, name='otherlabeljob')
+        no_label_job = self.start_job('echo NO_LABEL', name='nolabeljob')
+
+        # TODO(https://github.com/googlegenomics/dsub/issues/82) remove waiting
+        # for running which shouldn't be needed
+        self.wait_for_job_status(label_job['job-id'], ApiStatus.RUNNING)
+        self.wait_for_job_status(other_label_job['job-id'], ApiStatus.RUNNING)
+        self.wait_for_job_status(no_label_job['job-id'], ApiStatus.RUNNING)
+
+        parameters = QueryJobsRequest(labels=labels)
         response = self.must_query_jobs(parameters)
         self.assertEqual(len(response.results), 1)
         result = response.results[0]
-        self.assertEqual(result.id, job['job-id'])
-        self.assertEqual(result.labels['user-id'], job['user-id'])
+        self.assertEqual(result.id, label_job['job-id'])
+        self.assertEqual(result.labels['user-id'], label_job['user-id'])
 
     # TODO(https://github.com/bvprivate/job-monitor/issues/73) Add tests for
     # querying by start and end times once implemented by dsub shim
-
-    # TODO(https://github.com/bvprivate/job-monitor/issues/69) Add tests for
-    # querying by labels once supported in the API
 
 
 if __name__ == '__main__':
