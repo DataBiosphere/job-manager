@@ -96,8 +96,8 @@ class BaseTestCase(TestCase):
         letters = string.ascii_lowercase
         return ''.join(random.choice(letters) for i in range(length))
 
-    def create_input_file(self):
-        inputs_dir = '{}/input'.format(self.job_path)
+    def create_input_file(self, path):
+        inputs_dir = '{}/input'.format(path)
         input_file_name = self.random_word(10)
         input_file_path = '{}/{}'.format(inputs_dir, input_file_name)
         os.mkdir(inputs_dir)
@@ -135,8 +135,10 @@ class BaseTestCase(TestCase):
                             poll_interval=0.5,
                             total_time=30):
         has_status = False
+        job = None
         while not has_status and (total_time is None or total_time > 0):
-            has_status = self.job_has_status(self.must_get_job(job_id), status)
+            job = self.must_get_job(job_id)
+            has_status = self.job_has_status(job, status)
             time.sleep(poll_interval)
             if total_time is not None:
                 total_time -= poll_interval
@@ -145,6 +147,8 @@ class BaseTestCase(TestCase):
             raise Exception(
                 'Wait for job \'{}\' to be \'{}\' timed out after {} seconds'
                 .format(job_id, status, total_time))
+
+        return job
 
     def job_has_status(self, job, status):
         has_status = job.status == status

@@ -52,7 +52,7 @@ class DSubClient:
         if status != DsubStatus.RUNNING:
             raise PreconditionFailed(
                 'Job already in terminal status: {}'.format(job['status']))
-        tasks = ddel.ddel_tasks(
+        ddel.ddel_tasks(
             provider=provider, job_list=[job_id], task_list=task_list)
 
     def get_job(self, provider, job_id, task_id):
@@ -177,9 +177,9 @@ class DSubClient:
             # provider-specific error translation down into dstat.
             if e.resp.status == requests.codes.not_found:
                 raise NotFound(
-                    'project "{}" not found'.format(query.parent_id))
+                    'Project "{}" not found'.format(query.parent_id))
             elif e.resp.status == requests.codes.forbidden:
-                raise Forbidden('permission denied for project "{}"'.format(
+                raise Forbidden('Permission denied for project "{}"'.format(
                     query.parent_id))
             raise InternalServerError("Unexpected failure querying dsub jobs")
 
