@@ -46,18 +46,17 @@ class TestJobsControllerLocal(BaseTestCase):
         self.assertStatus(resp, 404)
 
     def test_get_succeeded_job(self):
-        # Create inputs directory and add files
         inputs = {
-            'SOME_INPUT_FILE': self.create_input_file(self.dsub_local_dir)
+            'INPUT_FILE_KEY':
+            self.create_input_file(self.dsub_local_dir, 'THE_INPUT_FILE')
         }
         outputs = {
-            'SOME_OUTPUT_FILE':
-            '{}/output/{}'.format(self.dsub_local_dir, self.random_word(10))
+            'OUTPUT_FILE_KEY':
+            '{}/output/{}'.format(self.dsub_local_dir, 'THE_OUTPUT_FILE')
         }
-        label_value = self.random_word(10)
         started = self.start_job(
-            'echo -n >${SOME_OUTPUT_FILE}',
-            labels={'label': label_value},
+            'echo -n >${OUTPUT_FILE_KEY}',
+            labels={'label': 'the_label_value'},
             inputs=inputs,
             outputs=outputs,
             wait=True)
@@ -68,11 +67,11 @@ class TestJobsControllerLocal(BaseTestCase):
         self.assertEqual(job.id, started['job-id'])
         self.assertEqual(job.labels['user-id'], started['user-id'])
         self.assertEqual(job.inputs, inputs)
-        self.assertEqual(job.labels['label'], label_value)
+        self.assertEqual(job.labels['label'], 'the_label_value')
         self.assertEqual(job.outputs, outputs)
         self.assertEqual(job.status, ApiStatus.SUCCEEDED)
         # Ensure delocalization worked correctly
-        self.assertTrue(os.path.isfile(outputs['SOME_OUTPUT_FILE']))
+        self.assertTrue(os.path.isfile(outputs['OUTPUT_FILE_KEY']))
 
     def test_get_failed_job(self):
         started = self.start_job('not_a_command')

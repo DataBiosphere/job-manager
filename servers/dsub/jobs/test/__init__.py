@@ -92,14 +92,9 @@ class BaseTestCase(TestCase):
             wait=wait,
             disable_warning=True)
 
-    def random_word(self, length):
-        letters = string.ascii_lowercase
-        return ''.join(random.choice(letters) for i in range(length))
-
-    def create_input_file(self, path):
-        inputs_dir = '{}/input'.format(path)
-        input_file_name = self.random_word(10)
-        input_file_path = '{}/{}'.format(inputs_dir, input_file_name)
+    def create_input_file(self, local_dir, name):
+        inputs_dir = '{}/input'.format(local_dir)
+        input_file_path = '{}/{}'.format(inputs_dir, name)
         os.mkdir(inputs_dir)
         os.mknod(input_file_path)
         return input_file_path
