@@ -2,13 +2,14 @@ import base64
 import connexion
 import json
 import numbers
-from werkzeug.exceptions import BadRequest, NotFound, Forbidden, InternalServerError
+from werkzeug.exceptions import BadRequest, NotFound, Forbidden, InternalServerError, PreconditionFailed
 from dsub.providers import local
 from dsub.providers import google
 from dsub.providers import stub
 from dsub.commands import dstat
 from dsub.commands import ddel
 from jobs.common import enum
+from jobs.controllers.job_statuses import DsubStatus
 from errors import *
 import apiclient
 import job_statuses
@@ -21,6 +22,38 @@ class DSubClient:
     """Light dsub wrapper which enables easy execution of dstat + ddel commands"""
 
     # TODO(bryancrampton): support injecting credentials for Google provider type
+
+    def abort_job(self, provider, job_id, task_id):
+        """Abort the dsub job or task (if it exists).
+
+        Args:
+            provider (JobProvider): dsub provider to monitor and abort tasks
+            job_id (str): dsub job-id
+            tasK_id (str): dsub task-id (usually task-N)
+
+        Returns:
+            dict: raw JSON metadata for the aborted job or task
+        """
+        # If task-id is not specified, pass None instead of [None]
+        task_list = [task_id] if task_id else None
+
+        # TODO(bryancrampton): Add flag to ddel to support deleting only
+        # 'singleton' tasks. For now, this will raise an error if more than one
+        # jobs or no jobs are found for the given job-id and task-id. Also
+        # ensure status is not terminal before aborting.
+        job = self.get_job(provider, job_id, task_id)
+        status = job['status']
+
+        # TODO(https://github.com/googlegenomics/dsub/issues/81): Remove this
+        # provider-specific logic
+        if isinstance(provider, stub.StubJobProvider):
+            status = status[0]
+
+        if status != DsubStatus.RUNNING:
+            raise PreconditionFailed(
+                'Job already in terminal status: {}'.format(job['status']))
+        ddel.ddel_tasks(
+            provider=provider, job_list=[job_id], task_list=task_list)
 
     def get_job(self, provider, job_id, task_id):
         """Get metadata for a particular dsub job or task (if it exists).
@@ -56,29 +89,7 @@ class DSubClient:
         elif len(jobs) == 0:
             raise JobNotFound('Could not find any jobs with ID {}:{}'.format(
                 job_id, task_id))
-
         return jobs[0]
-
-    def abort_job(self, provider, job_id, task_id):
-        """Abort the dsub job or task (if it exists).
-
-        Args:
-            provider (JobProvider): dsub provider to monitor and abort tasks
-            job_id (str): dsub job-id
-            tasK_id (str): dsub task-id (usually task-N)
-
-        Returns:
-            dict: raw JSON metadata for the aborted job or task
-        """
-        # If task-id is not specified, pass None instead of [None]
-        task_list = [task_id] if task_id else None
-
-        # TODO(bryancrampton): Add flag to ddel to support deleting only
-        # 'singleton' tasks. For now, this will raise an error if more than one
-        # jobs or no jobs are found for the given job-id and task-id
-        self.get_job(provider, job_id, task_id)
-        tasks = ddel.ddel_tasks(
-            provider=provider, job_list=[job_id], task_list=task_list)
 
     def _encode_jobs_page_token(self, offset):
         """Encode the jobs pagination token.
@@ -165,11 +176,11 @@ class DSubClient:
             # provider-specific error translation down into dstat.
             if e.resp.status == requests.codes.not_found:
                 raise NotFound(
-                    'project "{}" not found'.format(query.parent_id))
+                    'Project "{}" not found'.format(query.parent_id))
             elif e.resp.status == requests.codes.forbidden:
-                raise Forbidden('permission denied for project "{}"'.format(
+                raise Forbidden('Permission denied for project "{}"'.format(
                     query.parent_id))
-            raise InternalServerError("unexpected failure querying dsub jobs")
+            raise InternalServerError("Unexpected failure querying dsub jobs")
 
         # This pagination strategy is very inefficient and brittle. Paginating
         # the entire collection of jobs requires O(n^2 / p) work, where n is the

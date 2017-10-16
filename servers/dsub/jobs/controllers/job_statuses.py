@@ -1,3 +1,4 @@
+from jobs.common import enum
 from werkzeug.exceptions import BadRequest
 
 # Once dsub exposes valid statuses update this to not be a manual map
@@ -6,20 +7,33 @@ from werkzeug.exceptions import BadRequest
 # so they are mapped them out manually as well
 # https://github.com/swagger-api/swagger-codegen/issues/6529
 
+ApiStatus = enum(
+    SUBMITTED='Submitted',
+    RUNNING='Running',
+    ABORTING='Aborting',
+    ABORTED='Aborted',
+    SUCCEEDED='Succeeded',
+    FAILED='Failed')
+DsubStatus = enum(
+    RUNNING='RUNNING',
+    CANCELED='CANCELED',
+    SUCCESS='SUCCESS',
+    FAILURE='FAILURE')
+
 API_STATUS_MAP = {
-    'Submitted': 'RUNNING',
-    'Running': 'RUNNING',
-    'Aborting': 'RUNNING',
-    'Aborted': 'CANCELED',
-    'Succeeded': 'SUCCESS',
-    'Failed': 'FAILURE',
+    ApiStatus.SUBMITTED: DsubStatus.RUNNING,
+    ApiStatus.RUNNING: DsubStatus.RUNNING,
+    ApiStatus.ABORTING: DsubStatus.RUNNING,
+    ApiStatus.ABORTED: DsubStatus.CANCELED,
+    ApiStatus.SUCCEEDED: DsubStatus.SUCCESS,
+    ApiStatus.FAILED: DsubStatus.FAILURE,
 }
 
 DSUB_STATUS_MAP = {
-    'RUNNING': 'Running',
-    'CANCELED': 'Aborted',
-    'SUCCESS': 'Succeeded',
-    'FAILURE': 'Failed',
+    DsubStatus.RUNNING: ApiStatus.RUNNING,
+    DsubStatus.CANCELED: ApiStatus.ABORTED,
+    DsubStatus.SUCCESS: ApiStatus.SUCCEEDED,
+    DsubStatus.FAILURE: ApiStatus.FAILED,
 }
 
 
@@ -31,7 +45,7 @@ def dsub_to_api(dsub_status):
 
       Returns:
           str: api status 'Running', 'Aborted', 'Succeeded', or 'Failed'
-          
+
       Raises:
           BadRequest if the dsub_status is not valid
     """
@@ -44,14 +58,14 @@ def api_to_dsub(api_status):
     """Map a dsub status to an API status
 
       Args:
-          api_status (str): 'Submitted', 'Running', 'Aborting', 'Aborted', 
+          api_status (str): 'Submitted', 'Running', 'Aborting', 'Aborted',
                             'Succeeded', or 'Failed'
 
       Returns:
           str: dsub status 'RUNNING', 'CANCELED', 'SUCCESS', or 'FAILURE'
 
       Raises:
-          BadRequest if the api_status is not valid 
+          BadRequest if the api_status is not valid
     """
     if api_status not in API_STATUS_MAP:
         raise BadRequest('Unrecognized api status:{}'.format(api_status))

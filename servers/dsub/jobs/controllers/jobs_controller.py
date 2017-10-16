@@ -36,7 +36,7 @@ def abort_job(id):
     """
     project_id, job_id, task_id = job_ids.api_to_dsub(id, provider_type())
     provider = _get_provider(project_id)
-    task = client().abort_job(provider, job_id, task_id)
+    client().abort_job(provider, job_id, task_id)
 
 
 def get_job(id):
@@ -55,12 +55,12 @@ def get_job(id):
 
     return JobMetadataResponse(
         id=id,
-        name=job.get('job-name'),
-        status=job_statuses.dsub_to_api(job.get('status')),
+        name=job['job-name'],
+        status=job_statuses.dsub_to_api(job['status']),
         submission=submission,
         start=start,
         end=end,
-        inputs=job.get('inputs', {}),
+        inputs=job['inputs'],
         outputs=_job_to_api_outputs(job),
         labels=_job_to_api_labels(job))
 
@@ -89,10 +89,9 @@ def query_jobs(body):
 def _query_result(job, project_id=None):
     submission, start, end = _parse_job_datetimes(job)
     return QueryJobsResult(
-        id=job_ids.dsub_to_api(project_id,
-                               job.get('job-id'), job.get('task-id')),
-        name=job.get('job-name'),
-        status=job_statuses.dsub_to_api(job.get('status')),
+        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
+        name=job['job-name'],
+        status=job_statuses.dsub_to_api(job['status']),
         submission=submission,
         start=start,
         end=end,
@@ -100,14 +99,11 @@ def _query_result(job, project_id=None):
 
 
 def _parse_job_datetimes(j):
-    # TODO(https://github.com/googlegenomics/dsub/issues/77): remove NA check
     # TODO(https://github.com/googlegenomics/dsub/issues/74): Use 'start-time'
     # for start via dsub instead of create-time
-    submission = _parse_datetime(
-        j['create-time']) if j.get('create-time') else None
-    start = _parse_datetime(j['create-time']) if j.get('create-time') else None
-    end = _parse_datetime(
-        j['end-time']) if j.get('end-time') and j['end-time'] != 'NA' else None
+    submission = _parse_datetime(j['create-time'])
+    start = _parse_datetime(j['create-time'])
+    end = _parse_datetime(j['end-time'])
     return submission, start, end
 
 
@@ -116,6 +112,9 @@ def _parse_datetime(d):
     # parsing by provider and date type (dsub should always return a datetime
     # object in the python API). This format is specific to dsub
     # https://github.com/googlegenomics/dsub/blob/master/dsub/providers/google.py#L1324
+    # TODO(https://github.com/googlegenomics/dsub/issues/77): remove NA check
+    if not d or d == 'NA':
+        return None
     if (isinstance(d, datetime)):
         return d
     elif provider_type() == ProviderType.GOOGLE:
@@ -128,7 +127,7 @@ def _parse_datetime(d):
 def _job_to_api_labels(job):
     # Put any dsub specific information into the labels. These fields are
     # candidates for the common jobs API
-    labels = job.get('labels', {}).copy()
+    labels = job['labels'].copy() if job['labels'] else {}
     if 'status-detail' in job:
         labels['status-detail'] = job['status-detail']
     if 'last-update' in job:
@@ -139,11 +138,11 @@ def _job_to_api_labels(job):
 
 
 def _job_to_api_outputs(job):
-    outputs = job.get('outputs', {}).copy()
+    outputs = job['outputs'].copy() if job['outputs'] else {}
     # https://cloud.google.com/genomics/v1alpha2/pipelines-api-troubleshooting#pipeline_operation_log_files
     # TODO(https://github.com/googlegenomics/dsub/issues/75): drop this
     # workaround once the pipelines API and dsub support returning all log files
-    if 'logging' in job and job['logging'].endswith('.log'):
+    if job['logging'] and job['logging'].endswith('.log'):
         base_log_path = job['logging'][:-4]
         outputs['log-controller'] = '{}.log'.format(base_log_path)
         outputs['log-stderr'] = '{}-stderr.log'.format(base_log_path)
