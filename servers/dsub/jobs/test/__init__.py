@@ -82,7 +82,7 @@ class BaseTestCase(TestCase):
         }]
 
         return dsub.run(
-            # TODO(bryancrampton) Set this as a class var once dsub is updated
+            # TODO(bryancrampton): Set this as a class var once dsub is updated
             # to remove provider_root_cache
             local.LocalJobProvider(),
             resources,

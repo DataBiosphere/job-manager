@@ -89,8 +89,7 @@ class DSubClient:
         elif len(jobs) == 0:
             raise JobNotFound('Could not find any jobs with ID {}:{}'.format(
                 job_id, task_id))
-
-        return {k: v for k, v in jobs[0].items() if v is not None}
+        return jobs[0]
 
     def _encode_jobs_page_token(self, offset):
         """Encode the jobs pagination token.
