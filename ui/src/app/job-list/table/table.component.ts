@@ -73,6 +73,9 @@ export class JobsTableComponent implements OnChanges, OnInit {
   ngOnInit() {
     this.dataSource = new JobsDataSource(this.database, this.paginator);
     this.currentStatusGroup = this.route.snapshot.queryParams['statusGroup'];
+    if (!this.currentStatusGroup) {
+      this.currentStatusGroup = StatusGroup.Active;
+    }
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
       .debounceTime(150)
       .distinctUntilChanged()

@@ -28,7 +28,7 @@ export class JobListComponent implements OnInit {
   ngOnInit(): void {
     let statusGroup: StatusGroup =
       this.route.snapshot.queryParams['statusGroup'];
-    if (statusGroup) {
+    if (statusGroup in StatusGroup && statusGroup !== StatusGroup.Active) {
       this.updateJobs(this.route.snapshot.queryParams['statusGroup']);
     } else {
       this.updateJobs(StatusGroup.Active);
@@ -52,16 +52,25 @@ export class JobListComponent implements OnInit {
     }
   }
 
+  private updateJobList(statusGroup: StatusGroup): void {
+    this.jobMonitorService.queryJobs({
+        parentId: this.route.snapshot.queryParams['parentId'],
+        statuses: this.statusGroupToJobStatuses(statusGroup),
+        pageSize: JobListComponent.MAX_BACKEND_JOBS
+      })
+      .then(response => this.jobs = response.results)
+  }
+
   private updateJobs(statusGroup: StatusGroup): void {
-    if (this.router.navigate([], { queryParams: {
-      parentId: this.route.snapshot.queryParams['parentId'],
-      statusGroup: statusGroup}})) {
-      this.jobMonitorService.queryJobs({
-          parentId: this.route.snapshot.queryParams['parentId'],
-          statuses: this.statusGroupToJobStatuses(statusGroup),
-          pageSize: JobListComponent.MAX_BACKEND_JOBS
-        })
-        .then(response => this.jobs = response.results);
+    if (statusGroup !== StatusGroup.Active) {
+      this.router.navigate([], { queryParams: {
+        parentId: this.route.snapshot.queryParams['parentId'],
+        statusGroup: statusGroup}})
+        .then(() => this.updateJobList(statusGroup));
+    } else {
+      this.router.navigate([], { queryParams: {
+        parentId: this.route.snapshot.queryParams['parentId']}})
+        .then(() => this.updateJobList(statusGroup));
     }
 
   }
