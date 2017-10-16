@@ -32,6 +32,11 @@ export interface QueryJobsRequest {
     statuses?: Array<models.JobStatus>;
 
     /**
+     * If specified, returns only jobs containing labels with exact string matches to each of these labels. 
+     */
+    labels?: any;
+
+    /**
      * Returns only jobs with the specified name. 
      */
     name?: string;

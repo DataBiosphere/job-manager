@@ -204,6 +204,11 @@ definitions:
         description: "If specified, returns only jobs matching any of these statuses.\n"
         items:
           $ref: "#/definitions/JobStatus"
+      labels:
+        type: "object"
+        description: "If specified, returns only jobs containing labels with exact\
+          \ string matches to each of these labels.\n"
+        properties: {}
       name:
         type: "string"
         description: "Returns only jobs with the specified name.\n"
