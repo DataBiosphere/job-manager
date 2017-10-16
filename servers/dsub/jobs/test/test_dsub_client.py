@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import math
 from werkzeug.exceptions import BadRequest
 from jobs.controllers.errors import JobNotFound
 from jobs.models.query_jobs_request import QueryJobsRequest
@@ -8,6 +9,7 @@ from dsub.providers import base
 from dsub.providers import stub
 from jobs.controllers.dsub_client import *
 from mock import MagicMock
+from parameterized import parameterized
 
 
 class TestDSubClient(TestCase):
@@ -122,7 +124,6 @@ class TestDSubClient(TestCase):
         with self.assertRaises(JobNotFound):
             self.CLIENT.get_job(self.PROVIDER, 'missing', 'task-1')
 
-    #
     def test_abort_job(self):
         # We can remove this mock if this issue is resolved:
         # https://github.com/googlegenomics/dsub/issues/65
@@ -136,23 +137,32 @@ class TestDSubClient(TestCase):
             self.CLIENT.get_job(self.PROVIDER, 'nope', 'task-1')
 
     def test_query_job_by_name(self):
-        tasks_foo = self.CLIENT.query_jobs(
-            self.PROVIDER, QueryJobsRequest(name='foo'))
-        tasks_bar = self.CLIENT.query_jobs(
-            self.PROVIDER, QueryJobsRequest(name='bar'))
-        tasks_blah = self.CLIENT.query_jobs(
-            self.PROVIDER, QueryJobsRequest(name='blah'))
+        tasks_foo, _ = self.CLIENT.query_jobs(self.PROVIDER,
+                                              QueryJobsRequest(
+                                                  name='foo', page_size=100))
+        tasks_bar, _ = self.CLIENT.query_jobs(self.PROVIDER,
+                                              QueryJobsRequest(
+                                                  name='bar', page_size=100))
+        tasks_blah, _ = self.CLIENT.query_jobs(self.PROVIDER,
+                                               QueryJobsRequest(
+                                                   name='blah', page_size=100))
         self.assertEqual(self._filter_empty_fields(tasks_foo), self.OPS[0:2])
         self.assertEqual(self._filter_empty_fields(tasks_bar), self.OPS[2:])
         self.assertEqual(self._filter_empty_fields(tasks_blah), [])
 
     def test_query_job_by_status(self):
-        running_tasks = self.CLIENT.query_jobs(
-            self.PROVIDER, QueryJobsRequest(statuses=['Running']))
-        aborted_tasks = self.CLIENT.query_jobs(
-            self.PROVIDER, QueryJobsRequest(statuses=['Aborted']))
-        failed_tasks = self.CLIENT.query_jobs(
-            self.PROVIDER, QueryJobsRequest(statuses=['Failed']))
+        running_tasks, _ = self.CLIENT.query_jobs(self.PROVIDER,
+                                                  QueryJobsRequest(
+                                                      statuses=['Running'],
+                                                      page_size=100))
+        aborted_tasks, _ = self.CLIENT.query_jobs(self.PROVIDER,
+                                                  QueryJobsRequest(
+                                                      statuses=['Aborted'],
+                                                      page_size=100))
+        failed_tasks, _ = self.CLIENT.query_jobs(self.PROVIDER,
+                                                 QueryJobsRequest(
+                                                     statuses=['Failed'],
+                                                     page_size=100))
         self.assertEqual(
             self._filter_empty_fields(running_tasks),
             [self.OPS[0], self.OPS[3], self.OPS[4], self.OPS[5], self.OPS[6]])
@@ -161,10 +171,61 @@ class TestDSubClient(TestCase):
         self.assertEqual(
             self._filter_empty_fields(failed_tasks), [self.OPS[1]])
 
+    PAGE_TEST_PARAMS = [('page size {}'.format(i), i)
+                        for i in range(1, len(OPS) + 1)]
+
+    @parameterized.expand(PAGE_TEST_PARAMS + [
+        ('page size large', 99999, 1),
+    ])
+    def test_query_jobs_pagination(self, _, page_size, expected_pages=None):
+        if not expected_pages:
+            expected_pages = math.ceil(float(len(self.OPS)) / page_size)
+        got = []
+        got_pages = 0
+        page_token = None
+        for _ in range(10 * int(expected_pages)):
+            jobs, page_token = self.CLIENT.query_jobs(
+                self.PROVIDER,
+                QueryJobsRequest(page_token=page_token, page_size=page_size))
+            got_pages += 1
+            self.assertLessEqual(len(jobs), page_size)
+            got.extend(jobs)
+            if not page_token:
+                break
+
+        self.assertItemsEqual(self._filter_empty_fields(got), self.OPS)
+        self.assertEquals(got_pages, expected_pages)
+
+    @parameterized.expand([
+        ('missing page size', QueryJobsRequest()),
+        ('zero page size', QueryJobsRequest(page_size=0)),
+        ('negative page size', QueryJobsRequest(page_size=-1337)),
+        ('bad token', QueryJobsRequest(page_size=1, page_token='asdf')),
+        ('good b64, bad JSON token', QueryJobsRequest(
+            page_size=1,
+            page_token=base64.urlsafe_b64encode(
+                json.dumps({
+                    'fox': 'mccloud'
+                }))), ),
+        ('good JSON, bad value type', QueryJobsRequest(
+            page_size=1,
+            page_token=base64.urlsafe_b64encode(
+                json.dumps({
+                    'of': 'not a number'
+                }))), ),
+        ('good JSON, negative value', QueryJobsRequest(
+            page_size=1,
+            page_token=base64.urlsafe_b64encode(json.dumps({
+                'of': -33
+            }))), ),
+    ])
+    def test_query_jobs_bad_inputs(self, _, req):
+        with self.assertRaises(ValueError):
+            self.CLIENT.query_jobs(self.PROVIDER, req)
+
     # TODO(bryancrampton): Add support to dsub's StubJobProvider for lookup
     # by create_time and job_name_list and add tests around that here
 
 
 if __name__ == '__main__':
-    import unittest
     unittest.main()

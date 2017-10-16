@@ -1,5 +1,7 @@
+import base64
 import connexion
 import json
+import numbers
 from werkzeug.exceptions import BadRequest, NotFound, Forbidden, InternalServerError
 from dsub.providers import local
 from dsub.providers import google
@@ -78,14 +80,53 @@ class DSubClient:
         tasks = ddel.ddel_tasks(
             provider=provider, job_list=[job_id], task_list=task_list)
 
+    def _encode_jobs_page_token(self, offset):
+        """Encode the jobs pagination token.
+
+        We implement the pagination token via base64-encoded JSON s.t. tokens are
+        opaque to clients and enable us to make backwards compatible changes to our
+        pagination implementation. Base64+JSON are used specifically as they are
+        easily portable across language.
+
+        Args:
+          offset: (int) index into the overall list of jobs matching the query
+        Returns:
+          (string) encoded page token representing a page of jobs
+        """
+        s = json.dumps({
+            'of': offset,
+        })
+        # Strip ugly base64 padding.
+        return base64.urlsafe_b64encode(s).rstrip('=')
+
+    def _decode_jobs_page_token(self, token):
+        """Decode the jobs pagination token.
+
+        Args:
+          token: (string) base64 encoded JSON pagination token
+
+        Returns:
+          (number) the pagination offset
+        """
+        # Pad the token out to be divisible by 4.
+        padded_token = token + '=' * (4 - (len(token) % 4))
+        tok = base64.urlsafe_b64decode(padded_token)
+        tok_dict = json.loads(tok)
+        offset = tok_dict.get('of')
+        if not offset or not isinstance(offset, numbers.Number) or offset <= 0:
+            raise ValueError('invalid token JSON {}'.format(tok_dict))
+        return offset
+
     def query_jobs(self, provider, query):
         """Query dsub jobs or tasks based on their metadata
 
         Args:
-            params (QueryJobsRequest): defined in swagger API spec
+            params (QueryJobsRequest): defined in swagger API spec, a positive
+              page_size must be set
 
         Returns:
-            list<dict>: A list of raw metadata for all jobs matching the query.
+            list<dict>: a list of raw metadata for all jobs matching the query
+            string: token for retrieving the next page
         """
         dstat_params = self._query_parameters(query)
 
@@ -99,13 +140,26 @@ class DSubClient:
         statuses = dstat_params['statuses']
         if not statuses:
             statuses = ['*']
+        if query.page_size <= 0:
+            raise ValueError("page_size must be positive")
+
+        offset = 0
+        # Request one extra job to confirm whether there's more data to return
+        # in a subsequent page.
+        max_tasks = query.page_size + 1
+        if query.page_token:
+            offset = self._decode_jobs_page_token(query.page_token)
+            max_tasks += offset
+
+        jobs = []
         try:
-            return dstat.dstat_job_producer(
+            jobs = dstat.dstat_job_producer(
                 provider=provider,
                 status_list=statuses,
                 create_time=dstat_params['create_time'],
                 job_name_list=dstat_params['job_name_list'],
-                full_output=True).next()
+                full_output=True,
+                max_tasks=max_tasks).next()
         except apiclient.errors.HttpError as e:
             # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
             # provider-specific error translation down into dstat.
@@ -116,6 +170,25 @@ class DSubClient:
                 raise Forbidden('permission denied for project "{}"'.format(
                     query.parent_id))
             raise InternalServerError("unexpected failure querying dsub jobs")
+
+        # This pagination strategy is very inefficient and brittle. Paginating
+        # the entire collection of jobs requires O(n^2 / p) work, where n is the
+        # number of jobs and p is the page size. This is a first pass
+        # implementation which allows for quick lookup of the first page of
+        # operations which is the expected common usage pattern for clients.
+        # The current approach also uses a numeric offset, which is brittle in
+        # that new jobs may be created/deleted mid-pagination, causing other
+        # elements to be duplicated or disappear in the overall pagination
+        # stream.
+        # TODO(calbach): Fix the above issues once pagination is supported in
+        # the dstat library.
+        if len(jobs) <= offset:
+            return [], None
+        next_offset = offset + query.page_size
+        if len(jobs) > next_offset:
+            return jobs[offset:next_offset], self._encode_jobs_page_token(
+                next_offset)
+        return jobs[offset:], None
 
     def _query_parameters(self, query):
         dstat_params = {

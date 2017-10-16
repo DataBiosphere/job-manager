@@ -12,6 +12,11 @@ import {StatusGroup} from './table/table.component';
 })
 export class JobListComponent implements OnInit {
 
+  // TODO(calbach): Lazily paginate the backend separately from frontend
+  // pagination. Handle the client not having all matching jobs loaded into
+  // memory, or even being aware of how many jobs match the current filter. For
+  // now, we only display this many matching jobs.
+  private const MAX_BACKEND_JOBS = 256;
   private jobs: QueryJobsResult[] = [];
 
   constructor(
@@ -43,7 +48,8 @@ export class JobListComponent implements OnInit {
   private updateJobs(statusGroup: StatusGroup): void {
     this.jobMonitorService.queryJobs({
         parentId: this.route.snapshot.queryParams['parentId'],
-        statuses: this.statusGroupToJobStatuses(statusGroup)
+        statuses: this.statusGroupToJobStatuses(statusGroup),
+        pageSize: MAX_BACKEND_JOBS
       })
       .then(response => this.jobs = response.results);
   }
