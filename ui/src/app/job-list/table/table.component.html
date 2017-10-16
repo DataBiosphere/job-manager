@@ -4,11 +4,12 @@
   </md-form-field>
 </form>
 
-<md-tab-group (selectChange)="toggleActive($event)">
-  <md-tab label = "{{statusGroupStringMap.get(0)}}"></md-tab>
-  <md-tab label = "{{statusGroupStringMap.get(1)}}"></md-tab>
-  <md-tab label = "{{statusGroupStringMap.get(2)}}"></md-tab>
+<md-tab-group (selectChange)="toggleActive($event)" selectedIndex="{{getTabSelectedIndex()}}">
+  <md-tab label = "{{statusGroupStringMap.get(statusGroup.Active)}}"></md-tab>
+  <md-tab label = "{{statusGroupStringMap.get(statusGroup.Failed)}}"></md-tab>
+  <md-tab label = "{{statusGroupStringMap.get(statusGroup.Completed)}}"></md-tab>
 </md-tab-group>
+
 
 <md-table #table [dataSource]="dataSource">
 
