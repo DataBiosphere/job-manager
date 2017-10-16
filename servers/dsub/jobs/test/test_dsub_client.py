@@ -11,72 +11,72 @@ from jobs.controllers.dsub_client import *
 from mock import MagicMock
 from parameterized import parameterized
 
-OPS = [{
-    'job-id': 'job-1',
-    'job-name': 'foo',
-    'task-id': 'task-1',
-    'status': ('RUNNING', '123'),
-    'labels': {
-        'a_key': 'a_val'
-    }
-}, {
-    'job-id': 'job-1',
-    'job-name': 'foo',
-    'task-id': 'task-2',
-    'status': ('FAILURE', '234'),
-    'labels': {
-        'some_key': 'some_value'
-    }
-}, {
-    'job-id': 'job-2',
-    'job-name': 'bar',
-    'task-id': 'task-1',
-    'status': ('CANCELED', '345'),
-    'labels': {
-        'different_key': 'some_other_value'
-    }
-}, {
-    'job-id': 'job-2',
-    'job-name': 'bar',
-    'task-id': 'task-2',
-    'status': ('RUNNING', '456'),
-    'labels': {
-        'another_key': 'a_third_value'
-    }
-}, {
-    'job-id': 'job-2',
-    'job-name': 'bar',
-    'task-id': 'task-3',
-    'status': ('RUNNING', '567'),
-    'labels': {
-        'key4': 'val4'
-    }
-}, {
-    'job-id': 'job-2',
-    'job-name': 'bar',
-    'task-id': 'task-4',
-    'status': ('RUNNING', '678'),
-    'labels': {
-        'key5': 'val5'
-    }
-}, {
-    'job-id': 'job-2',
-    'job-name': 'bar',
-    'task-id': 'task-5',
-    'status': ('RUNNING', '789'),
-    'labels': {
-        'key6': 'val6'
-    }
-}]
-
 
 class TestDSubClient(TestCase):
     """ DSubClient unit tests."""
+    OPS = [{
+        'job-id': 'job-1',
+        'job-name': 'foo',
+        'task-id': 'task-1',
+        'status': ('RUNNING', '123'),
+        'labels': {
+            'a_key': 'a_val'
+        }
+    }, {
+        'job-id': 'job-1',
+        'job-name': 'foo',
+        'task-id': 'task-2',
+        'status': ('FAILURE', '234'),
+        'labels': {
+            'some_key': 'some_value'
+        }
+    }, {
+        'job-id': 'job-2',
+        'job-name': 'bar',
+        'task-id': 'task-1',
+        'status': ('CANCELED', '345'),
+        'labels': {
+            'different_key': 'some_other_value'
+        }
+    }, {
+        'job-id': 'job-2',
+        'job-name': 'bar',
+        'task-id': 'task-2',
+        'status': ('RUNNING', '456'),
+        'labels': {
+            'another_key': 'a_third_value'
+        }
+    }, {
+        'job-id': 'job-2',
+        'job-name': 'bar',
+        'task-id': 'task-3',
+        'status': ('RUNNING', '567'),
+        'labels': {
+            'key4': 'val4'
+        }
+    }, {
+        'job-id': 'job-2',
+        'job-name': 'bar',
+        'task-id': 'task-4',
+        'status': ('RUNNING', '678'),
+        'labels': {
+            'key5': 'val5'
+        }
+    }, {
+        'job-id': 'job-2',
+        'job-name': 'bar',
+        'task-id': 'task-5',
+        'status': ('RUNNING', '789'),
+        'labels': {
+            'key6': 'val6'
+        }
+    }]
+
     PROVIDER = stub.StubJobProvider()
     CLIENT = DSubClient()
 
     def setUp(self):
-        self.PROVIDER.set_operations(OPS)
+        self.PROVIDER.set_operations(self.OPS)
         super(TestDSubClient, self).setUp()
 
     def tearDown(self):
@@ -97,7 +97,7 @@ class TestDSubClient(TestCase):
             self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-4'),
             self.CLIENT.get_job(self.PROVIDER, 'job-2', 'task-5'),
         ]
-        self.assertEqual(self._filter_empty_fields(tasks), OPS)
+        self.assertEqual(self._filter_empty_fields(tasks), self.OPS)
 
     def test_get_job_conflicting_id(self):
         self.PROVIDER.set_operations([{
@@ -127,7 +127,7 @@ class TestDSubClient(TestCase):
     def test_abort_job(self):
         # We can remove this mock if this issue is resolved:
         # https://github.com/googlegenomics/dsub/issues/65
-        self.PROVIDER.delete_jobs = MagicMock(return_value=(OPS[1:2], []))
+        self.PROVIDER.delete_jobs = MagicMock(return_value=(self.OPS[1:2], []))
         self.CLIENT.abort_job(self.PROVIDER, 'job-1', 'task-2')
         self.PROVIDER.delete_jobs.assert_called_with(None, ['job-1'],
                                                      ['task-2'], None, None)
@@ -146,8 +146,8 @@ class TestDSubClient(TestCase):
         tasks_blah, _ = self.CLIENT.query_jobs(self.PROVIDER,
                                                QueryJobsRequest(
                                                    name='blah', page_size=100))
-        self.assertEqual(self._filter_empty_fields(tasks_foo), OPS[0:2])
-        self.assertEqual(self._filter_empty_fields(tasks_bar), OPS[2:])
+        self.assertEqual(self._filter_empty_fields(tasks_foo), self.OPS[0:2])
+        self.assertEqual(self._filter_empty_fields(tasks_bar), self.OPS[2:])
         self.assertEqual(self._filter_empty_fields(tasks_blah), [])
 
     def test_query_job_by_status(self):
@@ -165,9 +165,11 @@ class TestDSubClient(TestCase):
                                                      page_size=100))
         self.assertEqual(
             self._filter_empty_fields(running_tasks),
-            [OPS[0], OPS[3], OPS[4], OPS[5], OPS[6]])
-        self.assertEqual(self._filter_empty_fields(aborted_tasks), [OPS[2]])
-        self.assertEqual(self._filter_empty_fields(failed_tasks), [OPS[1]])
+            [self.OPS[0], self.OPS[3], self.OPS[4], self.OPS[5], self.OPS[6]])
+        self.assertEqual(
+            self._filter_empty_fields(aborted_tasks), [self.OPS[2]])
+        self.assertEqual(
+            self._filter_empty_fields(failed_tasks), [self.OPS[1]])
 
     PAGE_TEST_PARAMS = [('page size {}'.format(i), i)
                         for i in range(1, len(OPS) + 1)]
@@ -177,11 +179,11 @@ class TestDSubClient(TestCase):
     ])
     def test_query_jobs_pagination(self, _, page_size, expected_pages=None):
         if not expected_pages:
-            expected_pages = math.ceil(float(len(OPS)) / page_size)
+            expected_pages = math.ceil(float(len(self.OPS)) / page_size)
         got = []
         got_pages = 0
         page_token = None
-        for _ in range(10 * expected_pages):
+        for _ in range(10 * int(expected_pages)):
             jobs, page_token = self.CLIENT.query_jobs(
                 self.PROVIDER,
                 QueryJobsRequest(page_token=page_token, page_size=page_size))
@@ -191,7 +193,7 @@ class TestDSubClient(TestCase):
             if not page_token:
                 break
 
-        self.assertItemsEqual(self._filter_empty_fields(got), OPS)
+        self.assertItemsEqual(self._filter_empty_fields(got), self.OPS)
         self.assertEquals(got_pages, expected_pages)
 
     @parameterized.expand([
