@@ -131,6 +131,15 @@ class TestJobsControllerLocal(BaseTestCase):
             [label_job, other_label_job])
 
     def assert_query_matches(self, query_params, job_list):
+        """Executes query and asserts that the results match the given job_list
+
+        Args:
+            query_params (QueryJobsRequest): Request object with the metadata
+                to query jobs by
+            job_list (list): List of dictionaries of job metadata returned from
+                dsub.run(). Specifically contains 'job-id', 'task-id', and
+                'user-id' keys
+        """
         response = self.must_query_jobs(query_params)
         self.assertEqual(len(response.results), len(job_list))
         for result, job in zip(response.results, job_list):
