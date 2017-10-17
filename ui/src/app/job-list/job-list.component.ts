@@ -28,7 +28,7 @@ export class JobListComponent implements OnInit {
   ngOnInit(): void {
     let statusGroup: StatusGroup =
       this.route.snapshot.queryParams['statusGroup'];
-    if (statusGroup in StatusGroup && statusGroup !== StatusGroup.Active) {
+    if (statusGroup in StatusGroup) {
       this.updateJobs(this.route.snapshot.queryParams['statusGroup']);
     } else {
       this.updateJobs(StatusGroup.Active);
@@ -63,13 +63,19 @@ export class JobListComponent implements OnInit {
 
   private updateJobs(statusGroup: StatusGroup): void {
     if (statusGroup !== StatusGroup.Active) {
-      this.router.navigate([], { queryParams: {
-        parentId: this.route.snapshot.queryParams['parentId'],
-        statusGroup: statusGroup}})
+      this.router.navigate([], {
+        queryParams: {
+          parentId: this.route.snapshot.queryParams['parentId'],
+          statusGroup: statusGroup
+        }
+      })
         .then(() => this.updateJobList(statusGroup));
     } else {
-      this.router.navigate([], { queryParams: {
-        parentId: this.route.snapshot.queryParams['parentId']}})
+      this.router.navigate([], {
+        queryParams: {
+          parentId: this.route.snapshot.queryParams['parentId']
+        }
+      })
         .then(() => this.updateJobList(statusGroup));
     }
 
