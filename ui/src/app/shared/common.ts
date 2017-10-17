@@ -8,3 +8,9 @@ export enum JobStatusImage {
   Succeeded = <any> 'https://www.gstatic.com/images/icons/material/system/1x/done_grey600_24dp.png',
   Aborted = <any> 'https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png'
 }
+
+export enum StatusGroup {
+  Active = <any> 'active',
+  Failed = <any> 'failed',
+  Completed = <any> 'completed'
+}

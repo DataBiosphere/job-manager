@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import {JobMonitorService} from '../core/job-monitor.service';
 import {JobStatus} from '../shared/model/JobStatus';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
-import {StatusGroup} from './table/table.component';
+import {StatusGroup} from '../shared/common';
 
 @Component({
   templateUrl: './job-list.component.html',
@@ -16,16 +16,23 @@ export class JobListComponent implements OnInit {
   // pagination. Handle the client not having all matching jobs loaded into
   // memory, or even being aware of how many jobs match the current filter. For
   // now, we only display this many matching jobs.
-  private const MAX_BACKEND_JOBS = 256;
+  private static readonly MAX_BACKEND_JOBS = 256;
   private jobs: QueryJobsResult[] = [];
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private jobMonitorService: JobMonitorService
   ) {}
 
   ngOnInit(): void {
-    this.updateJobs(StatusGroup.Active);
+    let statusGroup: StatusGroup =
+      this.route.snapshot.queryParams['statusGroup'];
+    if (statusGroup in StatusGroup) {
+      this.updateJobs(this.route.snapshot.queryParams['statusGroup']);
+    } else {
+      this.updateJobs(StatusGroup.Active);
+    }
   }
 
   private statusGroupToJobStatuses(statusGroup: StatusGroup): JobStatus[] {
@@ -45,12 +52,32 @@ export class JobListComponent implements OnInit {
     }
   }
 
-  private updateJobs(statusGroup: StatusGroup): void {
+  private updateJobList(statusGroup: StatusGroup): void {
     this.jobMonitorService.queryJobs({
         parentId: this.route.snapshot.queryParams['parentId'],
         statuses: this.statusGroupToJobStatuses(statusGroup),
-        pageSize: MAX_BACKEND_JOBS
+        pageSize: JobListComponent.MAX_BACKEND_JOBS
       })
-      .then(response => this.jobs = response.results);
+      .then(response => this.jobs = response.results)
+  }
+
+  private updateJobs(statusGroup: StatusGroup): void {
+    if (statusGroup !== StatusGroup.Active) {
+      this.router.navigate([], {
+        queryParams: {
+          parentId: this.route.snapshot.queryParams['parentId'],
+          statusGroup: statusGroup
+        }
+      })
+        .then(() => this.updateJobList(statusGroup));
+    } else {
+      this.router.navigate([], {
+        queryParams: {
+          parentId: this.route.snapshot.queryParams['parentId']
+        }
+      })
+        .then(() => this.updateJobList(statusGroup));
+    }
+
   }
 }

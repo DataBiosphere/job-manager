@@ -23,7 +23,8 @@ import 'rxjs/add/observable/fromEvent';
 import {JobMonitorService} from '../../core/job-monitor.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
-import {JobStatusImage} from '../../shared/common';
+import {JobStatusImage, StatusGroup} from '../../shared/common';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'jm-job-list-table',
@@ -37,7 +38,8 @@ export class JobsTableComponent implements OnChanges, OnInit {
   private selectedJobs: QueryJobsResult[] = [];
   private mouseoverJob: QueryJobsResult;
   private allSelected: boolean = false;
-  private currentStatusGroup: StatusGroup = StatusGroup.Active;
+  private currentStatusGroup: StatusGroup;
+  private statusGroup = StatusGroup;
   private statusGroupStringMap: Map<StatusGroup, string> = new Map([
     [StatusGroup.Active, "Active Jobs"],
     [StatusGroup.Failed, "Failed"],
@@ -64,11 +66,16 @@ export class JobsTableComponent implements OnChanges, OnInit {
   @ViewChild('filter') filter: ElementRef;
 
   constructor(
+    private route: ActivatedRoute,
     private jobMonitorService: JobMonitorService
   ) {}
 
   ngOnInit() {
     this.dataSource = new JobsDataSource(this.database, this.paginator);
+    this.currentStatusGroup = this.route.snapshot.queryParams['statusGroup'];
+    if (!this.currentStatusGroup) {
+      this.currentStatusGroup = StatusGroup.Active;
+    }
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
       .debounceTime(150)
       .distinctUntilChanged()
@@ -105,6 +112,21 @@ export class JobsTableComponent implements OnChanges, OnInit {
 
   getStatusUrl(status: JobStatus): string {
     return JobStatusImage[status];
+  }
+
+  getTabSelectedIndex(): number {
+    switch(this.currentStatusGroup) {
+      case StatusGroup.Active: {
+        return 0;
+      }
+      case StatusGroup.Failed: {
+        return 1;
+      }
+
+      case StatusGroup.Completed: {
+        return 2;
+      }
+    }
   }
 
   isSelected(job: QueryJobsResult): boolean {
@@ -206,10 +228,4 @@ export class JobsDataSource extends DataSource<any> {
   }
 
   disconnect() {}
-}
-
-export enum StatusGroup {
-  Active = 0,
-  Failed = 1,
-  Completed = 2
 }
