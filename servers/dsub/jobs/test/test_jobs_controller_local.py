@@ -8,7 +8,6 @@ import unittest
 from . import BaseTestCase
 from flask import current_app
 from jobs.controllers.job_statuses import ApiStatus
-from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
 from six import BytesIO
 
@@ -89,33 +88,31 @@ class TestJobsControllerLocal(BaseTestCase):
         name_job = self.start_job('echo NAME', name='NAME_JOB')
         other_name_job = self.start_job('echo OTHER', name='OTHER_JOB')
         no_name_job = self.start_job('echo NO_NAME')
-        parameters = QueryJobsRequest(name='NAME_JOB')
-        response = self.must_query_jobs(parameters)
-        self.assertEqual(len(response.results), 1)
-        result = response.results[0]
-        self.assertEqual(result.id, name_job['job-id'])
-        self.assertEqual(result.labels['user-id'], name_job['user-id'])
+        self.assert_query_matches(
+            QueryJobsRequest(name='NAME_JOB'), [name_job])
+        self.assert_query_matches(QueryJobsRequest(name='JOB'), [])
 
     def test_query_jobs_by_status(self):
-        suc_job = self.start_job('echo SUCCEEDED', wait=True)
-        run_job = self.start_job('echo RUNNING && sleep 30')
-        self.wait_for_job_status(run_job['job-id'], ApiStatus.RUNNING)
-        suc_params = QueryJobsRequest(statuses=[ApiStatus.SUCCEEDED])
-        run_params = QueryJobsRequest(statuses=[ApiStatus.RUNNING])
-        suc_response = self.must_query_jobs(suc_params)
-        run_response = self.must_query_jobs(run_params)
-        self.assertEqual(len(suc_response.results), 1)
-        self.assertEqual(len(run_response.results), 1)
-        suc_result = suc_response.results[0]
-        run_result = run_response.results[0]
-        self.assertEqual(suc_result.id, suc_job['job-id'])
-        self.assertEqual(suc_result.labels['user-id'], suc_job['user-id'])
-        self.assertEqual(run_result.id, run_job['job-id'])
-        self.assertEqual(run_result.labels['user-id'], run_job['user-id'])
+        succeeded_job = self.start_job('echo SUCCEEDED', wait=True)
+        running_job = self.start_job('echo RUNNING && sleep 30')
+        self.wait_for_job_status(running_job['job-id'], ApiStatus.RUNNING)
+        self.assert_query_matches(
+            QueryJobsRequest(statuses=[ApiStatus.SUCCEEDED]), [succeeded_job])
+        self.assert_query_matches(
+            QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [running_job])
 
     def test_query_jobs_by_label(self):
-        labels = {'label_key': 'the_label_value'}
-        other_labels = {'diff_label_key': 'other_label_value'}
+        labels = {
+            'label_key': 'the_label_value',
+            'matching_key': 'some_value',
+            'overlap_key': 'overlap_value'
+        }
+        other_labels = {
+            'diff_label_key': 'other_label_value',
+            'matching_key': 'non_matching_value',
+            'overlap_key': 'overlap_value'
+        }
+
         label_job = self.start_job(
             'echo LABEL', labels=labels, name='labeljob')
         other_label_job = self.start_job(
@@ -128,12 +125,17 @@ class TestJobsControllerLocal(BaseTestCase):
         self.wait_for_job_status(other_label_job['job-id'], ApiStatus.RUNNING)
         self.wait_for_job_status(no_label_job['job-id'], ApiStatus.RUNNING)
 
-        parameters = QueryJobsRequest(labels=labels)
-        response = self.must_query_jobs(parameters)
-        self.assertEqual(len(response.results), 1)
-        result = response.results[0]
-        self.assertEqual(result.id, label_job['job-id'])
-        self.assertEqual(result.labels['user-id'], label_job['user-id'])
+        self.assert_query_matches(QueryJobsRequest(labels=labels), [label_job])
+        self.assert_query_matches(
+            QueryJobsRequest(labels={'overlap_key': 'overlap_value'}),
+            [label_job, other_label_job])
+
+    def assert_query_matches(self, query_params, job_list):
+        response = self.must_query_jobs(query_params)
+        self.assertEqual(len(response.results), len(job_list))
+        for result, job in zip(response.results, job_list):
+            self.assertEqual(result.id, job['job-id'])
+            self.assertEqual(result.labels['user-id'], job['user-id'])
 
     # TODO(https://github.com/bvprivate/job-monitor/issues/73) Add tests for
     # querying by start and end times once implemented by dsub shim
