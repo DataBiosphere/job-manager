@@ -5,6 +5,7 @@ import shutil
 import tempfile
 import time
 import unittest
+from operator import itemgetter, attrgetter
 from . import BaseTestCase
 from flask import current_app
 from jobs.controllers.job_statuses import ApiStatus
@@ -142,7 +143,9 @@ class TestJobsControllerLocal(BaseTestCase):
         """
         response = self.must_query_jobs(query_params)
         self.assertEqual(len(response.results), len(job_list))
-        for result, job in zip(response.results, job_list):
+        sorted_results = sorted(response.results, key=attrgetter('id'))
+        sorted_job_list = sorted(job_list, key=itemgetter('job-id'))
+        for result, job in zip(sorted_results, sorted_job_list):
             self.assertEqual(result.id, job['job-id'])
             self.assertEqual(result.labels['user-id'], job['user-id'])
 
