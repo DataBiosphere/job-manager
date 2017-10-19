@@ -75,7 +75,9 @@ class TestJobsControllerLocal(BaseTestCase):
 
     def test_get_failed_job(self):
         started = self.start_job('not_a_command')
-        self.wait_for_job_status(started['job-id'], ApiStatus.FAILED)
+        job = self.wait_for_job_status(started['job-id'], ApiStatus.FAILED)
+        self.assertEqual(job.failures[0].failure,
+                         'E: Docker exit code 127 (check stderr).')
 
     def test_get_non_existent_job_fails(self):
         resp = self.client.open('/jobs/not-a-job', method='GET')
