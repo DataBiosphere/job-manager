@@ -4,14 +4,13 @@ import {
   ElementRef,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
-import {MdPaginator, MdTabChangeEvent} from '@angular/material';
+import {MdPaginator, MdTabChangeEvent, PageEvent} from '@angular/material';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
@@ -31,10 +30,12 @@ import {ActivatedRoute, Router} from '@angular/router';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
-export class JobsTableComponent implements OnChanges, OnInit {
-  @Input() jobs: QueryJobsResult[] = [];
-  @Output() updateJobs: EventEmitter<StatusGroup> = new EventEmitter();
-  private expandedJob: QueryJobsResult;
+export class JobsTableComponent implements OnInit {
+  @Input() jobs: BehaviorSubject<JobListView>;
+  @Output() onStatusTabChange = new EventEmitter<StatusGroup>();
+  @Output() onJobUpdate = new EventEmitter<QueryJobsResult>();
+  @Output() onPage = new EventEmitter<PageEvent>();
+
   private selectedJobs: QueryJobsResult[] = [];
   private mouseoverJob: QueryJobsResult;
   private allSelected: boolean = false;
@@ -51,7 +52,6 @@ export class JobsTableComponent implements OnChanges, OnInit {
     ["Completed", StatusGroup.Completed]
   ]);
 
-  database = new JobsDatabase(this.jobs);
   dataSource: JobsDataSource | null;
   // TODO(alanhwang): Allow these columns to be configured by the user
   displayedColumns = [
@@ -71,11 +71,12 @@ export class JobsTableComponent implements OnChanges, OnInit {
   ) {}
 
   ngOnInit() {
-    this.dataSource = new JobsDataSource(this.database, this.paginator);
+    this.dataSource = new JobsDataSource(this.jobs, this.paginator);
     this.currentStatusGroup = this.route.snapshot.queryParams['statusGroup'];
     if (!this.currentStatusGroup) {
       this.currentStatusGroup = StatusGroup.Active;
     }
+    this.paginator.page.subscribe((e) => this.onPage.emit(e));
     Observable.fromEvent(this.filter.nativeElement, 'keyup')
       .debounceTime(150)
       .distinctUntilChanged()
@@ -85,13 +86,7 @@ export class JobsTableComponent implements OnChanges, OnInit {
       });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.jobs = changes.jobs.currentValue;
-    this.database.dataChange.next(this.jobs);
-  }
-
   private onJobsChanged(): void {
-    this.updateJobs.emit(this.currentStatusGroup);
     this.allSelected = false;
     this.selectedJobs = [];
     this.paginator.pageIndex = 0;
@@ -141,12 +136,12 @@ export class JobsTableComponent implements OnChanges, OnInit {
   }
 
   showDropdownArrow(job: QueryJobsResult): boolean {
-    return job == this.mouseoverJob || job == this.expandedJob;
+    return job == this.mouseoverJob;
   }
-
 
   toggleActive(event: MdTabChangeEvent): void {
     this.currentStatusGroup = this.reverseStatusGroupStringMap.get(event.tab.textLabel);
+    this.onStatusTabChange.emit(this.currentStatusGroup);
     this.onJobsChanged();
   }
 
@@ -173,57 +168,45 @@ export class JobsTableComponent implements OnChanges, OnInit {
       this.selectedJobs = [];
       this.allSelected = false;
     } else {
-      this.selectedJobs = this.jobs.slice();
+      this.selectedJobs = this.jobs.value.results.slice();
       this.allSelected = true;
     }
   }
 }
 
-/** Simple database with an observable list of jobs to be subscribed to by the
- *  DataSource. */
-export class JobsDatabase {
-  private jobs: QueryJobsResult[];
-  /** Stream that emits whenever the data has been modified. */
-  dataChange: BehaviorSubject<QueryJobsResult[]> =
-    new BehaviorSubject<QueryJobsResult[]>(this.jobs);
-  get data(): QueryJobsResult[] { return this.dataChange.value; }
-
-  constructor(jobs: QueryJobsResult[]) {
-    this.jobs = jobs;
-    this.dataChange.next(this.jobs);
-  }
+export type JobListView = {
+  results: QueryJobsResult[];
+  exhaustive: boolean;
 }
 
 /** DataSource providing the list of jobs to be rendered in the table. */
 export class JobsDataSource extends DataSource<any> {
-  visibleJobs: QueryJobsResult[];
-  _filterChange = new BehaviorSubject('');
-  get filter(): string { return this._filterChange.value; }
-  set filter(filter: string) { this._filterChange.next(filter); }
+  private filterChange = new BehaviorSubject('');
+  get filter(): string { return this.filterChange.value; }
+  set filter(filter: string) { this.filterChange.next(filter); }
 
-  constructor(private _db: JobsDatabase, private _paginator: MdPaginator) {
+  constructor(private backendJobs: BehaviorSubject<JobListView>, private paginator: MdPaginator) {
     super();
   }
 
   connect(): Observable<QueryJobsResult[]> {
     const displayDataChanges = [
-      this._db.dataChange,
-      this._paginator.page,
-      this._filterChange,
+      this.backendJobs,
+      this.paginator.page,
+      this.filterChange,
     ];
-
     return Observable.merge(...displayDataChanges).map(() => {
-      const data = this._db.data.slice();
+      const data = this.backendJobs.value.results.slice();
 
       // Get only the requested page
-      const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
-      this.visibleJobs = data
+      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
+      let visibleJobs = data
         .filter((job: QueryJobsResult) => {
           let searchStr = (job.name + job.status).toLowerCase();
           return searchStr.indexOf(this.filter.toLowerCase()) != -1;
         })
-        .splice(startIndex, this._paginator.pageSize);
-      return this.visibleJobs.slice();
+        .splice(startIndex, this.paginator.pageSize)
+      return visibleJobs;
     });
   }
 

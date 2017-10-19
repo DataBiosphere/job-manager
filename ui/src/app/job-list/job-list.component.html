@@ -1,1 +1,5 @@
-<jm-job-list-table [jobs]="jobs" (updateJobs)="updateJobs($event)"></jm-job-list-table>
+<jm-job-list-table
+  [jobs]="jobs"
+  (onStatusTabChange)="maybeNavigateForStatus($event)"
+  (onPage)="onClientPaginate($event)">
+</jm-job-list-table>

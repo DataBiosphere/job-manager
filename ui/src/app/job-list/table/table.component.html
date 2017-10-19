@@ -1,6 +1,9 @@
 <form class = "filter-form">
   <md-form-field class = "filter-input" color="accent">
-    <input mdInput #filter placeholder="Filter jobs">
+    <!-- Client side filtering is only supported for exhaustive jobs views. -->
+    <input mdInput #filter
+           [disabled]="!jobs.value.exhaustive"
+           placeholder="Filter jobs">
   </md-form-field>
 </form>
 
@@ -108,7 +111,7 @@
 </div>
 
 <md-paginator #paginator
-              [length]="jobs.length"
+              [length]="jobs.value.results.length"
               [pageIndex]="0"
               [pageSize]="10"
               [pageSizeOptions]="[5, 10, 25, 100]">
