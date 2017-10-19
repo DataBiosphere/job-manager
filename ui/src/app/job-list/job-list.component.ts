@@ -9,7 +9,8 @@ import {JobStatus} from '../shared/model/JobStatus';
 import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {StatusGroup} from '../shared/common';
-import {JobsTableComponent, JobListView} from './table/table.component';
+import {JobsTableComponent} from './table/table.component';
+import {JobListView, JobStream} from '../shared/job-stream';
 
 @Component({
   templateUrl: './job-list.component.html',
@@ -75,74 +76,5 @@ export class JobListComponent implements OnInit {
       this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp))
       this.jobStream.loadAtLeast(JobListComponent.initialBackendPageSize);
     });
-  }
-}
-
-
-// An observable stream of the client's materialized jobs, where each update
-// contains all jobs that have been loaded so far.
-export class JobStream extends BehaviorSubject<JobListView> {
-  private static readonly minBackendPageSize = 100;
-
-  // A backend query promise which represents the pending or most recent backend
-  // response. All requests synchronize through this promise to avoid duplicate
-  // data loading.
-  private queryPromise: Promise<QueryJobsResponse> = Promise.resolve({});
-
-  constructor(private jobMonitorService: JobMonitorService,
-              private statusGroup: StatusGroup,
-              private parentId?: string) {
-    super({
-      results: [],
-      exhaustive: false
-    });
-  }
-
-  // Makes an API request if this JobStream doesn't have atLeast this many
-  // total entries; no-op otherwise. The job stream may elect to load more than
-  // the requested number.
-  loadAtLeast(atLeast: number): void {
-    this.queryPromise = this.queryPromise.then(prevResp => {
-      if (this.value.exhaustive ||
-        this.value.results.length >= atLeast) {
-        // We've already loaded the requested number of jobs.
-        return prevResp;
-      }
-      let pageSize = Math.max(
-        JobStream.minBackendPageSize, this.value.results.length - atLeast);
-      return this.queryJobs(pageSize, prevResp.nextPageToken).then(resp => {
-        this.next({
-          results: this.value.results.concat(resp.results),
-          exhaustive: !resp.nextPageToken
-        })
-        return resp;
-      });
-    });
-  }
-
-  private queryJobs(pageSize: number, pageToken?: string): Promise<QueryJobsResponse> {
-    return this.jobMonitorService.queryJobs({
-      parentId: this.parentId,
-      statuses: this.statusGroupToJobStatuses(this.statusGroup),
-      pageSize: pageSize,
-      pageToken: pageToken
-    });
-  }
-
-  private statusGroupToJobStatuses(statusGroup: StatusGroup): JobStatus[] {
-    switch(statusGroup) {
-      case StatusGroup.Active: {
-        return [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
-      }
-      case StatusGroup.Completed: {
-        return [JobStatus.Succeeded, JobStatus.Aborted];
-      }
-      case StatusGroup.Failed: {
-        return [JobStatus.Failed];
-      }
-      default: {
-        return [];
-      }
-    }
   }
 }

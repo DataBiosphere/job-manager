@@ -23,6 +23,7 @@ import {JobMonitorService} from '../../core/job-monitor.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {JobStatusImage, StatusGroup} from '../../shared/common';
+import {JobListView} from '../../shared/job-stream';
 import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
@@ -172,11 +173,6 @@ export class JobsTableComponent implements OnInit {
       this.allSelected = true;
     }
   }
-}
-
-export type JobListView = {
-  results: QueryJobsResult[];
-  exhaustive: boolean;
 }
 
 /** DataSource providing the list of jobs to be rendered in the table. */
