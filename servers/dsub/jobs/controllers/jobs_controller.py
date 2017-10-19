@@ -107,8 +107,7 @@ def _get_failures(job):
             FailureMessage(
                 failure=job['status-message'], timestamp=job['last-update'])
         ]
-    else:
-        return None
+    return None
 
 
 def _parse_job_datetimes(job):
