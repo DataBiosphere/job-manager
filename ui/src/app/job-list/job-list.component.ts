@@ -1,83 +1,80 @@
-import {Component, OnInit} from '@angular/core';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Subscription} from 'rxjs/Subscription';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {PageEvent} from '@angular/material'
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {JobMonitorService} from '../core/job-monitor.service';
 import {JobStatus} from '../shared/model/JobStatus';
+import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {StatusGroup} from '../shared/common';
+import {JobsTableComponent} from './table/table.component';
+import {JobListView, JobStream} from '../shared/job-stream';
 
 @Component({
   templateUrl: './job-list.component.html',
   styleUrls: ['./job-list.component.css'],
 })
 export class JobListComponent implements OnInit {
+  @ViewChild(JobsTableComponent) table: JobsTableComponent;
 
-  // TODO(calbach): Lazily paginate the backend separately from frontend
-  // pagination. Handle the client not having all matching jobs loaded into
-  // memory, or even being aware of how many jobs match the current filter. For
-  // now, we only display this many matching jobs.
-  private static readonly MAX_BACKEND_JOBS = 256;
-  private jobs: QueryJobsResult[] = [];
+  private static readonly initialBackendPageSize = 200;
+
+  // This Subject is synchronized to a JobStream, which we destroy and recreate
+  // whenever we change query parameters, via a subscription.
+  private jobs = new BehaviorSubject<JobListView>({
+    results: [],
+    exhaustive: false
+  });
+  private jobStream: JobStream;
+  private streamSubscription: Subscription;
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private jobMonitorService: JobMonitorService
-  ) {}
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly jobMonitorService: JobMonitorService
+  ) {
+    this.jobStream = new JobStream(jobMonitorService, StatusGroup.Active);
+    this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
+  }
 
   ngOnInit(): void {
+    this.maybeNavigateForStatus(this.currentStatusGroup());
+  }
+
+  private currentStatusGroup(): StatusGroup {
     let statusGroup: StatusGroup =
       this.route.snapshot.queryParams['statusGroup'];
     if (statusGroup in StatusGroup) {
-      this.updateJobs(this.route.snapshot.queryParams['statusGroup']);
-    } else {
-      this.updateJobs(StatusGroup.Active);
+      return statusGroup;
     }
+    return StatusGroup.Active;
   }
 
-  private statusGroupToJobStatuses(statusGroup: StatusGroup): JobStatus[] {
-    switch(statusGroup) {
-      case StatusGroup.Active: {
-        return [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
-      }
-      case StatusGroup.Completed: {
-        return [JobStatus.Succeeded, JobStatus.Aborted];
-      }
-      case StatusGroup.Failed: {
-        return [JobStatus.Failed];
-      }
-      default: {
-        return [];
-      }
-    }
+  private onClientPaginate(e: PageEvent) {
+    // If the client just navigated to page n, ensure we have enough jobs to
+    // display page n+1.
+    this.jobStream.loadAtLeast((e.pageIndex+2) * e.pageSize);
   }
 
-  private updateJobList(statusGroup: StatusGroup): void {
-    this.jobMonitorService.queryJobs({
+  private maybeNavigateForStatus(statusGroup: StatusGroup): void {
+    let statusParam = statusGroup;
+    if (statusParam === StatusGroup.Active) {
+      statusParam = null;
+    }
+    this.router.navigate([], {
+      queryParams: {
         parentId: this.route.snapshot.queryParams['parentId'],
-        statuses: this.statusGroupToJobStatuses(statusGroup),
-        pageSize: JobListComponent.MAX_BACKEND_JOBS
-      })
-      .then(response => this.jobs = response.results)
-  }
-
-  private updateJobs(statusGroup: StatusGroup): void {
-    if (statusGroup !== StatusGroup.Active) {
-      this.router.navigate([], {
-        queryParams: {
-          parentId: this.route.snapshot.queryParams['parentId'],
-          statusGroup: statusGroup
-        }
-      })
-        .then(() => this.updateJobList(statusGroup));
-    } else {
-      this.router.navigate([], {
-        queryParams: {
-          parentId: this.route.snapshot.queryParams['parentId']
-        }
-      })
-        .then(() => this.updateJobList(statusGroup));
-    }
-
+        statusGroup: statusParam
+      }
+    }).then(() => {
+      this.streamSubscription.unsubscribe();
+      this.jobStream = new JobStream(this.jobMonitorService,
+                                     this.currentStatusGroup(),
+                                     this.route.snapshot.queryParams['parentId']);
+      this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp))
+      this.jobStream.loadAtLeast(JobListComponent.initialBackendPageSize);
+    });
   }
 }

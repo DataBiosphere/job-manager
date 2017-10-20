@@ -64,6 +64,9 @@ export class JobMonitorService {
       .catch(this.handleError);
   }
 
+  // TODO(calbach): Evaluate whether this should use an Observable instead for
+  // consistency with other ng2 APIs, in addition to the retry/cancel
+  // capabilities.
   queryJobs(req: QueryJobsRequest): Promise<QueryJobsResponse> {
     return this.http.post(
       `${environment.apiUrl}/jobs/query`,
