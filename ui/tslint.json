@@ -7,7 +7,6 @@
     "tslint-consistent-codestyle"
   ],
   "rules":{
-    // Suggested Codelyzer setup
     "angular-whitespace": [true, "check-interpolation", "check-pipe"],
     "banana-in-box": true,
     "templates-no-negated-async": true,
@@ -31,8 +30,6 @@
     "invoke-injectable": true,
     "template-to-ng-template": true,
     "pipe-impure": true,
-
-    // ESLint rules for TSLint
     "no-constant-condition": true
   }
 }

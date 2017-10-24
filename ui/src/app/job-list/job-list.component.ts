@@ -5,9 +5,6 @@ import {PageEvent} from '@angular/material'
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {JobMonitorService} from '../core/job-monitor.service';
-import {JobStatus} from '../shared/model/JobStatus';
-import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
-import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {StatusGroup} from '../shared/common';
 import {JobsTableComponent} from './table/table.component';
 import {JobListView, JobStream} from '../shared/job-stream';
