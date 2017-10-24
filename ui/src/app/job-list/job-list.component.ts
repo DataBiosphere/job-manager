@@ -20,15 +20,15 @@ export class JobListComponent implements OnInit {
   @ViewChild(JobsTableComponent) table: JobsTableComponent;
 
   private static readonly initialBackendPageSize = 200;
+  private jobStream: JobStream;
+  private streamSubscription: Subscription;
 
   // This Subject is synchronized to a JobStream, which we destroy and recreate
   // whenever we change query parameters, via a subscription.
-  private jobs = new BehaviorSubject<JobListView>({
+  public jobs = new BehaviorSubject<JobListView>({
     results: [],
     exhaustive: false
   });
-  private jobStream: JobStream;
-  private streamSubscription: Subscription;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -52,13 +52,13 @@ export class JobListComponent implements OnInit {
     return StatusGroup.Active;
   }
 
-  private onClientPaginate(e: PageEvent) {
+  public onClientPaginate(e: PageEvent) {
     // If the client just navigated to page n, ensure we have enough jobs to
     // display page n+1.
     this.jobStream.loadAtLeast((e.pageIndex+2) * e.pageSize);
   }
 
-  private maybeNavigateForStatus(statusGroup: StatusGroup): void {
+  public maybeNavigateForStatus(statusGroup: StatusGroup): void {
     let statusParam = statusGroup;
     if (statusParam === StatusGroup.Active) {
       statusParam = null;
@@ -73,7 +73,7 @@ export class JobListComponent implements OnInit {
       this.jobStream = new JobStream(this.jobMonitorService,
                                      this.currentStatusGroup(),
                                      this.route.snapshot.queryParams['parentId']);
-      this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp))
+      this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
       this.jobStream.loadAtLeast(JobListComponent.initialBackendPageSize);
     });
   }

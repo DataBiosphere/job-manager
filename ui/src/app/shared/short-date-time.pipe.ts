@@ -2,7 +2,7 @@ import {DatePipe} from '@angular/common';
 import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
-  name: 'shortDateTime'
+  name: 'jmShortDateTime'
 })
 export class ShortDateTimePipe extends DatePipe implements PipeTransform {
 

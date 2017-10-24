@@ -11,9 +11,7 @@
     <!-- Task name column -->
     <ng-container mdColumnDef="name">
       <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
-      <md-cell *mdCellDef="let t">
-        {{t.jobId}}
-      </md-cell>
+      <md-cell *mdCellDef="let t">{{ t.jobId }}</md-cell>
     </ng-container>
 
     <!-- Status column -->
@@ -21,8 +19,8 @@
       <md-header-cell *mdHeaderCellDef> Status </md-header-cell>
       <md-cell *mdCellDef="let t">
         <button md-icon-button disabled>
-          <img mdTooltip="{{t.executionStatus}}" mdTooltipPosition="before"
-               src="{{getStatusUrl(t.executionStatus)}}">
+          <img mdTooltip="{{ t.executionStatus }}" mdTooltipPosition="before"
+               src="{{ getStatusUrl(t.executionStatus) }}">
         </button>
       </md-cell>
     </ng-container>

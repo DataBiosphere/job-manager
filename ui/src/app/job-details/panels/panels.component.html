@@ -1,22 +1,22 @@
 <div class="content">
   <div>
-      <p class="header">{{job.name}}</p>
-      <p class="job-id">Job ID: <b>{{job.id}}</b></p>
-      <a class = "text-info">Submitted by: <b>{{job.labels['user-id']}}</b></a>
+      <p class="header">{{ job.name }}</p>
+      <p class="job-id">Job ID: <b>{{ job.id }}</b></p>
+      <a class = "text-info">Submitted by: <b>{{ job.labels['user-id'] }}</b></a>
   </div>
 
   <md-card>
     <md-card-title>Status</md-card-title>
     <md-card-content>
       <p><b>
-        {{job.status}}
+        {{ job.status }}
         <ng-container *ngIf="numTasks > 0">
-          {{numCompletedTasks}} of {{numTasks}} tasks completed
+          {{ numCompletedTasks }} of {{ numTasks }} tasks completed
         </ng-container>
       </b></p>
-      <p>Submitted {{job.submission | shortDateTime}}</p>
-      <p>Started {{job.start | shortDateTime}} ({{getDuration()}})</p>
-      <p *ngIf="job.end">Ended {{job.end | shortDateTime}}</p>
+      <p>Submitted {{ job.submission | jmShortDateTime }}</p>
+      <p>Started {{ job.start | jmShortDateTime }} ({{ getDuration() }})</p>
+      <p *ngIf="job.end">Ended {{ job.end | jmShortDateTime }}</p>
     </md-card-content>
   </md-card>
 
@@ -29,7 +29,7 @@
         </button>
       </p>
       <md-menu #inputsMenu="mdMenu">
-        <a md-menu-item *ngFor="let i of inputs" href="{{getInputResourceURL(i)}}">
+        <a md-menu-item *ngFor="let i of inputs" href="{{ getInputResourceURL(i) }}">
           <span>{{ i }}</span>
         </a>
       </md-menu>
@@ -40,7 +40,7 @@
         </button>
       </p>
       <md-menu #outputsMenu="mdMenu">
-        <a md-menu-item *ngFor="let o of outputs" href="{{getOutputResourceURL(o)}}">
+        <a md-menu-item *ngFor="let o of outputs" href="{{ getOutputResourceURL(o) }}">
           <span>{{ o }}</span>
         </a>
       </md-menu>

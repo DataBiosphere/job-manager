@@ -8,9 +8,9 @@
 </form>
 
 <md-tab-group (selectChange)="toggleActive($event)" selectedIndex="{{getTabSelectedIndex()}}">
-  <md-tab label = "{{statusGroupStringMap.get(statusGroup.Active)}}"></md-tab>
-  <md-tab label = "{{statusGroupStringMap.get(statusGroup.Failed)}}"></md-tab>
-  <md-tab label = "{{statusGroupStringMap.get(statusGroup.Completed)}}"></md-tab>
+  <md-tab label = "{{ statusGroupStringMap.get(statusGroup.Active) }}"></md-tab>
+  <md-tab label = "{{ statusGroupStringMap.get(statusGroup.Failed) }}"></md-tab>
+  <md-tab label = "{{ statusGroupStringMap.get(statusGroup.Completed) }}"></md-tab>
 </md-tab-group>
 
 
@@ -26,20 +26,18 @@
     <md-cell *mdCellDef="let j">
       <md-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
       </md-checkbox>
-      <a md-button class="job-details-button" [routerLink]="[j.id]">
-        {{j.name}}
-      </a>
+      <a md-button class="job-details-button" [routerLink]="[j.id]">{{ j.name }}</a>
 
       <button md-icon-button class="jobs-dropdown-arrow"
               [class.visible]="showDropdownArrow(j)"
               [mdMenuTriggerFor]="menu">
-        <img src="{{getDropdownArrowUrl()}}">
+        <img src="{{ getDropdownArrowUrl() }}">
       </button>
       <md-menu #menu="mdMenu" class="details-menu">
         <md-card>
-          <md-card-title>{{j.name}}</md-card-title>
-          <p>{{j.status}}</p>
-          <p>Submitted: {{j.submission | shortDateTime}}</p>
+          <md-card-title>{{ j.name }}</md-card-title>
+          <p>{{ j.status }}</p>
+          <p>Submitted: {{ j.submission | jmShortDateTime }}</p>
         </md-card>
 
         <a md-menu-item [routerLink]="[j.id]">
@@ -64,9 +62,7 @@
   <!-- TODO(calbach): Factor these columns into a label-config. -->
   <ng-container mdColumnDef="owner">
     <md-header-cell *mdHeaderCellDef> Owner </md-header-cell>
-    <md-cell *mdCellDef="let j">
-      {{j.labels['user-id']}}
-    </md-cell>
+    <md-cell *mdCellDef="let j">{{ j.labels['user-id'] }}</md-cell>
   </ng-container>
 
   <!-- Status column -->
@@ -74,7 +70,8 @@
     <md-header-cell *mdHeaderCellDef> Status </md-header-cell>
     <md-cell *mdCellDef="let j">
       <button md-icon-button disabled>
-        <img mdTooltip="{{j.status}}" mdTooltipPosition="before" src="{{getStatusUrl(j.status)}}">
+        <img mdTooltip="{{ j.status }}" mdTooltipPosition="before"
+             src="{{ getStatusUrl(j.status) }}">
       </button>
     </md-cell>
   </ng-container>
@@ -82,17 +79,13 @@
   <!-- Status detail column -->
   <ng-container mdColumnDef="status-detail">
     <md-header-cell *mdHeaderCellDef> Status Detail </md-header-cell>
-    <md-cell *mdCellDef="let j" class = "column">
-      {{j.labels['status-detail']}}
-    </md-cell>
+    <md-cell *mdCellDef="let j" class = "column">{{ j.labels['status-detail'] }}</md-cell>
   </ng-container>
 
   <!-- Submitted column -->
   <ng-container mdColumnDef="submitted">
     <md-header-cell *mdHeaderCellDef> Submitted </md-header-cell>
-    <md-cell *mdCellDef="let j">
-      {{j.submission | shortDateTime}}
-    </md-cell>
+    <md-cell *mdCellDef="let j">{{ j.submission | jmShortDateTime }}</md-cell>
   </ng-container>
 
   <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
@@ -105,7 +98,7 @@
 </md-table>
 
 <div class="group-options" *ngIf="selectedJobs.length > 0">
-  {{selectedJobs.length}} jobs selected
+  {{ selectedJobs.length }} jobs selected
   <button md-raised-button color="accent" class="group-button" *ngIf="currentStatusGroup==0"
           (click)="onAbortJobs(selectedJobs)">Abort Jobs</button>
 </div>

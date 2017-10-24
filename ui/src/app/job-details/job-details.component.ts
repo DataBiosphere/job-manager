@@ -9,7 +9,7 @@ import {TaskMetadata} from '../shared/model/TaskMetadata';
   styleUrls: ['./job-details.component.css'],
 })
 export class JobDetailsComponent implements OnInit {
-  private job: JobMetadataResponse;
+  public job: JobMetadataResponse;
 
   constructor(private route: ActivatedRoute) {}
 
