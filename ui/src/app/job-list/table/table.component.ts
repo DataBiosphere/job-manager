@@ -37,20 +37,22 @@ export class JobsTableComponent implements OnInit {
   @Output() onJobUpdate = new EventEmitter<QueryJobsResult>();
   @Output() onPage = new EventEmitter<PageEvent>();
 
-  private selectedJobs: QueryJobsResult[] = [];
+
   private mouseoverJob: QueryJobsResult;
-  private allSelected: boolean = false;
-  private currentStatusGroup: StatusGroup;
   private statusGroup = StatusGroup;
-  private statusGroupStringMap: Map<StatusGroup, string> = new Map([
-    [StatusGroup.Active, "Active Jobs"],
-    [StatusGroup.Failed, "Failed"],
-    [StatusGroup.Completed, "Completed"]
-  ]);
   private reverseStatusGroupStringMap: Map<string, StatusGroup> = new Map([
     ["Active Jobs", StatusGroup.Active],
     ["Failed", StatusGroup.Failed],
     ["Completed", StatusGroup.Completed]
+  ]);
+
+  public allSelected: boolean = false;
+  public currentStatusGroup: StatusGroup;
+  public selectedJobs: QueryJobsResult[] = [];
+  public statusGroupStringMap: Map<StatusGroup, string> = new Map([
+    [StatusGroup.Active, "Active Jobs"],
+    [StatusGroup.Failed, "Failed"],
+    [StatusGroup.Completed, "Completed"]
   ]);
 
   dataSource: JobsDataSource | null;
