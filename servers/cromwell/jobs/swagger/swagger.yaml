@@ -1,0 +1,291 @@
+---
+swagger: "2.0"
+info:
+  description: "Job Monitor API for interacting with asynchronous batch jobs and workflows."
+  version: "0.0.1"
+  title: "Job Monitor Service"
+  license:
+    name: "BSD"
+    url: "http://opensource.org/licenses/BSD-3-Clause"
+produces:
+- "application/json"
+paths:
+  /jobs/{id}/abort:
+    post:
+      tags:
+      - "Jobs"
+      summary: "Abort a job by ID"
+      operationId: "abort_job"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Job ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Success"
+        400:
+          description: "Bad request"
+        404:
+          description: "Job not found"
+        412:
+          description: "Job already in terminal status"
+        500:
+          description: "Internal server error"
+      x-swagger-router-controller: "jobs.controllers.jobs_controller"
+  /jobs/query:
+    post:
+      tags:
+      - "Jobs"
+      summary: "Query jobs by various filter criteria. Returned jobs are ordered from\n\
+        newest to oldest submission time.\n"
+      operationId: "query_jobs"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/QueryJobsRequest"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/QueryJobsResponse"
+        400:
+          description: "Bad request"
+        500:
+          description: "Internal server error"
+      x-swagger-router-controller: "jobs.controllers.jobs_controller"
+  /jobs/{id}:
+    get:
+      tags:
+      - "Jobs"
+      summary: "Query for job and task-level metadata for a specified job"
+      operationId: "get_job"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Job ID"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/JobMetadataResponse"
+        400:
+          description: "Bad request"
+        404:
+          description: "Job not found"
+        500:
+          description: "Internal server error"
+      x-swagger-router-controller: "jobs.controllers.jobs_controller"
+definitions:
+  JobMetadataResponse:
+    required:
+    - "id"
+    - "status"
+    - "submission"
+    properties:
+      id:
+        type: "string"
+        description: "The identifier of the job"
+      status:
+        $ref: "#/definitions/JobStatus"
+      submission:
+        type: "string"
+        format: "date-time"
+        description: "Submission datetime of the job in ISO8601 format"
+      name:
+        type: "string"
+        description: "The name of the job"
+      start:
+        type: "string"
+        format: "date-time"
+        description: "Start datetime of the job in ISO8601 format"
+      end:
+        type: "string"
+        format: "date-time"
+        description: "End datetime of the job in ISO8601 format"
+      inputs:
+        type: "object"
+        description: "Map of input keys to input values"
+        properties: {}
+      outputs:
+        type: "object"
+        description: "Map of output keys to output values"
+        properties: {}
+      labels:
+        type: "object"
+        description: "Custom job labels with string values"
+        properties: {}
+      tasks:
+        type: "array"
+        items:
+          $ref: "#/definitions/TaskMetadata"
+      failures:
+        type: "array"
+        items:
+          $ref: "#/definitions/FailureMessage"
+    description: "Job and task level metadata"
+  JobStatus:
+    type: "string"
+    enum:
+    - "Submitted"
+    - "Running"
+    - "Aborting"
+    - "Failed"
+    - "Succeeded"
+    - "Aborted"
+  TaskMetadata:
+    properties:
+      inputs:
+        type: "object"
+        description: "Mapping of input fully qualified names to stringified values"
+        properties: {}
+      executionStatus:
+        type: "string"
+        description: "Backend-specific task status."
+      start:
+        type: "string"
+        format: "date-time"
+        description: "Start datetime of the task execution in ISO8601 format with\
+          \ milliseconds"
+      end:
+        type: "string"
+        format: "date-time"
+        description: "End datetime of the task execution in ISO8601 format with milliseconds"
+      jobId:
+        type: "string"
+        description: "Backend-specific job ID"
+      failures:
+        type: "array"
+        items:
+          $ref: "#/definitions/FailureMessage"
+      returnCode:
+        type: "integer"
+        description: "Task execution return code"
+      stdout:
+        type: "string"
+        description: "Path to the standard output file for this task"
+      stderr:
+        type: "string"
+        description: "Path to the standard error file for this task"
+    description: "Task level metadata"
+  FailureMessage:
+    required:
+    - "failure"
+    properties:
+      failure:
+        type: "string"
+        description: "The failure message"
+      timestamp:
+        type: "string"
+        format: "date-time"
+        description: "The time at which this failure occurred"
+    description: "Failure messages"
+  QueryJobsRequest:
+    properties:
+      start:
+        type: "string"
+        format: "date-time"
+        description: "Returns only jobs with an equal or later start datetime. If\
+          \ both start and end date are specified, start date must be before or equal\
+          \ to end date.\n"
+      end:
+        type: "string"
+        format: "date-time"
+        description: "Returns only jobs with an equal or earlier end datetime. If\
+          \ both start and end date are specified, start date must be before or equal\
+          \ to end date.\n"
+      statuses:
+        type: "array"
+        description: "If specified, returns only jobs matching any of these statuses.\n"
+        items:
+          $ref: "#/definitions/JobStatus"
+      labels:
+        type: "object"
+        description: "If specified, returns only jobs containing labels with exact\
+          \ string matches to each of these labels.\n"
+        properties: {}
+      name:
+        type: "string"
+        description: "Returns only jobs with the specified name.\n"
+        pattern: "^[a-zA-Z][a-zA-Z0-9_]*$"
+        x-regex: "^[a-zA-Z][a-zA-Z0-9_]*$"
+        x-modifiers: []
+      pageSize:
+        type: "integer"
+        format: "int32"
+        description: "The maximum number of results to return in a single page. If\
+          \ unspecified,\na server default will be used. Note that the server may\
+          \ elect to\nreturn fewer results per page than requested.\n"
+      pageToken:
+        type: "string"
+        description: "The continuation token, which is used to page through large\
+          \ result\nsets. To get the next page of results, set this parameter to the\
+          \ value\nof `nextPageToken` from the previous response.\n"
+      parentId:
+        type: "string"
+        description: "Returns only jobs with the given parent ID. This parameter may\
+          \ be unsupported for some API implementations or required for others depending\
+          \ on whether there exists a logical noun above a job in the resource hierarchy\
+          \ (for example, a cloud project). If the presence of this parameter is incompatible\
+          \ with the server, it may return a 400 HTTP status.\n"
+    description: "Job query parameters"
+  QueryJobsResponse:
+    required:
+    - "results"
+    properties:
+      results:
+        type: "array"
+        items:
+          $ref: "#/definitions/QueryJobsResult"
+      nextPageToken:
+        type: "string"
+        description: "The continuation token, which is used to page through large\
+          \ result\nsets. Provide this value in a subsequent request to return the\
+          \ next\npage of results. This field will be empty if there aren't any\n\
+          additional results.\n"
+    description: "Response to a job query"
+  QueryJobsResult:
+    required:
+    - "id"
+    - "status"
+    - "submission"
+    properties:
+      id:
+        type: "string"
+        description: "Job ID"
+      name:
+        type: "string"
+        description: "Job name"
+      status:
+        $ref: "#/definitions/JobStatus"
+      submission:
+        type: "string"
+        format: "date-time"
+        description: "Submission datetime in ISO8601 format"
+      start:
+        type: "string"
+        format: "date-time"
+        description: "Job start datetime in ISO8601 format"
+      end:
+        type: "string"
+        format: "date-time"
+        description: "Job end datetime in ISO8601 format"
+      labels:
+        type: "object"
+        description: "Custom job labels with string values"
+        properties: {}
+    description: "Result for an individual job returned by a job query"
+responses:
+  BadRequest:
+    description: "Bad request"
+  JobTerminal:
+    description: "Job already in terminal status"
+  NotFound:
+    description: "Job not found"
+  ServerError:
+    description: "Internal server error"
