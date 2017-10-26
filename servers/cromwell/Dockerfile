@@ -1,13 +1,12 @@
-FROM python:2-alpine
+FROM gcr.io/google-appengine/python
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY requirements.txt /usr/src/app/
+ADD servers/cromwell/requirements.txt /app/
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
-COPY . /usr/src/app
+ADD servers/cromwell/jobs /app/jobs
 
 EXPOSE 8080
 

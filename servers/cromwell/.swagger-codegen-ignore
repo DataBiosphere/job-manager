@@ -1,0 +1,16 @@
+git_push.sh
+Dockerfile
+README.md
+.travis.yml
+.dockerignore
+.gitignore
+tox.ini
+test-requirements.txt
+
+# These have been hand-modified, no need to regenerate.
+requirements.txt
+**/encoder.py
+**/util.py
+**/*_controller.py
+**/__main__.py
+**/test/__init__.py
