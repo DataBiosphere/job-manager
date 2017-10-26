@@ -30,6 +30,17 @@ services:
       - ./servers/dsub/jobs:/app/jobs
     ports:
       - 8190:8190
+  cromwell:
+    command: ["-b", ":8190"]
+    environment:
+      - PATH_PREFIX=/api/v1
+      - CROMWELL_CREDENTIALS=/etc/job-monitor/config.json
+      - CROMWELL_URL=https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1
+    volumes:
+      - ./servers/cromwell/jobs:/app/jobs
+      - /private/etc/job-monitor:/etc/job-monitor
+    ports:
+      - 8190:8190
   jobs-proxy:
     # Child services must have links named "ui", "api".
     image: nginx
