@@ -1,7 +1,4 @@
-import {RouterModule} from '@angular/router';
-import {
-  RouterTestingModule
-} from '@angular/router/testing';
+import {RouterTestingModule} from '@angular/router/testing';
 import {TestBed, async} from '@angular/core/testing';
 
 import {AppComponent} from './app.component';
@@ -22,7 +19,7 @@ describe('AppComponent', () => {
         JobDetailsModule,
         RouterTestingModule.withRoutes([
           {path: '', redirectTo: 'jobs', pathMatch: 'full'},
-          {path: 'jobs', component:JobListComponent},
+          {path: 'jobs', component: JobListComponent},
           {path: 'jobs/:id', component: JobDetailsComponent, resolve: {
             job: JobDetailsResolver
           }},
