@@ -16,7 +16,7 @@ describe('ShortDateTimeFormat', () => {
     }).compileComponents();
   }));
 
-  it('should transform current time without day',inject([DatePipe],
+  it('should transform current time without day', inject([DatePipe],
     (datePipe) => {
       let pipe = new ShortDateTimePipe('en-US');
       let testDate: Date = new Date();
@@ -30,7 +30,7 @@ describe('ShortDateTimeFormat', () => {
     let testDate: Date = new Date("1994-03-29T22:36:25");
 
     expect(pipe.transform(testDate))
-      .toBe("Mar 29 \u00B7 10:36 PM");
+      .toBe('Mar 29 · 10:36 PM');
   });
 
 });
