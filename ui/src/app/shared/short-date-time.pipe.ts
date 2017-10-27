@@ -18,7 +18,7 @@ export class ShortDateTimePipe extends DatePipe implements PipeTransform {
       return super.transform(date, 'shortTime');
     }
     return super.transform(date, 'MMM dd') +
-      ' \u00B7 ' + // Middle dot
+      ' · ' +
       super.transform(date, 'shortTime');
   }
 }
