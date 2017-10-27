@@ -1,6 +1,7 @@
 import connexion
-from flask import current_app
-from werkzeug.exceptions import BadRequest
+from flask import current_app, request
+from werkzeug.exceptions import BadRequest, Unauthorized
+from oauth2client.client import AccessTokenCredentials, AccessTokenCredentialsError
 from datetime import datetime
 from dateutil.tz import tzlocal
 from dsub.providers import google
@@ -35,8 +36,9 @@ def abort_job(id):
 
     Returns: None
     """
+    auth_token = request.headers.get('authToken')
     project_id, job_id, task_id = job_ids.api_to_dsub(id, provider_type())
-    provider = _get_provider(project_id)
+    provider = _get_provider(project_id, auth_token)
     client().abort_job(provider, job_id, task_id)
 
 
@@ -49,8 +51,9 @@ def get_job(id):
     Returns:
         JobMetadataResponse: Response containing relevant metadata
     """
+    auth_token = request.headers.get('authToken')
     project_id, job_id, task_id = job_ids.api_to_dsub(id, provider_type())
-    provider = _get_provider(project_id)
+    provider = _get_provider(project_id, auth_token)
     job = client().get_job(provider, job_id, task_id)
 
     return JobMetadataResponse(
@@ -77,13 +80,14 @@ def query_jobs(body):
     Returns:
         QueryJobsResponse: Response containing results from query
     """
+    auth_token = request.headers.get('authToken')
     query = QueryJobsRequest.from_dict(body)
     if not query.page_size:
         query.page_size = _DEFAULT_PAGE_SIZE
     query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
+    provider = _get_provider(query.parent_id, auth_token)
 
-    jobs, next_page_token = client().query_jobs(
-        _get_provider(query.parent_id), query)
+    jobs, next_page_token = client().query_jobs(provider, query)
     results = [_query_result(j, query.parent_id) for j in jobs]
     return QueryJobsResponse(results=results, next_page_token=next_page_token)
 
@@ -140,15 +144,26 @@ def _job_to_api_outputs(job):
     return outputs
 
 
-def _get_provider(parent_id=None):
+def _get_provider(parent_id=None, auth_token=None):
     if provider_type() == ProviderType.GOOGLE:
-        if not parent_id:
-            raise BadRequest('missing required field parentId')
-        return google.GoogleJobProvider(False, False, parent_id)
-    elif provider_type() == ProviderType.LOCAL and not parent_id:
+        return _get_google_provider(parent_id, auth_token)
+    elif parent_id or auth_token:
+        raise BadRequest('{} can only be specified for dsub Google provider'.
+                         format('authToken' if auth_token else 'parentId'))
+    elif provider_type() == ProviderType.LOCAL:
         return local.LocalJobProvider()
-    elif provider_type() == ProviderType.STUB and not parent_id:
+    elif provider_type() == ProviderType.STUB:
         return stub.StubJobProvider()
-    else:
-        raise BadRequest(
-            'parentId can only be specified for the google dsub provider')
+
+
+def _get_google_provider(parent_id, auth_token):
+    if not parent_id:
+        raise BadRequest('missing required field parentId')
+    if not auth_token:
+        raise BadRequest('missing required field authToken')
+    try:
+        credentials = AccessTokenCredentials(auth_token, 'user-agent')
+        return google.GoogleJobProvider(
+            False, False, parent_id, credentials=credentials)
+    except AccessTokenCredentialsError as e:
+        raise Unauthorized('invalid authentication token:{}'.format(e))
