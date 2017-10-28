@@ -5,7 +5,8 @@ import {ShortDateTimePipe} from "./short-date-time.pipe";
 
 @NgModule({
   imports: [
-    CommonModule,],
+    CommonModule,
+  ],
   declarations: [
     ShortDateTimePipe,
   ],

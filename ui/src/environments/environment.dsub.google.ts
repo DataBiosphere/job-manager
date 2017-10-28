@@ -1,5 +1,5 @@
 export const environment = {
   apiUrl: '/api/v1',
-  production: true,
+  production: false,
   requiresAuth: true
 };
