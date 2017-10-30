@@ -26,7 +26,7 @@
       "environments": {
         "dsub_local": "environments/environment.dsub.local.ts",
         "dsub_google": "environments/environment.dsub.google.ts",
-        "dev": "environments/environmentts",
+        "dev": "environments/environment.ts",
         "prod": "environments/environment.prod.ts"
       }
     }

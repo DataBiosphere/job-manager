@@ -11,7 +11,6 @@ export class AuthService {
   private clientId:string = '738242158346-l0vdrjp6sdlg61ni5fm26m7nu75gql51.apps.googleusercontent.com';
   private initAuthPromise: Promise<void>;
   private scope = [
-    "https://www.googleapis.com/auth/cloud-platform",
     "https://www.googleapis.com/auth/genomics"
   ].join(" ");
 
