@@ -57,7 +57,8 @@ def query_jobs(body):
         query_params.extend(statuses)
     response = requests.post(query_url, json=query_params, auth=HTTPBasicAuth(config['cromwell_user'], config['cromwell_password']))
     results = [format_job(job) for job in response.json()['results']]
-    return QueryJobsResponse(results=results)
+    sorted_jobs = sorted(results, key=lambda x: x.start, reverse=True)
+    return QueryJobsResponse(results=sorted_jobs)
 
 
 def format_job(job):
