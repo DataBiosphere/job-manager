@@ -106,16 +106,16 @@ export class JobsTableComponent implements OnInit {
     return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
   }
 
-  getStatusDetail(job: QueryJobsResult) {
-    return job.labels ? job.labels['status-detail'] : '';
-  }
 
   getStatusUrl(status: JobStatus): string {
     return JobStatusImage[status];
   }
 
-  getUserID(job: QueryJobsResult) {
-    return job.labels ? job.labels['user-id'] : '';
+  getJobLabel(job: QueryJobsResult, label: string): string {
+    if (job.labels && job.labels[label]) {
+      return job.labels[label];
+    }
+    return "";
   }
 
   getTabSelectedIndex(): number {
