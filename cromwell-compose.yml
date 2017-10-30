@@ -1,0 +1,25 @@
+version: '2'
+services:
+  ui:
+    extends:
+      file: common-compose.yml
+      service: ui
+  cromwell:
+    build:
+      context: .
+      dockerfile: servers/cromwell/Dockerfile
+    extends:
+      file: common-compose.yml
+      service: cromwell
+    # privileged is needed in order to interact with the mounted docker socket.
+    privileged: true
+    # This shares the host PID address space with the container so that host
+    # processes can be checked on and killed
+    pid: host
+  jobs-proxy:
+    extends:
+      file: common-compose.yml
+      service: jobs-proxy
+    links:
+      - ui
+      - cromwell:api
