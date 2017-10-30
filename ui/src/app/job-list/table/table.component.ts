@@ -112,6 +112,13 @@ export class JobsTableComponent implements OnInit {
     return JobStatusImage[status];
   }
 
+  getJobLabel(job: QueryJobsResult, label: string): string {
+    if (job.labels) {
+      return job.labels[label] ?  job.labels[label] : ""
+    }
+    return "";
+  }
+
   getTabSelectedIndex(): number {
     switch(this.currentStatusGroup) {
       case StatusGroup.Active: {
