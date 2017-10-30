@@ -24,6 +24,8 @@ paths:
           description: Success
         '400':
           $ref: '#/responses/BadRequest'
+        '401':
+          $ref: '#/responses/Unauthorized'
         '404':
           $ref: '#/responses/NotFound'
         '412':
@@ -52,6 +54,8 @@ paths:
             $ref: '#/definitions/QueryJobsResponse'
         '400':
           $ref: '#/responses/BadRequest'
+        '401':
+          $ref: '#/responses/Unauthorized'
         '500':
           $ref: '#/responses/ServerError'
       tags:
@@ -73,6 +77,8 @@ paths:
             $ref: '#/definitions/JobMetadataResponse'
         '400':
           $ref: '#/responses/BadRequest'
+        '401':
+          $ref: '#/responses/Unauthorized'
         '404':
           $ref: '#/responses/NotFound'
         '500':
@@ -291,3 +297,19 @@ responses:
     description: 'Job not found'
   JobTerminal:
     description: 'Job already in terminal status'
+  Unauthorized:
+    description: 'Unauthorized'
+securityDefinitions:
+  google_id_token:
+    type: oauth2
+    description: Bearer token authorization
+    name: Authorization
+    in: header
+    flow: implicit
+    authorizationUrl: ""
+    x-google-issuer: "https://accounts.google.com"
+    x-google-jwks_uri: "https://www.googleapis.com/oauth2/v1/certs"
+    scopes:
+      https://www.googleapis.com/auth/genomics: Full access to google genomics and pipelines API
+security:
+  google_id_token: []
