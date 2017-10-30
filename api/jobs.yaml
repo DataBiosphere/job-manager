@@ -310,6 +310,6 @@ securityDefinitions:
     x-google-issuer: "https://accounts.google.com"
     x-google-jwks_uri: "https://www.googleapis.com/oauth2/v1/certs"
     scopes:
-      https://www.googleapis.com/auth/cloud-platform: Full access to all resources and services in the specified Cloud Platform project
       https://www.googleapis.com/auth/genomics: Full access to google genomics and pipelines API
-      https://www.googleapis.com/auth/devstorage.read_write: Full access to Google Cloud Storage
+security:
+  google_id_token: []
