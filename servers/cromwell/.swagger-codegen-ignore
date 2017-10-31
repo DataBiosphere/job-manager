@@ -1,3 +1,4 @@
+# List files that swagger-codegen should not generate.
 git_push.sh
 Dockerfile
 README.md
@@ -7,7 +8,7 @@ README.md
 tox.ini
 test-requirements.txt
 
-# These have been hand-modified, no need to regenerate.
+# These have been hand-modified, no need to regenerate as they would get overwritten.
 requirements.txt
 **/encoder.py
 **/util.py
