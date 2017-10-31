@@ -13,7 +13,7 @@ import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 @Injectable()
 export class JobMonitorService {
 
-  constructor( private readonly authService: AuthService, private http: Http) {}
+  constructor(private readonly authService: AuthService, private http: Http) {}
 
   private convertToJobMetadataResponse(json: object): JobMetadataResponse {
     var metadata: JobMetadataResponse = json as JobMetadataResponse;
@@ -43,8 +43,8 @@ export class JobMonitorService {
 
   private getHttpHeaders(): Headers {
     var headers = new Headers({'Content-Type': 'application/json'});
-    if (this.authService.requiresAuth && this.authService.authToken) {
-      headers.set('authToken', this.authService.authToken);
+    if (environment.requiresAuth && this.authService.authToken) {
+      headers.set('Authentication', `Bearer ${this.authService.authToken}`);
     }
     return headers;
   }

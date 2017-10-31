@@ -6,5 +6,6 @@
 export const environment = {
   apiUrl: '/api/v1',
   production: false,
-  requiresAuth: false
+  requiresAuth: false,
+  clientId: '',
 };

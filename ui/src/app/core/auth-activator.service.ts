@@ -12,21 +12,19 @@ export class AuthActivator implements CanActivate {
     private readonly authService: AuthService,
     private readonly router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean|Promise<boolean> {
     // First check if the AuthService has already loaded and authenticated
     if (this.authService.authenticated.getValue()) {
       return true;
     }
 
-    return new Promise<boolean>( (resolve) => {
-      this.authService.isAuthenticated().then( (authenticated) => {
-        if (!authenticated) {
-          this.router.navigate(['sign_in'], {
-            queryParams: { returnUrl: state.url }
-          });
-        }
-        resolve(authenticated);
-      });
-    });
+    return this.authService.isAuthenticated().then( (authenticated) => {
+      if (!authenticated) {
+        this.router.navigate(['sign_in'], {
+          queryParams: { returnUrl: state.url }
+        });
+      }
+      return authenticated;
+    })
   }
 }

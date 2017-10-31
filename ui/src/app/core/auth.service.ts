@@ -8,40 +8,18 @@ declare const gapi: any;
 /** Service wrapper for google oauth2 state and starting sign-in flow. */
 @Injectable()
 export class AuthService {
-  private clientId:string = '738242158346-l0vdrjp6sdlg61ni5fm26m7nu75gql51.apps.googleusercontent.com';
   private initAuthPromise: Promise<void>;
-  private scope = [
-    "https://www.googleapis.com/auth/genomics"
-  ].join(" ");
-
+  private scope = "https://www.googleapis.com/auth/genomics";
   public authenticated = new BehaviorSubject<boolean>(false);
   public authToken: string;
-  public requiresAuth = environment.requiresAuth;
-
-  private beginListening(): void {
-    this.initAuthPromise.then( () => {
-      // Update the current user to any subscribers and resolve the promise
-      this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
-      // Start listening for updates to the current user
-      gapi.auth2.getAuthInstance().currentUser.listen( (user) => this.updateUser(user));
-    });
-  }
 
   private initAuth(): Promise<void> {
+    console.log("CLIENTID");
+    console.log(environment.clientId);
     return gapi.auth2.init({
-      client_id: this.clientId,
+      client_id: environment.clientId,
       cookiepolicy: 'single_host_origin',
       scope: this.scope
-    });
-  }
-
-  private loadAndInitAuth(): Promise<void> {
-    return new Promise<void>( (resolve) => {
-      gapi.load('auth2', {
-        callback: () => this.initAuth().then( () => resolve() ),
-        // TODO(bryancrampton): Implement real error handling.
-        onerror: () => console.log('gapi.client failed to load!'),
-      });
     });
   }
 
@@ -55,22 +33,32 @@ export class AuthService {
   }
 
   constructor() {
-    this.initAuthPromise = this.loadAndInitAuth();
-    this.beginListening();
+    this.initAuthPromise = new Promise<void>( (resolve, reject) => {
+      gapi.load('auth2', {
+        callback: () => this.initAuth().then( () => resolve() ),
+        onerror: () => reject(),
+      });
+    });
+
+    this.initAuthPromise.then( () => {
+      // Update the current user to any subscribers and resolve the promise
+      this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
+      // Start listening for updates to the current user
+      gapi.auth2.getAuthInstance().currentUser.listen( (user) => this.updateUser(user));
+    });
   }
 
   public isAuthenticated(): Promise<boolean> {
-    if (this.requiresAuth == false) {
+    if (!environment.requiresAuth) {
       return Promise.resolve(true);
     }
-    return new Promise<boolean>( (resolve) => {
-      return this.initAuthPromise.then( () => {
-          let user = gapi.auth2.getAuthInstance().currentUser.get();
-          // Update the current user to any subscribers and resolve the promise
-          this.updateUser(user);
-          resolve(user && user.isSignedIn());
-      });
-    });
+
+    return this.initAuthPromise.then( () => {
+      let user = gapi.auth2.getAuthInstance().currentUser.get();
+      // Update the current user to any subscribers and resolve the promise
+      this.updateUser(user);
+      return user && user.isSignedIn();
+    })
   }
 
   public signIn(): void {
