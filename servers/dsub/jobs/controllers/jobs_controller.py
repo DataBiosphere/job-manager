@@ -27,7 +27,7 @@ def abort_job(id):
 
     Returns: None
     """
-    auth_token = request.headers.get('authToken')
+    auth_token = _get_auth_token()
     project_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
     provider = _get_provider(project_id, auth_token)
     _client().abort_job(provider, job_id, task_id)
@@ -42,7 +42,7 @@ def get_job(id):
     Returns:
         JobMetadataResponse: Response containing relevant metadata
     """
-    auth_token = request.headers.get('authToken')
+    auth_token = _get_auth_token()
     project_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
     provider = _get_provider(project_id, auth_token)
     job = _client().get_job(provider, job_id, task_id)
@@ -71,7 +71,7 @@ def query_jobs(body):
     Returns:
         QueryJobsResponse: Response containing results from query
     """
-    auth_token = request.headers.get('authToken')
+    auth_token = _get_auth_token()
     query = QueryJobsRequest.from_dict(body)
     if not query.page_size:
         query.page_size = _DEFAULT_PAGE_SIZE
@@ -85,6 +85,11 @@ def query_jobs(body):
 
 def _client():
     return current_app.config['CLIENT']
+
+
+def _get_auth_token():
+    auth_header = request.headers.get('Authentication')
+    return auth_header.split(' ')[1] if auth_header else None
 
 
 def _get_failures(job):
