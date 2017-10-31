@@ -3,4 +3,5 @@ export const environment = {
   production: false,
   requiresAuth: false,
   clientId: '',
+  scope: '',
 };

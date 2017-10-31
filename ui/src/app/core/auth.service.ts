@@ -9,7 +9,6 @@ declare const gapi: any;
 @Injectable()
 export class AuthService {
   private initAuthPromise: Promise<void>;
-  private scope = "https://www.googleapis.com/auth/genomics";
   public authenticated = new BehaviorSubject<boolean>(false);
   public authToken: string;
 
@@ -17,7 +16,7 @@ export class AuthService {
     return gapi.auth2.init({
       client_id: environment.clientId,
       cookiepolicy: 'single_host_origin',
-      scope: this.scope
+      scope: environment.scope
     });
   }
 
@@ -26,6 +25,7 @@ export class AuthService {
       this.authenticated.next(true);
       this.authToken = user.getAuthResponse().access_token;
     } else {
+      this.authenticated.next(false);
       this.authToken = undefined
     }
   }
@@ -33,7 +33,7 @@ export class AuthService {
   constructor() {
     this.initAuthPromise = new Promise<void>( (resolve, reject) => {
       gapi.load('auth2', {
-        callback: () => this.initAuth().then( () => resolve() ),
+        callback: () => this.initAuth().then(() => resolve()),
         onerror: () => reject(),
       });
     });
@@ -47,15 +47,11 @@ export class AuthService {
   }
 
   public isAuthenticated(): Promise<boolean> {
-    if (!environment.requiresAuth) {
-      return Promise.resolve(true);
-    }
-
     return this.initAuthPromise.then( () => {
       let user = gapi.auth2.getAuthInstance().currentUser.get();
       // Update the current user to any subscribers and resolve the promise
       this.updateUser(user);
-      return user && user.isSignedIn();
+      return !!(user && user.isSignedIn());
     })
   }
 

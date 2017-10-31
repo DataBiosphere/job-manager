@@ -3,6 +3,7 @@ import {CanActivate} from '@angular/router';
 import {Injectable} from '@angular/core';
 
 import {AuthService} from './auth.service';
+import {environment} from '../../environments/environment';
 
 /** Service wrapper for routing based on current authentication state. */
 @Injectable()
@@ -13,8 +14,10 @@ export class AuthActivator implements CanActivate {
     private readonly router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean|Promise<boolean> {
-    // First check if the AuthService has already loaded and authenticated
-    if (this.authService.authenticated.getValue()) {
+    // First check if authentication is required and if the AuthService has
+    // already loaded and authenticated
+    if (!environment.requiresAuth
+        || this.authService.authenticated.getValue()) {
       return true;
     }
 

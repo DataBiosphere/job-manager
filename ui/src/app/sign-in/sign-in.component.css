@@ -7,7 +7,7 @@ p {
   margin-bottom: .6rem;
 }
 
-.mat-card {
+.sign-in-card {
   width: 30%;
   height: 5rem;
   left: 35%;
@@ -15,4 +15,3 @@ p {
   text-align: center;
   position: relative
 }
-
