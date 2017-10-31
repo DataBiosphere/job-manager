@@ -1,5 +1,23 @@
-connexion == 1.1.13
-python_dateutil == 2.6.0
-typing == 3.5.2.2
-setuptools >= 21.0.0
-gunicorn == 19.7.1
+certifi==2017.7.27.1
+chardet==3.0.4
+click==6.7
+clickclick==1.2.2
+connexion==1.1.13
+Flask==0.12.2
+functools32==3.2.3.post2
+gunicorn==19.7.1
+idna==2.6
+inflection==0.3.1
+itsdangerous==0.24
+Jinja2==2.9.6
+jsonschema==2.6.0
+MarkupSafe==1.0
+pathlib==1.0.1
+python-dateutil==2.6.0
+PyYAML==3.12
+requests==2.18.4
+six==1.11.0
+swagger-spec-validator==2.1.0
+typing==3.5.2.2
+urllib3==1.22
+Werkzeug==0.12.2
