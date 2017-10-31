@@ -2,7 +2,7 @@
   <div>
       <p class="header">{{ job.name }}</p>
       <p class="job-id">Job ID: <b>{{ job.id }}</b></p>
-      <a class = "text-info">Submitted by: <b>{{ job.labels['user-id'] }}</b></a>
+      <a class = "text-info">Submitted by: <b>{{ getUserId(job) }}</b></a>
   </div>
 
   <md-card>
@@ -14,9 +14,9 @@
           {{ numCompletedTasks }} of {{ numTasks }} tasks completed
         </ng-container>
       </b></p>
-      <p>Submitted {{ job.submission | jmShortDateTime }}</p>
-      <p>Started {{ job.start | jmShortDateTime }} ({{ getDuration() }})</p>
-      <p *ngIf="job.end">Ended {{ job.end | jmShortDateTime }}</p>
+      <p id="submitted">Submitted {{ job.submission | jmShortDateTime }}</p>
+      <p id="started">Started {{ job.start | jmShortDateTime }} ({{ getDuration() }})</p>
+      <p id="ended" *ngIf="job.end">Ended {{ job.end | jmShortDateTime }}</p>
     </md-card-content>
   </md-card>
 

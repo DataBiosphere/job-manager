@@ -95,7 +95,7 @@ export class MockJobMonitorService {
 }
 
 export function newDefaultMockJobMonitorService(): MockJobMonitorService {
-  let jobTemplates: QueryJobsResult[] =
+  let mockJobs: QueryJobsResult[] =
     [
       { id: 'JOB1',
         name: 'TCG-NBL-7357',
@@ -146,17 +146,5 @@ export function newDefaultMockJobMonitorService(): MockJobMonitorService {
         start: new Date(new Date().getTime() - 10099000),
         end: new Date(new Date().getTime() - 11844000)},
     ];
-  let mockJobs: QueryJobsResult[] = [];
-  for (let i = 0; i < 200; i++) {
-    let job: QueryJobsResult = {
-      id: "",
-      name: "",
-      status: null,
-      submission: new Date()
-    };
-    Object.assign(job, jobTemplates[i%jobTemplates.length]);
-    job.id = 'JOB'+ i;
-    job.name += i;
-    mockJobs.push(job)}
   return new MockJobMonitorService(mockJobs);
 }

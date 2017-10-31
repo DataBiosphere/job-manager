@@ -34,9 +34,12 @@ export class JobPanelsComponent implements OnChanges {
         }
       }
     }
-
-    this.inputs = Object.keys(this.job.inputs).sort();
-    this.outputs = Object.keys(this.job.outputs).sort();
+    if (this.job.inputs) {
+      this.inputs = Object.keys(this.job.inputs).sort();
+    }
+    if (this.job.outputs) {
+      this.outputs = Object.keys(this.job.outputs).sort();
+    }
   }
 
   getDuration(): String {
@@ -71,11 +74,15 @@ export class JobPanelsComponent implements OnChanges {
     return this.gcsPrefix + parts.slice(2,-1).join("/");
   }
 
+  getUserId(job: JobMetadataResponse) {
+    return job.labels? job.labels['user-id'] : "";
+  }
+
   showInputsButton(): boolean {
-    return this.inputs.length > 0;
+    return this.inputs && this.inputs.length > 0;
   }
 
   showOutputsButton(): boolean {
-    return this.outputs.length > 0;
+    return this.outputs && this.outputs.length > 0;
   }
 }
