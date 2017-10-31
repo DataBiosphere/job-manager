@@ -8,8 +8,6 @@ RUN pip install -r requirements.txt
 
 ADD servers/cromwell/jobs /app/jobs
 
-EXPOSE 8080
-
-ENTRYPOINT ["python"]
-
-CMD ["-m", "jobs"]
+# Missing required arguments -b PORT, -e ... which must be provided by the
+# docker image user.
+ENTRYPOINT ["gunicorn", "jobs.__main__:app"]
