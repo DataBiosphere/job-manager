@@ -22,11 +22,11 @@ export class AuthService {
 
   private updateUser(user: any) {
     if (user && user.isSignedIn()) {
-      this.authenticated.next(true);
       this.authToken = user.getAuthResponse().access_token;
+      this.authenticated.next(true);
     } else {
-      this.authenticated.next(false);
       this.authToken = undefined
+      this.authenticated.next(false);
     }
   }
 
