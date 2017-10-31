@@ -1,0 +1,17 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+p {
+  margin-top: .6rem;
+  margin-bottom: .6rem;
+}
+
+.sign-in-card {
+  width: 30%;
+  height: 5rem;
+  left: 35%;
+  top: 10rem;
+  text-align: center;
+  position: relative
+}

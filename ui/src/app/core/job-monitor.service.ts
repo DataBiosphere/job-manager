@@ -2,6 +2,7 @@ import {Headers, Http, RequestOptions} from '@angular/http';
 import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 
+import {AuthService} from './auth.service';
 import {environment} from '../../environments/environment';
 import {QueryJobsRequest} from '../shared/model/QueryJobsRequest';
 import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
@@ -11,9 +12,8 @@ import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 /** Service wrapper for accessing the job monitor API. */
 @Injectable()
 export class JobMonitorService {
-  private headers = new Headers({'Content-Type': 'application/json'});
 
-  constructor(private http: Http) {}
+  constructor(private readonly authService: AuthService, private http: Http) {}
 
   private convertToJobMetadataResponse(json: object): JobMetadataResponse {
     var metadata: JobMetadataResponse = json as JobMetadataResponse;
@@ -41,16 +41,23 @@ export class JobMonitorService {
     return response;
   }
 
+  private getHttpHeaders(): Headers {
+    var headers = new Headers({'Content-Type': 'application/json'});
+    if (environment.requiresAuth && this.authService.authToken) {
+      headers.set('Authentication', `Bearer ${this.authService.authToken}`);
+    }
+    return headers;
+  }
+
   private handleError(error: any): Promise<any> {
     // TODO(alahwa): Implement real error handling.
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);
   }
 
-
   abortJob(id: string): Promise<void> {
     return this.http.post(`${environment.apiUrl}/jobs/${id}/abort`,
-      new RequestOptions({headers: this.headers}))
+      new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => response.status == 200)
       .catch(this.handleError);
@@ -58,7 +65,7 @@ export class JobMonitorService {
 
   getJob(id: string): Promise<JobMetadataResponse> {
     return this.http.get(`${environment.apiUrl}/jobs/${id}`,
-      new RequestOptions({headers: this.headers}))
+      new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => this.convertToJobMetadataResponse(response.json()))
       .catch(this.handleError);
@@ -68,12 +75,9 @@ export class JobMonitorService {
   // consistency with other ng2 APIs, in addition to the retry/cancel
   // capabilities.
   queryJobs(req: QueryJobsRequest): Promise<QueryJobsResponse> {
-    return this.http.post(
-      `${environment.apiUrl}/jobs/query`,
+    return this.http.post(`${environment.apiUrl}/jobs/query`,
       req,
-      new RequestOptions({
-        headers: this.headers,
-      }))
+      new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => this.convertToQueryJobsResponse(response.json()))
       .catch(this.handleError);

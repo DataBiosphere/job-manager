@@ -80,4 +80,3 @@ export type JobListView = {
   results: QueryJobsResult[];
   exhaustive: boolean;
 }
-
