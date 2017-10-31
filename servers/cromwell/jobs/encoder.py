@@ -2,6 +2,7 @@ from six import iteritems
 from jobs.models.base_model_ import Model
 from connexion.apps.flask_app import FlaskJSONEncoder
 
+
 class JSONEncoder(FlaskJSONEncoder):
     include_nulls = False
 
