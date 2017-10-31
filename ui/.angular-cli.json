@@ -24,10 +24,9 @@
       "scripts": [],
       "environmentSource": "environments/environment.ts",
       "environments": {
-        "dsub_local": "environments/environment.dsub.local.ts",
-        "dsub_google": "environments/environment.dsub.google.ts",
         "dev": "environments/environment.ts",
-        "prod": "environments/environment.prod.ts"
+        "dsub_google": "environments/environment.dsub.google.ts",
+        "dsub_local": "environments/environment.dsub.local.ts"
       }
     }
   ],

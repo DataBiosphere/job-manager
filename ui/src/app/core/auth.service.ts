@@ -14,8 +14,6 @@ export class AuthService {
   public authToken: string;
 
   private initAuth(): Promise<void> {
-    console.log("CLIENTID");
-    console.log(environment.clientId);
     return gapi.auth2.init({
       client_id: environment.clientId,
       cookiepolicy: 'single_host_origin',
@@ -24,11 +22,11 @@ export class AuthService {
   }
 
   private updateUser(user: any) {
-    this.authenticated.next(user && user.isSignedIn());
-    if (this.authenticated.getValue()) {
+    if (user && user.isSignedIn()) {
+      this.authenticated.next(true);
       this.authToken = user.getAuthResponse().access_token;
     } else {
-      this.authToken = undefined;
+      this.authToken = undefined
     }
   }
 
