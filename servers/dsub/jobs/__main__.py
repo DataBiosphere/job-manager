@@ -21,6 +21,11 @@ parser.add_argument(
     type=str,
     help='Path prefix, e.g. /api/v1, to serve from',
     default=os.environ.get('PATH_PREFIX'))
+parser.add_argument(
+    '--requires_auth',
+    type=int,
+    help='Boolean indicating if authentication is required',
+    default=os.environ.get('REQUIRES_AUTH'))
 
 if __name__ == '__main__':
     parser.add_argument(
@@ -36,6 +41,7 @@ else:
 
 app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=False)
 app.app.config['PROVIDER_TYPE'] = args.provider_type
+app.app.config['REQUIRES_AUTH'] = bool(args.requires_auth)
 app.app.config['CLIENT'] = DSubClient()
 
 # Log to stderr.

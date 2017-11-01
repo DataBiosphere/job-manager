@@ -89,7 +89,12 @@ def _client():
 
 def _get_auth_token():
     auth_header = request.headers.get('Authentication')
-    return auth_header.split(' ')[1] if auth_header else None
+    if auth_header:
+        components = auth_header.split(' ')
+        if len(components) == 2 and components[0] == 'Bearer':
+            return components[1]
+
+    return None
 
 
 def _get_failures(job):
@@ -105,14 +110,17 @@ def _get_failures(job):
 def _get_google_provider(parent_id, auth_token):
     if not parent_id:
         raise BadRequest('missing required field parentId')
-    if not auth_token:
+    if not auth_token and _requires_auth():
         raise BadRequest('missing required field authToken')
+    else:
+        return google.GoogleJobProvider(False, False, parent_id)
+
     try:
         credentials = AccessTokenCredentials(auth_token, 'user-agent')
         return google.GoogleJobProvider(
             False, False, parent_id, credentials=credentials)
     except AccessTokenCredentialsError as e:
-        raise Unauthorized('invalid authentication token:{}'.format(e))
+        raise Unauthorized('Invalid authentication token:{}'.format(e))
 
 
 def _get_provider(parent_id=None, auth_token=None):
@@ -159,6 +167,10 @@ def _parse_datetime(date):
 
 def _provider_type():
     return current_app.config['PROVIDER_TYPE']
+
+
+def _requires_auth():
+    return current_app.config['REQUIRES_AUTH']
 
 
 def _query_result(job, project_id=None):

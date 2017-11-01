@@ -22,6 +22,7 @@ services:
     pid: host
     environment:
       - PROVIDER_TYPE=local
+      - REQUIRES_AUTH=0
     volumes:
       - /tmp/dsub-local:/tmp/dsub-local
       - /var/run/docker.sock:/var/run/docker.sock
