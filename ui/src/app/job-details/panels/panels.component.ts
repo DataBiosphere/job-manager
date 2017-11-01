@@ -34,12 +34,8 @@ export class JobPanelsComponent implements OnChanges {
         }
       }
     }
-    if (this.job.inputs) {
-      this.inputs = Object.keys(this.job.inputs).sort();
-    }
-    if (this.job.outputs) {
-      this.outputs = Object.keys(this.job.outputs).sort();
-    }
+    this.inputs = Object.keys(this.job.inputs || {}).sort();
+    this.outputs = Object.keys(this.job.outputs || {}).sort();
   }
 
   getDuration(): String {
@@ -75,7 +71,7 @@ export class JobPanelsComponent implements OnChanges {
   }
 
   getUserId(job: JobMetadataResponse) {
-    return job.labels? job.labels['user-id'] : "";
+    return job.labels ? job.labels['user-id'] : "";
   }
 
   showInputsButton(): boolean {

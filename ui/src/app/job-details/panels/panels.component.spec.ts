@@ -50,13 +50,6 @@ describe('JobPanelsComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TestPanelsComponent);
     testComponent = fixture.componentInstance;
-    testComponent.jobPanelsComponent.job = {
-      id: 'JOB1',
-      name: 'TCG-NBL-7357',
-      status: JobStatus.Running,
-      submission: new Date(new Date().getTime() - 1200000),
-      start: new Date(new Date().getTime() - 1200000)
-    };
   });
 
   it('should display with minimal job', async(() => {
@@ -65,7 +58,7 @@ describe('JobPanelsComponent', () => {
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.header')).nativeElement.textContent).toEqual('');
     expect(de.query(By.css('.job-id')).nativeElement.textContent)
-      .toContain('JOB1');
+      .toContain(minimalJob.id);
     expect(de.query(By.css('.text-info')).nativeElement.textContent)
       .toEqual('Submitted by: ');
   }));
@@ -84,9 +77,9 @@ describe('JobPanelsComponent', () => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.text-info')).nativeElement.textContent)
-      .toContain('user-1');
+      .toContain(completeJob.labels['user-id']);
     expect(de.query(By.css('#ended')).nativeElement.textContent)
-      .toContain("10:00 PM")
+      .toContain("10:00 PM");
   }));
 
   it('should show input buttons with complete job', async(() => {
@@ -98,7 +91,7 @@ describe('JobPanelsComponent', () => {
       .toEqual(2);
   }));
 
-  it('GCS resource urls should return correct values', async(() => {
+  it('should render correct GCS resource URLs', async(() => {
     testComponent.job = completeJob;
     fixture.detectChanges();
     expect(testComponent.jobPanelsComponent.getInputResourceURL('input'))
@@ -107,16 +100,16 @@ describe('JobPanelsComponent', () => {
       .toEqual('https://console.cloud.google.com/storage/browser/output/url');
   }));
 
-  it('invalid resource url should return invalid', async(() => {
+  it('should return invalid from invalid resource url', async(() => {
     expect(testComponent.jobPanelsComponent.getResourceURL('/invalid/url'))
       .toBeUndefined();
   }));
 
-  it('getUserId should return correct value', async(() => {
+  it('should return correct value from getUserId', async(() => {
     testComponent.job = completeJob;
     fixture.detectChanges();
     expect(testComponent.jobPanelsComponent.getUserId(testComponent.job))
-      .toEqual('user-1');
+      .toEqual(completeJob.labels['user-id']);
   }));
 
   it('should calculate job duration', async(() => {
