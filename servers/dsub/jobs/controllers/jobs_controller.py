@@ -1,30 +1,22 @@
 import connexion
-from flask import current_app
-from werkzeug.exceptions import BadRequest
 from datetime import datetime
 from dateutil.tz import tzlocal
-from dsub.providers import google
-from dsub.providers import local
-from dsub.providers import stub
+from dsub.providers import google, local, stub
+from flask import current_app, request
+from oauth2client.client import AccessTokenCredentials, AccessTokenCredentialsError
+from werkzeug.exceptions import BadRequest, Unauthorized
+
+from dsub_client import ProviderType
 from jobs.models.failure_message import FailureMessage
 from jobs.models.job_metadata_response import JobMetadataResponse
-from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_response import QueryJobsResponse
+from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_result import QueryJobsResult
-from dsub_client import ProviderType
 import job_statuses
 import job_ids
 
 _DEFAULT_PAGE_SIZE = 64
 _MAX_PAGE_SIZE = 64
-
-
-def provider_type():
-    return current_app.config['PROVIDER_TYPE']
-
-
-def client():
-    return current_app.config['CLIENT']
 
 
 def abort_job(id):
@@ -35,9 +27,10 @@ def abort_job(id):
 
     Returns: None
     """
-    project_id, job_id, task_id = job_ids.api_to_dsub(id, provider_type())
-    provider = _get_provider(project_id)
-    client().abort_job(provider, job_id, task_id)
+    auth_token = _get_auth_token()
+    project_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
+    provider = _get_provider(project_id, auth_token)
+    _client().abort_job(provider, job_id, task_id)
 
 
 def get_job(id):
@@ -49,9 +42,10 @@ def get_job(id):
     Returns:
         JobMetadataResponse: Response containing relevant metadata
     """
-    project_id, job_id, task_id = job_ids.api_to_dsub(id, provider_type())
-    provider = _get_provider(project_id)
-    job = client().get_job(provider, job_id, task_id)
+    auth_token = _get_auth_token()
+    project_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
+    provider = _get_provider(project_id, auth_token)
+    job = _client().get_job(provider, job_id, task_id)
 
     return JobMetadataResponse(
         id=id,
@@ -77,27 +71,30 @@ def query_jobs(body):
     Returns:
         QueryJobsResponse: Response containing results from query
     """
+    auth_token = _get_auth_token()
     query = QueryJobsRequest.from_dict(body)
     if not query.page_size:
         query.page_size = _DEFAULT_PAGE_SIZE
     query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
+    provider = _get_provider(query.parent_id, auth_token)
 
-    jobs, next_page_token = client().query_jobs(
-        _get_provider(query.parent_id), query)
+    jobs, next_page_token = _client().query_jobs(provider, query)
     results = [_query_result(j, query.parent_id) for j in jobs]
     return QueryJobsResponse(results=results, next_page_token=next_page_token)
 
 
-def _query_result(job, project_id=None):
-    return QueryJobsResult(
-        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
-        name=job['job-name'],
-        status=job_statuses.dsub_to_api(job['status']),
-        submission=_parse_datetime(job['create-time']),
-        # TODO(https://github.com/googlegenomics/dsub/issues/90) use start-time
-        start=_parse_datetime(job['create-time']),
-        end=_parse_datetime(job['end-time']),
-        labels=_job_to_api_labels(job))
+def _client():
+    return current_app.config['CLIENT']
+
+
+def _get_auth_token():
+    auth_header = request.headers.get('Authentication')
+    if auth_header:
+        components = auth_header.split(' ')
+        if len(components) == 2 and components[0] == 'Bearer':
+            return components[1]
+
+    return None
 
 
 def _get_failures(job):
@@ -110,8 +107,32 @@ def _get_failures(job):
     return None
 
 
-def _parse_datetime(date):
-    return date if isinstance(date, datetime) else None
+def _get_google_provider(parent_id, auth_token):
+    if not parent_id:
+        raise BadRequest('missing required field parentId')
+    if not auth_token and _requires_auth():
+        raise BadRequest('missing required field authToken')
+    else:
+        return google.GoogleJobProvider(False, False, parent_id)
+
+    try:
+        credentials = AccessTokenCredentials(auth_token, 'user-agent')
+        return google.GoogleJobProvider(
+            False, False, parent_id, credentials=credentials)
+    except AccessTokenCredentialsError as e:
+        raise Unauthorized('Invalid authentication token:{}'.format(e))
+
+
+def _get_provider(parent_id=None, auth_token=None):
+    if _provider_type() == ProviderType.GOOGLE:
+        return _get_google_provider(parent_id, auth_token)
+    elif parent_id or auth_token:
+        raise BadRequest('{} can only be specified for dsub Google provider'.
+                         format('authToken' if auth_token else 'parentId'))
+    elif _provider_type() == ProviderType.LOCAL:
+        return local.LocalJobProvider()
+    elif _provider_type() == ProviderType.STUB:
+        return stub.StubJobProvider()
 
 
 def _job_to_api_labels(job):
@@ -140,15 +161,25 @@ def _job_to_api_outputs(job):
     return outputs
 
 
-def _get_provider(parent_id=None):
-    if provider_type() == ProviderType.GOOGLE:
-        if not parent_id:
-            raise BadRequest('missing required field parentId')
-        return google.GoogleJobProvider(False, False, parent_id)
-    elif provider_type() == ProviderType.LOCAL and not parent_id:
-        return local.LocalJobProvider()
-    elif provider_type() == ProviderType.STUB and not parent_id:
-        return stub.StubJobProvider()
-    else:
-        raise BadRequest(
-            'parentId can only be specified for the google dsub provider')
+def _parse_datetime(date):
+    return date if isinstance(date, datetime) else None
+
+
+def _provider_type():
+    return current_app.config['PROVIDER_TYPE']
+
+
+def _requires_auth():
+    return current_app.config['REQUIRES_AUTH']
+
+
+def _query_result(job, project_id=None):
+    return QueryJobsResult(
+        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
+        name=job['job-name'],
+        status=job_statuses.dsub_to_api(job['status']),
+        submission=_parse_datetime(job['create-time']),
+        # TODO(https://github.com/googlegenomics/dsub/issues/90) use start-time
+        start=_parse_datetime(job['create-time']),
+        end=_parse_datetime(job['end-time']),
+        labels=_job_to_api_labels(job))

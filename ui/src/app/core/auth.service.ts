@@ -31,19 +31,21 @@ export class AuthService {
   }
 
   constructor() {
-    this.initAuthPromise = new Promise<void>( (resolve, reject) => {
-      gapi.load('auth2', {
-        callback: () => this.initAuth().then(() => resolve()),
-        onerror: () => reject(),
+    if (environment.requiresAuth) {
+      this.initAuthPromise = new Promise<void>( (resolve, reject) => {
+        gapi.load('auth2', {
+          callback: () => this.initAuth().then(() => resolve()),
+          onerror: () => reject(),
+        });
       });
-    });
 
-    this.initAuthPromise.then( () => {
-      // Update the current user to any subscribers and resolve the promise
-      this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
-      // Start listening for updates to the current user
-      gapi.auth2.getAuthInstance().currentUser.listen( (user) => this.updateUser(user));
-    });
+      this.initAuthPromise.then( () => {
+        // Update the current user to any subscribers and resolve the promise
+        this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
+        // Start listening for updates to the current user
+        gapi.auth2.getAuthInstance().currentUser.listen( (user) => this.updateUser(user));
+      });
+    }
   }
 
   public isAuthenticated(): Promise<boolean> {

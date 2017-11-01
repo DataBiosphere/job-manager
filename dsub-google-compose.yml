@@ -18,6 +18,7 @@ services:
     environment:
       - PROVIDER_TYPE=google
       - GOOGLE_APPLICATION_CREDENTIALS=/usr/adc.json
+      - REQUIRES_AUTH=1
     volumes:
       # For running on your workstation, assumes you've run
       # `gcloud auth application-default login`

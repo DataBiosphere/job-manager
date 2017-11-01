@@ -19,8 +19,6 @@ ProviderType = enum(GOOGLE='google', LOCAL='local', STUB='stub')
 class DSubClient:
     """Light dsub wrapper which enables easy execution of dstat + ddel commands"""
 
-    # TODO(bryancrampton): support injecting credentials for Google provider type
-
     def abort_job(self, provider, job_id, task_id):
         """Abort the dsub job or task (if it exists).
 
@@ -141,7 +139,7 @@ class DSubClient:
 
         # TODO(bryancrampton): support 'end_time' query parameter. First update
         # to filter by end_time once dsub LocalJobsProvider supports it.
-        # https://github.com/googlegenomics/dsub/issues/67
+        # https://github.com/googlegenomics/dsub/issues/90
         # Eventually, the pipelines API and dsub should support this query .
 
         # TODO(https://github.com/googlegenomics/dsub/issues/69): Move this
