@@ -10,9 +10,19 @@ use `docker-compose -f dsub-google-compose.yml CMD`), e.g.:
 
 ```
 ln -sf dsub-local-compose.yml docker-compose.yml
+```
 
-# For dsub local, also create a local tmp dir before continuing:
-mkdir /tmp/dsub-local
+For dsub local, also create a local tmp dir before continuing:
+`mkdir /tmp/dsub-local`
+
+For cromwell: 
+1. Create a local job-monitor dir: `mkdir /private/etc/job-monitor/`
+2. Then add a config.json file with the Cromwell username and password:
+```
+{
+  "cromwell_username" : "USERNAME",
+  "cromwell_password" : "PASSWORD"
+}
 ```
 
 Then...
