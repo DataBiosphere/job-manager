@@ -126,6 +126,12 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/TaskMetadata'
+      stdout:
+        type: string
+        description: Path to the standard output file for this job
+      stderr:
+        type: string
+        description: Path to the standard error file for this job
       failures:
         type: array
         items:

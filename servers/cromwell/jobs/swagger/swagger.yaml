@@ -27,6 +27,8 @@ paths:
           description: "Success"
         400:
           description: "Bad request"
+        401:
+          description: "Unauthorized"
         404:
           description: "Job not found"
         412:
@@ -54,6 +56,8 @@ paths:
             $ref: "#/definitions/QueryJobsResponse"
         400:
           description: "Bad request"
+        401:
+          description: "Unauthorized"
         500:
           description: "Internal server error"
       x-swagger-router-controller: "jobs.controllers.jobs_controller"
@@ -76,11 +80,24 @@ paths:
             $ref: "#/definitions/JobMetadataResponse"
         400:
           description: "Bad request"
+        401:
+          description: "Unauthorized"
         404:
           description: "Job not found"
         500:
           description: "Internal server error"
       x-swagger-router-controller: "jobs.controllers.jobs_controller"
+securityDefinitions:
+  google_id_token:
+    description: "Bearer token authorization"
+    type: "oauth2"
+    authorizationUrl: ""
+    flow: "implicit"
+    scopes:
+      https://www.googleapis.com/auth/genomics: "Full access to google genomics and\
+        \ pipelines API"
+    x-google-issuer: "https://accounts.google.com"
+    x-google-jwks_uri: "https://www.googleapis.com/oauth2/v1/certs"
 definitions:
   JobMetadataResponse:
     required:
@@ -124,6 +141,12 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/TaskMetadata"
+      stdout:
+        type: "string"
+        description: "Path to the standard output file for this job"
+      stderr:
+        type: "string"
+        description: "Path to the standard error file for this job"
       failures:
         type: "array"
         items:
@@ -289,3 +312,5 @@ responses:
     description: "Job not found"
   ServerError:
     description: "Internal server error"
+  Unauthorized:
+    description: "Unauthorized"

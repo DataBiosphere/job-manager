@@ -60,6 +60,16 @@ export interface JobMetadataResponse {
 
     tasks?: Array<models.TaskMetadata>;
 
+    /**
+     * Path to the standard output file for this job
+     */
+    stdout?: string;
+
+    /**
+     * Path to the standard error file for this job
+     */
+    stderr?: string;
+
     failures?: Array<models.FailureMessage>;
 
 }
