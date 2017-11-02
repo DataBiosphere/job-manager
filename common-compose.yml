@@ -17,7 +17,7 @@ services:
   dsub:
     # Flags to gunicorn:
     # http://docs.gunicorn.org/en/stable/run.html#commonly-used-arguments
-    command: ["-b", ":8190"]
+    command: ["-b", ":8190", "--reload"]
     environment:
       - PATH_PREFIX=/api/v1
       # Avoid writing .pyc files back to the volume. Files generated this way
@@ -48,4 +48,3 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 4200:4200
-
