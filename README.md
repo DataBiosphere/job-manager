@@ -15,7 +15,7 @@ ln -sf dsub-local-compose.yml docker-compose.yml
 For dsub local, also create a local tmp dir before continuing:
 `mkdir /tmp/dsub-local`
 
-For cromwell: 
+For cromwell:
 1. Create a local job-monitor dir: `mkdir /private/etc/job-monitor/`
 2. Then add a config.json file with the Cromwell username and password:
 ```
@@ -94,6 +94,11 @@ java -jar swagger-codegen-cli.jar generate \
  -i api/jobs.yaml \
  -l python-flask \
  -o servers/dsub \
+ -DsupportPython2=true,packageName=jobs
+java -jar swagger-codegen-cli.jar generate \
+ -i api/jobs.yaml \
+ -l python-flask \
+ -o servers/cromwell \
  -DsupportPython2=true,packageName=jobs
 ```
 
