@@ -22,7 +22,7 @@ export class SignInComponent implements OnInit {
     });
   }
 
-  private signIn(): void {
+  public signIn(): void {
     this.authService.signIn();
   }
 }

@@ -7,16 +7,17 @@ status=0
 readonly changed_files_command="git diff --cached --name-only | grep '\.py$' | grep -v 'servers/[^\/]*/jobs/models' | grep -v 'setup.py'"
 readonly files_in_commit=$(eval $changed_files_command)
 if [ -n "$files_in_commit" ]; then
+	echo "Running yapf linter for python files..."
 	# Stash un-staged changes to ensure that the staged changes pass the linter
 	git stash -q --keep-index
-	readonly LINT_OUT=$(yapf -d $files_in_commit)
+	readonly yapf_out=$(yapf -d $files_in_commit)
 	# Pop the un-staged changes once the lint is complete
 	git stash pop -q
 
-	if [ -z "$LINT_OUT" ]; then
+	if [ -z "$yapf_out" ]; then
 		echo "Passed yapf linter!"
 	else
-		echo "Please use yapf lint your changed files by running the command below (and stage the changes after):"
+		echo "Please use yapf to lint your changed files by running the command below (and stage the changes after):"
 		echo "yapf -i \$($changed_files_command)"
 
 		read -r -p "Would you like to run it now? [y/N] " res
@@ -26,6 +27,18 @@ if [ -n "$files_in_commit" ]; then
 		# Prevent commit of non-linted files
 		status=1
 	fi
+fi
+
+echo "Running ng lint for typscript files..."
+cd ./ui
+ng lint >/dev/null
+ret_code=$?
+
+if [ $ret_code != 0 ]; then
+	echo "Please run ng lint from the ui/ directory and fix your typescript files"
+	status=1
+else
+	echo "Passed ng lint!"
 fi
 
 # Close stdin and exit with the correct status
