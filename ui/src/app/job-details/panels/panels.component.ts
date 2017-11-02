@@ -16,8 +16,10 @@ import {TaskMetadata} from '../../shared/model/TaskMetadata';
 })
 export class JobPanelsComponent implements OnChanges {
   @Input() job: JobMetadataResponse;
-  gcsPrefix: string = "https://console.cloud.google.com/storage/browser/";
+  browserPrefix: string = "https://console.cloud.google.com/storage/browser/";
+  storagePrefix: string = "https://storage.cloud.google.com/";
   inputs: Array<String>;
+  logs: Array<String>;
   numCompletedTasks: number = 0;
   numTasks: number = 0;
   outputs: Array<String>;
@@ -35,7 +37,9 @@ export class JobPanelsComponent implements OnChanges {
       }
     }
     this.inputs = Object.keys(this.job.inputs || {}).sort();
+    this.logs = Object.keys(this.job.logs || {}).sort();
     this.outputs = Object.keys(this.job.outputs || {}).sort();
+
   }
 
   getDuration(): String {
@@ -50,24 +54,37 @@ export class JobPanelsComponent implements OnChanges {
   }
 
   getInputResourceURL(key: string): string {
-    return this.getResourceURL(this.job.inputs[key]);
+    return this.getResourceBrowserURL(this.job.inputs[key]);
+  }
+
+  getLogResourceURL(key: string): string {
+    return this.getResourceURL(this.job.logs[key]);
   }
 
   getOutputResourceURL(key: string): string {
-    return this.getResourceURL(this.job.outputs[key]);
+    return this.getResourceBrowserURL(this.job.outputs[key]);
   }
 
-  getResourceURL(url: string): string {
+  getResourceBrowserURL(uri: string): string {
+    let parts = this.validateGcsURLGetParts(uri);
+    // This excludes the object from the link to show the enclosing directory.
+    // This is valid with wildcard glob (bucket/path/*) and directories
+    // (bucket/path/dir/) as well, the * or empty string will be trimmed.
+    return parts ? this.browserPrefix + parts.slice(2,-1).join("/") : undefined;
+  }
+
+  getResourceURL(uri: string): string {
+    let parts = this.validateGcsURLGetParts(uri);
+    return parts ? this.storagePrefix + parts.slice(2).join("/") : undefined;
+  }
+
+  private validateGcsURLGetParts(url: string): string[] {
     let parts = url.split("/");
     if (parts[0] != "gs:" || parts[1] != "") {
       // TODO(bryancrampton): Handle invalid resource URL gracefully
       return;
     }
-
-    // This excludes the object from the link to show the enclosing directory.
-    // This is valid with wildcard glob (bucket/path/*) and directories
-    // (bucket/path/dir/) as well, the * or empty string will be trimmed.
-    return this.gcsPrefix + parts.slice(2,-1).join("/");
+    return parts;
   }
 
   getUserId(job: JobMetadataResponse) {
@@ -76,6 +93,10 @@ export class JobPanelsComponent implements OnChanges {
 
   showInputsButton(): boolean {
     return this.inputs && this.inputs.length > 0;
+  }
+
+  showLogsButton(): boolean {
+    return this.logs && this.logs.length > 0;
   }
 
   showOutputsButton(): boolean {

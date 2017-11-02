@@ -56,8 +56,9 @@ def get_job(id):
         start=_parse_datetime(job['create-time']),
         end=_parse_datetime(job['end-time']),
         inputs=job['inputs'],
-        outputs=_job_to_api_outputs(job),
+        outputs=job['outputs'],
         labels=_job_to_api_labels(job),
+        logs=_job_to_api_logs(job),
         failures=_get_failures(job))
 
 
@@ -148,18 +149,15 @@ def _job_to_api_labels(job):
     return labels
 
 
-def _job_to_api_outputs(job):
-    outputs = job['outputs'].copy() if job['outputs'] else {}
-    # https://cloud.google.com/genomics/v1alpha2/pipelines-api-troubleshooting#pipeline_operation_log_files
-    # TODO(https://github.com/googlegenomics/dsub/issues/75): drop this
-    # workaround once the pipelines API and dsub support returning all log files
+def _job_to_api_logs(job):
     if job['logging'] and job['logging'].endswith('.log'):
         base_log_path = job['logging'][:-4]
-        outputs['log-controller'] = '{}.log'.format(base_log_path)
-        outputs['log-stderr'] = '{}-stderr.log'.format(base_log_path)
-        outputs['log-stdout'] = '{}-stdout.log'.format(base_log_path)
-    return outputs
-
+        return {
+            'controller-log': '{}.log'.format(base_log_path),
+            'stderr': '{}-stderr.log'.format(base_log_path),
+            'stdout': '{}-stdout.log'.format(base_log_path),
+        }
+    return None
 
 def _parse_datetime(date):
     return date if isinstance(date, datetime) else None
