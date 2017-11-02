@@ -130,13 +130,12 @@ describe('JobsTableComponent', () => {
       .toContain('8:00 PM');
   }));
 
+  // TODO(alanhwang): Add unit tests for component logic
+
   @Component({
     selector: 'jm-test-table-component',
     template:
-      `<jm-job-list-table
-        [jobs]="jobs"
-        (onStatusTabChange)="maybeNavigateForStatus($event)"
-        (onPage)="onClientPaginate($event)"></jm-job-list-table>`
+      `<jm-job-list-table [jobs]="jobs"></jm-job-list-table>`
   })
   class TestTableComponent {
     public jobs = new BehaviorSubject<JobListView>({
