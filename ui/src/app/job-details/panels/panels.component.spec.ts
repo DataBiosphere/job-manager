@@ -29,6 +29,7 @@ describe('JobPanelsComponent', () => {
       end: new Date('1994-03-29T22:00:00'),
       inputs: {'input': 'gs://input/url/'},
       outputs: {'output': 'gs://output/url/'},
+      logs: {'log' : 'gs://logs/url'},
       labels: {'user-id': 'user-1'},
     };
 
@@ -68,6 +69,7 @@ describe('JobPanelsComponent', () => {
     fixture.detectChanges();
     expect(testComponent.jobPanelsComponent.showInputsButton()).toBeFalsy();
     expect(testComponent.jobPanelsComponent.showOutputsButton()).toBeFalsy();
+    expect(testComponent.jobPanelsComponent.showLogsButton()).toBeFalsy();
     expect(fixture.debugElement.query(By.css('.view-resources-button')))
       .toBeNull();
   }));
@@ -87,8 +89,9 @@ describe('JobPanelsComponent', () => {
     fixture.detectChanges();
     expect(testComponent.jobPanelsComponent.showInputsButton()).toBeTruthy();
     expect(testComponent.jobPanelsComponent.showOutputsButton()).toBeTruthy();
+    expect(testComponent.jobPanelsComponent.showLogsButton()).toBeTruthy();
     expect(fixture.debugElement.queryAll(By.css('.view-resources-button')).length)
-      .toEqual(2);
+      .toEqual(3);
   }));
 
   it('should render correct GCS resource URLs', async(() => {
@@ -98,6 +101,8 @@ describe('JobPanelsComponent', () => {
       .toEqual('https://console.cloud.google.com/storage/browser/input/url');
     expect(testComponent.jobPanelsComponent.getOutputResourceURL('output'))
       .toEqual('https://console.cloud.google.com/storage/browser/output/url');
+      expect(testComponent.jobPanelsComponent.getLogResourceURL('log'))
+        .toEqual('https://storage.cloud.google.com/logs/url');
   }));
 
   it('should return invalid from invalid resource url', async(() => {
