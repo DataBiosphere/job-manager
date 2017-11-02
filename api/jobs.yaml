@@ -122,6 +122,9 @@ definitions:
       labels:
         type: object
         description: Custom job labels with string values
+      logs:
+        type: object
+        description: Map of type of log file to its location
       tasks:
         type: array
         items:

@@ -137,6 +137,10 @@ definitions:
         type: "object"
         description: "Custom job labels with string values"
         properties: {}
+      logs:
+        type: "object"
+        description: "Map of type of log file to its location"
+        properties: {}
       tasks:
         type: "array"
         items:
