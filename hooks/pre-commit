@@ -34,9 +34,8 @@ cd ./ui
 ng lint >/dev/null
 ret_code=$?
 
-# If it didn't pass, announce it failed and print the output
 if [ $ret_code != 0 ]; then
-	echo "Please run ng lint from the ui/ directory to fix your typescript files"
+	echo "Please run ng lint from the ui/ directory and fix your typescript files"
 	status=1
 else
 	echo "Passed ng lint!"
