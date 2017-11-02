@@ -122,16 +122,13 @@ definitions:
       labels:
         type: object
         description: Custom job labels with string values
+      logs:
+        type: object
+        description: Map of type of log file to its location
       tasks:
         type: array
         items:
           $ref: '#/definitions/TaskMetadata'
-      stdout:
-        type: string
-        description: Path to the standard output file for this job
-      stderr:
-        type: string
-        description: Path to the standard error file for this job
       failures:
         type: array
         items:
