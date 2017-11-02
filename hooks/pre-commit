@@ -4,7 +4,7 @@
 exec < /dev/tty
 status=0
 
-readonly changed_files_command="git diff --cached --name-only | grep '\.py$' | grep -v 'servers/dsub/jobs/models' | grep -v 'setup.py'"
+readonly changed_files_command="git diff --cached --name-only | grep '\.py$' | grep -v 'servers/[^\/]*/jobs/models' | grep -v 'setup.py'"
 readonly files_in_commit=$(eval $changed_files_command)
 if [ -n "$files_in_commit" ]; then
 	# Stash un-staged changes to ensure that the staged changes pass the linter
