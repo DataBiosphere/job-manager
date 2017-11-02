@@ -65,16 +65,16 @@ export class JobPanelsComponent implements OnChanges {
     return this.getResourceBrowserURL(this.job.outputs[key]);
   }
 
-  getResourceBrowserURL(url: string): string {
-    let parts = this.validateGcsURLGetParts(url);
+  getResourceBrowserURL(uri: string): string {
+    let parts = this.validateGcsURLGetParts(uri);
     // This excludes the object from the link to show the enclosing directory.
     // This is valid with wildcard glob (bucket/path/*) and directories
     // (bucket/path/dir/) as well, the * or empty string will be trimmed.
     return parts ? this.browserPrefix + parts.slice(2,-1).join("/") : undefined;
   }
 
-  getResourceURL(url: string): string {
-    let parts = this.validateGcsURLGetParts(url);
+  getResourceURL(uri: string): string {
+    let parts = this.validateGcsURLGetParts(uri);
     return parts ? this.storagePrefix + parts.slice(2).join("/") : undefined;
   }
 
