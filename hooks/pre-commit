@@ -4,12 +4,10 @@
 exec < /dev/tty
 status=0
 
-pwd
-
-echo "Running yapf linter for python files..."
 readonly changed_files_command="git diff --cached --name-only | grep '\.py$' | grep -v 'servers/[^\/]*/jobs/models' | grep -v 'setup.py'"
 readonly files_in_commit=$(eval $changed_files_command)
 if [ -n "$files_in_commit" ]; then
+	echo "Running yapf linter for python files..."
 	# Stash un-staged changes to ensure that the staged changes pass the linter
 	git stash -q --keep-index
 	readonly yapf_out=$(yapf -d $files_in_commit)
@@ -19,7 +17,7 @@ if [ -n "$files_in_commit" ]; then
 	if [ -z "$yapf_out" ]; then
 		echo "Passed yapf linter!"
 	else
-		echo "Please use `yapf` to lint your changed files by running the command below (and stage the changes after):"
+		echo "Please use yapf to lint your changed files by running the command below (and stage the changes after):"
 		echo "yapf -i \$($changed_files_command)"
 
 		read -r -p "Would you like to run it now? [y/N] " res
@@ -33,7 +31,7 @@ fi
 
 echo "Running ng lint for typscript files..."
 cd ./ui
-tslint=$(ng lint)
+ng lint >/dev/null
 ret_code=$?
 
 # If it didn't pass, announce it failed and print the output
