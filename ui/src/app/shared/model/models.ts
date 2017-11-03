@@ -5,3 +5,5 @@ export * from './QueryJobsRequest';
 export * from './QueryJobsResponse';
 export * from './QueryJobsResult';
 export * from './TaskMetadata';
+export * from './UpdateJobLabelsRequest';
+export * from './UpdateJobLabelsResponse';

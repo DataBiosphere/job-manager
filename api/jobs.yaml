@@ -34,7 +34,7 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
-  '/jobs/{id}/updateLabels'
+  '/jobs/{id}/updateLabels':
     post:
       operationId: UpdateJobLabels
       summary: Update labels on a job.
@@ -44,7 +44,7 @@ paths:
           required: true
           type: string
           in: path
-        - name: parameters
+        - name: body
           required: true
           in: body
           schema:
@@ -62,6 +62,8 @@ paths:
           $ref: '#/responses/ServerError'
         '501':
           description: Server does not implement this method.
+      tags:
+        - Jobs
   '/jobs/query':
     post:
       # TODO(calbach): Parameterize sort ordering.

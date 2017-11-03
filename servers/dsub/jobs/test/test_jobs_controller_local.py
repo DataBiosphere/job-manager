@@ -48,6 +48,10 @@ class TestJobsControllerLocal(BaseTestCase):
                 max_attempts * retry_interval))
         self.wait_for_job_status(job_id, ApiStatus.ABORTED)
 
+    def test_update_job_labels(self):
+        resp = self.client.open('/jobs/asdf/updateLabels', method='POST')
+        self.assertStatus(resp, 501)
+
     def test_abort_terminal_job_fails(self):
         job = self.start_job('echo FOO', wait=True)
         self.wait_for_job_status(job['job-id'], ApiStatus.SUCCEEDED)

@@ -21,6 +21,20 @@ def abort_job(id):
     return 'abort job'
 
 
+def update_job_labels(id, body):
+    """
+    Update labels on a job.
+
+    :param id: Job ID
+    :type id: str
+    :param body:
+    :type body: dict | bytes
+
+    :rtype: UpdateJobLabelsResponse
+    """
+    return 'update job labels'
+
+
 def get_job(id):
     """
     Query for job and task-level metadata for a specified job

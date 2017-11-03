@@ -4,7 +4,7 @@ from dateutil.tz import tzlocal
 from dsub.providers import google, local, stub
 from flask import current_app, request
 from oauth2client.client import AccessTokenCredentials, AccessTokenCredentialsError
-from werkzeug.exceptions import BadRequest, Unauthorized
+from werkzeug.exceptions import BadRequest, Unauthorized, NotImplemented
 
 from dsub_client import ProviderType
 from jobs.models.failure_message import FailureMessage
@@ -31,6 +31,20 @@ def abort_job(id):
     project_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
     provider = _get_provider(project_id, auth_token)
     _client().abort_job(provider, job_id, task_id)
+
+
+def update_job_labels(id, body):
+    """
+    Update labels on a job.
+
+    Args:
+        id (str): Job ID to update
+        body (dict): JSON request body
+
+    Returns:
+        UpdateJobLabelsResponse: Response - never actually returned
+    """
+    raise NotImplemented('dsub does not support label updates')
 
 
 def get_job(id):
@@ -158,6 +172,7 @@ def _job_to_api_logs(job):
             'stdout': '{}-stdout.log'.format(base_log_path),
         }
     return None
+
 
 def _parse_datetime(date):
     return date if isinstance(date, datetime) else None
