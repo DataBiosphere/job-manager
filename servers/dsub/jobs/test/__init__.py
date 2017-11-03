@@ -74,6 +74,12 @@ class BaseTestCase(TestCase):
                 output_data.append(
                     output_file_param_util.make_param(name, value, recursive))
 
+        job_data = {
+            'envs': env_data,
+            'inputs': input_data,
+            'outputs': output_data,
+            'labels': label_data,
+        }
         all_task_data = [{
             'envs': env_data,
             'labels': label_data,
@@ -86,6 +92,7 @@ class BaseTestCase(TestCase):
             # to remove provider_root_cache
             local.LocalJobProvider(),
             resources,
+            job_data,
             all_task_data,
             name=name,
             command=command,
@@ -101,14 +108,14 @@ class BaseTestCase(TestCase):
 
     def expected_log_files(self, job_id):
         return {
-            'log-controller': '{}/{}.log'.format(self.log_path, job_id),
-            'log-stderr': '{}/{}-stderr.log'.format(self.log_path, job_id),
-            'log-stdout': '{}/{}-stdout.log'.format(self.log_path, job_id),
+            'controller-log': '{}/{}.log'.format(self.log_path, job_id),
+            'stderr': '{}/{}-stderr.log'.format(self.log_path, job_id),
+            'stdout': '{}/{}-stdout.log'.format(self.log_path, job_id),
         }
 
-    def must_abort_job(self, job_id):
+    def try_abort_job(self, job_id):
         resp = self.client.open('/jobs/{}/abort'.format(job_id), method='POST')
-        self.assertStatus(resp, 200)
+        return resp.status_code == 200
 
     def must_get_job(self, job_id):
         resp = self.client.open('/jobs/{}'.format(job_id), method='GET')
@@ -129,21 +136,26 @@ class BaseTestCase(TestCase):
                             status,
                             poll_interval=0.5,
                             total_time=30):
-        has_status = False
-        job = None
-        while not has_status and (total_time is None or total_time > 0):
+        return self.wait_for_job(
+            job_id,
+            lambda job: self.job_has_status(job, status),
+            poll_interval=poll_interval,
+            total_time=total_time)
+
+    def wait_for_job(self, job_id, predicate, poll_interval=0.5,
+                     total_time=30):
+        remaining = total_time
+        while remaining is None or remaining > 0:
             job = self.must_get_job(job_id)
-            has_status = self.job_has_status(job, status)
+            if predicate(job):
+                return job
             time.sleep(poll_interval)
-            if total_time is not None:
-                total_time -= poll_interval
+            if remaining is not None:
+                remaining -= poll_interval
 
-        if total_time <= 0:
-            raise Exception(
-                'Wait for job \'{}\' to be \'{}\' timed out after {} seconds'
-                .format(job_id, status, total_time))
-
-        return job
+        raise Exception(
+            'Wait for job \'{}\' to be \'{}\' timed out after {} seconds'
+            .format(job_id, status, remaining))
 
     def job_has_status(self, job, status):
         has_status = job.status == status
