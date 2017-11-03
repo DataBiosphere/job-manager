@@ -24,12 +24,13 @@ import {JobMonitorService} from '../../core/job-monitor.service';
 import {JobListView} from "../../shared/job-stream";
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {newDefaultMockJobMonitorService} from '../../shared/mock-job-monitor.service';
 
 describe('JobsTableComponent', () => {
 
   let testComponent: TestTableComponent;
   let fixture: ComponentFixture<TestTableComponent>;
-  let testJob1: QueryJobsResult ={
+  let testJob1: QueryJobsResult = {
     id: 'JOB1',
     name: 'TCG-NBL-7357',
     status: JobStatus.Running,
@@ -68,10 +69,6 @@ describe('JobsTableComponent', () => {
 
   beforeEach(async(() => {
 
-    let jobMonitorServiceStub = {
-      abortJob: true
-    };
-
     TestBed.configureTestingModule({
       declarations: [
         JobsTableComponent,
@@ -97,7 +94,7 @@ describe('JobsTableComponent', () => {
         SharedModule
       ],
       providers: [
-        {provide: JobMonitorService, userValue: jobMonitorServiceStub}
+        {provide: JobMonitorService, userValue: newDefaultMockJobMonitorService()}
       ],
     }).compileComponents();
   }));
@@ -114,7 +111,7 @@ describe('JobsTableComponent', () => {
   }));
 
   it('should display job data in row', async(() => {
-    testComponent.jobs = new BehaviorSubject<JobListView>({
+    testComponent.jobs.next({
       results: [testJob1],
       exhaustive: true
     });
