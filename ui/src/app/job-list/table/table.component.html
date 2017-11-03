@@ -62,7 +62,7 @@
   <!-- TODO(calbach): Factor these columns into a label-config. -->
   <ng-container mdColumnDef="owner">
     <md-header-cell *mdHeaderCellDef> Owner </md-header-cell>
-    <md-cell *mdCellDef="let j">{{ j.labels['user-id'] }}</md-cell>
+    <md-cell *mdCellDef="let j" id="owner-column">{{ getUserID(j) }}</md-cell>
   </ng-container>
 
   <!-- Status column -->
@@ -79,13 +79,15 @@
   <!-- Status detail column -->
   <ng-container mdColumnDef="status-detail">
     <md-header-cell *mdHeaderCellDef> Status Detail </md-header-cell>
-    <md-cell *mdCellDef="let j" class = "column">{{ j.labels['status-detail'] }}</md-cell>
+    <md-cell *mdCellDef="let j" id="status-detail-column" class = "column">
+      {{ getStatusDetail(j) }}
+    </md-cell>
   </ng-container>
 
   <!-- Submitted column -->
   <ng-container mdColumnDef="submitted">
     <md-header-cell *mdHeaderCellDef> Submitted </md-header-cell>
-    <md-cell *mdCellDef="let j">{{ j.submission | jmShortDateTime }}</md-cell>
+    <md-cell id="submitted-column" *mdCellDef="let j">{{ j.submission | jmShortDateTime }}</md-cell>
   </ng-container>
 
   <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>

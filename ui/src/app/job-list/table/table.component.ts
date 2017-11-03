@@ -6,7 +6,6 @@ import {
   Input,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
@@ -24,7 +23,7 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {JobStatusImage, StatusGroup} from '../../shared/common';
 import {JobListView} from '../../shared/job-stream';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'jm-job-list-table',
@@ -34,7 +33,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class JobsTableComponent implements OnInit {
   @Input() jobs: BehaviorSubject<JobListView>;
   @Output() onStatusTabChange = new EventEmitter<StatusGroup>();
-  @Output() onJobUpdate = new EventEmitter<QueryJobsResult>();
   @Output() onPage = new EventEmitter<PageEvent>();
 
 
@@ -108,8 +106,16 @@ export class JobsTableComponent implements OnInit {
     return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
   }
 
+  getStatusDetail(job: QueryJobsResult) {
+    return job.labels ? job.labels['status-detail'] : '';
+  }
+
   getStatusUrl(status: JobStatus): string {
     return JobStatusImage[status];
+  }
+
+  getUserID(job: QueryJobsResult) {
+    return job.labels ? job.labels['user-id'] : '';
   }
 
   getTabSelectedIndex(): number {
@@ -198,13 +204,12 @@ export class JobsDataSource extends DataSource<any> {
 
       // Get only the requested page
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      let visibleJobs = data
+      return data
         .filter((job: QueryJobsResult) => {
           let searchStr = (job.name + job.status).toLowerCase();
           return searchStr.indexOf(this.filter.toLowerCase()) != -1;
         })
-        .splice(startIndex, this.paginator.pageSize)
-      return visibleJobs;
+        .splice(startIndex, this.paginator.pageSize);
     });
   }
 
