@@ -62,7 +62,9 @@
   <!-- TODO(calbach): Factor these columns into a label-config. -->
   <ng-container mdColumnDef="owner">
     <md-header-cell *mdHeaderCellDef> Owner </md-header-cell>
-    <md-cell *mdCellDef="let j" id="owner-column">{{ getUserID(j) }}</md-cell>
+      <md-cell *mdCellDef="let j" id="owner-column">
+        {{ getJobLabel(j, "user-id") }}
+      </md-cell>
   </ng-container>
 
   <!-- Status column -->
@@ -80,7 +82,7 @@
   <ng-container mdColumnDef="status-detail">
     <md-header-cell *mdHeaderCellDef> Status Detail </md-header-cell>
     <md-cell *mdCellDef="let j" id="status-detail-column" class = "column">
-      {{ getStatusDetail(j) }}
+      {{ getJobLabel(j, "status-detail") }}
     </md-cell>
   </ng-container>
 
