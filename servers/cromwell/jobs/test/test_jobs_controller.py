@@ -65,14 +65,54 @@ class TestJobsController(BaseTestCase):
             '/jobs/{id}/abort'.format(id=workflow_id), method='POST')
         self.assertStatus(response, 404)
 
-    def test_get_job(self):
+    @requests_mock.mock()
+    def test_get_job_returns_200(self, mock_request):
         """
         Test case for get_job
 
         Query for job and task-level metadata for a specified job
         """
+        workflow_id = 'id'
+
+        def _request_callback(request, context):
+            context.status_code = 200
+            return {
+                "workflowName": "test",
+                "id": workflow_id,
+                "calls": {
+                    "test.analysis": [{
+                        "jobId": "operations/abcde",
+                        "executionStatus": "Done",
+                        "start": "2015-12-11T16:53:22.000-05:00",
+                        "end": "2015-12-11T16:53:23.000-05:00",
+                        "stderr": "/cromwell/cromwell-executions/id/call-analysis/stderr",
+                        "stdout": "/cromwell/cromwell-executions/id/call-analysis/stdout",
+                        "returnCode": 0,
+                        "inputs": {
+                            "test.inputs": "gs://project-bucket/test/inputs.txt"
+                        }
+                    }]
+                },
+                "inputs": {
+                    "test.inputs": "gs://project-bucket/test/inputs.txt"
+                },
+                "labels": {
+                    "cromwell-workflow-id": "cromwell-12345"
+                },
+                "outputs": {
+                    "test.outputs": "gs://project-bucket/test/outputs.txt"
+                },
+                "submission": "2015-12-11T16:53:21.000-05:00",
+                "status": "Succeeded",
+                "end": "2015-12-11T16:53:23.000-05:00",
+                "start": "2015-12-11T16:53:21.000-05:00"
+            }
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
         response = self.client.open(
-            '/jobs/{id}'.format(id='id_example'), method='GET')
+            '/jobs/{id}'.format(id=workflow_id), method='GET')
         self.assertStatus(response, 200)
 
     @requests_mock.mock()

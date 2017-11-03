@@ -7,6 +7,9 @@ from datetime import datetime
 from jobs.models.query_jobs_result import QueryJobsResult
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_response import QueryJobsResponse
+from jobs.models.job_metadata_response import JobMetadataResponse
+from jobs.models.task_metadata import TaskMetadata
+from jobs.models.failure_message import FailureMessage
 
 
 def abort_job(id):
@@ -48,7 +51,41 @@ def get_job(id):
 
     :rtype: JobMetadataResponse
     """
-    return 'get job'
+    url = '{cromwell_url}/{id}/metadata'.format(
+        cromwell_url=_get_base_url(), id=id)
+    response = requests.get(url, auth=_get_user_auth())
+    job = response.json()
+    submission = _parse_datetime(job.get('submission'))
+    start = _parse_datetime(job.get('start'))
+    end = _parse_datetime(job.get('end'))
+    failures = None
+    if job.get('failures'):
+        failures = [FailureMessage(failure=job['failures'][0]['message'])]
+    tasks = [format_task(task[0]) for task in job.get('calls').values()]
+    return JobMetadataResponse(
+        id=id,
+        name=job.get('workflowName'),
+        status=job.get('status'),
+        submission=submission,
+        start=start,
+        end=end,
+        inputs=job.get('inputs'),
+        outputs=job.get('outputs'),
+        labels=job.get('labels'),
+        failures=failures,
+        tasks=tasks)
+
+
+def format_task(task):
+    return TaskMetadata(
+        job_id=task.get('jobId'),
+        execution_status=task.get('executionStatus'),
+        start=_parse_datetime(task.get('start')),
+        end=_parse_datetime(task.get('end')),
+        stderr=task.get('stderr'),
+        stdout=task.get('stdout'),
+        inputs=task.get('inputs'),
+        return_code=task.get('returnCode'))
 
 
 def query_jobs(body):
