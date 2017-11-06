@@ -61,7 +61,10 @@ def get_job(id):
     failures = None
     if job.get('failures'):
         failures = [FailureMessage(failure=job['failures'][0]['message'])]
-    tasks = [format_task(task[0]) for task in job.get('calls').values()]
+    tasks = [
+        format_task(task_name, task_metadata[0])
+        for task_name, task_metadata in job.get('calls').items()
+    ]
     return JobMetadataResponse(
         id=id,
         name=job.get('workflowName'),
@@ -76,16 +79,17 @@ def get_job(id):
         tasks=tasks)
 
 
-def format_task(task):
+def format_task(task_name, task_metadata):
     return TaskMetadata(
-        job_id=task.get('jobId'),
-        execution_status=task.get('executionStatus'),
-        start=_parse_datetime(task.get('start')),
-        end=_parse_datetime(task.get('end')),
-        stderr=task.get('stderr'),
-        stdout=task.get('stdout'),
-        inputs=task.get('inputs'),
-        return_code=task.get('returnCode'))
+        name=task_name.split('.')[1],
+        job_id=task_metadata.get('jobId'),
+        execution_status=task_metadata.get('executionStatus'),
+        start=_parse_datetime(task_metadata.get('start')),
+        end=_parse_datetime(task_metadata.get('end')),
+        stderr=task_metadata.get('stderr'),
+        stdout=task_metadata.get('stdout'),
+        inputs=task_metadata.get('inputs'),
+        return_code=task_metadata.get('returnCode'))
 
 
 def query_jobs(body):
