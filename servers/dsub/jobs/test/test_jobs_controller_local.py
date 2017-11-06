@@ -20,28 +20,32 @@ class TestJobsControllerLocal(BaseTestCase):
         self.dsub_local_dir = tempfile.mkdtemp()
         # Set env variable read by dsub to store files for the local provider
         tempfile.tempdir = self.dsub_local_dir
-        print self.dsub_local_dir
         # Create logging directory
         self.log_path = '{}/logging'.format(self.dsub_local_dir)
         os.mkdir(self.log_path)
 
     def tearDown(self):
-        # shutil.rmtree(self.dsub_local_dir)
+        shutil.rmtree(self.dsub_local_dir)
         tempfile.tempdir = None
 
     def test_abort_job(self):
         job_id = self.start_job('sleep 120')['job-id']
         self.wait_for_job_status(job_id, ApiStatus.RUNNING)
-        # TODO(calbach): Change RUNNING semantics so that the above puts us into
-        # an abortable state, then remove these retries.
+
+        max_attempts = 10
+        retry_interval = .5
+
+        # TODO(calbach): Change RUNNING semantics in the dsub shim so that the
+        # above puts us into an abortable state, then remove these retries.
         # Keep retrying until we can abort the job.
         aborted = False
-        for i in range(10):
+        for i in range(max_attempts):
             aborted = self.try_abort_job(job_id)
             if aborted: break
-            time.sleep(.5)
+            time.sleep(retry_interval)
         if not aborted:
-            self.fail('failed to abort job after multiple retries')
+            self.fail('failed to abort job after {}s'.format(
+                max_attempts * retry_interval))
         self.wait_for_job_status(job_id, ApiStatus.ABORTED)
 
     def test_abort_terminal_job_fails(self):

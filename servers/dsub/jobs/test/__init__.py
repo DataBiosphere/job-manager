@@ -136,26 +136,22 @@ class BaseTestCase(TestCase):
                             status,
                             poll_interval=0.5,
                             total_time=30):
-        return self.wait_for_job(
-            job_id,
-            lambda job: self.job_has_status(job, status),
-            poll_interval=poll_interval,
-            total_time=total_time)
-
-    def wait_for_job(self, job_id, predicate, poll_interval=0.5,
-                     total_time=30):
-        remaining = total_time
-        while remaining is None or remaining > 0:
+        has_status = False
+        job = None
+        while total_time is None or total_time > 0:
             job = self.must_get_job(job_id)
-            if predicate(job):
-                return job
+            has_status = self.job_has_status(job, status)
+            if has_status: break
             time.sleep(poll_interval)
-            if remaining is not None:
-                remaining -= poll_interval
+            if total_time is not None:
+                total_time -= poll_interval
 
-        raise Exception(
-            'Wait for job \'{}\' to be \'{}\' timed out after {} seconds'
-            .format(job_id, status, remaining))
+        if total_time <= 0:
+            raise Exception(
+                'Wait for job \'{}\' to be \'{}\' timed out after {} seconds'
+                .format(job_id, status, total_time))
+
+        return job
 
     def job_has_status(self, job, status):
         has_status = job.status == status
