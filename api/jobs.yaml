@@ -172,6 +172,7 @@ definitions:
       - Failed
       - Succeeded
       - Aborted
+      - Done
   TaskMetadata:
     description: Task level metadata
     properties:

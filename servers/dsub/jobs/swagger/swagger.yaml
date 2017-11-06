@@ -190,6 +190,7 @@ definitions:
     - "Failed"
     - "Succeeded"
     - "Aborted"
+    - "Done"
   TaskMetadata:
     properties:
       inputs:
