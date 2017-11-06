@@ -48,8 +48,10 @@ class DSubClient:
         if status != DsubStatus.RUNNING:
             raise PreconditionFailed(
                 'Job already in terminal status: {}'.format(job['status']))
-        ddel.ddel_tasks(
+        deleted = ddel.ddel_tasks(
             provider=provider, job_list=[job_id], task_list=task_list)
+        if len(deleted) != 1:
+            raise InternalServerError('failed to abort dsub job')
 
     def get_job(self, provider, job_id, task_id):
         """Get metadata for a particular dsub job or task (if it exists).

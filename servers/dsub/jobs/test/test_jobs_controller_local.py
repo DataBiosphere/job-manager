@@ -29,10 +29,24 @@ class TestJobsControllerLocal(BaseTestCase):
         tempfile.tempdir = None
 
     def test_abort_job(self):
-        started = self.start_job('sleep 120')
-        self.wait_for_job_status(started['job-id'], ApiStatus.RUNNING)
-        self.must_abort_job(started['job-id'])
-        self.wait_for_job_status(started['job-id'], ApiStatus.ABORTED)
+        job_id = self.start_job('sleep 120')['job-id']
+        self.wait_for_job_status(job_id, ApiStatus.RUNNING)
+
+        max_attempts = 10
+        retry_interval = .5
+
+        # TODO(calbach): Change RUNNING semantics in the dsub shim so that the
+        # above puts us into an abortable state, then remove these retries.
+        # Keep retrying until we can abort the job.
+        aborted = False
+        for i in range(max_attempts):
+            aborted = self.try_abort_job(job_id)
+            if aborted: break
+            time.sleep(retry_interval)
+        if not aborted:
+            self.fail('failed to abort job after {}s'.format(
+                max_attempts * retry_interval))
+        self.wait_for_job_status(job_id, ApiStatus.ABORTED)
 
     def test_abort_terminal_job_fails(self):
         job = self.start_job('echo FOO', wait=True)
@@ -60,8 +74,6 @@ class TestJobsControllerLocal(BaseTestCase):
             inputs=inputs,
             outputs=outputs,
             wait=True)
-        # Build expected outputs with logging paths
-        outputs.update(self.expected_log_files(started['job-id']))
         # Get job and validate that the metadata is accurate
         job = self.must_get_job(started['job-id'])
         self.assertEqual(job.id, started['job-id'])
@@ -69,6 +81,7 @@ class TestJobsControllerLocal(BaseTestCase):
         self.assertEqual(job.inputs, inputs)
         self.assertEqual(job.labels['label'], 'the_label_value')
         self.assertEqual(job.outputs, outputs)
+        self.assertEqual(job.logs, self.expected_log_files(started['job-id']))
         self.assertEqual(job.status, ApiStatus.SUCCEEDED)
         # Ensure delocalization worked correctly
         self.assertTrue(os.path.isfile(outputs['OUTPUT_FILE_KEY']))
