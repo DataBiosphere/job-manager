@@ -37,6 +37,11 @@ export interface TaskMetadata {
     end?: Date;
 
     /**
+     * The name of the job
+     */
+    name?: string;
+
+    /**
      * Backend-specific job ID
      */
     jobId?: string;
