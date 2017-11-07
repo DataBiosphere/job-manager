@@ -36,6 +36,37 @@ paths:
         500:
           description: "Internal server error"
       x-swagger-router-controller: "jobs.controllers.jobs_controller"
+  /jobs/{id}/updateLabels:
+    post:
+      tags:
+      - "Jobs"
+      summary: "Update labels on a job."
+      operationId: "update_job_labels"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Job ID"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          $ref: "#/definitions/UpdateJobLabelsRequest"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/UpdateJobLabelsResponse"
+        400:
+          description: "Bad request"
+        404:
+          description: "Job not found"
+        500:
+          description: "Internal server error"
+        501:
+          description: "Server does not implement this method."
+      x-swagger-router-controller: "jobs.controllers.jobs_controller"
   /jobs/query:
     post:
       tags:
@@ -206,6 +237,22 @@ definitions:
         format: "date-time"
         description: "The time at which this failure occurred"
     description: "Failure messages"
+  UpdateJobLabelsRequest:
+    properties:
+      labels:
+        type: "object"
+        description: "Labels to be merged into the existing job labels. Overwrites\
+          \ the label\nvalues for all given keys. Existing labels on the job which\
+          \ are not\nreferenced in this request are left unmodified.\n"
+        properties: {}
+    description: "Update labels on a job"
+  UpdateJobLabelsResponse:
+    properties:
+      labels:
+        type: "object"
+        description: "All job labels, after the update has been applied."
+        properties: {}
+    description: "Response to an update labels request"
   QueryJobsRequest:
     properties:
       start:

@@ -34,6 +34,36 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
+  '/jobs/{id}/updateLabels':
+    post:
+      operationId: UpdateJobLabels
+      summary: Update labels on a job.
+      parameters:
+        - name: id
+          description: Job ID
+          required: true
+          type: string
+          in: path
+        - name: body
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/UpdateJobLabelsRequest'
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/UpdateJobLabelsResponse'
+        '400':
+          $ref: '#/responses/BadRequest'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/ServerError'
+        '501':
+          description: Server does not implement this method.
+      tags:
+        - Jobs
   '/jobs/query':
     post:
       # TODO(calbach): Parameterize sort ordering.
@@ -189,6 +219,21 @@ definitions:
         type: string
         format: date-time
         description: The time at which this failure occurred
+  UpdateJobLabelsRequest:
+    description: Update labels on a job
+    properties:
+      labels:
+        type: object
+        description: |
+          Labels to be merged into the existing job labels. Overwrites the label
+          values for all given keys. Existing labels on the job which are not
+          referenced in this request are left unmodified.
+  UpdateJobLabelsResponse:
+    description: Response to an update labels request
+    properties:
+      labels:
+        type: object
+        description: All job labels, after the update has been applied.
   QueryJobsRequest:
     description: Job query parameters
     properties:
