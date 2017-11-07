@@ -34,8 +34,7 @@ def abort_job(id):
 
 
 def update_job_labels(id, body):
-    """
-    Update labels on a job.
+    """Update labels on a job.
 
     Args:
         id (str): Job ID to update
