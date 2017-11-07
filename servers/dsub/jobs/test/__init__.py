@@ -138,15 +138,16 @@ class BaseTestCase(TestCase):
                             total_time=30):
         has_status = False
         job = None
-        while total_time is None or total_time > 0:
+        remaining = total_time
+        while remaining is None or remaining > 0:
             job = self.must_get_job(job_id)
             has_status = self.job_has_status(job, status)
             if has_status: break
             time.sleep(poll_interval)
-            if total_time is not None:
-                total_time -= poll_interval
+            if remaining is not None:
+                remaining -= poll_interval
 
-        if total_time <= 0:
+        if remaining <= 0:
             raise Exception(
                 'Wait for job \'{}\' to be \'{}\' timed out after {} seconds'
                 .format(job_id, status, total_time))
