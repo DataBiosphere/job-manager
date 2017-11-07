@@ -1,7 +1,7 @@
 import requests
-import connexion
 from requests.auth import HTTPBasicAuth
 from flask import current_app
+from werkzeug.exceptions import NotFound
 from datetime import datetime
 
 from jobs.models.query_jobs_result import QueryJobsResult
@@ -18,7 +18,11 @@ def abort_job(id):
 
     :rtype: None
     """
-    return 'abort job'
+    url = '{cromwell_url}/{id}/abort'.format(
+        cromwell_url=_get_base_url(), id=id)
+    response = requests.post(url, auth=_get_user_auth())
+    if response.status_code == NotFound.code:
+        raise NotFound(response.json()['message'])
 
 
 def update_job_labels(id, body):
