@@ -6,14 +6,12 @@ from flask import current_app, request
 from oauth2client.client import AccessTokenCredentials, AccessTokenCredentialsError
 from werkzeug.exceptions import BadRequest, Unauthorized, NotImplemented
 
-from dsub_client import ProviderType
+from jobs.controllers import dsub_client, job_ids, job_statuses
 from jobs.models.failure_message import FailureMessage
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_result import QueryJobsResult
-import job_statuses
-import job_ids
 
 _DEFAULT_PAGE_SIZE = 64
 _MAX_PAGE_SIZE = 64
@@ -138,14 +136,14 @@ def _get_google_provider(parent_id, auth_token):
 
 
 def _get_provider(parent_id=None, auth_token=None):
-    if _provider_type() == ProviderType.GOOGLE:
+    if _provider_type() == dsub_client.ProviderType.GOOGLE:
         return _get_google_provider(parent_id, auth_token)
     elif parent_id or auth_token:
         raise BadRequest('{} can only be specified for dsub Google provider'.
                          format('authToken' if auth_token else 'parentId'))
-    elif _provider_type() == ProviderType.LOCAL:
+    elif _provider_type() == dsub_client.ProviderType.LOCAL:
         return local.LocalJobProvider()
-    elif _provider_type() == ProviderType.STUB:
+    elif _provider_type() == dsub_client.ProviderType.STUB:
         return stub.StubJobProvider()
 
 

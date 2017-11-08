@@ -1,18 +1,18 @@
 from __future__ import absolute_import
 
+from dsub.providers import base, stub
 import math
-from werkzeug.exceptions import BadRequest
+import mock
+from parameterized import parameterized
+import unittest
+import werkzeug.exceptions
+
+from jobs.controllers.dsub_client import *
 from jobs.controllers.errors import JobNotFound
 from jobs.models.query_jobs_request import QueryJobsRequest
-from unittest import TestCase
-from dsub.providers import base
-from dsub.providers import stub
-from jobs.controllers.dsub_client import *
-from mock import MagicMock
-from parameterized import parameterized
 
 
-class TestDSubClient(TestCase):
+class TestDSubClient(unittest.TestCase):
     """ DSubClient unit tests."""
     OPS = [{
         'job-id': 'job-1',
@@ -126,7 +126,8 @@ class TestDSubClient(TestCase):
 
     def test_abort_job(self):
         # TODO(https://github.com/googlegenomics/dsub/issues/65) remove mock
-        self.PROVIDER.delete_jobs = MagicMock(return_value=(self.OPS[0:1], []))
+        self.PROVIDER.delete_jobs = mock.MagicMock(return_value=(self.OPS[0:1],
+                                                                 []))
         self.CLIENT.abort_job(self.PROVIDER, 'job-1', 'task-1')
         self.PROVIDER.delete_jobs.assert_called_with(None, ['job-1'],
                                                      ['task-1'], None, None)
