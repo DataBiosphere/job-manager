@@ -120,7 +120,7 @@ describe('JobsTableComponent', () => {
     expect(de.query(By.css('.job-details-button')).nativeElement.textContent)
       .toEqual(testJob1.name);
     expect(de.query(By.css('#owner-column')).nativeElement.textContent)
-      .toEqual(testJob1.labels['user-id']);
+      .toContain(testJob1.labels['user-id']);
     expect(de.query(By.css('#status-detail-column')).nativeElement.textContent)
       .toContain(testJob1.labels['status-detail']);
     expect(de.query(By.css('#submitted-column')).nativeElement.textContent)
