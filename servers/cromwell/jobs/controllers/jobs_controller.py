@@ -11,6 +11,9 @@ from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
 
+CROMWELL_DONE_STATUS = 'Done'
+API_SUCCESS_STATUS = 'Succeeded'
+
 
 def abort_job(id):
     """
@@ -81,13 +84,21 @@ def format_task(task_name, task_metadata):
     return TaskMetadata(
         name=task_name.split('.')[1],
         job_id=task_metadata.get('jobId'),
-        execution_status=task_metadata.get('executionStatus'),
+        execution_status=cromwell_to_api_status(
+            task_metadata.get('executionStatus')),
         start=_parse_datetime(task_metadata.get('start')),
         end=_parse_datetime(task_metadata.get('end')),
         stderr=task_metadata.get('stderr'),
         stdout=task_metadata.get('stdout'),
         inputs=task_metadata.get('inputs'),
         return_code=task_metadata.get('returnCode'))
+
+
+def cromwell_to_api_status(status):
+    """ Use the API status 'Succeeded' instead of 'Done' for completed cromwell tasks. """
+    if status == CROMWELL_DONE_STATUS:
+        return API_SUCCESS_STATUS
+    return status
 
 
 def query_jobs(body):
