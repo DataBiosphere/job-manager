@@ -190,8 +190,8 @@ class QueryJobsRequest(Model):
         :param name: The name of this QueryJobsRequest.
         :type name: str
         """
-        if name is not None and not re.search('^[a-zA-Z][a-zA-Z0-9_]*$', name):
-            raise ValueError("Invalid value for `name`, must be a follow pattern or equal to `/^[a-zA-Z][a-zA-Z0-9_]*$/`")
+        if name is not None and not re.search('^[a-zA-Z][a-zA-Z0-9_-]*$', name):
+            raise ValueError("Invalid value for `name`, must be a follow pattern or equal to `/^[a-zA-Z][a-zA-Z0-9_-]*$/`")
 
         self._name = name
 
