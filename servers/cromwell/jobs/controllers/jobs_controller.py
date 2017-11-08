@@ -53,25 +53,23 @@ def get_job(id):
     """
     url = '{cromwell_url}/{id}/metadata'.format(
         cromwell_url=_get_base_url(), id=id)
-    response = requests.get(url, auth=_get_user_auth())
-    job = response.json()
-    submission = _parse_datetime(job.get('submission'))
-    start = _parse_datetime(job.get('start'))
-    end = _parse_datetime(job.get('end'))
+    job = requests.get(url, auth=_get_user_auth()).json()
     failures = None
     if job.get('failures'):
-        failures = [FailureMessage(failure=job['failures'][0]['message'])]
+        failures = [
+            FailureMessage(failure=f['message']) for f in job['failures']
+        ]
     tasks = [
-        format_task(task_name, task_metadata[0])
-        for task_name, task_metadata in job.get('calls').items()
+        format_task(task_name, task_metadata[-1])
+        for task_name, task_metadata in job.get('calls', {}).items()
     ]
     return JobMetadataResponse(
         id=id,
         name=job.get('workflowName'),
         status=job.get('status'),
-        submission=submission,
-        start=start,
-        end=end,
+        submission=_parse_datetime(job.get('submission')),
+        start=_parse_datetime(job.get('start')),
+        end=_parse_datetime(job.get('end')),
         inputs=job.get('inputs'),
         outputs=job.get('outputs'),
         labels=job.get('labels'),
