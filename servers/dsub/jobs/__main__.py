@@ -4,8 +4,25 @@ import argparse
 import connexion
 import logging
 import os
+from flask_cors import CORS
 from .encoder import JSONEncoder
 from controllers.dsub_client import DSubClient
+
+
+def split_env_flag(name):
+    """Converts a comma-delimited env var into a list.
+
+    Args:
+      name: (str) the name of the environment variable
+
+    Returns:
+      (list<str>) the elements of the comma-delimited list, or an empty list if
+        the env variable is empty or unset
+    """
+    if name not in os.environ or os.environ[name] is '':
+        return []
+    return os.environ[name].split(',')
+
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -21,6 +38,12 @@ parser.add_argument(
     type=str,
     help='Path prefix, e.g. /api/v1, to serve from',
     default=os.environ.get('PATH_PREFIX'))
+parser.add_argument(
+    '--allow_origins',
+    type=str,
+    nargs='+',
+    help='Origins to allow for CORS; defaults to CORS disabled',
+    default=split_env_flag('ALLOW_ORIGINS'))
 parser.add_argument(
     '--requires_auth',
     type=int,
@@ -43,6 +66,15 @@ app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=False)
 app.app.config['PROVIDER_TYPE'] = args.provider_type
 app.app.config['REQUIRES_AUTH'] = bool(args.requires_auth)
 app.app.config['CLIENT'] = DSubClient()
+if args.allow_origins:
+    prefix = args.path_prefix or ''
+    CORS(
+        app.app,
+        resources={
+            prefix + '/*': {
+                'origins': args.allow_origins,
+            },
+        })
 
 # Log to stderr.
 handler = logging.StreamHandler()
