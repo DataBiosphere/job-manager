@@ -1,3 +1,5 @@
+import {BackendProviders} from '../app/shared/common';
+
 export const environment = {
   apiUrl: '/api/v1',
   // Project ID: google.com:bvdp-jmui
@@ -5,4 +7,5 @@ export const environment = {
   production: false,
   requiresAuth: true,
   scope: 'https://www.googleapis.com/auth/genomics',
+  backendProvider: BackendProviders.Dsub,
 };

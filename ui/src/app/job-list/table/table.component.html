@@ -17,7 +17,7 @@
 <md-table #table [dataSource]="dataSource">
 
   <!-- Job name column -->
-  <ng-container mdColumnDef="jobName">
+  <ng-container mdColumnDef="Job">
     <md-header-cell *mdHeaderCellDef>
       <md-checkbox class = "checkbox" [checked]="allSelected" (change)="toggleSelectAll()">
       </md-checkbox>
@@ -58,17 +58,8 @@
     </md-cell>
   </ng-container>
 
-  <!-- Owner column -->
-  <!-- TODO(calbach): Factor these columns into a label-config. -->
-  <ng-container mdColumnDef="owner">
-    <md-header-cell *mdHeaderCellDef> Owner </md-header-cell>
-      <md-cell *mdCellDef="let j" id="owner-column">
-        {{ getJobLabel(j, "user-id") }}
-      </md-cell>
-  </ng-container>
-
   <!-- Status column -->
-  <ng-container mdColumnDef="status">
+  <ng-container mdColumnDef="Status">
     <md-header-cell *mdHeaderCellDef> Status </md-header-cell>
     <md-cell *mdCellDef="let j">
       <button md-icon-button disabled>
@@ -78,20 +69,21 @@
     </md-cell>
   </ng-container>
 
-  <!-- Status detail column -->
-  <ng-container mdColumnDef="status-detail">
-    <md-header-cell *mdHeaderCellDef> Status Detail </md-header-cell>
-    <md-cell *mdCellDef="let j" id="status-detail-column" class = "column">
-      {{ getJobLabel(j, "status-detail") }}
-    </md-cell>
-  </ng-container>
-
   <!-- Submitted column -->
-  <ng-container mdColumnDef="submitted">
+  <ng-container mdColumnDef="Submitted">
     <md-header-cell *mdHeaderCellDef> Submitted </md-header-cell>
     <md-cell id="submitted-column" *mdCellDef="let j">{{ j.submission | jmShortDateTime }}</md-cell>
   </ng-container>
 
+  <!-- Implementation-specific additional columns -->
+  <ng-container *ngFor="let c of additionalColumns">
+    <ng-container mdColumnDef="{{ c.header }}">
+      <md-header-cell *mdHeaderCellDef>{{ c.header }}</md-header-cell>
+      <md-cell class="additional-column" *mdCellDef="let j">{{ getJobLabel(j, c.key) }}</md-cell>
+    </ng-container>
+  </ng-container>
+
+  <!-- Column definitions -->
   <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
   <md-row (mouseenter) ="toggleMouseOver(j)"
           (mouseleave) ="toggleMouseOver(j)"

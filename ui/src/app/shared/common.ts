@@ -14,3 +14,8 @@ export enum StatusGroup {
   Failed = <any> 'failed',
   Completed = <any> 'completed'
 }
+
+export enum BackendProviders {
+  Cromwell = <any> 'cromwell',
+  Dsub = <any> 'dsub',
+}

@@ -9,4 +9,5 @@ export const environment = {
   production: false,
   requiresAuth: false,
   scope: '',
+  backendProvider: null,
 };
