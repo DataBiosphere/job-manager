@@ -31,7 +31,7 @@ export class JobPanelsComponent implements OnChanges {
       this.tasks = this.job.tasks;
       this.numTasks = this.tasks.length;
       for (let task of this.tasks) {
-        if (task.executionStatus == JobStatus[JobStatus.Succeeded]) {
+        if (task.executionStatus == JobStatus[JobStatus.Succeeded] || task.executionStatus == JobStatus[JobStatus.Done]) {
           this.numCompletedTasks++;
         }
       }

@@ -18,5 +18,6 @@ export enum JobStatus {
     Aborting = <any> 'Aborting',
     Failed = <any> 'Failed',
     Succeeded = <any> 'Succeeded',
-    Aborted = <any> 'Aborted'
+    Aborted = <any> 'Aborted',
+    Done = <any> 'Done'
 }
