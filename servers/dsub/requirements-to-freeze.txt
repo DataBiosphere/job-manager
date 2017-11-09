@@ -3,3 +3,4 @@ google-api-python-client == 1.5.5
 gunicorn == 19.7.1
 oauth2client == 3.0.0
 dsub == 0.1.1
+flask-cors == 3.0.3
