@@ -22,7 +22,7 @@
 
   <md-card>
     <md-card-title>Inputs and Outputs</md-card-title>
-      <p *ngIf="showInputsButton(j)">
+      <p *ngIf="showInputsButton()">
         Input files
         <button md-button class="view-resources-button" [mdMenuTriggerFor]="inputsMenu">
           View
@@ -34,7 +34,7 @@
         </a>
       </md-menu>
 
-      <p *ngIf="showOutputsButton(j)">
+      <p *ngIf="showOutputsButton()">
         Output files
         <button md-button class="view-resources-button" [mdMenuTriggerFor]="outputsMenu">
           View
@@ -46,7 +46,7 @@
         </a>
       </md-menu>
 
-      <p *ngIf="showLogsButton(j)">
+      <p *ngIf="showLogsButton()">
         Log files
         <button md-button class="view-resources-button" [mdMenuTriggerFor]="logsMenu">
           View
