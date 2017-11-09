@@ -21,9 +21,10 @@ import 'rxjs/add/observable/fromEvent';
 import {JobMonitorService} from '../../core/job-monitor.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
-import {JobStatusImage, StatusGroup} from '../../shared/common';
+import {JobStatusImage, StatusGroup, LabelColumn} from '../../shared/common';
 import {JobListView} from '../../shared/job-stream';
 import {ActivatedRoute} from '@angular/router';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'jm-job-list-table',
@@ -44,6 +45,7 @@ export class JobsTableComponent implements OnInit {
     ["Completed", StatusGroup.Completed]
   ]);
 
+  public additionalColumns: LabelColumn[] = [];
   public allSelected: boolean = false;
   public currentStatusGroup: StatusGroup;
   public selectedJobs: QueryJobsResult[] = [];
@@ -56,11 +58,9 @@ export class JobsTableComponent implements OnInit {
   dataSource: JobsDataSource | null;
   // TODO(alanhwang): Allow these columns to be configured by the user
   displayedColumns = [
-    'jobName',
-    'owner',
-    'status',
-    'status-detail',
-    'submitted',
+    'Job',
+    'Status',
+    'Submitted',
   ];
 
   @ViewChild(MdPaginator) paginator: MdPaginator;
@@ -76,6 +76,12 @@ export class JobsTableComponent implements OnInit {
     this.currentStatusGroup = this.route.snapshot.queryParams['statusGroup'];
     if (!this.currentStatusGroup) {
       this.currentStatusGroup = StatusGroup.Active;
+    }
+    if (environment.additionalColumns) {
+      this.additionalColumns = environment.additionalColumns;
+    }
+    for (let column of this.additionalColumns) {
+      this.displayedColumns.push(column.header);
     }
     this.paginator.page.subscribe((e) => this.onPage.emit(e));
     Observable.fromEvent(this.filter.nativeElement, 'keyup')

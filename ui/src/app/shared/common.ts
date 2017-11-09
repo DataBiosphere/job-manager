@@ -14,3 +14,8 @@ export enum StatusGroup {
   Failed = <any> 'failed',
   Completed = <any> 'completed'
 }
+
+export class LabelColumn {
+  header: string;
+  key: string;
+}

@@ -25,6 +25,8 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {newDefaultMockJobMonitorService} from '../../shared/mock-job-monitor.service';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {SharedModule} from '../../shared/shared.module';
+import {environment} from '../../../environments/environment';
+import {dsubAdditionalColumns} from '../../../environments/additional-columns.config';
 
 describe('JobsTableComponent', () => {
 
@@ -110,7 +112,7 @@ describe('JobsTableComponent', () => {
     expect(de.queryAll(By.css('.md-row')).length).toEqual(testJobs.length);
   }));
 
-  it('should display job data in row', async(() => {
+  it('should display general job data in row', async(() => {
     testComponent.jobs.next({
       results: [testJob1],
       exhaustive: true
@@ -119,12 +121,27 @@ describe('JobsTableComponent', () => {
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.job-details-button')).nativeElement.textContent)
       .toEqual(testJob1.name);
-    expect(de.query(By.css('#owner-column')).nativeElement.textContent)
-      .toEqual(testJob1.labels['user-id']);
-    expect(de.query(By.css('#status-detail-column')).nativeElement.textContent)
-      .toContain(testJob1.labels['status-detail']);
     expect(de.query(By.css('#submitted-column')).nativeElement.textContent)
       .toContain('8:00 PM');
+    expect(de.queryAll(By.css('.additional-column')).length).toEqual(0);
+  }));
+
+  it('should display dsub-specific job data in row', async(() => {
+    environment.additionalColumns = dsubAdditionalColumns;
+    testComponent.jobs.next({
+      results: [testJob1],
+      exhaustive: true
+    });
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.query(By.css('.job-details-button')).nativeElement.textContent)
+      .toEqual(testJob1.name);
+    let dsubColumns = de.queryAll(By.css('.additional-column'));
+    expect(dsubColumns.length).toEqual(2);
+    expect(dsubColumns[0].nativeElement.textContent)
+      .toEqual(testJob1.labels['user-id']);
+    expect(dsubColumns[1].nativeElement.textContent)
+      .toEqual(testJob1.labels['status-detail']);
   }));
 
   // TODO(alanhwang): Add unit tests for component logic
