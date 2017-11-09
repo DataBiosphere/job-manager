@@ -1,7 +1,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 from flask import current_app
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
 from datetime import datetime
 
 from jobs.models.query_jobs_result import QueryJobsResult
@@ -56,7 +56,16 @@ def get_job(id):
     """
     url = '{cromwell_url}/{id}/metadata'.format(
         cromwell_url=_get_base_url(), id=id)
-    job = requests.get(url, auth=_get_user_auth()).json()
+    response = requests.get(url, auth=_get_user_auth())
+    job = response.json()
+
+    if response.status_code == BadRequest.code:
+        raise BadRequest(job['message'])
+    elif response.status_code == NotFound.code:
+        raise NotFound(job['message'])
+    elif response.status_code == InternalServerError:
+        raise InternalServerError(job['message'])
+
     failures = None
     if job.get('failures'):
         failures = [

@@ -100,7 +100,7 @@ class TestJobsController(BaseTestCase):
                     "cromwell-workflow-id": "cromwell-12345"
                 },
                 "outputs": {
-                    "test.outputs": "gs://project-bucket/test/outputs.txt"
+                    "test.analysis.outputs": "gs://project-bucket/test/outputs.txt"
                 },
                 "submission": "2015-12-11T16:53:21.000-05:00",
                 "status": "Succeeded",
@@ -114,6 +114,60 @@ class TestJobsController(BaseTestCase):
         response = self.client.open(
             '/jobs/{id}'.format(id=workflow_id), method='GET')
         self.assertStatus(response, 200)
+
+    @requests_mock.mock()
+    def test_get_job_bad_request(self, mock_request):
+        workflow_id = 'id'
+
+        def _request_callback(request, context):
+            context.status_code = 400
+            return {
+                "status": "fail",
+                "message": "Invalid workflow ID: {}.".format(workflow_id)
+            }
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
+        response = self.client.open(
+            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        self.assertStatus(response, 400)
+
+    @requests_mock.mock()
+    def test_job_not_found(self, mock_request):
+        workflow_id = 'id'
+
+        def _request_callback(request, context):
+            context.status_code = 404
+            return {
+                "status": "fail",
+                "message": "Unrecognized workflow ID: {}.".format(workflow_id)
+            }
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
+        response = self.client.open(
+            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        self.assertStatus(response, 404)
+
+    @requests_mock.mock()
+    def test_job_internal_server_error(self, mock_request):
+        workflow_id = 'id'
+
+        def _request_callback(request, context):
+            context.status_code = 500
+            return {
+                "status": "error",
+                "message": "Connection to the database failed."
+            }
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
+        response = self.client.open(
+            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        self.assertStatus(response, 500)
 
     @requests_mock.mock()
     def test_query_jobs_returns_200(self, mock_request):
