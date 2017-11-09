@@ -25,6 +25,8 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
 
     def setUp(self):
         self.log_path = '{}/logging'.format(self.testing_bucket)
+        # Because all these tests are being run in the same project, add a
+        # unique test_token to scope all jobs to this test
         self.test_token_label = {
             'test_token': datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
         }

@@ -49,6 +49,8 @@ class DSubClient:
             raise PreconditionFailed(
                 'Job already in terminal status: {}'.format(job['status']))
 
+        # TODO(https://github.com/googlegenomics/dsub/issues/92): Remove this
+        # hacky re-routing of stdout once dsub removes it from the python API
         deleted = execute_redirect_stdout(lambda:
             ddel.ddel_tasks(
                 provider=provider, job_list=[job_id], task_list=task_list))
