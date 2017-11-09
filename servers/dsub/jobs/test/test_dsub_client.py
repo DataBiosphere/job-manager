@@ -1,18 +1,18 @@
 from __future__ import absolute_import
 
-from dsub.providers import base, stub
 import math
-import mock
-from parameterized import parameterized
-import unittest
-import werkzeug.exceptions
-
-from jobs.controllers.dsub_client import *
+from werkzeug.exceptions import BadRequest
 from jobs.controllers.errors import JobNotFound
 from jobs.models.query_jobs_request import QueryJobsRequest
+from unittest import TestCase
+from dsub.providers import base
+from dsub.providers import stub
+from jobs.controllers.dsub_client import *
+from mock import MagicMock
+from parameterized import parameterized
 
 
-class TestDSubClient(unittest.TestCase):
+class TestDSubClient(TestCase):
     """ DSubClient unit tests."""
     OPS = [{
         'job-id': 'job-1',
