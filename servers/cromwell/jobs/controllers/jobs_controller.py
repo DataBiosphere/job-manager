@@ -62,6 +62,7 @@ def get_job(id):
         failures = [
             FailureMessage(failure=f['message']) for f in job['failures']
         ]
+    # Get the most recent run of each task in task_metadata
     tasks = [
         format_task(task_name, task_metadata[-1])
         for task_name, task_metadata in job.get('calls', {}).items()
@@ -73,8 +74,8 @@ def get_job(id):
         submission=_parse_datetime(job.get('submission')),
         start=_parse_datetime(job.get('start')),
         end=_parse_datetime(job.get('end')),
-        inputs=job.get('inputs'),
-        outputs=job.get('outputs'),
+        inputs=update_key_names(job.get('inputs', {})),
+        outputs=update_key_names(job.get('outputs', {})),
         labels=job.get('labels'),
         failures=failures,
         tasks=tasks)
@@ -82,7 +83,7 @@ def get_job(id):
 
 def format_task(task_name, task_metadata):
     return TaskMetadata(
-        name=task_name.split('.')[1],
+        name=remove_workflow_name(task_name),
         job_id=task_metadata.get('jobId'),
         execution_status=cromwell_to_api_status(
             task_metadata.get('executionStatus')),
@@ -90,7 +91,7 @@ def format_task(task_name, task_metadata):
         end=_parse_datetime(task_metadata.get('end')),
         stderr=task_metadata.get('stderr'),
         stdout=task_metadata.get('stdout'),
-        inputs=task_metadata.get('inputs'),
+        inputs=update_key_names(task_metadata.get('inputs', {})),
         return_code=task_metadata.get('returnCode'))
 
 
@@ -99,6 +100,19 @@ def cromwell_to_api_status(status):
     if status == CROMWELL_DONE_STATUS:
         return API_SUCCESS_STATUS
     return status
+
+
+def remove_workflow_name(name):
+    """ Remove the workflow name from the beginning of task, input and output names.
+    E.g. Task names {workflowName}.{taskName} => taskName
+         Input names {workflowName}.{inputName} => inputName
+         Output names {workflowName}.{taskName}.{outputName} => taskName.outputName
+    """
+    return '.'.join(name.split('.')[1:])
+
+
+def update_key_names(metadata):
+    return {remove_workflow_name(k): v for k, v in metadata.items()},
 
 
 def query_jobs(body):
