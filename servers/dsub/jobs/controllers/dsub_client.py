@@ -6,7 +6,7 @@ from werkzeug.exceptions import BadRequest, NotFound, Forbidden, InternalServerE
 from dsub.lib import param_util
 from dsub.providers import google, local, stub
 from dsub.commands import dstat, ddel
-from jobs.common import enum
+from jobs.common import enum, execute_redirect_stdout
 from jobs.controllers.job_statuses import DsubStatus
 from errors import *
 import apiclient
@@ -48,8 +48,12 @@ class DSubClient:
         if status != DsubStatus.RUNNING:
             raise PreconditionFailed(
                 'Job already in terminal status: {}'.format(job['status']))
-        deleted = ddel.ddel_tasks(
-            provider=provider, job_list=[job_id], task_list=task_list)
+
+        # TODO(https://github.com/googlegenomics/dsub/issues/92): Remove this
+        # hacky re-routing of stdout once dsub removes it from the python API
+        deleted = execute_redirect_stdout(lambda:
+            ddel.ddel_tasks(
+                provider=provider, job_list=[job_id], task_list=task_list))
         if len(deleted) != 1:
             raise InternalServerError('failed to abort dsub job')
 
