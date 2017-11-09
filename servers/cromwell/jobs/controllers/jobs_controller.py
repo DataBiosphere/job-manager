@@ -101,7 +101,9 @@ def format_task(task_name, task_metadata):
         stderr=task_metadata.get('stderr'),
         stdout=task_metadata.get('stdout'),
         inputs=update_key_names(task_metadata.get('inputs', {})),
-        return_code=task_metadata.get('returnCode'))
+        return_code=task_metadata.get('returnCode'),
+        attempts=task_metadata.get('attempt')
+    )
 
 
 def cromwell_to_api_status(status):

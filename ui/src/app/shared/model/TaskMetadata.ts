@@ -63,4 +63,9 @@ export interface TaskMetadata {
      */
     stderr?: string;
 
+    /**
+     * Number of times the task was run
+     */
+    attempts?: number;
+
 }

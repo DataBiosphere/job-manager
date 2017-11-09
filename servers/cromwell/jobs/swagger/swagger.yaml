@@ -227,6 +227,9 @@ definitions:
       stderr:
         type: "string"
         description: "Path to the standard error file for this task"
+      attempts:
+        type: "integer"
+        description: "Number of times the task was run"
     description: "Task level metadata"
   FailureMessage:
     required:
