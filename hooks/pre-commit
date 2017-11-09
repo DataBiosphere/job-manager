@@ -29,7 +29,7 @@ if [ -n "$files_in_commit" ]; then
 	fi
 fi
 
-echo "Running ng lint for typscript files..."
+echo "Running ng lint for typescript files..."
 cd ./ui
 ng lint >/dev/null
 ret_code=$?
@@ -39,6 +39,16 @@ if [ $ret_code != 0 ]; then
 	status=1
 else
 	echo "Passed ng lint!"
+fi
+
+echo "Running ng test for UI components..."
+ng test --browsers HeadlessChrome --watch=false --single-run
+
+if [ $? != 0 ]; then
+	echo "Found failing tests. Run `ng test` from the ui directory and ensure all tests pass before retrying"
+	status=1
+else
+	echo "Passed ng test!"
 fi
 
 # Close stdin and exit with the correct status
