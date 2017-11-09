@@ -1,4 +1,4 @@
-import {BackendProviders} from '../app/shared/common';
+import {dsubAdditionalColumns} from './additional-columns.config';
 
 export const environment = {
   apiUrl: '/api/v1',
@@ -6,5 +6,5 @@ export const environment = {
   production: false,
   requiresAuth: false,
   scope: '',
-  backendProvider: BackendProviders.Dsub,
+  additionalColumns: dsubAdditionalColumns,
 };

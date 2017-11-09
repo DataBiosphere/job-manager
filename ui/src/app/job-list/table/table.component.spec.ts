@@ -26,7 +26,7 @@ import {newDefaultMockJobMonitorService} from '../../shared/mock-job-monitor.ser
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {SharedModule} from '../../shared/shared.module';
 import {environment} from '../../../environments/environment';
-import {BackendProviders} from '../../shared/common';
+import {dsubAdditionalColumns} from '../../../environments/additional-columns.config';
 
 describe('JobsTableComponent', () => {
 
@@ -127,7 +127,7 @@ describe('JobsTableComponent', () => {
   }));
 
   it('should display dsub-specific job data in row', async(() => {
-    environment.backendProvider = BackendProviders.Dsub;
+    environment.additionalColumns = dsubAdditionalColumns;
     testComponent.jobs.next({
       results: [testJob1],
       exhaustive: true

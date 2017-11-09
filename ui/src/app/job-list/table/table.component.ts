@@ -21,10 +21,9 @@ import 'rxjs/add/observable/fromEvent';
 import {JobMonitorService} from '../../core/job-monitor.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
-import {JobStatusImage, StatusGroup, BackendProviders} from '../../shared/common';
+import {JobStatusImage, StatusGroup, LabelColumn} from '../../shared/common';
 import {JobListView} from '../../shared/job-stream';
 import {ActivatedRoute} from '@angular/router';
-import {cromwellColumns, dsubColumns, LabelColumn} from './additional-columns.config';
 import {environment} from '../../../environments/environment';
 
 @Component({
@@ -45,7 +44,7 @@ export class JobsTableComponent implements OnInit {
     ["Failed", StatusGroup.Failed],
     ["Completed", StatusGroup.Completed]
   ]);
-  
+
   public additionalColumns: LabelColumn[] = [];
   public allSelected: boolean = false;
   public currentStatusGroup: StatusGroup;
@@ -78,10 +77,8 @@ export class JobsTableComponent implements OnInit {
     if (!this.currentStatusGroup) {
       this.currentStatusGroup = StatusGroup.Active;
     }
-    if (environment.backendProvider == BackendProviders.Dsub) {
-      this.additionalColumns = dsubColumns;
-    } else if (environment.backendProvider == BackendProviders.Cromwell) {
-      this.additionalColumns = cromwellColumns;
+    if (environment.additionalColumns) {
+      this.additionalColumns = environment.additionalColumns;
     }
     for (let column of this.additionalColumns) {
       this.displayedColumns.push(column.header);

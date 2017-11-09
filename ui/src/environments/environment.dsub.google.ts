@@ -1,4 +1,4 @@
-import {BackendProviders} from '../app/shared/common';
+import {dsubAdditionalColumns} from './additional-columns.config';
 
 export const environment = {
   apiUrl: '/api/v1',
@@ -7,5 +7,5 @@ export const environment = {
   production: false,
   requiresAuth: true,
   scope: 'https://www.googleapis.com/auth/genomics',
-  backendProvider: BackendProviders.Dsub,
+  additionalColumns: dsubAdditionalColumns
 };

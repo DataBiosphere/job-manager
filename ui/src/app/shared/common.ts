@@ -15,7 +15,7 @@ export enum StatusGroup {
   Completed = <any> 'completed'
 }
 
-export enum BackendProviders {
-  Cromwell = <any> 'cromwell',
-  Dsub = <any> 'dsub',
+export class LabelColumn {
+  header: string;
+  key: string;
 }
