@@ -1,0 +1,35 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+p {
+  margin-top: .6rem;
+  margin-bottom: .6rem;
+}
+
+
+.projects-card {
+  width: 30%;
+  left: 35%;
+  top: 10rem;
+  position: relative;
+  text-align: center;
+}
+
+.form-field {
+  width: 100%;
+  text-align: center;
+}
+
+.input-field {
+  text-align: center;
+}
+
+.md-option {
+  width: 30%;
+  font-size: 8px;
+}
+
+.project-name {
+  text-align: center;
+}

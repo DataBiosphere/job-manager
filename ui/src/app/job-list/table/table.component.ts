@@ -113,7 +113,10 @@ export class JobsTableComponent implements OnInit {
     this.errorBar.open(
       new ErrorMessageFormatterPipe().transform(error),
       'Dismiss',
-      {viewContainerRef: this.viewContainer});
+      {
+        viewContainerRef: this.viewContainer,
+        duration: 3000
+      });
   }
 
   abortJob(job: QueryJobsResult): void {

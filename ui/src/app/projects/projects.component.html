@@ -1,0 +1,23 @@
+<form class="form">
+  <md-card class="projects-card">
+    <md-form-field class="form-field">
+      <p>
+      <input mdInput
+             class="input-field"
+             placeholder="Project Name"
+             [mdAutocomplete]="auto"
+             [formControl]="projectsControl">
+      <md-autocomplete #auto="mdAutocomplete">
+        <md-option *ngFor="let project of projectsObservable | async" [value]="project">
+          <span><div class="project-name">{{ project }}</div></span>
+        </md-option>
+      </md-autocomplete>
+    </p>
+    </md-form-field>
+    <button md-button
+            (click)="viewJobs()"
+            [disabled]="!viewJobsEnabled()">
+      View Jobs
+    </button>
+  </md-card>
+</form>
