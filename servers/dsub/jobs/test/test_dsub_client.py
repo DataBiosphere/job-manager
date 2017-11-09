@@ -204,23 +204,29 @@ class TestDSubClient(TestCase):
         ('zero page size', QueryJobsRequest(page_size=0)),
         ('negative page size', QueryJobsRequest(page_size=-1337)),
         ('bad token', QueryJobsRequest(page_size=1, page_token='asdf')),
-        ('good b64, bad JSON token', QueryJobsRequest(
-            page_size=1,
-            page_token=base64.urlsafe_b64encode(
-                json.dumps({
-                    'fox': 'mccloud'
+        (
+            'good b64, bad JSON token',
+            QueryJobsRequest(
+                page_size=1,
+                page_token=base64.urlsafe_b64encode(
+                    json.dumps({
+                        'fox': 'mccloud'
+                    }))), ),
+        (
+            'good JSON, bad value type',
+            QueryJobsRequest(
+                page_size=1,
+                page_token=base64.urlsafe_b64encode(
+                    json.dumps({
+                        'of': 'not a number'
+                    }))), ),
+        (
+            'good JSON, negative value',
+            QueryJobsRequest(
+                page_size=1,
+                page_token=base64.urlsafe_b64encode(json.dumps({
+                    'of': -33
                 }))), ),
-        ('good JSON, bad value type', QueryJobsRequest(
-            page_size=1,
-            page_token=base64.urlsafe_b64encode(
-                json.dumps({
-                    'of': 'not a number'
-                }))), ),
-        ('good JSON, negative value', QueryJobsRequest(
-            page_size=1,
-            page_token=base64.urlsafe_b64encode(json.dumps({
-                'of': -33
-            }))), ),
     ])
     def test_query_jobs_bad_inputs(self, _, req):
         with self.assertRaises(ValueError):
