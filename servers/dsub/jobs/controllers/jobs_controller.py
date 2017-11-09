@@ -122,9 +122,9 @@ def _get_failures(job):
 def _get_google_provider(parent_id, auth_token):
     if not parent_id:
         raise BadRequest('missing required field parentId')
-    if not auth_token and _requires_auth():
-        raise BadRequest('missing required field authToken')
-    else:
+    if not auth_token:
+        if _requires_auth():
+            raise BadRequest('missing required field authToken')
         return google.GoogleJobProvider(False, False, parent_id)
 
     try:
