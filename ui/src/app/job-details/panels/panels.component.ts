@@ -78,6 +78,16 @@ export class JobPanelsComponent implements OnChanges {
     return parts ? this.storagePrefix + parts.slice(2).join("/") : undefined;
   }
 
+  formatValue(value: string): string {
+    let parts = this.validateGcsURLGetParts(value);
+    let formattedValue = value;
+    if (parts) {
+      // display the file name instead of the full resourceURL
+      formattedValue = parts[parts.length -1];
+    }
+    return formattedValue;
+  }
+
   private validateGcsURLGetParts(url: string): string[] {
     let parts = url.split("/");
     if (parts[0] != "gs:" || parts[1] != "") {

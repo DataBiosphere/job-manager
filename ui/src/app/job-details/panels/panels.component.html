@@ -29,8 +29,8 @@
         </button>
       </p>
       <md-menu #inputsMenu="mdMenu">
-        <a md-menu-item *ngFor="let i of inputs" href="{{ getInputResourceURL(i) }}">
-          <span>{{ i }}</span>
+        <a md-menu-item *ngFor="let i of inputs" href="{{ getInputResourceURL(i)}}">
+          <span>{{ i + ': ' + formatValue(job.inputs[i])}}</span>
         </a>
       </md-menu>
 
@@ -42,7 +42,7 @@
       </p>
       <md-menu #outputsMenu="mdMenu">
         <a md-menu-item *ngFor="let o of outputs" href="{{ getOutputResourceURL(o) }}">
-          <span>{{ o }}</span>
+          <span>{{ o + ': ' + formatValue(job.outputs[o])}}</span>
         </a>
       </md-menu>
 
