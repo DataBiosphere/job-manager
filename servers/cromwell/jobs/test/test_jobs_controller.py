@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 
+import json
 import requests_mock
 from flask import json
 from datetime import datetime
@@ -65,15 +66,158 @@ class TestJobsController(BaseTestCase):
             '/jobs/{id}/abort'.format(id=workflow_id), method='POST')
         self.assertStatus(response, 404)
 
-    def test_get_job(self):
+    @requests_mock.mock()
+    def test_get_job_returns_200(self, mock_request):
         """
         Test case for get_job
 
         Query for job and task-level metadata for a specified job
         """
+        workflow_id = 'id'
+        workflow_name = 'test'
+        status = 'Succeeded'
+        timestamp = '2017-11-08T05:06:41.424Z'
+        response_timestamp = '2017-11-08T05:06:41.424000Z'
+        inputs = {
+            'test.inputs': 'gs://project-bucket/test/inputs.txt'
+        }
+        outputs = {
+            'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
+        }
+        labels = {
+            'cromwell-workflow-id': 'cromwell-12345'
+        }
+        job_id = 'operations/abcde'
+        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
+        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        attempts = 1
+        return_code = 0
+
+        def _request_callback(request, context):
+            context.status_code = 200
+            return {
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
+                'calls': {
+                    'test.analysis': [{
+                        'jobId': job_id,
+                        'executionStatus': 'Done',
+                        'start': timestamp,
+                        'end': timestamp,
+                        'stderr': std_err,
+                        'stdout': std_out,
+                        'returnCode': return_code,
+                        'inputs': inputs,
+                        'attempt': attempts
+                    }]
+                },
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
+                'failures': [{
+                    'causedBy': [],
+                    'message': 'Task test.analysis failed'
+                }]
+            }
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
         response = self.client.open(
-            '/jobs/{id}'.format(id='id_example'), method='GET')
+            '/jobs/{id}'.format(id=workflow_id), method='GET')
         self.assertStatus(response, 200)
+        response_data = json.loads(response.data)
+        expected_data = {
+            'name': workflow_name,
+            'id': workflow_id,
+            'status': status,
+            "submission": response_timestamp,
+            "start": response_timestamp,
+            "end": response_timestamp,
+            'inputs': jobs_controller.update_key_names(inputs),
+            'outputs': jobs_controller.update_key_names(outputs),
+            'labels': labels,
+            "failures": [{
+                'failure': 'Task test.analysis failed'
+            }],
+            'tasks': [{
+                'name': 'analysis',
+                'jobId': job_id,
+                "executionStatus": 'Succeeded',
+                "start": response_timestamp,
+                "end": response_timestamp,
+                "stderr": std_err,
+                "stdout": std_out,
+                "inputs": jobs_controller.update_key_names(inputs),
+                "returnCode": return_code,
+                "attempts": attempts
+            }]
+        }
+        self.assertDictEqual(response_data, expected_data)
+
+    @requests_mock.mock()
+    def test_get_job_bad_request(self, mock_request):
+        workflow_id = 'id'
+        error_message = "Invalid workflow ID: {}.".format(workflow_id)
+
+        def _request_callback(request, context):
+            context.status_code = 400
+            return {
+                "status": "fail",
+                "message": error_message
+            }
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
+        response = self.client.open(
+            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        self.assertStatus(response, 400)
+        self.assertEquals(json.loads(response.data)['detail'], error_message)
+
+    @requests_mock.mock()
+    def test_job_not_found(self, mock_request):
+        workflow_id = 'id'
+        error_message = "Unrecognized workflow ID: {}.".format(workflow_id)
+
+        def _request_callback(request, context):
+            context.status_code = 404
+            return {
+                "status": "fail",
+                "message": error_message
+            }
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
+        response = self.client.open(
+            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        self.assertStatus(response, 404)
+        self.assertEquals(json.loads(response.data)['detail'], error_message)
+
+    @requests_mock.mock()
+    def test_job_internal_server_error(self, mock_request):
+        workflow_id = 'id'
+        error_message = "Connection to the database failed."
+
+        def _request_callback(request, context):
+            context.status_code = 500
+            return {
+                "status": "error",
+                "message": error_message
+            }
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
+        response = self.client.open(
+            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        self.assertStatus(response, 500)
+        self.assertEquals(json.loads(response.data)['detail'], error_message)
 
     @requests_mock.mock()
     def test_query_jobs_returns_200(self, mock_request):

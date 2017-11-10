@@ -37,6 +37,11 @@ export interface TaskMetadata {
     end?: Date;
 
     /**
+     * The name of the job
+     */
+    name?: string;
+
+    /**
      * Backend-specific job ID
      */
     jobId?: string;
@@ -57,5 +62,10 @@ export interface TaskMetadata {
      * Path to the standard error file for this task
      */
     stderr?: string;
+
+    /**
+     * Number of times the task was run
+     */
+    attempts?: number;
 
 }

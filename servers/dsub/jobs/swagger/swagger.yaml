@@ -208,6 +208,9 @@ definitions:
         type: "string"
         format: "date-time"
         description: "End datetime of the task execution in ISO8601 format with milliseconds"
+      name:
+        type: "string"
+        description: "The name of the job"
       jobId:
         type: "string"
         description: "Backend-specific job ID"
@@ -224,6 +227,9 @@ definitions:
       stderr:
         type: "string"
         description: "Path to the standard error file for this task"
+      attempts:
+        type: "integer"
+        description: "Number of times the task was run"
     description: "Task level metadata"
   FailureMessage:
     required:
