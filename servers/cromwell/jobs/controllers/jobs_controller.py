@@ -58,13 +58,12 @@ def get_job(id):
         cromwell_url=_get_base_url(), id=id)
     response = requests.get(url, auth=_get_user_auth())
     job = response.json()
-
     if response.status_code == BadRequest.code:
-        raise BadRequest(job['message'])
+        raise BadRequest(job.get('message'))
     elif response.status_code == NotFound.code:
-        raise NotFound(job['message'])
-    elif response.status_code == InternalServerError:
-        raise InternalServerError(job['message'])
+        raise NotFound(job.get('message'))
+    elif response.status_code == InternalServerError.code:
+        raise InternalServerError(job.get('message'))
 
     failures = None
     if job.get('failures'):
@@ -123,7 +122,7 @@ def remove_workflow_name(name):
 
 
 def update_key_names(metadata):
-    return {remove_workflow_name(k): v for k, v in metadata.items()},
+    return {remove_workflow_name(k): v for k, v in metadata.items()}
 
 
 def query_jobs(body):
