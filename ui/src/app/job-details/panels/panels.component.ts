@@ -89,6 +89,9 @@ export class JobPanelsComponent implements OnChanges {
   }
 
   private validateGcsURLGetParts(url: string): string[] {
+    if (typeof(url) !== 'string') {
+      return;
+    }
     let parts = url.split("/");
     if (parts[0] != "gs:" || parts[1] != "") {
       // TODO(bryancrampton): Handle invalid resource URL gracefully
