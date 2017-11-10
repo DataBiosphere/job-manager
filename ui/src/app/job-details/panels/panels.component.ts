@@ -78,16 +78,6 @@ export class JobPanelsComponent implements OnChanges {
     return parts ? this.storagePrefix + parts.slice(2).join("/") : undefined;
   }
 
-  formatValue(value: string): string {
-    let parts = this.validateGcsURLGetParts(value);
-    let formattedValue = value;
-    if (parts) {
-      // display the file name instead of the full resourceURL
-      formattedValue = parts[parts.length -1];
-    }
-    return formattedValue;
-  }
-
   private validateGcsURLGetParts(url: string): string[] {
     if (typeof(url) !== 'string') {
       return;
@@ -98,6 +88,23 @@ export class JobPanelsComponent implements OnChanges {
       return;
     }
     return parts;
+  }
+
+  formatValue(value: string): string {
+    let parts = this.validateGcsURLGetParts(value);
+    let formattedValue = value;
+    if (parts) {
+      // display the file name instead of the full resourceURL
+      formattedValue = parts[parts.length -1];
+    }
+    return formattedValue;
+  }
+
+  truncateValue(value: string, length: number): string {
+    if (value.length > length) {
+      return value.substring(0, length) + '...';
+    }
+    return value;
   }
 
   getUserId() {
