@@ -50,9 +50,11 @@ export class JobMonitorService {
   }
 
   private handleError(error: any): Promise<any> {
-    // TODO(alahwa): Implement real error handling.
-    console.error('An error occurred', error);
-    return Promise.reject(error.message || error);
+    let parsedError = {
+      "status_code": error["status"],
+      "message": JSON.parse(error["_body"])["detail"],
+    }
+    return Promise.reject(parsedError);
   }
 
   abortJob(id: string): Promise<void> {

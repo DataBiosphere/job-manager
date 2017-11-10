@@ -47,7 +47,7 @@ class DSubClient:
 
         if status != DsubStatus.RUNNING:
             raise PreconditionFailed(
-                'Job already in terminal status: {}'.format(job['status']))
+                'Job already in terminal status {}'.format(job['status']))
 
         # TODO(https://github.com/googlegenomics/dsub/issues/92): Remove this
         # hacky re-routing of stdout once dsub removes it from the python API

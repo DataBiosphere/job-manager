@@ -1,7 +1,7 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subscription} from 'rxjs/Subscription';
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {PageEvent} from '@angular/material'
+import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {PageEvent, MdSnackBar, MdSnackBarConfig} from '@angular/material'
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {JobMonitorService} from '../core/job-monitor.service';
@@ -30,7 +30,9 @@ export class JobListComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly jobMonitorService: JobMonitorService
+    private readonly jobMonitorService: JobMonitorService,
+    private readonly viewContainer: ViewContainerRef,
+    private errorBar: MdSnackBar,
   ) {
     this.jobStream = new JobStream(jobMonitorService, StatusGroup.Active);
     this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
@@ -49,10 +51,19 @@ export class JobListComponent implements OnInit {
     return StatusGroup.Active;
   }
 
+  private handleError(error: any) {
+    let message = `${error["status_code"]} Error: ${error["message"]}`;
+    this.errorBar.open(message, 'Dismiss', {
+      viewContainerRef: this.viewContainer,
+    });
+  }
+
   public onClientPaginate(e: PageEvent) {
     // If the client just navigated to page n, ensure we have enough jobs to
     // display page n+1.
-    this.jobStream.loadAtLeast((e.pageIndex+2) * e.pageSize);
+    this.jobStream.loadAtLeast(
+      (e.pageIndex+2) * e.pageSize,
+      (error) => this.handleError(error));
   }
 
   public maybeNavigateForStatus(statusGroup: StatusGroup): void {
@@ -71,7 +82,9 @@ export class JobListComponent implements OnInit {
                                      this.currentStatusGroup(),
                                      this.route.snapshot.queryParams['parentId']);
       this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
-      this.jobStream.loadAtLeast(JobListComponent.initialBackendPageSize);
+      this.jobStream.loadAtLeast(
+        JobListComponent.initialBackendPageSize,
+        (error) => this.handleError(error));
     });
   }
 }

@@ -22,7 +22,8 @@ export class JobDetailsResolver implements Resolve<JobMetadataResponse> {
         return response;
       })
       .catch(error => {
-        // TODO(alanhwang): Handle the client-facing error here
+        // TODO(bryancrampton): Handle the client-facing error here and redirect
+        // back to the correct jobs page (with parentId)
         this.router.navigate(['/jobs']);
         return null;
       });

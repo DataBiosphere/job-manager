@@ -6,10 +6,17 @@ import {
   Input,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
-import {MdPaginator, MdTabChangeEvent, PageEvent} from '@angular/material';
+import {
+  MdPaginator,
+  MdSnackBar,
+  MdSnackBarConfig,
+  MdTabChangeEvent,
+  PageEvent
+} from '@angular/material';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
@@ -67,8 +74,10 @@ export class JobsTableComponent implements OnInit {
   @ViewChild('filter') filter: ElementRef;
 
   constructor(
-    private route: ActivatedRoute,
-    private jobMonitorService: JobMonitorService
+    private readonly route: ActivatedRoute,
+    private readonly jobMonitorService: JobMonitorService,
+    private readonly viewContainer: ViewContainerRef,
+    private errorBar: MdSnackBar,
   ) {}
 
   ngOnInit() {
@@ -99,9 +108,18 @@ export class JobsTableComponent implements OnInit {
     this.paginator.pageIndex = 0;
   }
 
+  private handleError(error: any) {
+    console.log(error)
+    let message = `${error["status_code"]} Error: ${error["message"]}`;
+    this.errorBar.open(message, 'Dismiss', {
+      viewContainerRef: this.viewContainer,
+    });
+  }
+
   abortJob(job: QueryJobsResult): void {
     this.jobMonitorService.abortJob(job.id)
-      .then(() => job.status = JobStatus.Aborted);
+      .then(() => job.status = JobStatus.Aborted)
+      .catch((error) => this.handleError(error));
   }
 
   canAbort(job: QueryJobsResult): boolean {
