@@ -57,6 +57,7 @@ export class JobMonitorService {
 
   abortJob(id: string): Promise<void> {
     return this.http.post(`${environment.apiUrl}/jobs/${id}/abort`,
+      {},
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => response.status == 200)
@@ -65,6 +66,7 @@ export class JobMonitorService {
 
   getJob(id: string): Promise<JobMetadataResponse> {
     return this.http.get(`${environment.apiUrl}/jobs/${id}`,
+      {},
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => this.convertToJobMetadataResponse(response.json()))
