@@ -87,8 +87,8 @@ export class JobPanelsComponent implements OnChanges {
     return parts;
   }
 
-  getUserId(job: JobMetadataResponse) {
-    return job.labels ? job.labels['user-id'] : "";
+  getUserId() {
+    return this.job.labels ? this.job.labels['user-id'] : "";
   }
 
   showInputsButton(): boolean {

@@ -113,7 +113,7 @@ describe('JobPanelsComponent', () => {
   it('should return correct value from getUserId', async(() => {
     testComponent.job = completeJob;
     fixture.detectChanges();
-    expect(testComponent.jobPanelsComponent.getUserId(testComponent.job))
+    expect(testComponent.jobPanelsComponent.getUserId())
       .toEqual(completeJob.labels['user-id']);
   }));
 

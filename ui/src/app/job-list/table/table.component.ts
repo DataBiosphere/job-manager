@@ -38,13 +38,13 @@ export class JobsTableComponent implements OnInit {
 
 
   private mouseoverJob: QueryJobsResult;
-  private statusGroup = StatusGroup;
   private reverseStatusGroupStringMap: Map<string, StatusGroup> = new Map([
     ["Active Jobs", StatusGroup.Active],
     ["Failed", StatusGroup.Failed],
     ["Completed", StatusGroup.Completed]
   ]);
 
+  public statusGroup = StatusGroup;
   public additionalColumns: LabelColumn[] = [];
   public allSelected: boolean = false;
   public currentStatusGroup: StatusGroup;
