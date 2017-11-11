@@ -7,9 +7,9 @@ ENV VIRTUAL_ENV /env
 ENV PATH /env/bin:$PATH
 
 WORKDIR /app
-ADD servers/dsub/requirements.txt /app/
+ADD requirements.txt /app/
 RUN pip install -r requirements.txt
-ADD servers/dsub/jobs /app/jobs
+ADD jobs /app/jobs
 
 # Install docker-ce for dsub local provider
 RUN apt-get update

@@ -2,8 +2,8 @@ version: '2'
 services:
   ui:
     build:
-      context: .
-      dockerfile: Dockerfile.ui
+      context: ui
+      dockerfile: Dockerfile.dev
     volumes:
       # Only mount a whitelist of top-level /ui files/directories; specifically
       # node_modules must not be included here. Mount only files required to run
@@ -45,6 +45,6 @@ services:
     # Child services must have links named "ui", "api".
     image: nginx
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf
     ports:
       - 4200:4200
