@@ -10,8 +10,8 @@ services:
     command: ["npm", "run-script", "ng", "--", "serve", "--host", "ui", "--env=dsub_google"]
   dsub:
     build:
-      context: .
-      dockerfile: servers/dsub/Dockerfile.dsub.google
+      context: servers/dsub
+      dockerfile: Dockerfile
     extends:
       file: common-compose.yml
       service: dsub
