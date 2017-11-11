@@ -35,7 +35,7 @@
     <ng-container mdColumnDef="duration">
       <md-header-cell *mdHeaderCellDef> Duration </md-header-cell>
       <md-cell *mdCellDef="let t" class="column">
-        {{ getDuration(t) }}
+        {{ getDuration(t.start, t.end) }}
       </md-cell>
     </ng-container>
     <ng-container mdColumnDef="attempts">

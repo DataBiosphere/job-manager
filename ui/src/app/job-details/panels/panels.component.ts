@@ -8,16 +8,16 @@ import {
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
+import {ResourceUtils} from '../../shared/common';
 
 @Component({
   selector: 'jm-panels',
   templateUrl: './panels.component.html',
   styleUrls: ['./panels.component.css'],
 })
-export class JobPanelsComponent implements OnChanges {
+
+export class JobPanelsComponent extends ResourceUtils implements OnChanges {
   @Input() job: JobMetadataResponse;
-  browserPrefix: string = "https://console.cloud.google.com/storage/browser/";
-  storagePrefix: string = "https://storage.cloud.google.com/";
   inputs: Array<String>;
   logs: Array<String>;
   numCompletedTasks: number = 0;
@@ -42,17 +42,6 @@ export class JobPanelsComponent implements OnChanges {
 
   }
 
-  getDuration(): String {
-    let duration: number;
-    if (this.job.end) {
-      duration = this.job.end.getTime() - this.job.submission.getTime();
-    } else {
-      duration = new Date().getTime() - this.job.submission.getTime();
-    }
-    return Math.round(duration/3600000) + "h " +
-      Math.round(duration/60000)%60 + "m";
-  }
-
   getInputResourceURL(key: string): string {
     return this.getResourceBrowserURL(this.job.inputs[key]);
   }
@@ -63,41 +52,6 @@ export class JobPanelsComponent implements OnChanges {
 
   getOutputResourceURL(key: string): string {
     return this.getResourceBrowserURL(this.job.outputs[key]);
-  }
-
-  getResourceBrowserURL(uri: string): string {
-    let parts = this.validateGcsURLGetParts(uri);
-    // This excludes the object from the link to show the enclosing directory.
-    // This is valid with wildcard glob (bucket/path/*) and directories
-    // (bucket/path/dir/) as well, the * or empty string will be trimmed.
-    return parts ? this.browserPrefix + parts.slice(2,-1).join("/") : undefined;
-  }
-
-  getResourceURL(uri: string): string {
-    let parts = this.validateGcsURLGetParts(uri);
-    return parts ? this.storagePrefix + parts.slice(2).join("/") : undefined;
-  }
-
-  private validateGcsURLGetParts(url: string): string[] {
-    if (typeof(url) !== 'string') {
-      return;
-    }
-    let parts = url.split("/");
-    if (parts[0] != "gs:" || parts[1] != "") {
-      // TODO(bryancrampton): Handle invalid resource URL gracefully
-      return;
-    }
-    return parts;
-  }
-
-  formatValue(value: string): string {
-    let parts = this.validateGcsURLGetParts(value);
-    let formattedValue = value;
-    if (parts) {
-      // display the file name instead of the full resourceURL
-      formattedValue = parts[parts.length -1];
-    }
-    return formattedValue;
   }
 
   truncateValue(value: string, length: number): string {
