@@ -48,9 +48,8 @@ export class JobMonitorService {
     let json = response.json();
     if ("title" in json && json["title"]) {
       return json["title"];
-    } else {
-      return response.statusText ? response.statusText : JobMonitorService.defaultErrorTitle;
     }
+    return response.statusText ? response.statusText : JobMonitorService.defaultErrorTitle;
   }
 
   private getErrorDetail(response: any): string {
