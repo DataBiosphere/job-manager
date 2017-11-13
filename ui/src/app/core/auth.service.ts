@@ -57,7 +57,7 @@ export class AuthService {
     })
   }
 
-  public signIn(): void {
-    gapi.auth2.getAuthInstance().signIn();
+  public signIn(): Promise<any> {
+    return gapi.auth2.getAuthInstance().signIn();
   }
 }
