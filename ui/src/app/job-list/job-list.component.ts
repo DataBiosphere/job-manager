@@ -10,6 +10,7 @@ import {JobsTableComponent} from './table/table.component';
 import {JobListView, JobStream} from '../shared/job-stream';
 
 @Component({
+  selector: 'jm-job-list',
   templateUrl: './job-list.component.html',
   styleUrls: ['./job-list.component.css'],
 })

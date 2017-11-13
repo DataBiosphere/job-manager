@@ -12,6 +12,7 @@ import {
   MdTableModule,
   MdTabsModule,
   MdPaginatorModule,
+  MdSnackBarModule,
   MdTooltipModule,
   MdInputModule,
   MdCheckboxModule
@@ -85,6 +86,7 @@ describe('JobsTableComponent', () => {
         MdInputModule,
         MdMenuModule,
         MdPaginatorModule,
+        MdSnackBarModule,
         MdSortModule,
         MdTableModule,
         MdTabsModule,
@@ -143,6 +145,19 @@ describe('JobsTableComponent', () => {
     expect(dsubColumns[1].nativeElement.textContent)
       .toEqual(testJob1.labels['status-detail']);
   }));
+
+  it ('displays error message bar', async(() => {
+    let error = {
+      status: 412,
+      title: 'Precondition Failed',
+      message: 'Job already in terminal status `FAILED`'
+    }
+    testComponent.jobsTableComponent.handleError(error);
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.query(By.css('.mat-simple-snackbar')).nativeElement.textContent)
+      .toEqual("Precondition Failed (412): Job already in terminal status `FAILED` Dismiss");
+  }))
 
   // TODO(alanhwang): Add unit tests for component logic
 
