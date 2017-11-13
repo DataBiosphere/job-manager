@@ -23,6 +23,7 @@ export class JobPanelsComponent extends ResourceUtils implements OnChanges {
   numCompletedTasks: number = 0;
   numTasks: number = 0;
   outputs: Array<String>;
+  labels: Array<String>;
   tasks: TaskMetadata[];
 
   ngOnChanges(changes: SimpleChanges) {
@@ -39,6 +40,7 @@ export class JobPanelsComponent extends ResourceUtils implements OnChanges {
     this.inputs = Object.keys(this.job.inputs || {}).sort();
     this.logs = Object.keys(this.job.logs || {}).sort();
     this.outputs = Object.keys(this.job.outputs || {}).sort();
+    this.labels = Object.keys(this.job.labels || {}).sort();
 
   }
 
