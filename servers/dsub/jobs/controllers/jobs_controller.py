@@ -41,7 +41,7 @@ def update_job_labels(id, body):
     Returns:
         UpdateJobLabelsResponse: Response - never actually returned
     """
-    raise NotImplemented('dsub does not support label updates')
+    raise NotImplemented('Label updates not supported by dsub.')
 
 
 def get_job(id):
@@ -121,10 +121,10 @@ def _get_failures(job):
 
 def _get_google_provider(parent_id, auth_token):
     if not parent_id:
-        raise BadRequest('missing required field parentId')
+        raise BadRequest('Missing required field `parentId`.')
     if not auth_token:
         if _requires_auth():
-            raise BadRequest('missing required field authToken')
+            raise BadRequest('Missing required field `authToken`.')
         return google.GoogleJobProvider(False, False, parent_id)
 
     try:
@@ -132,14 +132,14 @@ def _get_google_provider(parent_id, auth_token):
         return google.GoogleJobProvider(
             False, False, parent_id, credentials=credentials)
     except AccessTokenCredentialsError as e:
-        raise Unauthorized('Invalid authentication token:{}'.format(e))
+        raise Unauthorized('Invalid authentication token:{}.'.format(e))
 
 
 def _get_provider(parent_id=None, auth_token=None):
     if _provider_type() == dsub_client.ProviderType.GOOGLE:
         return _get_google_provider(parent_id, auth_token)
     elif parent_id or auth_token:
-        raise BadRequest('{} can only be specified for dsub Google provider'.
+        raise BadRequest('The Local provider does not support the `{}` field .'.
                          format('authToken' if auth_token else 'parentId'))
     elif _provider_type() == dsub_client.ProviderType.LOCAL:
         return local.LocalJobProvider()

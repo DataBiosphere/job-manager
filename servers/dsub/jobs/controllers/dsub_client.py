@@ -47,7 +47,7 @@ class DSubClient:
 
         if status != DsubStatus.RUNNING:
             raise PreconditionFailed(
-                'Job already in terminal status {}'.format(job['status']))
+                'Job already in terminal status `{}`'.format(job['status']))
 
         # TODO(https://github.com/googlegenomics/dsub/issues/92): Remove this
         # hacky re-routing of stdout once dsub removes it from the python API
@@ -55,7 +55,7 @@ class DSubClient:
             ddel.ddel_tasks(
                 provider=provider, job_list=[job_id], task_list=task_list))
         if len(deleted) != 1:
-            raise InternalServerError('failed to abort dsub job')
+            raise InternalServerError('Failed to abort dsub job')
 
     def get_job(self, provider, job_id, task_id):
         """Get metadata for a particular dsub job or task (if it exists).
@@ -127,7 +127,7 @@ class DSubClient:
         tok_dict = json.loads(tok)
         offset = tok_dict.get('of')
         if not offset or not isinstance(offset, numbers.Number) or offset <= 0:
-            raise ValueError('invalid token JSON {}'.format(tok_dict))
+            raise ValueError('Invalid token JSON {}'.format(tok_dict))
         return offset
 
     def query_jobs(self, provider, query):
@@ -154,7 +154,7 @@ class DSubClient:
         if not statuses:
             statuses = ['*']
         if query.page_size <= 0:
-            raise ValueError("page_size must be positive")
+            raise ValueError("The page_size parameter must be positive")
 
         offset = 0
         # Request one extra job to confirm whether there's more data to return
