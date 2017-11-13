@@ -26,7 +26,7 @@ export class SignInComponent implements OnInit {
   }
 
   public signIn(): void {
-    this.authService.signIn().catch( (error) => this.handleError(error));
+    this.authService.signIn().catch((error) => this.handleError(error));
   }
 
   handleError(error: any) {
