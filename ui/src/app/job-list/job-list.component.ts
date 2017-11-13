@@ -6,6 +6,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 
 import {JobMonitorService} from '../core/job-monitor.service';
 import {StatusGroup} from '../shared/common';
+import {ErrorMessageFormatterPipe} from '../shared/error-message-formatter.pipe';
 import {JobsTableComponent} from './table/table.component';
 import {JobListView, JobStream} from '../shared/job-stream';
 
@@ -53,10 +54,10 @@ export class JobListComponent implements OnInit {
   }
 
   handleError(error: any) {
-    let message = `${error["title"]} (${error["status"]}): ${error["message"]}`;
-    this.errorBar.open(message, 'Dismiss', {
-      viewContainerRef: this.viewContainer,
-    });
+    this.errorBar.open(
+      new ErrorMessageFormatterPipe().transform(error),
+      'Dismiss',
+      {viewContainerRef: this.viewContainer});
   }
 
   public onClientPaginate(e: PageEvent) {

@@ -28,6 +28,7 @@ import 'rxjs/add/observable/fromEvent';
 import {JobMonitorService} from '../../core/job-monitor.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
+import {ErrorMessageFormatterPipe} from '../../shared/error-message-formatter.pipe';
 import {JobStatusImage, StatusGroup, LabelColumn} from '../../shared/common';
 import {JobListView} from '../../shared/job-stream';
 import {ActivatedRoute} from '@angular/router';
@@ -109,10 +110,10 @@ export class JobsTableComponent implements OnInit {
   }
 
   handleError(error: any) {
-    let message = `${error["title"]} (${error["status"]}): ${error["message"]}`;
-    this.errorBar.open(message, 'Dismiss', {
-      viewContainerRef: this.viewContainer,
-    });
+    this.errorBar.open(
+      new ErrorMessageFormatterPipe().transform(error),
+      'Dismiss',
+      {viewContainerRef: this.viewContainer});
   }
 
   abortJob(job: QueryJobsResult): void {
