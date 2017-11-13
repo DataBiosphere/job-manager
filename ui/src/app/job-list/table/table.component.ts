@@ -108,9 +108,8 @@ export class JobsTableComponent implements OnInit {
     this.paginator.pageIndex = 0;
   }
 
-  private handleError(error: any) {
-    console.log(error)
-    let message = `${error["status_code"]} Error: ${error["message"]}`;
+  handleError(error: any) {
+    let message = `${error["title"]} (${error["status"]}): ${error["message"]}`;
     this.errorBar.open(message, 'Dismiss', {
       viewContainerRef: this.viewContainer,
     });

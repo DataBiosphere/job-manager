@@ -26,7 +26,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
   // Makes an API request if this JobStream doesn't have atLeast this many
   // total entries; no-op otherwise. The job stream may elect to load more than
   // the requested number.
-  loadAtLeast(atLeast: number, onError: (any) => void): void {
+  loadAtLeast(atLeast: number): Promise<any> {
     this.queryPromise = this.queryPromise.then(prevResp => {
       if (this.value.exhaustive ||
         this.value.results.length >= atLeast) {
@@ -41,8 +41,9 @@ export class JobStream extends BehaviorSubject<JobListView> {
           exhaustive: !resp.nextPageToken
         })
         return resp;
-      }).catch((error) => onError(error));
+      });
     });
+    return this.queryPromise;
   }
 
   private queryJobs(pageSize: number, pageToken?: string): Promise<QueryJobsResponse> {

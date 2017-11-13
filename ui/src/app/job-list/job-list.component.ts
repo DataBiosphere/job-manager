@@ -51,8 +51,8 @@ export class JobListComponent implements OnInit {
     return StatusGroup.Active;
   }
 
-  private handleError(error: any) {
-    let message = `${error["status_code"]} Error: ${error["message"]}`;
+  handleError(error: any) {
+    let message = `${error["title"]} (${error["status"]}): ${error["message"]}`;
     this.errorBar.open(message, 'Dismiss', {
       viewContainerRef: this.viewContainer,
     });
@@ -61,9 +61,8 @@ export class JobListComponent implements OnInit {
   public onClientPaginate(e: PageEvent) {
     // If the client just navigated to page n, ensure we have enough jobs to
     // display page n+1.
-    this.jobStream.loadAtLeast(
-      (e.pageIndex+2) * e.pageSize,
-      (error) => this.handleError(error));
+    this.jobStream.loadAtLeast((e.pageIndex+2) * e.pageSize)
+      .catch( (error) => this.handleError(error));
   }
 
   public maybeNavigateForStatus(statusGroup: StatusGroup): void {
@@ -82,9 +81,8 @@ export class JobListComponent implements OnInit {
                                      this.currentStatusGroup(),
                                      this.route.snapshot.queryParams['parentId']);
       this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
-      this.jobStream.loadAtLeast(
-        JobListComponent.initialBackendPageSize,
-        (error) => this.handleError(error));
+      this.jobStream.loadAtLeast(JobListComponent.initialBackendPageSize)
+        .catch( (error) => this.handleError(error));
     });
   }
 }

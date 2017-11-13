@@ -13,6 +13,9 @@ import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 @Injectable()
 export class JobMonitorService {
 
+  private defaultErrorDetail = "An unknown error has ocurred. Please try again later."
+  private defaultErrorTitle = "Unknown"
+
   constructor(private readonly authService: AuthService, private http: Http) {}
 
   private convertToJobMetadataResponse(json: object): JobMetadataResponse {
@@ -49,12 +52,16 @@ export class JobMonitorService {
     return headers;
   }
 
-  private handleError(error: any): Promise<any> {
-    let parsedError = {
-      "status_code": error["status"],
-      "message": JSON.parse(error["_body"])["detail"],
+  private handleError(response: any): Promise<any> {
+    let json = response.json();
+    let title = "title" in json && json["title"] ? json["title"] : this.defaultErrorTitle;
+    let detail = "detail" in json && json["detail"] ? json["detail"] : this.defaultErrorDetail;
+    let error = {
+      "status": response["status"],
+      "title": title,
+      "message": detail,
     }
-    return Promise.reject(parsedError);
+    return Promise.reject(error);
   }
 
   abortJob(id: string): Promise<void> {
