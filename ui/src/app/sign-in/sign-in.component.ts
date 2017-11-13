@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewContainerRef} from '@angular/core';
+import {MdSnackBar, MdSnackBarConfig} from '@angular/material'
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {AuthService} from '../core/auth.service';
@@ -11,7 +12,9 @@ export class SignInComponent implements OnInit {
   constructor(
     private readonly authService: AuthService,
     private readonly route: ActivatedRoute,
-    private readonly router: Router) {}
+    private readonly router: Router,
+    private readonly viewContainer: ViewContainerRef,
+    private errorBar: MdSnackBar) {}
 
   ngOnInit() {
     let returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
@@ -23,6 +26,13 @@ export class SignInComponent implements OnInit {
   }
 
   public signIn(): void {
-    this.authService.signIn();
+    this.authService.signIn().catch((error) => this.handleError(error));
+  }
+
+  handleError(error: any) {
+    let message = `An error has occurred during sign in: ${error["error"]}`;
+    this.errorBar.open(message, 'Dismiss', {
+      viewContainerRef: this.viewContainer,
+    });
   }
 }

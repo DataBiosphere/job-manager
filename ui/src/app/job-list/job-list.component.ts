@@ -64,7 +64,7 @@ export class JobListComponent implements OnInit {
     // If the client just navigated to page n, ensure we have enough jobs to
     // display page n+1.
     this.jobStream.loadAtLeast((e.pageIndex+2) * e.pageSize)
-      .catch( (error) => this.handleError(error));
+      .catch((error) => this.handleError(error));
   }
 
   public maybeNavigateForStatus(statusGroup: StatusGroup): void {
@@ -84,7 +84,7 @@ export class JobListComponent implements OnInit {
                                      this.route.snapshot.queryParams['parentId']);
       this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
       this.jobStream.loadAtLeast(JobListComponent.initialBackendPageSize)
-        .catch( (error) => this.handleError(error));
+        .catch((error) => this.handleError(error));
     });
   }
 }
