@@ -13,6 +13,9 @@ import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 @Injectable()
 export class JobMonitorService {
 
+  private static readonly defaultErrorDetail = "An unknown error has ocurred. Please try again later."
+  private static readonly defaultErrorTitle = "Unknown"
+
   constructor(private readonly authService: AuthService, private http: Http) {}
 
   private convertToJobMetadataResponse(json: object): JobMetadataResponse {
@@ -41,6 +44,19 @@ export class JobMonitorService {
     return response;
   }
 
+  private getErrorTitle(response: any): string {
+    let json = response.json();
+    if ("title" in json && json["title"]) {
+      return json["title"];
+    }
+    return response.statusText ? response.statusText : JobMonitorService.defaultErrorTitle;
+  }
+
+  private getErrorDetail(response: any): string {
+    let json = response.json();
+    return "detail" in json && json["detail"] ? json["detail"] : JobMonitorService.defaultErrorDetail;
+  }
+
   private getHttpHeaders(): Headers {
     var headers = new Headers({'Content-Type': 'application/json'});
     if (environment.requiresAuth && this.authService.authToken) {
@@ -49,10 +65,12 @@ export class JobMonitorService {
     return headers;
   }
 
-  private handleError(error: any): Promise<any> {
-    // TODO(alahwa): Implement real error handling.
-    console.error('An error occurred', error);
-    return Promise.reject(error.message || error);
+  private handleError(response: any): Promise<any> {
+    return Promise.reject({
+      "status": response["status"],
+      "title": this.getErrorTitle(response),
+      "message": this.getErrorDetail(response),
+    });
   }
 
   abortJob(id: string): Promise<void> {
@@ -61,7 +79,7 @@ export class JobMonitorService {
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => response.status == 200)
-      .catch(this.handleError);
+      .catch((e) => this.handleError(e));
   }
 
   getJob(id: string): Promise<JobMetadataResponse> {
@@ -69,7 +87,7 @@ export class JobMonitorService {
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => this.convertToJobMetadataResponse(response.json()))
-      .catch(this.handleError);
+      .catch((e) => this.handleError(e));
   }
 
   // TODO(calbach): Evaluate whether this should use an Observable instead for
@@ -81,6 +99,6 @@ export class JobMonitorService {
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => this.convertToQueryJobsResponse(response.json()))
-      .catch(this.handleError);
+      .catch((e) => this.handleError(e));
   }
 }

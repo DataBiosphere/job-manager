@@ -6,10 +6,17 @@ import {
   Input,
   OnInit,
   Output,
-  ViewChild
+  ViewChild,
+  ViewContainerRef
 } from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
-import {MdPaginator, MdTabChangeEvent, PageEvent} from '@angular/material';
+import {
+  MdPaginator,
+  MdSnackBar,
+  MdSnackBarConfig,
+  MdTabChangeEvent,
+  PageEvent
+} from '@angular/material';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
@@ -21,6 +28,7 @@ import 'rxjs/add/observable/fromEvent';
 import {JobMonitorService} from '../../core/job-monitor.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
+import {ErrorMessageFormatterPipe} from '../../shared/error-message-formatter.pipe';
 import {JobStatusImage, StatusGroup, LabelColumn} from '../../shared/common';
 import {JobListView} from '../../shared/job-stream';
 import {ActivatedRoute} from '@angular/router';
@@ -67,8 +75,10 @@ export class JobsTableComponent implements OnInit {
   @ViewChild('filter') filter: ElementRef;
 
   constructor(
-    private route: ActivatedRoute,
-    private jobMonitorService: JobMonitorService
+    private readonly route: ActivatedRoute,
+    private readonly jobMonitorService: JobMonitorService,
+    private readonly viewContainer: ViewContainerRef,
+    private errorBar: MdSnackBar,
   ) {}
 
   ngOnInit() {
@@ -99,9 +109,17 @@ export class JobsTableComponent implements OnInit {
     this.paginator.pageIndex = 0;
   }
 
+  handleError(error: any) {
+    this.errorBar.open(
+      new ErrorMessageFormatterPipe().transform(error),
+      'Dismiss',
+      {viewContainerRef: this.viewContainer});
+  }
+
   abortJob(job: QueryJobsResult): void {
     this.jobMonitorService.abortJob(job.id)
-      .then(() => job.status = JobStatus.Aborted);
+      .then(() => job.status = JobStatus.Aborted)
+      .catch((error) => this.handleError(error));
   }
 
   canAbort(job: QueryJobsResult): boolean {
