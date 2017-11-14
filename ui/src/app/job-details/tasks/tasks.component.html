@@ -29,26 +29,26 @@
     <ng-container mdColumnDef="startTime">
       <md-header-cell *mdHeaderCellDef> Start Time </md-header-cell>
       <md-cell *mdCellDef="let t" class="column">
-        {{t.start | jmShortDateTime}}
+        {{ t.start | jmShortDateTime }}
       </md-cell>
     </ng-container>
     <ng-container mdColumnDef="duration">
       <md-header-cell *mdHeaderCellDef> Duration </md-header-cell>
       <md-cell *mdCellDef="let t" class="column">
-        {{ getDuration(t.start, t.end) }}
+        {{ t.start | jmDuration:t.end }}
       </md-cell>
     </ng-container>
     <ng-container mdColumnDef="attempts">
       <md-header-cell *mdHeaderCellDef> Attempts </md-header-cell>
       <md-cell *mdCellDef="let t" class="column">
-        {{t.attempts}}
+        {{ t.attempts }}
       </md-cell>
     </ng-container>
     <ng-container mdColumnDef="stdout">
       <md-header-cell *mdHeaderCellDef> Stdout </md-header-cell>
       <md-cell *mdCellDef="let t" class="column">
         <a class="log-item" href="{{ getResourceBrowserURL(t.stdout) }}">
-          {{formatValue(t.stdout)}}
+          {{ formatValue(t.stdout) }}
         </a>
       </md-cell>
     </ng-container>
@@ -56,7 +56,7 @@
       <md-header-cell *mdHeaderCellDef> Stderr </md-header-cell>
       <md-cell *mdCellDef="let t" class="column">
         <a class="log-item" href="{{ getResourceBrowserURL(t.stderr) }}">
-          {{formatValue(t.stderr)}}
+          {{ formatValue(t.stderr) }}
         </a>
       </md-cell>
     </ng-container>
