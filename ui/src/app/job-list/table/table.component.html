@@ -95,7 +95,7 @@
 
 <div class="group-options" *ngIf="selectedJobs.length > 0">
   {{ selectedJobs.length }} jobs selected
-  <button md-raised-button color="accent" class="group-button" *ngIf="currentStatusGroup==0"
+  <button md-raised-button color="accent" class="group-button group-abort" *ngIf="currentStatusGroup==statusGroup.Active"
           (click)="onAbortJobs(selectedJobs)">Abort Jobs</button>
 </div>
 
