@@ -146,6 +146,16 @@ describe('JobsTableComponent', () => {
       .toEqual(testJob1.labels['status-detail']);
   }));
 
+  it('displays the abort button for selected active jobs', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('.group-abort')).length).toEqual(0);
+    fixture.detectChanges();
+    testComponent.jobsTableComponent.toggleSelectAll();
+    fixture.detectChanges();
+    expect(de.queryAll(By.css('.group-abort')).length).toEqual(1);
+  }));
+
   it ('displays error message bar', async(() => {
     let error = {
       status: 412,
