@@ -47,7 +47,7 @@
     <ng-container mdColumnDef="stdout">
       <md-header-cell *mdHeaderCellDef> Stdout </md-header-cell>
       <md-cell *mdCellDef="let t" class="column">
-        <a class="log-item" href="{{ getResourceBrowserURL(t.stdout) }}">
+        <a class="log-item" href="{{ getResourceURL(t.stdout) }}">
           {{ formatValue(t.stdout) }}
         </a>
       </md-cell>
@@ -55,7 +55,7 @@
     <ng-container mdColumnDef="stderr">
       <md-header-cell *mdHeaderCellDef> Stderr </md-header-cell>
       <md-cell *mdCellDef="let t" class="column">
-        <a class="log-item" href="{{ getResourceBrowserURL(t.stderr) }}">
+        <a class="log-item" href="{{ getResourceURL(t.stderr) }}">
           {{ formatValue(t.stderr) }}
         </a>
       </md-cell>
