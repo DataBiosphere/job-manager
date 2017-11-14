@@ -10,7 +10,8 @@ import {DataSource} from '@angular/cdk/collections';
 import {Observable} from 'rxjs/Observable';
 
 import {JobStatus} from '../../shared/model/JobStatus';
-import {JobStatusImage, ResourceUtils} from '../../shared/common';
+import {JobStatusImage} from '../../shared/common';
+import {ResourceUtils} from '../../shared/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 
 @Component({

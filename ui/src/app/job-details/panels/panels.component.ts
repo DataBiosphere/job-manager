@@ -8,7 +8,7 @@ import {
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
-import {ResourceUtils} from '../../shared/common';
+import {ResourceUtils} from '../../shared/resource-utils';
 
 @Component({
   selector: 'jm-panels',
