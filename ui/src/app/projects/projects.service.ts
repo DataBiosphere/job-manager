@@ -7,12 +7,19 @@ import {environment} from '../../environments/environment';
 
 declare const gapi: any;
 
+// A view of a logical list of projects. This may only be a partial view of a
+// larger projects list, as indicated by the exhaustive flag.
+export type ProjectListView = {
+  results: any[];
+  exhaustive: boolean;
+}
+
 /** Thin wrapper around the Google cloudresourcemanager API project.list(). */
 @Injectable()
 export class ProjectsService {
 
   private static readonly apiUrl = "https://cloudresourcemanager.googleapis.com/v1beta1/projects"
-  private static readonly defaultPageSize = 25;
+  private static readonly defaultPageSize = 10;
 
   constructor(private readonly authService: AuthService, private http: Http) {}
 
@@ -24,7 +31,7 @@ export class ProjectsService {
     });
   }
 
-  listProjects(filter: string): Promise<any[]> {
+  listProjects(filter: string): Promise<ProjectListView> {
     return this.authService.isAuthenticated().then( authenticated => {
       if (authenticated) {
         return gapi.client.request({
@@ -34,7 +41,13 @@ export class ProjectsService {
             pageSize: ProjectsService.defaultPageSize,
           }
         })
-        .then(response => response.result ? response.result.projects : [])
+        .then(response => {
+          let exhaustive: boolean = response.result.nextPageToken === undefined;
+          return {
+            results: response.result ? response.result.projects : [],
+            exhaustive: exhaustive,
+          }
+        })
         .catch(response => this.handleError(response));
       } else {
         return Promise.reject({

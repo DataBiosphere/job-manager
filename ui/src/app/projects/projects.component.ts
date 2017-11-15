@@ -36,6 +36,7 @@ export class ProjectsComponent implements OnInit {
   projectsControl: FormControl;
   projectsObservable: Observable<any[]>;
   projects: any[];
+  viewJobsDisabled = true;
 
   constructor(
     private readonly authService: AuthService,
@@ -44,15 +45,15 @@ export class ProjectsComponent implements OnInit {
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MdSnackBar) {}
 
-  private getProject(projectId: string): any {
+  private validProject(projectId: string): boolean {
     if (this.projects) {
       for (let project of this.projects) {
         if (projectId == project.projectId) {
-          return project;
+          return true;
         }
       }
     }
-    return undefined;
+    return false;
   }
 
   ngOnInit() {
@@ -74,15 +75,17 @@ export class ProjectsComponent implements OnInit {
 
   updateProjects(filter: string) {
     filter = filter ? filter + '*' : '.*';
+    this.viewJobsDisabled = false;
     this.projectsObservable = Observable.fromPromise(
       this.projectsService.listProjects(filter)
-        .then(projects => {
-          this.projects = projects ? projects : [];
-          // If the currently entered string is a valid job name, hide the
+        .then(listView => {
+          this.projects = listView.results ? listView.results : [];
+          // If the currently entered string is a valid project ID, hide the
           // autocomplete menu so that the user can click the button
-          return this.viewJobsEnabled()
-            ? []
-            : this.projects.map(project => project.projectId);
+          this.viewJobsDisabled = !this.validProject(this.projectsControl.value)
+            && listView.exhaustive;
+          return this.viewJobsDisabled || this.projects.length > 1 ?
+            this.projects.map(project => project.projectId) : [];
         })
       .catch(response => this.handleError(response))
     );
@@ -91,9 +94,5 @@ export class ProjectsComponent implements OnInit {
   viewJobs() {
     let extras = {queryParams: {parentId: this.projectsControl.value}}
     this.router.navigate(['jobs'], extras)
-  }
-
-  viewJobsEnabled(): boolean {
-    return this.getProject(this.projectsControl.value);
   }
 }

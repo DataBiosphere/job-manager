@@ -52,7 +52,7 @@ export class JobListResolver implements Resolve<JobStream> {
     return jobStream
         .loadAtLeast(JobListResolver.initialBackendPageSize)
         .then(resp => {
-      return jobStream;
+          return jobStream;
     })
     .catch(error => {
       // TODO(bryancrampton): Handle the client-facing error here after
