@@ -143,9 +143,7 @@ class DSubClient:
         """
         dstat_params = self._query_parameters(query)
 
-        # TODO(bryancrampton): support 'end_time' query parameter. First update
-        # to filter by end_time once dsub LocalJobsProvider supports it.
-        # https://github.com/googlegenomics/dsub/issues/90
+        # TODO(bryancrampton): support 'end_time' query parameter.
         # Eventually, the pipelines API and dsub should support this query .
 
         # TODO(https://github.com/googlegenomics/dsub/issues/69): Move this

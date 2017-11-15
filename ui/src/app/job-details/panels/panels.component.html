@@ -14,8 +14,8 @@
           {{ numCompletedTasks }} of {{ numTasks }} tasks completed
         </ng-container>
       </b></p>
-      <p id="submitted">Submitted {{ job.submission | jmShortDateTime }}</p>
-      <p id="started">Started {{ job.start | jmShortDateTime }} ({{ getDuration() }})</p>
+      <p id="submitted" *ngIf="job.submission">Submitted {{ job.submission | jmShortDateTime }}</p>
+      <p id="started" *ngIf="job.start">Started {{ job.start | jmShortDateTime }} {{ getDuration() }}</p>
       <p id="ended" *ngIf="job.end">Ended {{ job.end | jmShortDateTime }}</p>
     </md-card-content>
   </md-card>
