@@ -66,10 +66,7 @@ export class JobListComponent implements OnInit {
   }
 
   public maybeNavigateForStatus(statusGroup: StatusGroup): void {
-    let statusParam = statusGroup;
-    if (statusParam === StatusGroup.Active) {
-      statusParam = null;
-    }
+    let statusParam = statusGroup === StatusGroup.Active ? null : statusGroup;
     this.router.navigate([], {
       queryParams: {
         parentId: this.route.snapshot.queryParams['parentId'],
