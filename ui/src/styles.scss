@@ -5,6 +5,9 @@
   outline: none;
 }
 
+/*
+  Overrides the angular material menu width in the panel component template
+ */
 .wide-menu {
-  max-width: none !important;
+  max-width: 500px !important;
 }

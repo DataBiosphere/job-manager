@@ -56,13 +56,6 @@ export class JobPanelsComponent extends ResourceUtils implements OnChanges {
     return this.getResourceBrowserURL(this.job.outputs[key]);
   }
 
-  truncateValue(value: string, length: number): string {
-    if (value.length > length) {
-      return value.substring(0, length) + '...';
-    }
-    return value;
-  }
-
   getUserId() {
     return this.job.labels ? this.job.labels['user-id'] : "";
   }

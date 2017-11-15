@@ -33,7 +33,7 @@
       </p>
       <md-menu #inputsMenu="mdMenu" class="wide-menu">
         <a md-menu-item *ngFor="let i of inputs" href="{{ getInputResourceURL(i) }}">
-          <span>{{ truncateValue(i + ': ' + formatValue(job.inputs[i]), 75) }}</span>
+          <span>{{ i + ': ' + formatValue(job.inputs[i]) }}</span>
         </a>
       </md-menu>
 
@@ -45,7 +45,7 @@
       </p>
       <md-menu #outputsMenu="mdMenu" class="wide-menu">
         <a md-menu-item *ngFor="let o of outputs" href="{{ getOutputResourceURL(o) }}">
-          <span>{{ truncateValue(o + ': ' + formatValue(job.outputs[o]), 75) }}</span>
+          <span>{{ o + ': ' + formatValue(job.outputs[o]) }}</span>
         </a>
       </md-menu>
 
