@@ -12,7 +12,7 @@ from jobs.controllers.errors import JobNotFound
 from jobs.models.query_jobs_request import QueryJobsRequest
 
 
-class TestDSubClient(TestCase):
+class TestDSubClient(unittest.TestCase):
     """ DSubClient unit tests."""
     OPS = [{
         'job-id': 'job-1',
