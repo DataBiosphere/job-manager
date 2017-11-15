@@ -61,7 +61,7 @@ def get_job(id):
     return JobMetadataResponse(
         id=id,
         name=job['job-name'],
-        status=job_statuses.dsub_to_api(job['status']),
+        status=job_statuses.dsub_to_api(job),
         submission=_parse_datetime(job['create-time']),
         start=_parse_datetime(job.get('start-time')),
         end=_parse_datetime(job['end-time']),
@@ -187,7 +187,7 @@ def _query_result(job, project_id=None):
     return QueryJobsResult(
         id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
         name=job['job-name'],
-        status=job_statuses.dsub_to_api(job['status']),
+        status=job_statuses.dsub_to_api(job),
         submission=_parse_datetime(job['create-time']),
         start=_parse_datetime(job.get('start-time')),
         end=_parse_datetime(job['end-time']),

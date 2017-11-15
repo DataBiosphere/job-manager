@@ -37,7 +37,7 @@ DSUB_STATUS_MAP = {
 }
 
 
-def dsub_to_api(dsub_status):
+def dsub_to_api(job):
     """Map an API status to a dsub status
 
       Args:
@@ -49,9 +49,12 @@ def dsub_to_api(dsub_status):
       Raises:
           BadRequest if the dsub_status is not valid
     """
-    if dsub_status not in DSUB_STATUS_MAP:
+    if job['status'] not in DSUB_STATUS_MAP:
         raise BadRequest('Unrecognized dsub status:{}'.format(dsub_status))
-    return DSUB_STATUS_MAP[dsub_status]
+    elif job['status'] == DsubStatus.RUNNING and not job.get('start-time'):
+        return ApiStatus.SUBMITTED
+    else:
+        return DSUB_STATUS_MAP[job['status']]
 
 
 def api_to_dsub(api_status):

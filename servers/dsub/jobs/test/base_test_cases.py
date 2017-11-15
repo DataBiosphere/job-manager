@@ -160,12 +160,12 @@ class BaseTestCases:
                     wait=wait,
                     disable_warning=True))
 
-        def try_abort_job(self, job_id):
+        def must_abort_job(self, job_id):
             resp = self.client.open(
                 '/jobs/{}/abort'.format(job_id), method='POST')
-            return resp.status_code == 200
+            self.assert_status(resp, 200)
 
-        def wait_for_job_status(self, job_id, status, poll_interval=0.5):
+        def wait_for_job_status(self, job_id, status, poll_interval=5):
             has_status = False
             job = None
             remaining = self.wait_timeout
@@ -185,25 +185,10 @@ class BaseTestCases:
             return job
 
         def test_abort_job(self):
-            started = self.start_job('sleep 120')
+            started = self.start_job('sleep 30')
             api_job_id = self.get_api_job_id(started)
             self.wait_for_job_status(api_job_id, ApiStatus.RUNNING)
-
-            max_attempts = 10
-            retry_interval = .5
-
-            # TODO(calbach): Change RUNNING semantics in the dsub shim so
-            # that the above puts us into an abortable state, then remove
-            # these retries. Keep retrying until we can abort the job.
-            aborted = False
-            for i in range(max_attempts):
-                aborted = self.try_abort_job(api_job_id)
-                if aborted: break
-                time.sleep(retry_interval)
-
-            if not aborted:
-                self.fail('failed to abort job after {}s'.format(
-                    max_attempts * retry_interval))
+            self.must_abort_job(api_job_id)
             self.wait_for_job_status(api_job_id, ApiStatus.ABORTED)
 
         def test_update_job_labels(self):
