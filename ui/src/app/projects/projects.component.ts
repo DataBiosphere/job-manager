@@ -39,9 +39,10 @@ export class ProjectsComponent implements OnInit {
   viewJobsEnabled = true;
 
   constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly authService: AuthService,
     private readonly projectsService: ProjectsService,
-    private readonly router: Router,
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MdSnackBar) {}
 

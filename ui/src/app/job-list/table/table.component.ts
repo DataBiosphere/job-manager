@@ -31,7 +31,7 @@ import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/error-message-formatter.pipe';
 import {JobStatusImage, StatusGroup, LabelColumn} from '../../shared/common';
 import {JobListView} from '../../shared/job-stream';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {environment} from '../../../environments/environment';
 
 @Component({
@@ -76,6 +76,7 @@ export class JobsTableComponent implements OnInit {
 
   constructor(
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly jobMonitorService: JobMonitorService,
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MdSnackBar,
@@ -207,6 +208,10 @@ export class JobsTableComponent implements OnInit {
       this.selectedJobs = this.jobs.value.results.slice();
       this.allSelected = true;
     }
+  }
+
+  viewJobDetail(job: QueryJobsResult): void {
+    this.router.navigate(['jobs', job.id]).catch(error => this.handleError(error));
   }
 }
 

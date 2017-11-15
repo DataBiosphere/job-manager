@@ -26,7 +26,7 @@
     <md-cell *mdCellDef="let j">
       <md-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
       </md-checkbox>
-      <a md-button class="job-details-button" [routerLink]="[j.id]">{{ j.name }}</a>
+      <a md-button class="job-details-button" (click)="viewJobDetail(j)">{{ j.name }}</a>
 
       <button md-icon-button class="jobs-dropdown-arrow"
               [class.visible]="showDropdownArrow(j)"
@@ -40,7 +40,7 @@
           <p>Submitted: {{ j.submission | jmShortDateTime }}</p>
         </md-card>
 
-        <a md-menu-item [routerLink]="[j.id]">
+        <a md-menu-item (click)="viewJobDetail(j)">
           <button md-icon-button>
             <img src="https://www.gstatic.com/images/icons/material/system/1x/arrow_forward_grey600_24dp.png">
           </button>
