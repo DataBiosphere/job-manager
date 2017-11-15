@@ -13,8 +13,8 @@
       </md-autocomplete>
     </md-form-field>
     <button md-button
-            (click)="viewJobs()"
-            [disabled]="!viewJobsEnabled">
+            (click)="navigateJobs()"
+            [disabled]="!viewJobsEnabled()">
       View Jobs
     </button>
   </md-card>

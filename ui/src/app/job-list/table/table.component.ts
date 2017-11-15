@@ -210,7 +210,7 @@ export class JobsTableComponent implements OnInit {
     }
   }
 
-  viewJobDetail(job: QueryJobsResult): void {
+  navigateJobDetail(job: QueryJobsResult): void {
     this.router.navigate(['jobs', job.id]).catch(error => this.handleError(error));
   }
 }

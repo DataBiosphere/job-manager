@@ -91,7 +91,7 @@ export class ProjectsComponent implements OnInit {
     );
   }
 
-  viewJobs() {
+  navigateJobs() {
     let extras = {queryParams: {parentId: this.projectsControl.value}}
     this.router.navigate(['jobs'], extras)
   }
