@@ -1,8 +1,12 @@
+/**
+ * Utilities for formatting links to folders/files on google cloud storage.
+ */
+
 export class ResourceUtils {
   browserPrefix: string = "https://console.cloud.google.com/storage/browser/";
   storagePrefix: string = "https://storage.cloud.google.com/";
 
-  getResourceBrowserURL(uri: string): string {
+  public getResourceBrowserURL(uri: string): string {
     let parts = this.validateGcsURLGetParts(uri);
     // This excludes the object from the link to show the enclosing directory.
     // This is valid with wildcard glob (bucket/path/*) and directories
@@ -10,7 +14,7 @@ export class ResourceUtils {
     return parts ? this.browserPrefix + parts.slice(2,-1).join("/") : undefined;
   }
 
-  getResourceURL(uri: string): string {
+  public getResourceURL(uri: string): string {
     let parts = this.validateGcsURLGetParts(uri);
     return parts ? this.storagePrefix + parts.slice(2).join("/") : undefined;
   }
@@ -27,7 +31,8 @@ export class ResourceUtils {
     return parts;
   }
 
-  formatValue(value: string): string {
+  // Parse file name from gs link
+  public formatValue(value: string): string {
     let parts = this.validateGcsURLGetParts(value);
     let formattedValue = value;
     if (parts) {
