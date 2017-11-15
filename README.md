@@ -20,7 +20,7 @@ For cromwell:
 2. Then add a config.json file with the Cromwell username and password:
 ```
 {
-  "cromwell_username" : "USERNAME",
+  "cromwell_user" : "USERNAME",
   "cromwell_password" : "PASSWORD"
 }
 ```
