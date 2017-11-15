@@ -2,7 +2,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subscription} from 'rxjs/Subscription';
 import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {PageEvent, MdSnackBar, MdSnackBarConfig} from '@angular/material'
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobMonitorService} from '../core/job-monitor.service';
 import {StatusGroup} from '../shared/common';
@@ -40,6 +40,12 @@ export class JobListComponent implements OnInit {
   ngOnInit(): void {
     this.jobStream = this.route.snapshot.data['stream'];
     this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
+    // Handle navigation errors raised in JobDetailsResolver
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationError) {
+        this.handleError(event.error);
+      }
+    });
   }
 
   private currentStatusGroup(): StatusGroup {

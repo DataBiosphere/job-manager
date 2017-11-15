@@ -209,10 +209,6 @@ export class JobsTableComponent implements OnInit {
       this.allSelected = true;
     }
   }
-
-  navigateJobDetail(job: QueryJobsResult): void {
-    this.router.navigate(['jobs', job.id]).catch(error => this.handleError(error));
-  }
 }
 
 /** DataSource providing the list of jobs to be rendered in the table. */
