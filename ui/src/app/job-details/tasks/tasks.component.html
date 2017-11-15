@@ -28,15 +28,11 @@
     <!-- Example columns -->
     <ng-container mdColumnDef="startTime">
       <md-header-cell *mdHeaderCellDef> Start Time </md-header-cell>
-      <md-cell *mdCellDef="let t" class="column">
-        {{ t.start | jmShortDateTime }}
-      </md-cell>
+      <md-cell *mdCellDef="let t" class="column">{{ t.start | jmShortDateTime }}</md-cell>
     </ng-container>
     <ng-container mdColumnDef="duration">
       <md-header-cell *mdHeaderCellDef> Duration </md-header-cell>
-      <md-cell *mdCellDef="let t" class="column">
-        {{ t.start | jmDuration:t.end }}
-      </md-cell>
+      <md-cell *mdCellDef="let t" class="column">{{ t.start | jmDuration:t.end }}</md-cell>
     </ng-container>
     <ng-container mdColumnDef="attempts">
       <md-header-cell *mdHeaderCellDef> Attempts </md-header-cell>
