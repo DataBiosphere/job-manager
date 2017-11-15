@@ -63,8 +63,7 @@ def get_job(id):
         name=job['job-name'],
         status=job_statuses.dsub_to_api(job['status']),
         submission=_parse_datetime(job['create-time']),
-        # TODO(https://github.com/googlegenomics/dsub/issues/90) use start-time
-        start=_parse_datetime(job['create-time']),
+        start=_parse_datetime(job.get('start-time')),
         end=_parse_datetime(job['end-time']),
         inputs=job['inputs'],
         outputs=job['outputs'],
@@ -139,8 +138,9 @@ def _get_provider(parent_id=None, auth_token=None):
     if _provider_type() == dsub_client.ProviderType.GOOGLE:
         return _get_google_provider(parent_id, auth_token)
     elif parent_id or auth_token:
-        raise BadRequest('The Local provider does not support the `{}` field .'.
-                         format('authToken' if auth_token else 'parentId'))
+        raise BadRequest(
+            'The Local provider does not support the `{}` field .'.format(
+                'authToken' if auth_token else 'parentId'))
     elif _provider_type() == dsub_client.ProviderType.LOCAL:
         return local.LocalJobProvider()
     elif _provider_type() == dsub_client.ProviderType.STUB:
@@ -189,7 +189,6 @@ def _query_result(job, project_id=None):
         name=job['job-name'],
         status=job_statuses.dsub_to_api(job['status']),
         submission=_parse_datetime(job['create-time']),
-        # TODO(https://github.com/googlegenomics/dsub/issues/90) use start-time
-        start=_parse_datetime(job['create-time']),
+        start=_parse_datetime(job.get('start-time')),
         end=_parse_datetime(job['end-time']),
         labels=_job_to_api_labels(job))
