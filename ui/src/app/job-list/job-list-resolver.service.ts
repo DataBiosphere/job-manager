@@ -14,6 +14,7 @@ import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {StatusGroup} from '../shared/common';
 import {JobStream} from '../shared/job-stream';
 
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class JobListResolver implements Resolve<JobStream> {
@@ -56,7 +57,7 @@ export class JobListResolver implements Resolve<JobStream> {
     .catch(error => {
       // TODO(bryancrampton): Handle the client-facing error here after
       // redirecting to projects page
-      this.router.navigate(['/projects']);
+      this.router.navigate([environment.entryPoint]);
       return null;
     });
   }
