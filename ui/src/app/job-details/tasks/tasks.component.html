@@ -19,7 +19,7 @@
       <md-header-cell *mdHeaderCellDef> Status </md-header-cell>
       <md-cell *mdCellDef="let t">
         <button md-icon-button disabled>
-          <img mdTooltip="{{ t.executionStatus }}" mdTooltipPosition="before"
+          <img class='task-status' mdTooltip="{{ t.executionStatus }}" mdTooltipPosition="before"
                src="{{ getStatusUrl(t.executionStatus) }}">
         </button>
       </md-cell>
@@ -36,9 +36,7 @@
     </ng-container>
     <ng-container mdColumnDef="attempts">
       <md-header-cell *mdHeaderCellDef> Attempts </md-header-cell>
-      <md-cell *mdCellDef="let t" class="column">
-        {{ t.attempts }}
-      </md-cell>
+      <md-cell *mdCellDef="let t" class="column">{{ t.attempts }}</md-cell>
     </ng-container>
     <ng-container mdColumnDef="stdout">
       <md-header-cell *mdHeaderCellDef> Stdout </md-header-cell>
