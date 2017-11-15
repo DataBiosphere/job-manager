@@ -7,6 +7,7 @@ import {MdButtonModule, MdCardModule, MdMenuModule} from '@angular/material';
 import {SharedModule} from '../../shared/shared.module';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
+import {ResourceUtils} from '../../shared/resource-utils';
 
 describe('JobPanelsComponent', () => {
 
@@ -43,7 +44,7 @@ describe('JobPanelsComponent', () => {
         MdButtonModule,
         MdCardModule,
         MdMenuModule,
-        SharedModule,
+        SharedModule
       ]
     }).compileComponents();
   }));
@@ -60,8 +61,6 @@ describe('JobPanelsComponent', () => {
     expect(de.query(By.css('.header')).nativeElement.textContent).toEqual('');
     expect(de.query(By.css('.job-id')).nativeElement.textContent)
       .toContain(minimalJob.id);
-    expect(de.query(By.css('.text-info')).nativeElement.textContent)
-      .toEqual('Submitted by: ');
   }));
 
   it('should hide input buttons with minimal job', async(() => {
@@ -94,22 +93,6 @@ describe('JobPanelsComponent', () => {
       .toEqual(3);
   }));
 
-  it('should render correct GCS resource URLs', async(() => {
-    testComponent.job = completeJob;
-    fixture.detectChanges();
-    expect(testComponent.jobPanelsComponent.getInputResourceURL('input'))
-      .toEqual('https://console.cloud.google.com/storage/browser/input/url');
-    expect(testComponent.jobPanelsComponent.getOutputResourceURL('output'))
-      .toEqual('https://console.cloud.google.com/storage/browser/output/url');
-      expect(testComponent.jobPanelsComponent.getLogResourceURL('log'))
-        .toEqual('https://storage.cloud.google.com/logs/url');
-  }));
-
-  it('should return invalid from invalid resource url', async(() => {
-    expect(testComponent.jobPanelsComponent.getResourceURL('/invalid/url'))
-      .toBeUndefined();
-  }));
-
   it('should return correct value from getUserId', async(() => {
     testComponent.job = completeJob;
     fixture.detectChanges();
@@ -117,19 +100,12 @@ describe('JobPanelsComponent', () => {
       .toEqual(completeJob.labels['user-id']);
   }));
 
-  it('should calculate job duration', async(() => {
-    testComponent.job = completeJob;
-    fixture.detectChanges();
-    expect(testComponent.jobPanelsComponent.getDuration()).toEqual("2h 30m");
-  }));
-
-
 
   @Component({
     selector: 'jm-test-panels-component',
     template: `<jm-panels [job]="job"></jm-panels>`
   })
-  class TestPanelsComponent {
+  class TestPanelsComponent extends ResourceUtils {
     public job: JobMetadataResponse = {
       id: '',
       status: JobStatus.Failed,
