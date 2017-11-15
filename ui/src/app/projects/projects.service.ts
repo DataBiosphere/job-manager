@@ -7,7 +7,7 @@ import {environment} from '../../environments/environment';
 
 declare const gapi: any;
 
-/** Service wrapper around the Google cloudresourcemanager API. */
+/** Thin wrapper around the Google cloudresourcemanager API project.list(). */
 @Injectable()
 export class ProjectsService {
 
@@ -36,6 +36,12 @@ export class ProjectsService {
         })
         .then(response => response.result ? response.result.projects : [])
         .catch(response => this.handleError(response));
+      } else {
+        return Promise.reject({
+          status: 401,
+          title: "Unauthorized",
+          message: "Authentication failed, please try signing in again."
+        })
       }
     });
   }
