@@ -44,19 +44,15 @@ export class ProjectsComponent implements OnInit {
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MdSnackBar) {}
 
-  private getProject(name: string): any {
+  private getProject(projectId: string): any {
     if (this.projects) {
       for (let project of this.projects) {
-        if (name == project.name) {
+        if (projectId == project.projectId) {
           return project;
         }
       }
     }
     return undefined;
-  }
-
-  private navigateToJobsPage(project: any) {
-    this.router.navigate(['jobs'], {queryParams: {parentId: project.name}})
   }
 
   ngOnInit() {
@@ -77,7 +73,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   updateProjects(filter: string) {
-    filter = filter ? filter + '*' : '*';
+    filter = filter ? filter + '*' : '.*';
     this.projectsObservable = Observable.fromPromise(
       this.projectsService.listProjects(filter)
         .then(projects => {
@@ -86,17 +82,15 @@ export class ProjectsComponent implements OnInit {
           // autocomplete menu so that the user can click the button
           return this.viewJobsEnabled()
             ? []
-            : this.projects.map(project => project["name"]);
+            : this.projects.map(project => project.projectId);
         })
       .catch(response => this.handleError(response))
     );
   }
 
   viewJobs() {
-    let project = this.getProject(this.projectsControl.value);
-    this.projectsService.getGenomicsEnabled(project.projectNumber).then(() => {
-      this.navigateToJobsPage(project);
-    }).catch(response => this.handleError(response))
+    let extras = {queryParams: {parentId: this.projectsControl.value}}
+    this.router.navigate(['jobs'], extras)
   }
 
   viewJobsEnabled(): boolean {

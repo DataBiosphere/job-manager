@@ -9,6 +9,8 @@ import {JobListComponent} from './job-list/job-list.component';
 import {SignInComponent} from './sign-in/sign-in.component';
 import {ProjectsComponent} from './projects/projects.component'
 
+import {environment} from '../environments/environment';
+
 // Based on the URL mapping in "routes" below, the RouterModule attaches
 // UI Components to the <router-outlet> element in the main AppComponent.
 const routes: Routes = [
@@ -18,7 +20,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'projects',
+    redirectTo: environment.entryPoint,
     pathMatch: 'full'
   },
   {

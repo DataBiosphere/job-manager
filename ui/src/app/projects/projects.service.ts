@@ -7,11 +7,12 @@ import {environment} from '../../environments/environment';
 
 declare const gapi: any;
 
-/** Service wrapper for projects BLAHH. */
+/** Service wrapper around the Google cloudresourcemanager API. */
 @Injectable()
 export class ProjectsService {
 
-  private apiUrl = "https://cloudresourcemanager.googleapis.com/v1beta1/projects"
+  private static readonly apiUrl = "https://cloudresourcemanager.googleapis.com/v1beta1/projects"
+  private static readonly defaultPageSize = 25;
 
   constructor(private readonly authService: AuthService, private http: Http) {}
 
@@ -23,48 +24,18 @@ export class ProjectsService {
     });
   }
 
-  private getIamPolicy(projectNumber: string): Promise<any> {
-    return this.authService.isAuthenticated().then( authenticated => {
-      if (authenticated) {
-        return gapi.client.request({
-          method: 'POST',
-          path: `${this.apiUrl}/${projectNumber}:getIamPolicy`,
-        })
-        .then(response => response.result)
-        .catch(response => this.handleError(response));
-      }
-    });
-  }
-
   listProjects(filter: string): Promise<any[]> {
     return this.authService.isAuthenticated().then( authenticated => {
       if (authenticated) {
         return gapi.client.request({
-          path: this.apiUrl,
+          path: ProjectsService.apiUrl,
           params: {
-            filter: `name:${filter} lifecycleState:ACTIVE`,
-            pageSize: 25
+            filter: `id:"${filter}" lifecycleState:ACTIVE`,
+            pageSize: ProjectsService.defaultPageSize,
           }
         })
         .then(response => response.result ? response.result.projects : [])
         .catch(response => this.handleError(response));
-      }
-    });
-  }
-
-  getGenomicsEnabled(projectNumber: string): Promise<void> {
-    return this.getIamPolicy(projectNumber).then(result => {
-      if (result && result.bindings) {
-        for (let binding of result.bindings) {
-          if (binding.role && binding.role == "roles/genomics.serviceAgent") {
-            return;
-          }
-        }
-      }
-      throw {
-        status: 403,
-        title: "Permission Denied",
-        message: "Need genomics.operations.create permission for this project.",
       }
     });
   }

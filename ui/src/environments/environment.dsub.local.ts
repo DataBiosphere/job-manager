@@ -7,4 +7,5 @@ export const environment = {
   requiresAuth: false,
   scope: '',
   additionalColumns: dsubAdditionalColumns,
+  entryPoint: 'jobs',
 };
