@@ -42,7 +42,7 @@ export class ProjectsService {
           }
         })
         .then(response => {
-          let exhaustive: boolean = response.result.nextPageToken === undefined;
+          let exhaustive = !response.result.nextPageToken;
           return {
             results: response.result ? response.result.projects : [],
             exhaustive: exhaustive,

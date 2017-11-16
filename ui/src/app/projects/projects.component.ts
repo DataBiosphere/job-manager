@@ -36,7 +36,7 @@ export class ProjectsComponent implements OnInit {
   projectsControl: FormControl;
   projectsObservable: Observable<any[]>;
   projects: any[];
-  viewJobsDisabled = true;
+  viewJobsEnabled = true;
 
   constructor(
     private readonly authService: AuthService,
@@ -75,19 +75,18 @@ export class ProjectsComponent implements OnInit {
 
   updateProjects(filter: string) {
     filter = filter ? filter + '*' : '.*';
-    this.viewJobsDisabled = false;
+    this.viewJobsEnabled = true;
     this.projectsObservable = Observable.fromPromise(
       this.projectsService.listProjects(filter)
         .then(listView => {
           this.projects = listView.results ? listView.results : [];
           // If the currently entered string is a valid project ID, hide the
           // autocomplete menu so that the user can click the button
-          this.viewJobsDisabled = !this.validProject(this.projectsControl.value)
-            && listView.exhaustive;
-          return this.viewJobsDisabled || this.projects.length > 1 ?
-            this.projects.map(project => project.projectId) : [];
-        })
-      .catch(response => this.handleError(response))
+          this.viewJobsEnabled = this.validProject(this.projectsControl.value)
+            || !listView.exhaustive;
+          return !this.viewJobsEnabled || this.projects.length > 1 ?
+            this.projects.map(project => project.projectId) : [];})
+        .catch(response => this.handleError(response))
     );
   }
 

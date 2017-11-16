@@ -51,14 +51,11 @@ export class JobListResolver implements Resolve<JobStream> {
                                   route.queryParams['parentId']);
     return jobStream
         .loadAtLeast(JobListResolver.initialBackendPageSize)
-        .then(resp => {
-          return jobStream;
-    })
-    .catch(error => {
-      // TODO(bryancrampton): Handle the client-facing error here after
-      // redirecting to projects page
-      this.router.navigate([environment.entryPoint]);
-      return null;
-    });
+        .then(resp => jobStream)
+        .catch(error => {
+          // TODO(bryancrampton): Handle the client-facing error here after
+          // redirecting to projects page
+          this.router.navigate([environment.entryPoint]);
+          return null});
   }
 }
