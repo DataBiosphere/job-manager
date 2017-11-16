@@ -30,7 +30,7 @@ describe('ResourceUtils', () => {
 
   it('should get file name from resource URL', async(() => {
     let utils = new ResourceUtils();
-    expect(utils.formatValue('gs://test-bucket/input.txt'))
+    expect(utils.getResourceFileName('gs://test-bucket/input.txt'))
       .toEqual('input.txt');
   }));
 

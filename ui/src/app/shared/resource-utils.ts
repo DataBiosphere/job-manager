@@ -32,7 +32,7 @@ export class ResourceUtils {
   }
 
   // Parse file name from gs link
-  public formatValue(value: string): string {
+  public getResourceFileName(value: string): string {
     let parts = this.validateGcsURLGetParts(value);
     let formattedValue = value;
     if (parts) {

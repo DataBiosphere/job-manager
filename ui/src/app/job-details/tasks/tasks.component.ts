@@ -45,7 +45,6 @@ export class TaskDetailsComponent extends ResourceUtils implements OnInit, OnCha
   getStatusUrl(status: JobStatus): string {
     return JobStatusImage[status];
   }
-
 }
 
 /** Simple database with an observable list of jobs to be subscribed to by the
