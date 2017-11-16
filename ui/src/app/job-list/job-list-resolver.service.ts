@@ -53,9 +53,8 @@ export class JobListResolver implements Resolve<JobStream> {
         .loadAtLeast(JobListResolver.initialBackendPageSize)
         .then(resp => jobStream)
         .catch(error => {
-          // TODO(bryancrampton): Handle the client-facing error here after
-          // redirecting to projects page
           this.router.navigate([environment.entryPoint]);
-          return null});
+          return Promise.reject(error);
+        });
   }
 }

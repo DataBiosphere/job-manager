@@ -16,7 +16,7 @@ import {
   MdSnackBar,
   MdSnackBarConfig
 } from '@angular/material'
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/map';
@@ -39,10 +39,9 @@ export class ProjectsComponent implements OnInit {
   viewJobsEnabled = true;
 
   constructor(
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
     private readonly authService: AuthService,
     private readonly projectsService: ProjectsService,
+    private readonly router: Router,
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MdSnackBar) {}
 
@@ -93,6 +92,6 @@ export class ProjectsComponent implements OnInit {
 
   navigateJobs() {
     let extras = {queryParams: {parentId: this.projectsControl.value}}
-    this.router.navigate(['jobs'], extras)
+    this.router.navigate(['jobs'], extras).catch(error => this.handleError(error))
   }
 }
