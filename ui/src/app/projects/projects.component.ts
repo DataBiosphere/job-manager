@@ -16,7 +16,7 @@ import {
   MdSnackBar,
   MdSnackBarConfig
 } from '@angular/material'
-import {Router} from '@angular/router';
+import {Router, NavigationError} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/map';
@@ -61,6 +61,12 @@ export class ProjectsComponent implements OnInit {
     this.projectsControl.valueChanges
       .debounceTime(100)
       .subscribe(filter => this.updateProjects(filter));
+    // Handle navigation errors raised in JobListResolver
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationError) {
+        this.handleError(event.error);
+      }
+    });
   }
 
   handleError(error: any) {
@@ -92,6 +98,6 @@ export class ProjectsComponent implements OnInit {
 
   navigateJobs() {
     let extras = {queryParams: {parentId: this.projectsControl.value}}
-    this.router.navigate(['jobs'], extras).catch(error => this.handleError(error))
+    this.router.navigate(['jobs'], extras);
   }
 }
