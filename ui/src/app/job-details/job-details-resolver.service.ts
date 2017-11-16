@@ -18,14 +18,9 @@ export class JobDetailsResolver implements Resolve<JobMetadataResponse> {
   resolve(route: ActivatedRouteSnapshot,
           state: RouterStateSnapshot): Promise<JobMetadataResponse> {
     return this.jobMonitorService.getJob(route.params['id'])
-      .then(response => {
-        return response;
-      })
       .catch(error => {
-        // TODO(bryancrampton): Handle the client-facing error here and redirect
-        // back to the correct jobs page (with parentId)
-        this.router.navigate(['/jobs']);
-        return null;
+        this.router.navigate(['jobs']);
+        return Promise.reject(error);
       });
   }
 }
