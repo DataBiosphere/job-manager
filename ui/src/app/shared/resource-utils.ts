@@ -3,23 +3,23 @@
  */
 
 export class ResourceUtils {
-  browserPrefix: string = "https://console.cloud.google.com/storage/browser/";
-  storagePrefix: string = "https://storage.cloud.google.com/";
+  static browserPrefix: string = "https://console.cloud.google.com/storage/browser/";
+  static storagePrefix: string = "https://storage.cloud.google.com/";
 
-  public getResourceBrowserURL(uri: string): string {
-    let parts = this.validateGcsURLGetParts(uri);
+  public static getResourceBrowserURL(uri: string): string {
+    let parts = ResourceUtils.validateGcsURLGetParts(uri);
     // This excludes the object from the link to show the enclosing directory.
     // This is valid with wildcard glob (bucket/path/*) and directories
     // (bucket/path/dir/) as well, the * or empty string will be trimmed.
-    return parts ? this.browserPrefix + parts.slice(2,-1).join("/") : undefined;
+    return parts ? ResourceUtils.browserPrefix + parts.slice(2,-1).join("/") : undefined;
   }
 
-  public getResourceURL(uri: string): string {
-    let parts = this.validateGcsURLGetParts(uri);
-    return parts ? this.storagePrefix + parts.slice(2).join("/") : undefined;
+  public static getResourceURL(uri: string): string {
+    let parts = ResourceUtils.validateGcsURLGetParts(uri);
+    return parts ? ResourceUtils.storagePrefix + parts.slice(2).join("/") : undefined;
   }
 
-  private validateGcsURLGetParts(url: string): string[] {
+  private static validateGcsURLGetParts(url: string): string[] {
     if (typeof(url) !== 'string') {
       return;
     }
@@ -32,8 +32,8 @@ export class ResourceUtils {
   }
 
   // Parse file name from gs link
-  public getResourceFileName(value: string): string {
-    let parts = this.validateGcsURLGetParts(value);
+  public static getResourceFileName(value: string): string {
+    let parts = ResourceUtils.validateGcsURLGetParts(value);
     let formattedValue = value;
     if (parts) {
       // display the file name instead of the full resourceURL

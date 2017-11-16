@@ -19,7 +19,7 @@ import {TaskMetadata} from '../../shared/model/TaskMetadata';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css'],
 })
-export class TaskDetailsComponent extends ResourceUtils implements OnInit, OnChanges {
+export class TaskDetailsComponent implements OnInit, OnChanges {
   @Input() tasks: TaskMetadata[] = [];
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
@@ -32,6 +32,7 @@ export class TaskDetailsComponent extends ResourceUtils implements OnInit, OnCha
     'stdout',
     'stderr'
   ];
+  ResourceUtils = ResourceUtils;
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);

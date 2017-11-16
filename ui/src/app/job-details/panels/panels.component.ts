@@ -16,7 +16,7 @@ import {ResourceUtils} from '../../shared/resource-utils';
   styleUrls: ['./panels.component.css'],
 })
 
-export class JobPanelsComponent extends ResourceUtils implements OnChanges {
+export class JobPanelsComponent implements OnChanges {
   @Input() job: JobMetadataResponse;
   inputs: Array<String>;
   logs: Array<String>;
@@ -25,6 +25,7 @@ export class JobPanelsComponent extends ResourceUtils implements OnChanges {
   outputs: Array<String>;
   labels: Array<String>;
   tasks: TaskMetadata[];
+  ResourceUtils = ResourceUtils;
 
   ngOnChanges(changes: SimpleChanges) {
     this.job = changes.job.currentValue;
@@ -45,15 +46,15 @@ export class JobPanelsComponent extends ResourceUtils implements OnChanges {
   }
 
   getInputResourceURL(key: string): string {
-    return this.getResourceBrowserURL(this.job.inputs[key]);
+    return ResourceUtils.getResourceBrowserURL(this.job.inputs[key]);
   }
 
   getLogResourceURL(key: string): string {
-    return this.getResourceURL(this.job.logs[key]);
+    return ResourceUtils.getResourceURL(this.job.logs[key]);
   }
 
   getOutputResourceURL(key: string): string {
-    return this.getResourceBrowserURL(this.job.outputs[key]);
+    return ResourceUtils.getResourceBrowserURL(this.job.outputs[key]);
   }
 
   getUserId() {
