@@ -33,7 +33,7 @@ export class AuthService {
   constructor() {
     if (environment.requiresAuth) {
       this.initAuthPromise = new Promise<void>( (resolve, reject) => {
-        gapi.load('auth2', {
+        gapi.load('client:auth2', {
           callback: () => this.initAuth().then(() => resolve()),
           onerror: () => reject(),
         });

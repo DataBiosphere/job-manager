@@ -35,13 +35,11 @@ export class JobListComponent implements OnInit {
     private readonly jobMonitorService: JobMonitorService,
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MdSnackBar,
-  ) {
-    this.jobStream = new JobStream(jobMonitorService, StatusGroup.Active);
-    this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.maybeNavigateForStatus(this.currentStatusGroup());
+    this.jobStream = this.route.snapshot.data['stream'];
+    this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
   }
 
   private currentStatusGroup(): StatusGroup {
@@ -68,10 +66,7 @@ export class JobListComponent implements OnInit {
   }
 
   public maybeNavigateForStatus(statusGroup: StatusGroup): void {
-    let statusParam = statusGroup;
-    if (statusParam === StatusGroup.Active) {
-      statusParam = null;
-    }
+    let statusParam = statusGroup === StatusGroup.Active ? null : statusGroup;
     this.router.navigate([], {
       queryParams: {
         parentId: this.route.snapshot.queryParams['parentId'],

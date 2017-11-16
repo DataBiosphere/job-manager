@@ -67,9 +67,9 @@ export class JobMonitorService {
 
   private handleError(response: any): Promise<any> {
     return Promise.reject({
-      "status": response["status"],
-      "title": this.getErrorTitle(response),
-      "message": this.getErrorDetail(response),
+      status: response["status"],
+      title: this.getErrorTitle(response),
+      message: this.getErrorDetail(response),
     });
   }
 

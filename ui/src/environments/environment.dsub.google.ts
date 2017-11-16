@@ -6,6 +6,7 @@ export const environment = {
   clientId: '738242158346-l0vdrjp6sdlg61ni5fm26m7nu75gql51.apps.googleusercontent.com',
   production: false,
   requiresAuth: true,
-  scope: 'https://www.googleapis.com/auth/genomics',
-  additionalColumns: dsubAdditionalColumns
+  scope: 'https://www.googleapis.com/auth/genomics https://www.googleapis.com/auth/cloud-platform.read-only',
+  additionalColumns: dsubAdditionalColumns,
+  entryPoint: 'projects',
 };

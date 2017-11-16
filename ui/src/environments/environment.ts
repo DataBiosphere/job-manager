@@ -10,4 +10,5 @@ export const environment = {
   requiresAuth: false,
   scope: '',
   additionalColumns: null,
+  entryPoint: 'jobs',
 };
