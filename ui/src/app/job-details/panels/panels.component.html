@@ -4,7 +4,7 @@
       <p class="job-id">Job ID: <b>{{ job.id }}</b></p>
       <a *ngIf="getUserId()" class="text-info">Submitted by: <b>{{ getUserId() }}</b></a>
       <span *ngFor="let l of labels">
-        <span class="text-info">{{ l + ': ' + job.labels[l] }}</span>
+        <p class="text-info">{{ l + ': ' + job.labels[l] }}</p>
       </span>
   </div>
 
