@@ -1,5 +1,5 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Injectable} from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 
 import {environment} from '../../environments/environment';
 
@@ -30,7 +30,7 @@ export class AuthService {
     }
   }
 
-  constructor() {
+  constructor(private zone: NgZone) {
     if (environment.requiresAuth) {
       this.initAuthPromise = new Promise<void>( (resolve, reject) => {
         gapi.load('client:auth2', {
@@ -43,8 +43,10 @@ export class AuthService {
         // Update the current user to any subscribers and resolve the promise
         this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
         // Start listening for updates to the current user
-        gapi.auth2.getAuthInstance().currentUser.listen( (user) => this.updateUser(user));
-      });
+        gapi.auth2.getAuthInstance().currentUser.listen( (user) => {
+          this.zone.run(() => this.updateUser(user));
+        });
+      })
     }
   }
 
@@ -58,6 +60,10 @@ export class AuthService {
   }
 
   public signIn(): Promise<any> {
-    return gapi.auth2.getAuthInstance().signIn();
+    return new Promise<void>( (resolve, reject) => {
+      gapi.auth2.getAuthInstance().signIn()
+        .then(user => resolve(user))
+        .catch(error => reject(error))
+    });
   }
 }
