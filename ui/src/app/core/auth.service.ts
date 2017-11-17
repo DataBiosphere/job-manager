@@ -44,6 +44,10 @@ export class AuthService {
         this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
         // Start listening for updates to the current user
         gapi.auth2.getAuthInstance().currentUser.listen( (user) => {
+          // gapi executes callbacks outside of the Angular zone. To ensure that
+          // UI changes occur correctly, explicitly run all subscriptions to
+          // authentication state within the Angular zone so that components
+          // keep change detection and do not break.
           this.zone.run(() => this.updateUser(user));
         });
       })
