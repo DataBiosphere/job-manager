@@ -2,6 +2,7 @@ import connexion
 from datetime import datetime
 from dateutil.tz import tzlocal
 from dsub.providers import google, local, stub
+from dsub.lib import resources
 from flask import current_app, request
 from oauth2client.client import AccessTokenCredentials, AccessTokenCredentialsError
 from werkzeug.exceptions import BadRequest, Unauthorized, NotImplemented
@@ -142,7 +143,9 @@ def _get_provider(parent_id=None, auth_token=None):
             'The Local provider does not support the `{}` field .'.format(
                 'authToken' if auth_token else 'parentId'))
     elif _provider_type() == dsub_client.ProviderType.LOCAL:
-        return local.LocalJobProvider()
+        # TODO(https://github.com/googlegenomics/dsub/issues/93): Remove
+        # resources parameter and import
+        return local.LocalJobProvider(resources)
     elif _provider_type() == dsub_client.ProviderType.STUB:
         return stub.StubJobProvider()
 

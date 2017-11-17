@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 from dsub.providers import local
+from dsub.lib import resources
 import operator
 import os
 import shutil
@@ -23,7 +24,9 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
     def setUpClass(cls):
         super(TestJobsControllerLocal, cls).setUpClass()
         cls.testing_bucket = 'gs://bvdp-jmui-testing/local'
-        cls.provider = local.LocalJobProvider()
+        # TODO(https://github.com/googlegenomics/dsub/issues/93): Remove
+        # resources parameter and import
+        cls.provider = local.LocalJobProvider(resources)
 
     def setUp(self):
         self.dsub_local_dir = tempfile.mkdtemp()
