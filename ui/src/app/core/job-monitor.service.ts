@@ -28,7 +28,7 @@ export class JobMonitorService {
       metadata.end = new Date(metadata.end);
     }
     if (metadata.tasks) {
-      metadata.tasks.forEach(function(t) {
+      metadata.tasks.forEach((t) => {
         if (t.start) {
           t.start = new Date(t.start);
         }

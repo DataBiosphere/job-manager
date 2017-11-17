@@ -29,4 +29,11 @@ describe('ResourceUtils', () => {
       .toEqual('input.txt');
   }));
 
+  it('should return resource URL if path is bucket or folder', async(() => {
+    expect(ResourceUtils.getResourceFileName('gs://test-bucket'))
+      .toEqual('gs://test-bucket');
+    expect(ResourceUtils.getResourceFileName('gs://test-bucket/not/root/'))
+      .toEqual('gs://test-bucket/not/root/');
+  }));
+
 });

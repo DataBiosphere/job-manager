@@ -66,10 +66,10 @@ describe('TaskDetailsComponent', () => {
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.mat-column-name'))[1].nativeElement.textContent)
       .toEqual(task.name);
-    expect(de.query(By.css('.task-status')).attributes['ng-reflect-message'])
+    expect(de.query(By.css('.task-status-tooltip')).attributes['ng-reflect-message'])
       .toContain('Failed');
     expect(de.queryAll(By.css('.mat-column-startTime'))[1].nativeElement.textContent)
-      .toEqual('Nov 14 · 1:00 PM');
+      .toContain('1:00 PM');
     expect(de.queryAll(By.css('.mat-column-duration'))[1].nativeElement.textContent)
       .toEqual('0h 15m');
     expect(de.queryAll(By.css('.mat-column-attempts'))[1].nativeElement.textContent)

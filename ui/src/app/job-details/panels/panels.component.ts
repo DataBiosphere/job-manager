@@ -15,7 +15,6 @@ import {ResourceUtils} from '../../shared/resource-utils';
   templateUrl: './panels.component.html',
   styleUrls: ['./panels.component.css'],
 })
-
 export class JobPanelsComponent implements OnChanges {
   @Input() job: JobMetadataResponse;
   inputs: Array<String>;
@@ -55,10 +54,6 @@ export class JobPanelsComponent implements OnChanges {
 
   getOutputResourceURL(key: string): string {
     return ResourceUtils.getResourceBrowserURL(this.job.outputs[key]);
-  }
-
-  getUserId() {
-    return this.job.labels ? this.job.labels['user-id'] : "";
   }
 
   showInputsButton(): boolean {
