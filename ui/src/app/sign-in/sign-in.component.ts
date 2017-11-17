@@ -33,6 +33,7 @@ export class SignInComponent implements OnInit {
     let message = `An error has occurred during sign in: ${error["error"]}`;
     this.errorBar.open(message, 'Dismiss', {
       viewContainerRef: this.viewContainer,
+      duration: 3000,
     });
   }
 }
