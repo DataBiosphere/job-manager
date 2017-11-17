@@ -1,4 +1,6 @@
 import connexion
+import datetime
+from dateutil.tz import tzlocal
 from dsub.commands import dsub
 from dsub.lib import job_util, param_util
 import flask
@@ -165,7 +167,7 @@ class BaseTestCases:
                 '/jobs/{}/abort'.format(job_id), method='POST')
             self.assert_status(resp, 200)
 
-        def wait_for_job_status(self, job_id, status, poll_interval=5):
+        def wait_for_job_status(self, job_id, status, poll_interval=1):
             has_status = False
             job = None
             remaining = self.wait_timeout
@@ -297,14 +299,54 @@ class BaseTestCases:
             no_label_job = self.start_job('echo NO_LABEL', name='nolabeljob')
             no_label_job_id = self.get_api_job_id(no_label_job)
 
-            # TODO(https://github.com/googlegenomics/dsub/issues/82) remove
-            # waiting for running which shouldn't be needed
-            self.wait_for_job_status(label_job_id, ApiStatus.RUNNING)
-            self.wait_for_job_status(other_label_job_id, ApiStatus.RUNNING)
-            self.wait_for_job_status(no_label_job_id, ApiStatus.RUNNING)
-
             self.assert_query_matches(
                 QueryJobsRequest(labels=labels), [label_job])
             self.assert_query_matches(
                 QueryJobsRequest(labels={'overlap_key': 'overlap_value'}),
                 [label_job, other_label_job])
+
+        def test_query_jobs_by_start(self):
+            first_date = datetime.datetime.now()
+            first_job = self.start_job('echo FINISHED')
+            time.sleep(1)
+            second_date = datetime.datetime.now()
+            second_job = self.start_job('echo FINISHED')
+            time.sleep(1)
+            third_date = datetime.datetime.now()
+            third_job = self.start_job('echo FINISHED')
+            self.assert_query_matches(
+                QueryJobsRequest(start=first_date),
+                [first_job, second_job, third_job])
+            self.assert_query_matches(
+                QueryJobsRequest(start=second_date), [second_job, third_job])
+            self.assert_query_matches(
+                QueryJobsRequest(start=third_date), [third_job])
+
+        def test_query_jobs_by_end(self):
+            first_date = datetime.datetime.now()
+            first_job = self.start_job('sleep 5')
+            first_job_id = self.get_api_job_id(first_job)
+            self.wait_for_job_status(first_job_id, ApiStatus.SUCCEEDED)
+            second_date = datetime.datetime.now()
+            second_job = self.start_job('sleep 5')
+            second_job_id = self.get_api_job_id(second_job)
+            self.wait_for_job_status(second_job_id, ApiStatus.SUCCEEDED)
+            third_date = datetime.datetime.now()
+            third_job = self.start_job('sleep 5')
+            third_job_id = self.get_api_job_id(third_job)
+            self.assert_query_matches(
+                QueryJobsRequest(start=first_date, end=second_date),
+                [first_job])
+            self.assert_query_matches(
+                QueryJobsRequest(start=second_date, end=third_date),
+                [second_job])
+            self.assert_query_matches(
+                QueryJobsRequest(start=first_date, end=third_date),
+                [first_job, second_job])
+            self.assert_query_matches(
+                QueryJobsRequest(end=third_date), [first_job, second_job])
+            self.wait_for_job_status(third_job_id, ApiStatus.SUCCEEDED)
+            self.assert_query_matches(
+                QueryJobsRequest(
+                    start=first_date, end=datetime.datetime.now()),
+                [first_job, second_job, third_job])

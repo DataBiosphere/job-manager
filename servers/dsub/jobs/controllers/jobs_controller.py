@@ -87,11 +87,30 @@ def query_jobs(body):
     query = QueryJobsRequest.from_dict(body)
     if not query.page_size:
         query.page_size = _DEFAULT_PAGE_SIZE
+    if query.start:
+        query.start = query.start.replace(tzinfo=tzlocal())
+    if query.end:
+        query.end = query.end.replace(tzinfo=tzlocal())
     query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
     provider = _get_provider(query.parent_id, auth_token)
 
-    jobs, next_page_token = _client().query_jobs(provider, query)
-    results = [_query_result(j, query.parent_id) for j in jobs]
+    def get_results(query):
+        jobs, next_page_token = _client().query_jobs(provider, query)
+        results = [_query_result(j, query.parent_id) for j in jobs]
+        if query.end:
+            results = [
+                result for result in results
+                if result.end and (result.end if result.end.tzinfo else result.
+                                   end.replace(tzinfo=tzlocal())) < query.end
+            ]
+        return results, next_page_token
+
+    results, next_page_token = get_results(query)
+    if query.end:
+        while (len(results) == 0) and next_page_token:
+            query.page_token = next_page_token
+            results, next_page_token = get_results(query)
+
     return QueryJobsResponse(results=results, next_page_token=next_page_token)
 
 
