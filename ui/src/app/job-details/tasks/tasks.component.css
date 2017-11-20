@@ -43,3 +43,9 @@
 
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
+
+.log-item {
+  color: black;
+  cursor: pointer;
+  text-decoration: none;
+}

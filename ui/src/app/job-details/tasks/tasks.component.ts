@@ -11,6 +11,7 @@ import {Observable} from 'rxjs/Observable';
 
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusImage} from '../../shared/common';
+import {ResourceUtils} from '../../shared/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 
 @Component({
@@ -25,9 +26,11 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
   displayedColumns = [
     'name',
     'status',
-    'shard',
-    'label1',
-    'label2',
+    'startTime',
+    'duration',
+    'attempts',
+    'stdout',
+    'stderr'
   ];
 
   ngOnInit() {
@@ -41,6 +44,14 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   getStatusUrl(status: JobStatus): string {
     return JobStatusImage[status];
+  }
+
+  getResourceUrl(url: string): string {
+    return ResourceUtils.getResourceURL(url);
+  }
+
+  getResourceFileName(url: string): string {
+    return ResourceUtils.getResourceFileName(url);
   }
 }
 

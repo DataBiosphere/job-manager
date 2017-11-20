@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 
 import {ShortDateTimePipe} from "./short-date-time.pipe";
 import {ErrorMessageFormatterPipe} from "./error-message-formatter.pipe";
+import {DurationPipe} from "./duration.pipe";
 
 @NgModule({
   imports: [
@@ -11,11 +12,13 @@ import {ErrorMessageFormatterPipe} from "./error-message-formatter.pipe";
   declarations: [
     ShortDateTimePipe,
     ErrorMessageFormatterPipe,
+    DurationPipe
   ],
   providers: [],
   exports: [
     ShortDateTimePipe,
     ErrorMessageFormatterPipe,
+    DurationPipe
   ],
 })
 export class SharedModule {}

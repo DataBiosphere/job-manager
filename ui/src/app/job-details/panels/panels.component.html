@@ -2,7 +2,9 @@
   <div>
       <p class="header">{{ job.name }}</p>
       <p class="job-id">Job ID: <b>{{ job.id }}</b></p>
-      <a class = "text-info">Submitted by: <b>{{ getUserId() }}</b></a>
+      <span *ngFor="let l of labels">
+        <p class="text-info">{{ l + ': ' + job.labels[l] }}</p>
+      </span>
   </div>
 
   <md-card>
@@ -15,7 +17,10 @@
         </ng-container>
       </b></p>
       <p id="submitted" *ngIf="job.submission">Submitted {{ job.submission | jmShortDateTime }}</p>
-      <p id="started" *ngIf="job.start">Started {{ job.start | jmShortDateTime }} {{ getDuration() }}</p>
+      <p id="started" *ngIf="job.start">
+        Started {{ job.start | jmShortDateTime }}
+        ({{ job.submission | jmDuration: job.end }})
+      </p>
       <p id="ended" *ngIf="job.end">Ended {{ job.end | jmShortDateTime }}</p>
     </md-card-content>
   </md-card>
@@ -28,9 +33,9 @@
           View
         </button>
       </p>
-      <md-menu #inputsMenu="mdMenu">
+      <md-menu #inputsMenu="mdMenu" class="wide-menu">
         <a md-menu-item *ngFor="let i of inputs" href="{{ getInputResourceURL(i) }}">
-          <span>{{ i }}</span>
+          <span> {{ getInputResourceFileName(i) }}</span>
         </a>
       </md-menu>
 
@@ -40,9 +45,9 @@
           View
         </button>
       </p>
-      <md-menu #outputsMenu="mdMenu">
+      <md-menu #outputsMenu="mdMenu" class="wide-menu">
         <a md-menu-item *ngFor="let o of outputs" href="{{ getOutputResourceURL(o) }}">
-          <span>{{ o }}</span>
+          <span>{{ getOutputResourceFileName(o) }}</span>
         </a>
       </md-menu>
 

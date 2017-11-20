@@ -27,6 +27,17 @@ export class JobMonitorService {
     if (metadata.end) {
       metadata.end = new Date(metadata.end);
     }
+    if (metadata.tasks) {
+      metadata.tasks.forEach((t) => {
+        if (t.start) {
+          t.start = new Date(t.start);
+        }
+        if (t.end) {
+          t.end = new Date(t.end);
+        }
+        return t;
+      });
+    }
     return metadata;
   }
 
