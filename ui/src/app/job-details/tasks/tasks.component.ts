@@ -32,7 +32,6 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     'stdout',
     'stderr'
   ];
-  ResourceUtils = ResourceUtils;
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
@@ -45,6 +44,14 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   getStatusUrl(status: JobStatus): string {
     return JobStatusImage[status];
+  }
+
+  getResourceUrl(url: string): string {
+    return ResourceUtils.getResourceURL(url);
+  }
+
+  getResourceFileName(url: string): string {
+    return ResourceUtils.getResourceFileName(url);
   }
 }
 

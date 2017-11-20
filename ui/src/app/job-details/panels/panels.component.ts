@@ -24,7 +24,6 @@ export class JobPanelsComponent implements OnChanges {
   outputs: Array<String>;
   labels: Array<String>;
   tasks: TaskMetadata[];
-  ResourceUtils = ResourceUtils;
 
   ngOnChanges(changes: SimpleChanges) {
     this.job = changes.job.currentValue;
@@ -54,6 +53,14 @@ export class JobPanelsComponent implements OnChanges {
 
   getOutputResourceURL(key: string): string {
     return ResourceUtils.getResourceBrowserURL(this.job.outputs[key]);
+  }
+
+  getInputResourceFileName(key: string): string {
+    return key + ': ' + ResourceUtils.getResourceFileName(this.job.inputs[key]);
+  }
+
+  getOutputResourceFileName(key: string): string {
+    return key + ': ' + ResourceUtils.getResourceFileName(this.job.outputs[key]);
   }
 
   showInputsButton(): boolean {
