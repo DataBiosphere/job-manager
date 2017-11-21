@@ -15,14 +15,14 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: detox
+          key: tox
       - run:
           command: |
             virtualenv venv
             source venv/bin/activate
-            pip install detox
+            pip install tox
       - save_cache:
-          key: detox
+          key: tox
           paths:
             - "venv"
 
@@ -32,14 +32,14 @@ jobs:
           # docker-in-docker issues. Google fails due to lack of auth.
           command: |
             source venv/bin/activate
-            detox -c ./servers/dsub -- \
+            tox -c ./servers/dsub -- \
               --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle \
               --exclude-test=jobs.test.test_jobs_controller_local.TestJobsControllerLocal
 
       - run:
           command: |
             source venv/bin/activate
-            detox -c ./servers/cromwell
+            tox -c ./servers/cromwell
 
       - store_artifacts:
           path: test-reports
