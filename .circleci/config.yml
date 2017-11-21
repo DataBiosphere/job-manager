@@ -14,16 +14,31 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: tox
+          key: venv
       - run:
           command: |
             virtualenv venv
             source venv/bin/activate
-            pip install tox
+            pip install tox yapf
       - save_cache:
-          key: tox
+          key: venv
           paths:
             - "venv"
+      - run:
+          name: Run yapf linter
+          command: |
+            set +e
+            python_files_command="git diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904 --cached --name-only | grep '\.py$' | grep -v 'servers/[^\/]*/jobs/models' | grep -v 'setup.py'"
+            python_files=$(eval $python_files_command)
+            yapf_out=$(eval yapf -d $python_files || :)
+            if [ -z "$yapf_out" ]; then
+              echo "Passed yapf linter!"
+              exit 0
+            else
+              echo "Failed yapf linter, please run:"
+              echo "yapf -i \$($python_files_command)"
+              exit 1
+            fi
 
       # TODO(calbach): Cache the tox venvs per https://discuss.circleci.com/t/cached-venv-in-tox/1499.
       - run:
