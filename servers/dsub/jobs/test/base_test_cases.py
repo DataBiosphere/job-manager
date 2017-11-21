@@ -306,5 +306,6 @@ class BaseTestCases:
             self.assert_query_matches(
                 QueryJobsRequest(labels=labels), [label_job])
             self.assert_query_matches(
-                QueryJobsRequest(labels={'overlap_key': 'overlap_value'}),
-                [label_job, other_label_job])
+                QueryJobsRequest(labels={
+                    'overlap_key': 'overlap_value'
+                }), [label_job, other_label_job])

@@ -78,15 +78,11 @@ class TestJobsController(BaseTestCase):
         status = 'Succeeded'
         timestamp = '2017-11-08T05:06:41.424Z'
         response_timestamp = '2017-11-08T05:06:41.424000Z'
-        inputs = {
-            'test.inputs': 'gs://project-bucket/test/inputs.txt'
-        }
+        inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
         outputs = {
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
         }
-        labels = {
-            'cromwell-workflow-id': 'cromwell-12345'
-        }
+        labels = {'cromwell-workflow-id': 'cromwell-12345'}
         job_id = 'operations/abcde'
         std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
         std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
@@ -96,9 +92,12 @@ class TestJobsController(BaseTestCase):
         def _request_callback(request, context):
             context.status_code = 200
             return {
-                'workflowName': workflow_name,
-                'id': workflow_id,
-                'status': status,
+                'workflowName':
+                workflow_name,
+                'id':
+                workflow_id,
+                'status':
+                status,
                 'calls': {
                     'test.analysis': [{
                         'jobId': job_id,
@@ -112,12 +111,18 @@ class TestJobsController(BaseTestCase):
                         'attempt': attempts
                     }]
                 },
-                'inputs': inputs,
-                'labels': labels,
-                'outputs': outputs,
-                'submission': timestamp,
-                'end': timestamp,
-                'start': timestamp,
+                'inputs':
+                inputs,
+                'labels':
+                labels,
+                'outputs':
+                outputs,
+                'submission':
+                timestamp,
+                'end':
+                timestamp,
+                'start':
+                timestamp,
                 'failures': [{
                     'causedBy': [],
                     'message': 'Task test.analysis failed'
@@ -132,15 +137,24 @@ class TestJobsController(BaseTestCase):
         self.assertStatus(response, 200)
         response_data = json.loads(response.data)
         expected_data = {
-            'name': workflow_name,
-            'id': workflow_id,
-            'status': status,
-            "submission": response_timestamp,
-            "start": response_timestamp,
-            "end": response_timestamp,
-            'inputs': jobs_controller.update_key_names(inputs),
-            'outputs': jobs_controller.update_key_names(outputs),
-            'labels': labels,
+            'name':
+            workflow_name,
+            'id':
+            workflow_id,
+            'status':
+            status,
+            "submission":
+            response_timestamp,
+            "start":
+            response_timestamp,
+            "end":
+            response_timestamp,
+            'inputs':
+            jobs_controller.update_key_names(inputs),
+            'outputs':
+            jobs_controller.update_key_names(outputs),
+            'labels':
+            labels,
             "failures": [{
                 'failure': 'Task test.analysis failed'
             }],
@@ -166,10 +180,7 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback(request, context):
             context.status_code = 400
-            return {
-                "status": "fail",
-                "message": error_message
-            }
+            return {"status": "fail", "message": error_message}
 
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
@@ -186,10 +197,7 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback(request, context):
             context.status_code = 404
-            return {
-                "status": "fail",
-                "message": error_message
-            }
+            return {"status": "fail", "message": error_message}
 
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
@@ -206,10 +214,7 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback(request, context):
             context.status_code = 500
-            return {
-                "status": "error",
-                "message": error_message
-            }
+            return {"status": "error", "message": error_message}
 
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)

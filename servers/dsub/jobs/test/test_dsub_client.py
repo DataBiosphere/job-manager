@@ -125,8 +125,8 @@ class TestDSubClient(unittest.TestCase):
 
     def test_abort_job(self):
         # TODO(https://github.com/googlegenomics/dsub/issues/65) remove mock
-        self.PROVIDER.delete_jobs = mock.MagicMock(return_value=(self.OPS[0:1],
-                                                                 []))
+        self.PROVIDER.delete_jobs = mock.MagicMock(
+            return_value=(self.OPS[0:1], []))
         self.CLIENT.abort_job(self.PROVIDER, 'job-1', 'task-1')
         self.PROVIDER.delete_jobs.assert_called_with(None, ['job-1'],
                                                      ['task-1'], None, None)
@@ -175,7 +175,8 @@ class TestDSubClient(unittest.TestCase):
             self._filter_empty_fields(failed_tasks), [self.OPS[1]])
 
     PAGE_TEST_PARAMS = [('page size {}'.format(i), i)
-                        for i in range(1, len(OPS) + 1)]
+                        for i in range(1,
+                                       len(OPS) + 1)]
 
     @parameterized.expand(PAGE_TEST_PARAMS + [
         ('page size large', 99999, 1),
@@ -211,7 +212,8 @@ class TestDSubClient(unittest.TestCase):
                 page_token=base64.urlsafe_b64encode(
                     json.dumps({
                         'fox': 'mccloud'
-                    }))), ),
+                    }))),
+        ),
         (
             'good JSON, bad value type',
             QueryJobsRequest(
@@ -219,14 +221,16 @@ class TestDSubClient(unittest.TestCase):
                 page_token=base64.urlsafe_b64encode(
                     json.dumps({
                         'of': 'not a number'
-                    }))), ),
+                    }))),
+        ),
         (
             'good JSON, negative value',
             QueryJobsRequest(
                 page_size=1,
                 page_token=base64.urlsafe_b64encode(json.dumps({
                     'of': -33
-                }))), ),
+                }))),
+        ),
     ])
     def test_query_jobs_bad_inputs(self, _, req):
         with self.assertRaises(ValueError):

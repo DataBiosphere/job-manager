@@ -176,8 +176,8 @@ class DSubClient:
             # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
             # provider-specific error translation down into dstat.
             if e.resp.status == requests.codes.not_found:
-                raise NotFound(
-                    'Project "{}" not found'.format(query.parent_id))
+                raise NotFound('Project "{}" not found'.format(
+                    query.parent_id))
             elif e.resp.status == requests.codes.forbidden:
                 raise Forbidden('Permission denied for project "{}"'.format(
                     query.parent_id))
