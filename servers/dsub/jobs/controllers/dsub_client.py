@@ -1,4 +1,6 @@
 import base64
+import datetime
+from dateutil.tz import tzutc
 import connexion
 import json
 import numbers
@@ -143,9 +145,6 @@ class DSubClient:
         """
         dstat_params = self._query_parameters(query)
 
-        # TODO(bryancrampton): support 'end_time' query parameter.
-        # Eventually, the pipelines API and dsub should support this query .
-
         # TODO(https://github.com/googlegenomics/dsub/issues/69): Move this
         # logic into dsub.
         statuses = dstat_params['statuses']
@@ -164,6 +163,9 @@ class DSubClient:
 
         jobs = []
         try:
+            # Note, for performance reasons dstat uses the `start` query
+            # parameter as `create-time` since that is natively supported by
+            # dsub. Eventually we may switch it to correctly use `start-time`
             jobs = dstat.dstat_job_producer(
                 provider=provider,
                 status_list=statuses,
@@ -204,12 +206,17 @@ class DSubClient:
 
     def _query_parameters(self, query):
         dstat_params = {
-            'create_time': query.start,
-            'end_time': query.end,
+            'create_time': None,
             'job_name_list': [query.name] if query.name else None,
             'statuses': None,
             'label_list': None
         }
+
+        if query.start:
+            epoch = datetime.datetime.utcfromtimestamp(0).replace(
+                tzinfo=tzutc())
+            dstat_params['create_time'] = int(
+                (query.start - epoch).total_seconds())
 
         if query.statuses:
             status_set = set(
