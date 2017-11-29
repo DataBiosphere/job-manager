@@ -91,11 +91,11 @@ def get_job(id):
 
     # A job_id and task_id define a unique job (should only be one)
     if len(jobs) > 1:
-        raise BadRequest(
-            'Found more than one job with ID {}:{}'.format(job_id, task_id))
+        raise BadRequest('Found more than one job with ID {}:{}'.format(
+            job_id, task_id))
     elif len(jobs) == 0:
-        raise NotFound(
-            'Could not find any jobs with ID {}:{}'.format(job_id, task_id))
+        raise NotFound('Could not find any jobs with ID {}:{}'.format(
+            job_id, task_id))
     return _metadata_response(id, jobs[0])
 
 
@@ -113,7 +113,7 @@ def query_jobs(body):
     if not query.page_size:
         query.page_size = _DEFAULT_PAGE_SIZE
     elif query.page_size < 0:
-        raise BadRequest("The page_size query parameter must be non-negative.")
+        raise BadRequest("The pageSize query parameter must be non-negative.")
     query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
     provider = providers.get_provider(_provider_type(), query.parent_id,
                                       _auth_token())
@@ -147,8 +147,8 @@ def query_jobs(body):
         if e.resp.status == requests.codes.not_found:
             raise NotFound('Project "{}" not found'.format(query.parent_id))
         elif e.resp.status == requests.codes.forbidden:
-            raise Forbidden(
-                'Permission denied for project "{}"'.format(query.parent_id))
+            raise Forbidden('Permission denied for project "{}"'.format(
+                query.parent_id))
         raise InternalServerError("Unexpected failure querying dsub jobs")
 
     # This pagination strategy is very inefficient and brittle. Paginating
