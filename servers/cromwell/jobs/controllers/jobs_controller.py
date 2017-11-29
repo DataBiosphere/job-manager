@@ -10,6 +10,8 @@ from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
+from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
+from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 
 CROMWELL_DONE_STATUS = 'Done'
 API_SUCCESS_STATUS = 'Succeeded'
@@ -42,7 +44,18 @@ def update_job_labels(id, body):
 
     :rtype: UpdateJobLabelsResponse
     """
-    return 'update job labels'
+    payload = UpdateJobLabelsRequest.from_dict(body).labels
+    url = '{cromwell_url}/{id}/labels'.format(
+        cromwell_url=_get_base_url(), id=id)
+    response = requests.patch(url, json=payload, auth=_get_user_auth())
+    result = response.json()
+
+    if response.status_code == InternalServerError.code:
+        raise InternalServerError(result.get('message'))
+    elif response.status_code == BadRequest.code:
+        raise BadRequest(result.get('message'))
+
+    return UpdateJobLabelsResponse(labels=result.get('labels'))
 
 
 def get_job(id):
