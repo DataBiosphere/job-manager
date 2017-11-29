@@ -10,7 +10,7 @@ def api_to_dsub(query):
             query: An API query request
 
         Returns:
-            dict: Key value paris of query parameters, formatted for dstat
+            dict: Key value pairs of query parameters, formatted for dstat
     """
 
     dstat_params = {

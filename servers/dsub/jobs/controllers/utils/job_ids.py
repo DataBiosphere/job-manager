@@ -31,8 +31,6 @@ def api_to_dsub(api_id, provider_type):
         elif len(id_split) == 3:
             project, job, task = id_split
         else:
-            import pdb
-            pdb.set_trace()
             raise BadRequest('Job ID format for google provider is: ' +
                              '<project-id>:<job-id>[:<task-id>]?')
     else:

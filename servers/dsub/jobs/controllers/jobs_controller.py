@@ -112,6 +112,8 @@ def query_jobs(body):
     query = QueryJobsRequest.from_dict(body)
     if not query.page_size:
         query.page_size = _DEFAULT_PAGE_SIZE
+    elif query.page_size < 0:
+        raise BadRequest("The page_size query parameter must be non-negative.")
     query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
     provider = providers.get_provider(_provider_type(), query.parent_id,
                                       _auth_token())
@@ -126,7 +128,7 @@ def query_jobs(body):
     # in a subsequent page.
     max_tasks = query.page_size + 1
     if query.page_token:
-        offset = page_tokens.decode_jobs_token(query.page_token)
+        offset = page_tokens.decode(query.page_token)
         max_tasks += offset
 
     jobs = []
@@ -164,7 +166,7 @@ def query_jobs(body):
     next_offset = offset + query.page_size
     if len(jobs) > next_offset:
         jobs = jobs[offset:next_offset]
-        next_page_token = page_tokens.encode_jobs_token(next_offset)
+        next_page_token = page_tokens.encode(next_offset)
     elif len(jobs) == next_offset:
         jobs = jobs[offset:]
 

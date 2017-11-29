@@ -3,7 +3,7 @@ import json
 import numbers
 
 
-def encode_jobs_token(offset):
+def encode(offset):
     """Encode the jobs pagination token.
 
     We implement the pagination token via base64-encoded JSON s.t. tokens are
@@ -23,7 +23,7 @@ def encode_jobs_token(offset):
     return base64.urlsafe_b64encode(s).rstrip('=')
 
 
-def decode_jobs_token(token):
+def decode(token):
     """Decode the jobs pagination token.
 
     Args:
