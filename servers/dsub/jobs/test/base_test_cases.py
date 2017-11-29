@@ -214,8 +214,7 @@ class BaseTestCases:
 
         def test_get_succeeded_job(self):
             inputs = {
-                'INPUT_KEY': '{}/inputs/test-input'.format(
-                    self.testing_root)
+                'INPUT_KEY': '{}/inputs/test-input'.format(self.testing_root)
             }
             outputs = {
                 'OUTPUT_KEY': '{}/outputs/test-output'.format(
