@@ -6,42 +6,34 @@ version: 2
 jobs:
   # TODO(calbach): Add linting tests.
   build:
-    # TODO(calbach): Get an image with nodejs/npm for UI test/lint.
-    docker:
-      - image: circleci/python:2.7
+    machine:
+      image: circleci/classic:latest
 
     working_directory: ~/job-monitor
 
     steps:
       - checkout
-      - restore_cache:
-          key: tox
       - run:
+          name: Install tox and yapf
           command: |
-            virtualenv venv
-            source venv/bin/activate
-            pip install tox
-      - save_cache:
-          key: tox
-          paths:
-            - "venv"
-
+            pip install tox yapf
+      - run:
+          name: Lint python code with yapf
+          command: |
+            sh ./scripts/yapf_lint.sh
       # TODO(calbach): Cache the tox venvs per https://discuss.circleci.com/t/cached-venv-in-tox/1499.
       - run:
-          # TODO(calbach): Re-enable these tests. Local fails due to
-          # docker-in-docker issues. Google fails due to lack of auth.
+          # TODO(calbach): Re-enable Google tests, fails due to lack of auth.
+          name: Run dsub server tests
           command: |
-            source venv/bin/activate
             tox -c ./servers/dsub -- \
-              --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle \
-              --exclude-test=jobs.test.test_jobs_controller_local.TestJobsControllerLocal
+              --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle
 
       - run:
+          name: Run cromwell server tests
           command: |
-            source venv/bin/activate
             tox -c ./servers/cromwell
 
       - store_artifacts:
           path: test-reports
           destination: test-reports
-

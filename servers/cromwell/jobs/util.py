@@ -129,9 +129,7 @@ def _deserialize_list(data, boxed_type):
     :return: deserialized list.
     :rtype: list
     """
-    return [_deserialize(sub_data, boxed_type)
-            for sub_data in data]
-
+    return [_deserialize(sub_data, boxed_type) for sub_data in data]
 
 
 def _deserialize_dict(data, boxed_type):
@@ -145,5 +143,4 @@ def _deserialize_dict(data, boxed_type):
     :return: deserialized dict.
     :rtype: dict
     """
-    return {k: _deserialize(v, boxed_type)
-            for k, v in iteritems(data)}
+    return {k: _deserialize(v, boxed_type) for k, v in iteritems(data)}

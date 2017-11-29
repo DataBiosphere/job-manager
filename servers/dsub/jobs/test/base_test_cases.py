@@ -30,7 +30,7 @@ class BaseTestCases:
     class JobsControllerTestCase(BaseTestCase):
         @classmethod
         def setUpClass(cls):
-            cls.testing_bucket = None
+            cls.testing_root = None
             cls.testing_project = None
             cls.provider = None
             cls.wait_timeout = 30
@@ -214,20 +214,19 @@ class BaseTestCases:
 
         def test_get_succeeded_job(self):
             inputs = {
-                'INPUT_KEY':
-                '{}/inputs/test-input'.format(self.testing_bucket)
+                'INPUT_KEY': '{}/inputs/test-input'.format(self.testing_root)
             }
             outputs = {
-                'OUTPUT_KEY':
-                '{}/outputs/test-output'.format(self.testing_bucket)
+                'OUTPUT_KEY': '{}/outputs/test-output'.format(
+                    self.testing_root)
             }
             started = self.start_job(
                 'echo -n >${OUTPUT_KEY}',
                 labels={'label': 'the_label_value'},
                 inputs=inputs,
-                outputs=outputs,
-                wait=True)
+                outputs=outputs)
             api_job_id = self.get_api_job_id(started)
+            self.wait_for_job_status(api_job_id, ApiStatus.SUCCEEDED)
             # Get job and validate that the metadata is accurate
             job = self.must_get_job(api_job_id)
             self.assertEqual(job.id, api_job_id)
@@ -306,5 +305,6 @@ class BaseTestCases:
             self.assert_query_matches(
                 QueryJobsRequest(labels=labels), [label_job])
             self.assert_query_matches(
-                QueryJobsRequest(labels={'overlap_key': 'overlap_value'}),
-                [label_job, other_label_job])
+                QueryJobsRequest(labels={
+                    'overlap_key': 'overlap_value'
+                }), [label_job, other_label_job])

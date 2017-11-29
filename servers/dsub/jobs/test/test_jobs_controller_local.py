@@ -23,21 +23,20 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
     @classmethod
     def setUpClass(cls):
         super(TestJobsControllerLocal, cls).setUpClass()
-        cls.testing_bucket = 'gs://bvdp-jmui-testing/local'
         # TODO(https://github.com/googlegenomics/dsub/issues/93): Remove
         # resources parameter and import
         cls.provider = local.LocalJobProvider(resources)
 
     def setUp(self):
-        self.dsub_local_dir = tempfile.mkdtemp()
+        self.testing_root = tempfile.mkdtemp()
         # Set env variable read by dsub to store files for the local provider
-        tempfile.tempdir = self.dsub_local_dir
+        tempfile.tempdir = self.testing_root
         # Create logging directory
-        self.log_path = '{}/logging'.format(self.dsub_local_dir)
+        self.log_path = '{}/logging'.format(self.testing_root)
         os.mkdir(self.log_path)
 
     def tearDown(self):
-        shutil.rmtree(self.dsub_local_dir)
+        shutil.rmtree(self.testing_root)
         tempfile.tempdir = None
 
     def create_app(self):
@@ -54,6 +53,15 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
         if has_status and status == ApiStatus.RUNNING:
             return job.labels['status-detail'] != PROCESS_NOT_FOUND_MESSAGE
         return has_status
+
+    def test_get_succeeded_job(self):
+        inputs_dir = '{}/inputs'.format(self.testing_root)
+        outputs_dir = '{}/outputs'.format(self.testing_root)
+        os.mkdir(inputs_dir)
+        os.mkdir(outputs_dir)
+        input_file_path = '{}/test-input'.format(inputs_dir)
+        os.mknod(input_file_path)
+        super(TestJobsControllerLocal, self).test_get_succeeded_job()
 
 
 if __name__ == '__main__':
