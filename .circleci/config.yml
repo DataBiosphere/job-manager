@@ -13,44 +13,25 @@ jobs:
 
     steps:
       - checkout
-      - restore_cache:
-          key: venv
       - run:
+          name: Install tox and yapf
           command: |
-            virtualenv venv
-            source venv/bin/activate
             pip install tox yapf
-      - save_cache:
-          key: venv
-          paths:
-            - "venv"
       - run:
-          name: Run yapf linter
+          name: Lint python code with yapf
           command: |
-            set +e
-            python_files_command="git diff 4b825dc642cb6eb9a060e54bf8d69288fbee4904 --cached --name-only | grep '\.py$' | grep -v 'servers/[^\/]*/jobs/models' | grep -v 'setup.py'"
-            python_files=$(eval $python_files_command)
-            yapf_out=$(eval yapf -d $python_files || :)
-            if [ -z "$yapf_out" ]; then
-              echo "Passed yapf linter!"
-              exit 0
-            else
-              echo "Failed yapf linter, please run:"
-              echo "yapf -i \$($python_files_command)"
-              exit 1
-            fi
-
+            sh ./scripts/yapf_lint.sh
       # TODO(calbach): Cache the tox venvs per https://discuss.circleci.com/t/cached-venv-in-tox/1499.
       - run:
           # TODO(calbach): Re-enable Google tests, fails due to lack of auth.
+          name: Run dsub server tests
           command: |
-            source venv/bin/activate
             tox -c ./servers/dsub -- \
               --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle
 
       - run:
+          name: Run cromwell server tests
           command: |
-            source venv/bin/activate
             tox -c ./servers/cromwell
 
       - store_artifacts:
