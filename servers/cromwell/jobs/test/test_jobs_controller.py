@@ -2,8 +2,6 @@
 
 from __future__ import absolute_import
 
-import json
-import sys
 import requests_mock
 from flask import json
 from datetime import datetime
