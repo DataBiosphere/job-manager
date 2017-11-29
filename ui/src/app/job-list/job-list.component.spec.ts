@@ -1,5 +1,4 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
@@ -19,16 +18,11 @@ import {
 } from '@angular/material';
 import {RouterTestingModule} from '@angular/router/testing';
 
-import {JobListView} from "../shared/job-stream";
 import {JobListComponent} from "./job-list.component"
 import {JobsTableComponent} from "./table/table.component"
 import {JobMonitorService} from '../core/job-monitor.service';
-import {JobStatus} from '../shared/model/JobStatus';
 import {newDefaultMockJobMonitorService} from '../shared/mock-job-monitor.service';
-import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {SharedModule} from '../shared/shared.module';
-import {environment} from '../../environments/environment';
-import {dsubAdditionalColumns} from '../../environments/additional-columns.config';
 
 describe('JobListComponent', () => {
 
