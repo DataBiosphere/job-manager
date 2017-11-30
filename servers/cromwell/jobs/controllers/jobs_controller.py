@@ -1,7 +1,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 from flask import current_app
-from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
+from werkzeug.exceptions import BadRequest, NotFound, InternalServerError, MethodNotAllowed
 from datetime import datetime
 
 from jobs.models.query_jobs_result import QueryJobsResult
@@ -54,6 +54,8 @@ def update_job_labels(id, body):
         raise InternalServerError(result.get('message'))
     elif response.status_code == BadRequest.code:
         raise BadRequest(result.get('message'))
+    elif response.status_code == NotFound.code:
+        raise NotFound(result.get('message'))
 
     return UpdateJobLabelsResponse(labels=result.get('labels'))
 
