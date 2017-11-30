@@ -35,7 +35,7 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
         os.mkdir(self.log_path)
 
     def tearDown(self):
-        if os.environ.get('CIRCLECI') != 'true':
+        if os.environ.get('KEEP_TEST_DSUB_FILES') != 'true':
             shutil.rmtree(self.testing_root)
         tempfile.tempdir = None
 

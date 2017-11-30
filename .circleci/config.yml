@@ -7,6 +7,7 @@ jobs:
   build:
     environment:
       - NVM_DIR: /opt/circleci/.nvm
+      - KEEP_TEST_DSUB_FILES: true
     machine:
       image: circleci/classic:latest
 
@@ -26,6 +27,8 @@ jobs:
           command: |
             NVM_ACTIVATE="\n[ -s \"\$NVM_DIR/nvm.sh\" ] && \\. \"\$NVM_DIR/nvm.sh\""
             command printf "${NVM_ACTIVATE}" >> "$BASH_ENV"
+      # TODO(bryancrampton): Cache node_modules directory and potentially node
+      # 8.5.0 install
       - run:
           name: nvm install node and UI dependencies
           command: |
@@ -66,4 +69,4 @@ jobs:
 
       - store_artifacts:
           path: /tmp
-          destination: dsub-local-job-directories
+          destination: test-temp
