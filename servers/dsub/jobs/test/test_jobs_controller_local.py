@@ -35,7 +35,8 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
         os.mkdir(self.log_path)
 
     def tearDown(self):
-        shutil.rmtree(self.testing_root)
+        if os.environ.get('KEEP_TEST_DSUB_FILES') != 'true':
+            shutil.rmtree(self.testing_root)
         tempfile.tempdir = None
 
     def create_app(self):

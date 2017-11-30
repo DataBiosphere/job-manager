@@ -4,23 +4,51 @@
 #
 version: 2
 jobs:
-  # TODO(calbach): Add linting tests.
   build:
+    environment:
+      - NVM_DIR: /opt/circleci/.nvm
+      - KEEP_TEST_DSUB_FILES: true
     machine:
       image: circleci/classic:latest
 
     working_directory: ~/job-monitor
-
     steps:
+      # Download the relevant code
       - checkout
+
+      # Setup
       - run:
           name: Install tox and yapf
           command: |
             pip install tox yapf
       - run:
+          name: Add nvm to bash environment
+          # Adding this line to the BASH_ENV file enables use of nvm in all shells
+          command: |
+            NVM_ACTIVATE="\n[ -s \"\$NVM_DIR/nvm.sh\" ] && \\. \"\$NVM_DIR/nvm.sh\""
+            command printf "${NVM_ACTIVATE}" >> "$BASH_ENV"
+      # TODO(bryancrampton): Cache node_modules directory and potentially node
+      # 8.5.0 install
+      - run:
+          name: nvm install node and UI dependencies
+          command: |
+            nvm install 8.5.0
+            cd ui
+            npm install
+            npm install -g @angular/cli
+      # Linting
+      - run:
           name: Lint python code with yapf
           command: |
             sh ./scripts/yapf_lint.sh
+      - run:
+          name: Lint angular code with ng lint
+          command: |
+            nvm use 8.5.0
+            cd ui
+            ng lint --type-check
+
+      # Unit and Integration Tests
       # TODO(calbach): Cache the tox venvs per https://discuss.circleci.com/t/cached-venv-in-tox/1499.
       - run:
           # TODO(calbach): Re-enable Google tests, fails due to lack of auth.
@@ -28,12 +56,17 @@ jobs:
           command: |
             tox -c ./servers/dsub -- \
               --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle
-
       - run:
           name: Run cromwell server tests
           command: |
             tox -c ./servers/cromwell
+      - run:
+          name: Run UI unit tests
+          command: |
+            nvm use 8.5.0
+            cd ui
+            ng test --watch=false
 
       - store_artifacts:
-          path: test-reports
-          destination: test-reports
+          path: /tmp
+          destination: test-temp
