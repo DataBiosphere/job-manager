@@ -63,11 +63,6 @@ docker-compose up
 
 Navigate to http://localhost:4200?parentId=MY_CLOUD_PROJECT_ID.
 
-### Setup Lint Git Hook:
-```
-sudo pip install yapf
-ln -s -f ../../hooks/pre-commit .git/hooks/pre-commit
-```
 
 ### Updating the API using swagger-codegen
 
