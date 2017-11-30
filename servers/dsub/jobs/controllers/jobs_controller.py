@@ -1,13 +1,16 @@
+import apiclient
 import connexion
 from datetime import datetime
 from dateutil.tz import tzlocal
+from dsub.commands import ddel, dstat
 from dsub.providers import google, local, stub
 from dsub.lib import resources
 from flask import current_app, request
 from oauth2client.client import AccessTokenCredentials, AccessTokenCredentialsError
-from werkzeug.exceptions import BadRequest, Unauthorized, NotImplemented
+from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound, NotImplemented, PreconditionFailed, Unauthorized
 
-from jobs.controllers import dsub_client, job_ids, job_statuses
+from jobs.common import execute_redirect_stdout
+from jobs.controllers.utils import failures, job_ids, job_statuses, labels, logs, page_tokens, providers, query_parameters
 from jobs.models.failure_message import FailureMessage
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
@@ -26,10 +29,31 @@ def abort_job(id):
 
     Returns: None
     """
-    auth_token = _get_auth_token()
-    project_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
-    provider = _get_provider(project_id, auth_token)
-    _client().abort_job(provider, job_id, task_id)
+    proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
+    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
+    # If task-id is not specified, pass None instead of [None]
+    task_ids = {task_id} if task_id else None
+
+    # TODO(bryancrampton): Add flag to ddel to support deleting only
+    # 'singleton' tasks.
+    status = get_job(id).status
+
+    # TODO(https://github.com/googlegenomics/dsub/issues/81): Remove this
+    # provider-specific logic
+    if isinstance(provider, stub.StubJobProvider):
+        status = status[0]
+
+    if status != job_statuses.ApiStatus.RUNNING:
+        raise PreconditionFailed(
+            'Job already in terminal status `{}`'.format(status))
+
+    # TODO(https://github.com/googlegenomics/dsub/issues/92): Remove this
+    # hacky re-routing of stdout once dsub removes it from the python API
+    deleted = execute_redirect_stdout(lambda:
+        ddel.ddel_tasks(
+            provider=provider, job_ids={job_id}, task_ids=task_ids))
+    if len(deleted) != 1:
+        raise InternalServerError('Failed to abort dsub job')
 
 
 def update_job_labels(id, body):
@@ -54,23 +78,25 @@ def get_job(id):
     Returns:
         JobMetadataResponse: Response containing relevant metadata
     """
-    auth_token = _get_auth_token()
-    project_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
-    provider = _get_provider(project_id, auth_token)
-    job = _client().get_job(provider, job_id, task_id)
+    proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
+    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
 
-    return JobMetadataResponse(
-        id=id,
-        name=job['job-name'],
-        status=job_statuses.dsub_to_api(job),
-        submission=_parse_datetime(job['create-time']),
-        start=_parse_datetime(job.get('start-time')),
-        end=_parse_datetime(job['end-time']),
-        inputs=job['inputs'],
-        outputs=job['outputs'],
-        labels=_job_to_api_labels(job),
-        logs=_job_to_api_logs(job),
-        failures=_get_failures(job))
+    # dstat_job_producer returns a generator of lists of task dictionaries.
+    jobs = dstat.dstat_job_producer(
+        provider=provider,
+        statuses={'*'},
+        job_ids={job_id},
+        task_ids={task_id} if task_id else None,
+        full_output=True).next()
+
+    # A job_id and task_id define a unique job (should only be one)
+    if len(jobs) > 1:
+        raise BadRequest('Found more than one job with ID {}:{}'.format(
+            job_id, task_id))
+    elif len(jobs) == 0:
+        raise NotFound('Could not find any jobs with ID {}:{}'.format(
+            job_id, task_id))
+    return _metadata_response(id, jobs[0])
 
 
 def query_jobs(body):
@@ -83,107 +109,86 @@ def query_jobs(body):
     Returns:
         QueryJobsResponse: Response containing results from query
     """
-    auth_token = _get_auth_token()
     query = QueryJobsRequest.from_dict(body)
     if not query.page_size:
         query.page_size = _DEFAULT_PAGE_SIZE
+    elif query.page_size < 0:
+        raise BadRequest("The pageSize query parameter must be non-negative.")
     query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
-    provider = _get_provider(query.parent_id, auth_token)
+    provider = providers.get_provider(_provider_type(), query.parent_id,
+                                      _auth_token())
 
-    jobs, next_page_token = _client().query_jobs(provider, query)
+    dstat_params = query_parameters.api_to_dsub(query)
+
+    if query.page_size <= 0:
+        raise ValueError("The page_size parameter must be positive")
+
+    offset = 0
+    # Request one extra job to confirm whether there's more data to return
+    # in a subsequent page.
+    max_tasks = query.page_size + 1
+    if query.page_token:
+        offset = page_tokens.decode(query.page_token)
+        max_tasks += offset
+
+    jobs = []
+    try:
+        jobs = dstat.dstat_job_producer(
+            provider=provider,
+            statuses=dstat_params['statuses'],
+            create_time=dstat_params['create_time'],
+            job_names=dstat_params['job_names'],
+            labels=dstat_params['labels'],
+            full_output=True,
+            max_tasks=max_tasks).next()
+    except apiclient.errors.HttpError as e:
+        # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
+        # provider-specific error translation down into dstat.
+        if e.resp.status == requests.codes.not_found:
+            raise NotFound('Project "{}" not found'.format(query.parent_id))
+        elif e.resp.status == requests.codes.forbidden:
+            raise Forbidden('Permission denied for project "{}"'.format(
+                query.parent_id))
+        raise InternalServerError("Unexpected failure querying dsub jobs")
+
+    # This pagination strategy is very inefficient and brittle. Paginating
+    # the entire collection of jobs requires O(n^2 / p) work, where n is the
+    # number of jobs and p is the page size. This is a first pass
+    # implementation which allows for quick lookup of the first page of
+    # operations which is the expected common usage pattern for clients.
+    # The current approach also uses a numeric offset, which is brittle in
+    # that new jobs may be created/deleted mid-pagination, causing other
+    # elements to be duplicated or disappear in the overall pagination
+    # stream.
+    # TODO(calbach): Fix the above issues once pagination is supported in
+    # the dstat library.
+    next_page_token = None
+    next_offset = offset + query.page_size
+    if len(jobs) > next_offset:
+        jobs = jobs[offset:next_offset]
+        next_page_token = page_tokens.encode(next_offset)
+    elif len(jobs) == next_offset:
+        jobs = jobs[offset:]
+
     results = [_query_result(j, query.parent_id) for j in jobs]
     return QueryJobsResponse(results=results, next_page_token=next_page_token)
+
+
+def _auth_token():
+    auth_header = request.headers.get('Authentication')
+    if auth_header:
+        components = auth_header.split(' ')
+        if len(components) == 2 and components[0] == 'Bearer':
+            return components[1]
+    return None
 
 
 def _client():
     return current_app.config['CLIENT']
 
 
-def _get_auth_token():
-    auth_header = request.headers.get('Authentication')
-    if auth_header:
-        components = auth_header.split(' ')
-        if len(components) == 2 and components[0] == 'Bearer':
-            return components[1]
-
-    return None
-
-
-def _get_failures(job):
-    if (job['status'] == job_statuses.DsubStatus.FAILURE
-            and job['status-message'] and job['last-update']):
-        return [
-            FailureMessage(
-                failure=job['status-message'], timestamp=job['last-update'])
-        ]
-    return None
-
-
-def _get_google_provider(parent_id, auth_token):
-    if not parent_id:
-        raise BadRequest('Missing required field `parentId`.')
-    if not auth_token:
-        if _requires_auth():
-            raise BadRequest('Missing required field `authToken`.')
-        return google.GoogleJobProvider(False, False, parent_id)
-
-    try:
-        credentials = AccessTokenCredentials(auth_token, 'user-agent')
-        return google.GoogleJobProvider(
-            False, False, parent_id, credentials=credentials)
-    except AccessTokenCredentialsError as e:
-        raise Unauthorized('Invalid authentication token:{}.'.format(e))
-
-
-def _get_provider(parent_id=None, auth_token=None):
-    if _provider_type() == dsub_client.ProviderType.GOOGLE:
-        return _get_google_provider(parent_id, auth_token)
-    elif parent_id or auth_token:
-        raise BadRequest(
-            'The Local provider does not support the `{}` field .'.format(
-                'authToken' if auth_token else 'parentId'))
-    elif _provider_type() == dsub_client.ProviderType.LOCAL:
-        # TODO(https://github.com/googlegenomics/dsub/issues/93): Remove
-        # resources parameter and import
-        return local.LocalJobProvider(resources)
-    elif _provider_type() == dsub_client.ProviderType.STUB:
-        return stub.StubJobProvider()
-
-
-def _job_to_api_labels(job):
-    # Put any dsub specific information into the labels. These fields are
-    # candidates for the common jobs API
-    labels = job['labels'].copy() if job['labels'] else {}
-    if 'status-detail' in job:
-        labels['status-detail'] = job['status-detail']
-    if 'last-update' in job:
-        labels['last-update'] = job['last-update']
-    if 'user-id' in job:
-        labels['user-id'] = job['user-id']
-    return labels
-
-
-def _job_to_api_logs(job):
-    if job['logging'] and job['logging'].endswith('.log'):
-        base_log_path = job['logging'][:-4]
-        return {
-            'controller-log': '{}.log'.format(base_log_path),
-            'stderr': '{}-stderr.log'.format(base_log_path),
-            'stdout': '{}-stdout.log'.format(base_log_path),
-        }
-    return None
-
-
-def _parse_datetime(date):
-    return date if isinstance(date, datetime) else None
-
-
 def _provider_type():
     return current_app.config['PROVIDER_TYPE']
-
-
-def _requires_auth():
-    return current_app.config['REQUIRES_AUTH']
 
 
 def _query_result(job, project_id=None):
@@ -191,7 +196,22 @@ def _query_result(job, project_id=None):
         id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
         name=job['job-name'],
         status=job_statuses.dsub_to_api(job),
-        submission=_parse_datetime(job['create-time']),
-        start=_parse_datetime(job.get('start-time')),
-        end=_parse_datetime(job['end-time']),
-        labels=_job_to_api_labels(job))
+        submission=job['create-time'],
+        start=job.get('start-time'),
+        end=job['end-time'],
+        labels=labels.dsub_to_api(job))
+
+
+def _metadata_response(id, job):
+    return JobMetadataResponse(
+        id=id,
+        name=job['job-name'],
+        status=job_statuses.dsub_to_api(job),
+        submission=job['create-time'],
+        start=job.get('start-time'),
+        end=job['end-time'],
+        inputs=job['inputs'],
+        outputs=job['outputs'],
+        labels=labels.dsub_to_api(job),
+        logs=logs.dsub_to_api(job),
+        failures=failures.get_failures(job))

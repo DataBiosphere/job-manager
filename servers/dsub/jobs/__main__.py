@@ -6,7 +6,6 @@ import logging
 import os
 from flask_cors import CORS
 from .encoder import JSONEncoder
-from controllers.dsub_client import DSubClient
 
 
 def split_env_flag(name):
@@ -65,7 +64,6 @@ else:
 app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=False)
 app.app.config['PROVIDER_TYPE'] = args.provider_type
 app.app.config['REQUIRES_AUTH'] = bool(args.requires_auth)
-app.app.config['CLIENT'] = DSubClient()
 if args.allow_origins:
     prefix = args.path_prefix or ''
     CORS(

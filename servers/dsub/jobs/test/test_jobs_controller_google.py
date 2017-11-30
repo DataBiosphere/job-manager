@@ -6,8 +6,7 @@ import operator
 import unittest
 
 from jobs.test.base_test_cases import BaseTestCases
-from jobs.controllers.job_statuses import ApiStatus
-from jobs.controllers.dsub_client import DSubClient
+from jobs.controllers.utils.job_statuses import ApiStatus
 from jobs.models.query_jobs_request import QueryJobsRequest
 
 
@@ -34,7 +33,6 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
     def create_app(self):
         app = super(TestJobsControllerGoogle, self).create_app()
         app.config.update({
-            'CLIENT': DSubClient(),
             'PROVIDER_TYPE': 'google',
             'REQUIRES_AUTH': False,
         })

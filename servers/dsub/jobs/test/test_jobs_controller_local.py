@@ -10,8 +10,7 @@ import time
 import unittest
 
 from jobs.test.base_test_cases import BaseTestCases
-from jobs.controllers.job_statuses import ApiStatus
-from jobs.controllers.dsub_client import DSubClient
+from jobs.controllers.utils.job_statuses import ApiStatus
 from jobs.models.query_jobs_request import QueryJobsRequest
 
 PROCESS_NOT_FOUND_MESSAGE = 'Process not found yet'
@@ -42,7 +41,6 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
     def create_app(self):
         app = super(TestJobsControllerLocal, self).create_app()
         app.config.update({
-            'CLIENT': DSubClient(),
             'PROVIDER_TYPE': 'local',
             'REQUIRES_AUTH': False,
         })

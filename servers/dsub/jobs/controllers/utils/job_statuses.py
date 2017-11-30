@@ -40,14 +40,14 @@ DSUB_STATUS_MAP = {
 def dsub_to_api(job):
     """Map an API status to a dsub status
 
-      Args:
-          dsub_status (str): 'RUNNING', 'CANCELED', 'SUCCESS', or 'FAILURE'
+        Args:
+            dsub_status (str): 'RUNNING', 'CANCELED', 'SUCCESS', or 'FAILURE'
 
-      Returns:
-          str: api status 'Running', 'Aborted', 'Succeeded', or 'Failed'
+        Returns:
+            str: api status 'Running', 'Aborted', 'Succeeded', or 'Failed'
 
-      Raises:
-          BadRequest if the dsub_status is not valid
+        Raises:
+            BadRequest if the dsub_status is not valid
     """
     if job['status'] not in DSUB_STATUS_MAP:
         raise BadRequest('Unrecognized dsub status:{}'.format(dsub_status))
@@ -60,15 +60,15 @@ def dsub_to_api(job):
 def api_to_dsub(api_status):
     """Map a dsub status to an API status
 
-      Args:
-          api_status (str): 'Submitted', 'Running', 'Aborting', 'Aborted',
-                            'Succeeded', or 'Failed'
+        Args:
+            api_status (str): 'Submitted', 'Running', 'Aborting', 'Aborted',
+                'Succeeded', or 'Failed'
 
-      Returns:
-          str: dsub status 'RUNNING', 'CANCELED', 'SUCCESS', or 'FAILURE'
+        Returns:
+            str: dsub status 'RUNNING', 'CANCELED', 'SUCCESS', or 'FAILURE'
 
-      Raises:
-          BadRequest if the api_status is not valid
+        Raises:
+            BadRequest if the api_status is not valid
     """
     if api_status not in API_STATUS_MAP:
         raise BadRequest('Unrecognized api status:{}'.format(api_status))
