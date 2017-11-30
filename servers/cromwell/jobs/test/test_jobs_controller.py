@@ -59,7 +59,6 @@ class TestJobsController(BaseTestCase):
                 format(workflow_id)
             }
 
-        # mock cromwell response
         abort_url = self.base_url + '/{id}/abort'.format(id=workflow_id)
         mock_request.post(abort_url, json=_request_callback)
 
@@ -82,7 +81,6 @@ class TestJobsController(BaseTestCase):
                 "labels": {"test_label": "test_label_value"}
             }
 
-        # mock Cromwell response
         update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
         mock_request.patch(update_label_url, json=_request_callback)
 
@@ -108,7 +106,6 @@ class TestJobsController(BaseTestCase):
                 "message": error_message
             }
 
-        # mock Cromwell response
         update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
         mock_request.patch(update_label_url, json=_request_callback)
 
@@ -125,7 +122,7 @@ class TestJobsController(BaseTestCase):
     @requests_mock.mock()
     def test_update_job_labels_internal_server_error(self, mock_request):
         workflow_id = 'id'
-        error_message = "Unrecognized workflow ID: 12345678-aaaa-bbbb-cccc-dddddddddddd"
+        error_message = "Invalid workflow ID: test_invalid_workflow_id"
 
         def _request_callback(request, context):
             context.status_code = 500
@@ -134,7 +131,6 @@ class TestJobsController(BaseTestCase):
                 "message": error_message
             }
 
-        # mock Cromwell response
         update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
         mock_request.patch(update_label_url, json=_request_callback)
 
@@ -146,6 +142,34 @@ class TestJobsController(BaseTestCase):
             content_type='application/json'
         )
         self.assertStatus(response, 500)
+        self.assertEquals(json.loads(response.data)['detail'], error_message)
+
+    @requests_mock.mock()
+    def test_update_job_labels_not_found(self, mock_request):
+        """Note: This status code is not currently properly returned by the Cromwell actually the error 'Unrecognized
+            workflow ID' will return with a status code 500 now, the Cromwell team will address this issue in
+            the near future."""
+        workflow_id = 'id'
+        error_message = "Unrecognized workflow ID: 12345678-aaaa-bbbb-cccc-dddddddddddd"
+
+        def _request_callback(request, context):
+            context.status_code = 404
+            return {
+                "status": "error",
+                "message": error_message
+            }
+
+        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback)
+
+        payload = UpdateJobLabelsRequest(labels={"test_label": "test_label_value"})
+        response = self.client.open(
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertStatus(response, 404)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
     @requests_mock.mock()
@@ -318,7 +342,6 @@ class TestJobsController(BaseTestCase):
             context.status_code = 200
             return {'results': []}
 
-        # mock cromwell response
         query_url = self.base_url + '/query'
         mock_request.post(query_url, json=_request_callback)
 
