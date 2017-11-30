@@ -53,7 +53,7 @@ export class JobsTableComponent implements OnInit {
   ]);
 
   public statusGroup = StatusGroup;
-  public additionalColumns: LabelColumn[] = [];
+  public additionalColumns: string[] = [];
   public allSelected: boolean = false;
   public currentStatusGroup: StatusGroup;
   public selectedJobs: QueryJobsResult[] = [];
@@ -91,7 +91,7 @@ export class JobsTableComponent implements OnInit {
       this.additionalColumns = environment.additionalColumns;
     }
     for (let column of this.additionalColumns) {
-      this.displayedColumns.push(column.header);
+      this.displayedColumns.push(column);
     }
     this.paginator.page.subscribe((e) => this.onPage.emit(e));
     Observable.fromEvent(this.filter.nativeElement, 'keyup')

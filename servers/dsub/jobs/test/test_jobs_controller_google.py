@@ -6,8 +6,7 @@ import operator
 import unittest
 
 from jobs.test.base_test_cases import BaseTestCases
-from jobs.controllers.job_statuses import ApiStatus
-from jobs.controllers.dsub_client import DSubClient
+from jobs.controllers.utils.job_statuses import ApiStatus
 from jobs.models.query_jobs_request import QueryJobsRequest
 
 
@@ -17,14 +16,14 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
     @classmethod
     def setUpClass(cls):
         super(TestJobsControllerGoogle, cls).setUpClass()
-        cls.testing_bucket = 'gs://bvdp-jmui-testing/google'
+        cls.testing_root = 'gs://bvdp-jmui-testing/google'
         cls.testing_project = 'bvdp-jmui-testing'
         cls.provider = google.GoogleJobProvider(False, False,
                                                 cls.testing_project)
         cls.wait_timeout = 120
 
     def setUp(self):
-        self.log_path = '{}/logging'.format(self.testing_bucket)
+        self.log_path = '{}/logging'.format(self.testing_root)
         # Because all these tests are being run in the same project, add a
         # unique test_token to scope all jobs to this test
         self.test_token_label = {
@@ -34,7 +33,6 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
     def create_app(self):
         app = super(TestJobsControllerGoogle, self).create_app()
         app.config.update({
-            'CLIENT': DSubClient(),
             'PROVIDER_TYPE': 'google',
             'REQUIRES_AUTH': False,
         })

@@ -77,9 +77,9 @@
 
   <!-- Implementation-specific additional columns -->
   <ng-container *ngFor="let c of additionalColumns">
-    <ng-container mdColumnDef="{{ c.header }}">
-      <md-header-cell *mdHeaderCellDef>{{ c.header }}</md-header-cell>
-      <md-cell class="additional-column" *mdCellDef="let j">{{ getJobLabel(j, c.key) }}</md-cell>
+    <ng-container mdColumnDef="{{ c }}">
+      <md-header-cell *mdHeaderCellDef>{{ c }}</md-header-cell>
+      <md-cell class="additional-column" *mdCellDef="let j">{{ getJobLabel(j, c) }}</md-cell>
     </ng-container>
   </ng-container>
 

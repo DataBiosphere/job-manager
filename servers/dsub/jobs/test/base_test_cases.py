@@ -10,7 +10,7 @@ import string
 import time
 
 from jobs.common import execute_redirect_stdout
-from jobs.controllers.job_statuses import ApiStatus
+from jobs.controllers.utils.job_statuses import ApiStatus
 from jobs.encoder import JSONEncoder
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
@@ -30,7 +30,7 @@ class BaseTestCases:
     class JobsControllerTestCase(BaseTestCase):
         @classmethod
         def setUpClass(cls):
-            cls.testing_bucket = None
+            cls.testing_root = None
             cls.testing_project = None
             cls.provider = None
             cls.wait_timeout = 30
@@ -107,32 +107,33 @@ class BaseTestCases:
             resources = job_util.JobResources(
                 image=DOCKER_IMAGE, logging=logging, zones=['us-central1*'])
 
-            env_data = [param_util.EnvParam(k, v) for (k, v) in envs.items()]
-            label_data = [
-                param_util.LabelParam(k, v) for (k, v) in labels.items()
-            ]
+            env_data = {param_util.EnvParam(k, v) for (k, v) in envs.items()}
+            label_data = {
+                param_util.LabelParam(k, v)
+                for (k, v) in labels.items()
+            }
 
             # This is mostly an extraction dsubs argument parsing here:
             # https://github.com/googlegenomics/dsub/blob/master/dsub/lib/param_util.py#L720
             # Reworked it to handle dictionaries rather than a list of items
             # of the form 'key=val'
             input_file_param_util = param_util.InputFileParamUtil('input')
-            input_data = []
+            input_data = set()
             for (recursive, items) in ((False, inputs.items()),
                                        (True, inputs_recursive.items())):
                 for (name, value) in items:
                     name = input_file_param_util.get_variable_name(name)
-                    input_data.append(
+                    input_data.add(
                         input_file_param_util.make_param(
                             name, value, recursive))
 
             output_file_param_util = param_util.OutputFileParamUtil('output')
-            output_data = []
+            output_data = set()
             for (recursive, items) in ((False, outputs.items()),
                                        (True, outputs_recursive.items())):
                 for (name, value) in items:
                     name = output_file_param_util.get_variable_name(name)
-                    output_data.append(
+                    output_data.add(
                         output_file_param_util.make_param(
                             name, value, recursive))
 
@@ -214,20 +215,19 @@ class BaseTestCases:
 
         def test_get_succeeded_job(self):
             inputs = {
-                'INPUT_KEY':
-                '{}/inputs/test-input'.format(self.testing_bucket)
+                'INPUT_KEY': '{}/inputs/test-input'.format(self.testing_root)
             }
             outputs = {
-                'OUTPUT_KEY':
-                '{}/outputs/test-output'.format(self.testing_bucket)
+                'OUTPUT_KEY': '{}/outputs/test-output'.format(
+                    self.testing_root)
             }
             started = self.start_job(
                 'echo -n >${OUTPUT_KEY}',
                 labels={'label': 'the_label_value'},
                 inputs=inputs,
-                outputs=outputs,
-                wait=True)
+                outputs=outputs)
             api_job_id = self.get_api_job_id(started)
+            self.wait_for_job_status(api_job_id, ApiStatus.SUCCEEDED)
             # Get job and validate that the metadata is accurate
             job = self.must_get_job(api_job_id)
             self.assertEqual(job.id, api_job_id)
@@ -275,6 +275,14 @@ class BaseTestCases:
                 [succeeded_job])
             self.assert_query_matches(
                 QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [running_job])
+            self.assert_query_matches(
+                QueryJobsRequest(
+                    statuses=[ApiStatus.RUNNING, ApiStatus.SUCCEEDED]),
+                [succeeded_job, running_job])
+            self.assert_query_matches(
+                QueryJobsRequest(
+                    statuses=[ApiStatus.SUCCEEDED, ApiStatus.RUNNING]),
+                [succeeded_job, running_job])
 
         def test_query_jobs_by_label(self):
             labels = {
@@ -306,5 +314,6 @@ class BaseTestCases:
             self.assert_query_matches(
                 QueryJobsRequest(labels=labels), [label_job])
             self.assert_query_matches(
-                QueryJobsRequest(labels={'overlap_key': 'overlap_value'}),
-                [label_job, other_label_job])
+                QueryJobsRequest(labels={
+                    'overlap_key': 'overlap_value'
+                }), [label_job, other_label_job])

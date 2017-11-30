@@ -5,7 +5,6 @@ import logging
 
 
 class BaseTestCase(TestCase):
-
     def create_app(self):
         logging.getLogger('connexion.operation').setLevel('ERROR')
         app = connexion.App(__name__, specification_dir='../swagger/')

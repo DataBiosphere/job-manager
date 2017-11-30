@@ -1,23 +1,23 @@
-from dsub_client import DSubClient, ProviderType
+from providers import ProviderType
 from werkzeug.exceptions import BadRequest
 
 
 def api_to_dsub(api_id, provider_type):
     """Convert an API ID and provider type to dsub project, job, and task IDs
 
-      Args:
-          api_id (str): The API ID corresponding to a particular dsub task. 
-              Depending on the provider and semantics of the job, the ID can 
-              have one of four possible schemas described in comments below.
-          provider_type (ProviderType): The dsub provider currently being used.
-              Currently the options are google, local, or stub
-                
-      Returns:
-          (str, str, str): dsub project, job, task IDs respectively. The job ID
-              will never be None, but both project ID and task ID can be
-          
-      Raises:
-          BadRequest if the api_id format is invalid for the given provider
+        Args:
+            api_id (str): The API ID corresponding to a particular dsub task.
+                Depending on the provider and semantics of the job, the ID can
+                have one of four possible schemas described in comments below.
+            provider_type (ProviderType): The dsub provider currently being
+                used. Currently the options are google, local, or stub.
+
+        Returns:
+            (str, str, str): dsub project, job, task IDs respectively. The job
+                ID will never be None, but both project ID and task ID can be.
+
+        Raises:
+            BadRequest if the api_id format is invalid for the given provider
     """
     project, job, task = None, None, None
     id_split = api_id.split(":")
@@ -50,16 +50,16 @@ def api_to_dsub(api_id, provider_type):
 def dsub_to_api(proj_id, job_id, task_id):
     """Convert a dsub project, job, and task IDs to an API ID
 
-      Args:
-          proj_id (str): dsub Google cloud project ID (google provider only)
-          job_id (str): dsub job ID (all providers)
-          task_id (str): dsub task ID (if job was started with multiple tasks)
-                
-      Returns:
-          (str): API ID formed by composition of one or more of the inputs
-          
-      Raises:
-          BadRequest if no job_id is provided
+        Args:
+            proj_id (str): dsub Google cloud project ID (google provider only)
+            job_id (str): dsub job ID (all providers)
+            task_id (str): dsub task ID (if job was started with multiple tasks)
+
+        Returns:
+            (str): API ID formed by composition of one or more of the inputs
+
+        Raises:
+            BadRequest if no job_id is provided
     """
     if proj_id and job_id and task_id:
         return '{}:{}:{}'.format(proj_id, job_id, task_id)

@@ -1,5 +1,3 @@
-import {dsubAdditionalColumns} from './additional-columns.config';
-
 export const environment = {
   apiUrl: '/api/v1',
   // Project ID: google.com:bvdp-jmui
@@ -7,6 +5,6 @@ export const environment = {
   production: false,
   requiresAuth: true,
   scope: 'https://www.googleapis.com/auth/genomics https://www.googleapis.com/auth/cloudplatformprojects.readonly',
-  additionalColumns: dsubAdditionalColumns,
+  additionalColumns: ['user-id', 'status-detail'],
   entryPoint: 'projects',
 };
