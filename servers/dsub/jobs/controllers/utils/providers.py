@@ -2,6 +2,7 @@ from dsub.providers import google, local, stub
 from dsub.lib import resources
 from flask import current_app
 from werkzeug.exceptions import BadRequest, Unauthorized, NotImplemented
+from oauth2client.client import AccessTokenCredentials, AccessTokenCredentialsError
 
 from jobs.common import enum
 

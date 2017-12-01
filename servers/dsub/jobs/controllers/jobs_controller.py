@@ -6,7 +6,6 @@ from dsub.commands import ddel, dstat
 from dsub.providers import google, local, stub
 from dsub.lib import resources
 from flask import current_app, request
-from oauth2client.client import AccessTokenCredentials, AccessTokenCredentialsError
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound, NotImplemented, PreconditionFailed, Unauthorized
 
 from jobs.common import execute_redirect_stdout
