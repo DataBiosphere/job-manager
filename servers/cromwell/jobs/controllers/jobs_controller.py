@@ -1,7 +1,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
 from flask import current_app
-from werkzeug.exceptions import BadRequest, NotFound, InternalServerError, MethodNotAllowed
+from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
 from datetime import datetime
 
 from jobs.models.query_jobs_result import QueryJobsResult
@@ -57,8 +57,10 @@ def update_job_labels(id, body):
     elif response.status_code == NotFound.code:
         raise NotFound(result.get('message'))
 
-    # Follow API spec and provide consistency guarantees here
+    # Follow API spec
     all_labels = get_job(id).labels if get_job(id).labels is not None else {}
+
+    # Redundantly update all_labels with updated labels to provide consistency guarantees
     all_labels.update(result.get('labels'))
     return UpdateJobLabelsResponse(labels=all_labels)
 

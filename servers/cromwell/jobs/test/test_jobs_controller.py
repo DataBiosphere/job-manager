@@ -52,10 +52,8 @@ class TestJobsController(BaseTestCase):
         def _request_callback(request, context):
             context.status_code = 404
             return {
-                'status':
-                'error',
-                'message':
-                'Couldn\'t abort {} because no workflow with that ID is in progress'.
+                'status': 'error',
+                'message': 'Couldn\'t abort {} because no workflow with that ID is in progress'.
                 format(workflow_id)
             }
 
@@ -97,12 +95,9 @@ class TestJobsController(BaseTestCase):
         def _request_callback_get_job(request, context):
             context.status_code = 200
             return {
-                'workflowName':
-                workflow_name,
-                'id':
-                workflow_id,
-                'status':
-                status,
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
                 'calls': {
                     'test.analysis': [{
                         'jobId': job_id,
@@ -116,18 +111,12 @@ class TestJobsController(BaseTestCase):
                         'attempt': attempts
                     }]
                 },
-                'inputs':
-                inputs,
-                'labels':
-                labels,
-                'outputs':
-                outputs,
-                'submission':
-                timestamp,
-                'end':
-                timestamp,
-                'start':
-                timestamp,
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
                 'failures': [{
                     'causedBy': [],
                     'message': 'Task test.analysis failed'
@@ -185,12 +174,9 @@ class TestJobsController(BaseTestCase):
         def _request_callback_get_job(request, context):
             context.status_code = 200
             return {
-                'workflowName':
-                workflow_name,
-                'id':
-                workflow_id,
-                'status':
-                status,
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
                 'calls': {
                     'test.analysis': [{
                         'jobId': job_id,
@@ -204,18 +190,12 @@ class TestJobsController(BaseTestCase):
                         'attempt': attempts
                     }]
                 },
-                'inputs':
-                inputs,
-                'labels':
-                labels,
-                'outputs':
-                outputs,
-                'submission':
-                timestamp,
-                'end':
-                timestamp,
-                'start':
-                timestamp,
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
                 'failures': [{
                     'causedBy': [],
                     'message': 'Task test.analysis failed'
@@ -350,12 +330,9 @@ class TestJobsController(BaseTestCase):
         def _request_callback(request, context):
             context.status_code = 200
             return {
-                'workflowName':
-                workflow_name,
-                'id':
-                workflow_id,
-                'status':
-                status,
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
                 'calls': {
                     'test.analysis': [{
                         'jobId': job_id,
@@ -369,18 +346,12 @@ class TestJobsController(BaseTestCase):
                         'attempt': attempts
                     }]
                 },
-                'inputs':
-                inputs,
-                'labels':
-                labels,
-                'outputs':
-                outputs,
-                'submission':
-                timestamp,
-                'end':
-                timestamp,
-                'start':
-                timestamp,
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
                 'failures': [{
                     'causedBy': [],
                     'message': 'Task test.analysis failed'
@@ -395,24 +366,15 @@ class TestJobsController(BaseTestCase):
         self.assertStatus(response, 200)
         response_data = json.loads(response.data)
         expected_data = {
-            'name':
-            workflow_name,
-            'id':
-            workflow_id,
-            'status':
-            status,
-            'submission':
-            response_timestamp,
-            'start':
-            response_timestamp,
-            'end':
-            response_timestamp,
-            'inputs':
-            jobs_controller.update_key_names(inputs),
-            'outputs':
-            jobs_controller.update_key_names(outputs),
-            'labels':
-            labels,
+            'name': workflow_name,
+            'id': workflow_id,
+            'status': status,
+            'submission': response_timestamp,
+            'start': response_timestamp,
+            'end': response_timestamp,
+            'inputs': jobs_controller.update_key_names(inputs),
+            'outputs': jobs_controller.update_key_names(outputs),
+            'labels': labels,
             'failures': [{
                 'failure': 'Task test.analysis failed'
             }],
