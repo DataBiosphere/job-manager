@@ -52,8 +52,10 @@ class TestJobsController(BaseTestCase):
         def _request_callback(request, context):
             context.status_code = 404
             return {
-                'status': 'error',
-                'message': 'Couldn\'t abort {} because no workflow with that ID is in progress'.
+                'status':
+                'error',
+                'message':
+                'Couldn\'t abort {} because no workflow with that ID is in progress'.
                 format(workflow_id)
             }
 
@@ -121,7 +123,7 @@ class TestJobsController(BaseTestCase):
                     'causedBy': [],
                     'message': 'Task test.analysis failed'
                 }]
-            }
+            }  # yapf: disable
 
         update_label_url = self.base_url + '/{id}/labels'.format(
             id=workflow_id)
@@ -200,7 +202,7 @@ class TestJobsController(BaseTestCase):
                     'causedBy': [],
                     'message': 'Task test.analysis failed'
                 }]
-            }
+            }  # yapf: disable
 
         update_label_url = self.base_url + '/{id}/labels'.format(
             id=workflow_id)
@@ -356,7 +358,7 @@ class TestJobsController(BaseTestCase):
                     'causedBy': [],
                     'message': 'Task test.analysis failed'
                 }]
-            }
+            }  # yapf: disable
 
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
@@ -390,7 +392,7 @@ class TestJobsController(BaseTestCase):
                 'returnCode': return_code,
                 'attempts': attempts
             }]
-        }
+        }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)
 
     @requests_mock.mock()
