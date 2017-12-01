@@ -36,7 +36,7 @@ export class ProjectsComponent implements OnInit {
   projectsControl: FormControl;
   projectsObservable: Observable<any[]>;
   projects: any[];
-  viewJobsEnabled = true;
+  viewJobsEnabled = false;
 
   constructor(
     private readonly authService: AuthService,
