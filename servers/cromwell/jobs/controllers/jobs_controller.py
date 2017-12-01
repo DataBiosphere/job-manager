@@ -57,7 +57,10 @@ def update_job_labels(id, body):
     elif response.status_code == NotFound.code:
         raise NotFound(result.get('message'))
 
-    return UpdateJobLabelsResponse(labels=result.get('labels'))
+    # Follow API spec and provide consistency guarantees here
+    all_labels = get_job(id).labels if get_job(id).labels is not None else {}
+    all_labels.update(result.get('labels'))
+    return UpdateJobLabelsResponse(labels=all_labels)
 
 
 def get_job(id):
