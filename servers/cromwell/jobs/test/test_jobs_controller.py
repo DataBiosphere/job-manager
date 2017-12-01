@@ -92,19 +92,17 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback_labels(request, context):
             context.status_code = 200
-            return {
-                "labels": {"test_label": "test_label_value"}
-            }
+            return {"labels": {"test_label": "test_label_value"}}
 
         def _request_callback_get_job(request, context):
             context.status_code = 200
             return {
                 'workflowName':
-                    workflow_name,
+                workflow_name,
                 'id':
-                    workflow_id,
+                workflow_id,
                 'status':
-                    status,
+                status,
                 'calls': {
                     'test.analysis': [{
                         'jobId': job_id,
@@ -119,37 +117,44 @@ class TestJobsController(BaseTestCase):
                     }]
                 },
                 'inputs':
-                    inputs,
+                inputs,
                 'labels':
-                    labels,
+                labels,
                 'outputs':
-                    outputs,
+                outputs,
                 'submission':
-                    timestamp,
+                timestamp,
                 'end':
-                    timestamp,
+                timestamp,
                 'start':
-                    timestamp,
+                timestamp,
                 'failures': [{
                     'causedBy': [],
                     'message': 'Task test.analysis failed'
                 }]
             }
-        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
 
         mock_request.patch(update_label_url, json=_request_callback_labels)
         mock_request.get(cromwell_url, json=_request_callback_get_job)
 
-        payload = UpdateJobLabelsRequest(labels={"test_label": "test_label_value"})
+        payload = UpdateJobLabelsRequest(labels={
+            "test_label": "test_label_value"
+        })
         response = self.client.open(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
             method='POST',
             data=json.dumps(payload),
-            content_type='application/json'
-        )
+            content_type='application/json')
         self.assertStatus(response, 200)
-        self.assertEquals(response.json, {"labels": {"test_label": "test_label_value"}})
+        self.assertEquals(response.json, {
+            "labels": {
+                "test_label": "test_label_value"
+            }
+        })
 
     @requests_mock.mock()
     def test_update_job_labels_returns_all_labels(self, mock_request):
@@ -163,8 +168,10 @@ class TestJobsController(BaseTestCase):
         outputs = {
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
         }
-        labels = {"existing_test_label1": "existing_test_label_value1",
-                  "existing_test_label2": "existing_test_label_value2"}
+        labels = {
+            "existing_test_label1": "existing_test_label_value1",
+            "existing_test_label2": "existing_test_label_value2"
+        }
         job_id = 'operations/abcde'
         std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
         std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
@@ -173,19 +180,17 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback_labels(request, context):
             context.status_code = 200
-            return {
-                "labels": {"new_test_label": "new_test_label_value"}
-            }
+            return {"labels": {"new_test_label": "new_test_label_value"}}
 
         def _request_callback_get_job(request, context):
             context.status_code = 200
             return {
                 'workflowName':
-                    workflow_name,
+                workflow_name,
                 'id':
-                    workflow_id,
+                workflow_id,
                 'status':
-                    status,
+                status,
                 'calls': {
                     'test.analysis': [{
                         'jobId': job_id,
@@ -200,42 +205,46 @@ class TestJobsController(BaseTestCase):
                     }]
                 },
                 'inputs':
-                    inputs,
+                inputs,
                 'labels':
-                    labels,
+                labels,
                 'outputs':
-                    outputs,
+                outputs,
                 'submission':
-                    timestamp,
+                timestamp,
                 'end':
-                    timestamp,
+                timestamp,
                 'start':
-                    timestamp,
+                timestamp,
                 'failures': [{
                     'causedBy': [],
                     'message': 'Task test.analysis failed'
                 }]
             }
-        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.patch(update_label_url, json=_request_callback_labels)
         mock_request.get(cromwell_url, json=_request_callback_get_job)
 
-        payload = UpdateJobLabelsRequest(labels={"new_test_label": "new_test_label_value"})
+        payload = UpdateJobLabelsRequest(
+            labels={
+                "new_test_label": "new_test_label_value"
+            })
         response = self.client.open(
-
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
             method='POST',
             data=json.dumps(payload),
-            content_type='application/json'
-        )
+            content_type='application/json')
 
         expected_result = UpdateJobLabelsResponse.from_dict({
-            "labels": {"existing_test_label1": "existing_test_label_value1",
-                       "existing_test_label2": "existing_test_label_value2",
-                       "new_test_label": "new_test_label_value"}
+            "labels": {
+                "existing_test_label1": "existing_test_label_value1",
+                "existing_test_label2": "existing_test_label_value2",
+                "new_test_label": "new_test_label_value"
             }
-        )
+        })
 
         result = UpdateJobLabelsResponse.from_dict(response.json)
 
@@ -249,12 +258,10 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback(request, context):
             context.status_code = 400
-            return {
-                "status": "fail",
-                "message": error_message
-            }
+            return {"status": "fail", "message": error_message}
 
-        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
         mock_request.patch(update_label_url, json=_request_callback)
 
         payload = UpdateJobLabelsRequest(labels={"": "test_invalid_label"})
@@ -262,8 +269,7 @@ class TestJobsController(BaseTestCase):
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
             method='POST',
             data=json.dumps(payload),
-            content_type='application/json'
-        )
+            content_type='application/json')
         self.assertStatus(response, 400)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -274,21 +280,20 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback(request, context):
             context.status_code = 500
-            return {
-                "status": "error",
-                "message": error_message
-            }
+            return {"status": "error", "message": error_message}
 
-        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
         mock_request.patch(update_label_url, json=_request_callback)
 
-        payload = UpdateJobLabelsRequest(labels={"test_label": "test_label_value"})
+        payload = UpdateJobLabelsRequest(labels={
+            "test_label": "test_label_value"
+        })
         response = self.client.open(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
             method='POST',
             data=json.dumps(payload),
-            content_type='application/json'
-        )
+            content_type='application/json')
         self.assertStatus(response, 500)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -302,21 +307,20 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback(request, context):
             context.status_code = 404
-            return {
-                "status": "error",
-                "message": error_message
-            }
+            return {"status": "error", "message": error_message}
 
-        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
         mock_request.patch(update_label_url, json=_request_callback)
 
-        payload = UpdateJobLabelsRequest(labels={"test_label": "test_label_value"})
+        payload = UpdateJobLabelsRequest(labels={
+            "test_label": "test_label_value"
+        })
         response = self.client.open(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
             method='POST',
             data=json.dumps(payload),
-            content_type='application/json'
-        )
+            content_type='application/json')
         self.assertStatus(response, 404)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
