@@ -2,6 +2,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from flask import current_app
 from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
+from requests.exceptions import HTTPError
 from datetime import datetime
 
 from jobs.models.query_jobs_result import QueryJobsResult
@@ -48,17 +49,22 @@ def update_job_labels(id, body):
     url = '{cromwell_url}/{id}/labels'.format(
         cromwell_url=_get_base_url(), id=id)
     response = requests.patch(url, json=payload, auth=_get_user_auth())
-    result = response.json()
 
-    if response.status_code == InternalServerError.code:
-        raise InternalServerError(result.get('message'))
-    elif response.status_code == BadRequest.code:
-        raise BadRequest(result.get('message'))
-    elif response.status_code == NotFound.code:
-        raise NotFound(result.get('message'))
+    if not response.ok:
+        if response.status_code == InternalServerError.code:
+            raise InternalServerError(response.json().get('message'))
+        elif response.status_code == BadRequest.code:
+            raise BadRequest(response.json().get('message'))
+        elif response.status_code == NotFound.code:
+            raise NotFound(response.json().get('message'))
+        else:
+            _raise_http_exceptions(response)
 
     # Follow API spec
-    all_labels = get_job(id).labels if get_job(id).labels is not None else {}
+    result = response.json()
+    all_labels = get_job(id).labels
+    if not all_labels:
+        all_labels = {}
 
     # Redundantly update all_labels with updated labels to provide consistency guarantees
     all_labels.update(result.get('labels'))
@@ -214,3 +220,26 @@ def _get_base_url():
 def _get_user_auth():
     return HTTPBasicAuth(current_app.config['cromwell_user'],
                          current_app.config['cromwell_password'])
+
+
+def _raise_http_exceptions(response):
+    """Http error method, raise error if one occurred. Moved and refactored from the requests library."""
+    http_error_msg = ''
+
+    # Handle bytes response reasons in Cromwell, such as response 405
+    if isinstance(response.reason, bytes):
+        try:
+            reason = response.reason.decode('utf-8')
+        except UnicodeDecodeError:
+            reason = response.reason.decode('iso-8859-1')
+    else:
+        reason = response.reason
+
+    if 400 <= response.status_code < 500:
+        http_error_msg = u'{0} Client Error: {1} for url: {2}'.format(response.status_code, reason, response.url)
+
+    elif 500 <= response.status_code < 600:
+        http_error_msg = u'{0} Server Error: {1} for url: {2}'.format(response.status_code, reason, response.url)
+
+    if http_error_msg:
+        raise HTTPError(http_error_msg, response=response)
