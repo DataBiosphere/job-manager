@@ -307,7 +307,8 @@ class TestJobsController(BaseTestCase):
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
     @requests_mock.mock()
-    def test_update_job_labels_undefined_unsupported_media_type_exception(self, mock_request):
+    def test_update_job_labels_undefined_unsupported_media_type_exception(
+            self, mock_request):
         workflow_id = 'id'
         error_message = b'Invalid Content-type (), expected JSON data'
 
@@ -319,9 +320,7 @@ class TestJobsController(BaseTestCase):
             id=workflow_id)
         mock_request.patch(update_label_url, json=_request_callback)
 
-        payload = UpdateJobLabelsRequest(labels={
-            "test_label": None
-        })
+        payload = UpdateJobLabelsRequest(labels={"test_label": None})
         response = self.client.open(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
             headers={'Accept': 'application/json'},

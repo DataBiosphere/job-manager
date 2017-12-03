@@ -236,10 +236,12 @@ def _raise_http_exceptions(response):
         reason = response.reason
 
     if 400 <= response.status_code < 500:
-        http_error_msg = u'{0} Client Error: {1} for url: {2}'.format(response.status_code, reason, response.url)
+        http_error_msg = u'{0} Client Error: {1} for url: {2}'.format(
+            response.status_code, reason, response.url)
 
     elif 500 <= response.status_code < 600:
-        http_error_msg = u'{0} Server Error: {1} for url: {2}'.format(response.status_code, reason, response.url)
+        http_error_msg = u'{0} Server Error: {1} for url: {2}'.format(
+            response.status_code, reason, response.url)
 
     if http_error_msg:
         raise HTTPError(http_error_msg, response=response)
