@@ -2,7 +2,6 @@ import requests
 from requests.auth import HTTPBasicAuth
 from flask import current_app
 from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
-from requests.exceptions import HTTPError
 from datetime import datetime
 
 from jobs.models.query_jobs_result import QueryJobsResult
@@ -58,7 +57,7 @@ def update_job_labels(id, body):
         elif response.status_code == NotFound.code:
             raise NotFound(response.json().get('message'))
         else:
-            _raise_http_exceptions(response)
+            response.raise_for_status()
 
     # Follow API spec
     result = response.json()
@@ -220,28 +219,3 @@ def _get_base_url():
 def _get_user_auth():
     return HTTPBasicAuth(current_app.config['cromwell_user'],
                          current_app.config['cromwell_password'])
-
-
-def _raise_http_exceptions(response):
-    """Http error method, raise error if one occurred. Moved and refactored from the requests library."""
-    http_error_msg = ''
-
-    # Handle bytes response reasons in Cromwell, such as response 405
-    if isinstance(response.reason, bytes):
-        try:
-            reason = response.reason.decode('utf-8')
-        except UnicodeDecodeError:
-            reason = response.reason.decode('iso-8859-1')
-    else:
-        reason = response.reason
-
-    if 400 <= response.status_code < 500:
-        http_error_msg = u'{0} Client Error: {1} for url: {2}'.format(
-            response.status_code, reason, response.url)
-
-    elif 500 <= response.status_code < 600:
-        http_error_msg = u'{0} Server Error: {1} for url: {2}'.format(
-            response.status_code, reason, response.url)
-
-    if http_error_msg:
-        raise HTTPError(http_error_msg, response=response)
