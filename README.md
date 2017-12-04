@@ -1,6 +1,6 @@
-# Job Monitor
+# Job Manager
 
-Job Monitor API and UI for interacting with asynchronous batch jobs.
+Job Manager API and UI for interacting with asynchronous batch jobs.
 
 ## Development
 
@@ -16,7 +16,7 @@ For dsub local, also create a local tmp dir before continuing:
 `mkdir /tmp/dsub-local`
 
 For cromwell:
-1. Create a local job-monitor dir: `mkdir /private/etc/job-monitor/`
+1. Create a local job-manager dir: `mkdir /private/etc/job-manager/`
 2. Then add a config.json file with the Cromwell username and password:
 ```
 {
@@ -25,7 +25,7 @@ For cromwell:
 }
 ```
 
-Then...
+Then run:
 
 ```
 docker-compose up
@@ -101,7 +101,7 @@ java -jar swagger-codegen-cli.jar generate \
 
 Finally, update the UI implementation to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
-## Job Monitor UI Server
+## Job Manager UI Server
 
 For UI-specific documentation, see [ui/](ui/README.md).
 
@@ -118,7 +118,7 @@ ng e2e
 ```
 
 
-## Job Monitor API Server: `dsub`
+## Job Manager API Server: `dsub`
 
 Thin shim around [dsub](https://github.com/googlegenomics/dsub), see
 [servers/dsub](servers/dsub).
@@ -159,7 +159,7 @@ deactivate
 ```
 
 
-## Job Monitor API Server: `cromwell`
+## Job Manager API Server: `cromwell`
 
 Thin shim around [cromwell](https://github.com/broadinstitute/cromwell), see
 [servers/cromwell](servers/cromwell).

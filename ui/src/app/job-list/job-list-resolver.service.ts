@@ -8,7 +8,7 @@ import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
 
-import {JobMonitorService} from '../core/job-monitor.service';
+import {JobManagerService} from '../core/job-manager.service';
 import {QueryJobsRequest} from '../shared/model/QueryJobsRequest';
 import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {StatusGroup} from '../shared/common';
@@ -20,7 +20,7 @@ import {environment} from '../../environments/environment';
 export class JobListResolver implements Resolve<JobStream> {
   private static readonly initialBackendPageSize = 25;
 
-  constructor(private jobMonitorService: JobMonitorService, private router: Router) {}
+  constructor(private JobManagerService: JobManagerService, private router: Router) {}
 
   private getStatusGroupNavigateIfInvalid(route: ActivatedRouteSnapshot): StatusGroup {
     let statusGroup: StatusGroup = route.queryParams['statusGroup']
@@ -46,7 +46,7 @@ export class JobListResolver implements Resolve<JobStream> {
       return null;
     }
 
-    let jobStream = new JobStream(this.jobMonitorService,
+    let jobStream = new JobStream(this.JobManagerService,
                                   statusGroup,
                                   route.queryParams['parentId']);
     return jobStream

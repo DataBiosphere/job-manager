@@ -1,6 +1,6 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
-import {JobMonitorService} from '../core/job-monitor.service';
+import {JobManagerService} from '../core/job-manager.service';
 import {JobStatus, QueryJobsResponse, QueryJobsResult} from './model/models';
 import {StatusGroup} from './common';
 
@@ -14,7 +14,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
   // data loading.
   private queryPromise: Promise<QueryJobsResponse> = Promise.resolve({});
 
-  constructor(private jobMonitorService: JobMonitorService,
+  constructor(private JobManagerService: JobManagerService,
               private statusGroup: StatusGroup,
               private parentId?: string) {
     super({
@@ -47,7 +47,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
   }
 
   private queryJobs(pageSize: number, pageToken?: string): Promise<QueryJobsResponse> {
-    return this.jobMonitorService.queryJobs({
+    return this.JobManagerService.queryJobs({
       parentId: this.parentId,
       statuses: this.statusGroupToJobStatuses(this.statusGroup),
       pageSize: pageSize,

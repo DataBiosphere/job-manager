@@ -9,15 +9,15 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/take';
 
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
-import {JobMonitorService} from '../core/job-monitor.service';
+import {JobManagerService} from '../core/job-manager.service';
 
 @Injectable()
 export class JobDetailsResolver implements Resolve<JobMetadataResponse> {
-  constructor(private jobMonitorService: JobMonitorService, private router: Router) {}
+  constructor(private JobManagerService: JobManagerService, private router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot,
           state: RouterStateSnapshot): Promise<JobMetadataResponse> {
-    return this.jobMonitorService.getJob(route.params['id'])
+    return this.JobManagerService.getJob(route.params['id'])
       .catch(error => {
         this.router.navigate(['jobs']);
         return Promise.reject(error);

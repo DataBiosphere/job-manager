@@ -4,7 +4,7 @@ import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {PageEvent, MdSnackBar, MdSnackBarConfig} from '@angular/material'
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
-import {JobMonitorService} from '../core/job-monitor.service';
+import {JobManagerService} from '../core/job-manager.service';
 import {StatusGroup} from '../shared/common';
 import {ErrorMessageFormatterPipe} from '../shared/error-message-formatter.pipe';
 import {JobsTableComponent} from './table/table.component';
@@ -32,11 +32,11 @@ export class JobListComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly jobMonitorService: JobMonitorService,
+    private readonly JobManagerService: JobManagerService,
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MdSnackBar,
   ) {
-    this.jobStream = new JobStream(jobMonitorService, StatusGroup.Active);
+    this.jobStream = new JobStream(JobManagerService, StatusGroup.Active);
   }
 
   ngOnInit(): void {
@@ -84,7 +84,7 @@ export class JobListComponent implements OnInit {
       }
     }).then(() => {
       this.streamSubscription.unsubscribe();
-      this.jobStream = new JobStream(this.jobMonitorService,
+      this.jobStream = new JobStream(this.JobManagerService,
                                      this.currentStatusGroup(),
                                      this.route.snapshot.queryParams['parentId']);
       this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));

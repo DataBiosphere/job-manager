@@ -20,8 +20,8 @@ import {RouterTestingModule} from '@angular/router/testing';
 
 import {JobListComponent} from "./job-list.component"
 import {JobsTableComponent} from "./table/table.component"
-import {JobMonitorService} from '../core/job-monitor.service';
-import {newDefaultMockJobMonitorService} from '../shared/mock-job-monitor.service';
+import {JobManagerService} from '../core/job-manager.service';
+import {newDefaultMockJobManagerService} from '../shared/mock-job-manager.service';
 import {SharedModule} from '../shared/shared.module';
 
 describe('JobListComponent', () => {
@@ -58,7 +58,7 @@ describe('JobListComponent', () => {
         SharedModule
       ],
       providers: [
-        {provide: JobMonitorService, userValue: newDefaultMockJobMonitorService()}
+        {provide: JobManagerService, userValue: newDefaultMockJobManagerService()}
       ],
     }).compileComponents();
   }));

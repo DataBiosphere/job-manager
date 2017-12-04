@@ -9,9 +9,9 @@ import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 
 
-/** Service wrapper for accessing the job monitor API. */
+/** Service wrapper for accessing the job manager API. */
 @Injectable()
-export class JobMonitorService {
+export class JobManagerService {
 
   private static readonly defaultErrorDetail = "An unknown error has ocurred. Please try again later."
   private static readonly defaultErrorTitle = "Unknown"
@@ -60,12 +60,12 @@ export class JobMonitorService {
     if ("title" in json && json["title"]) {
       return json["title"];
     }
-    return response.statusText ? response.statusText : JobMonitorService.defaultErrorTitle;
+    return response.statusText ? response.statusText : JobManagerService.defaultErrorTitle;
   }
 
   private getErrorDetail(response: any): string {
     let json = response.json();
-    return "detail" in json && json["detail"] ? json["detail"] : JobMonitorService.defaultErrorDetail;
+    return "detail" in json && json["detail"] ? json["detail"] : JobManagerService.defaultErrorDetail;
   }
 
   private getHttpHeaders(): Headers {
