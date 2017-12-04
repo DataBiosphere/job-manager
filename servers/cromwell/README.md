@@ -31,7 +31,13 @@ latter lists only direct dependencies. To regenerate run:
 ```
 virtualenv --python=/usr/bin/python2 /tmp/cromwell-server-requirements
 source /tmp/cromwell-server-requirements/bin/activate
-pip install -r servers/cromwell/requirements-to-freeze.txt
-pip freeze | sort > servers/cromwell/requirements.txt
+```
+Then, from the cromwell directory in this repo:
+```
+pip install -r requirements-to-freeze.txt
+pip freeze | sort -f | sed 's/^jm-utils.*/\.\.\/jm_utils/g' > requirements.txt
 deactivate
 ```
+
+The sed command above replaces jm-utils=x.y.z with ../jm_utils, which is required
+to allow pip to install from the local jm_utils directory.
