@@ -14,6 +14,8 @@ import {ProjectsModule} from './projects/projects.module';
 
 import {environment} from '../environments/environment';
 
+TEST - fail
+
 @NgModule({
   imports: [
     AppRoutingModule,
