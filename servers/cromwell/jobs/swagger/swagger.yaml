@@ -230,6 +230,10 @@ definitions:
       attempts:
         type: "integer"
         description: "Number of times the task was run"
+      subworkflowId:
+        type: "string"
+        description: "Id of the workflow corresponding to the task, if the task is\
+          \ a subworkflow"
     description: "Task level metadata"
   FailureMessage:
     required:
