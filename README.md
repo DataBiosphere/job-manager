@@ -4,182 +4,83 @@ Job Manager API and UI for interacting with asynchronous batch jobs.
 
 ## Development
 
-Prequisite: the following commands assume you have symlinked your preferred
-local API backend docker compose file as `docker-compose.yml` (alternatively,
-use `docker-compose -f dsub-google-compose.yml CMD`), e.g.:
-
+### Prerequisite
+The following commands assume you have symbolically linked your preferred
+local API backend docker compose file as `docker-compose.yml`, e.g.:
 ```
 ln -sf dsub-local-compose.yml docker-compose.yml
 ```
-
-For dsub local, also create a local tmp dir before continuing:
-`mkdir /tmp/dsub-local`
-
-For cromwell:
-1. Create a local job-manager dir: `mkdir /private/etc/job-manager/`
-2. Then add a config.json file with the Cromwell username and password:
+Alternatively, use:
 ```
-{
-  "cromwell_user" : "USERNAME",
-  "cromwell_password" : "PASSWORD"
-}
+docker-compose -f dsub-google-compose.yml CMD
 ```
 
-Then run:
+### Server Setup
+For setting up development with [`dsub`](https://github.com/googlegenomics/dsub)
+see [servers/dsub](servers/dsub/README.md#Development).
 
-```
-docker-compose up
-```
+For setting up development with [`cromwell`](https://github.com/broadinstitute/cromwell)
+see [servers/cromwell](servers/cromwell/README.md#Development).
 
-Navigate to http://localhost:4200.
 
-Note: websocket reload on code change does not work in docker-compose (see
+### Run Locally
+1. Run `docker-compose up` from the root of the repository:
+1. Navigate to http://localhost:4200.
+
+#### Notes
+1. Websocket reload on code change does not work in docker-compose (see
 https://github.com/angular/angular-cli/issues/6349).
-
-Changes to `package.json` or `requirements.txt` require a rebuild:
-
-```
-docker-compose up --build
-```
-
-Alternatively, rebuild a single component:
-
-```
-docker-compose build ui
-```
-
-### Google dsub provider
-
-The Google dsub provider requires making authorized calls to the Google Genomics
-Pipelines API. The dsub shim server authorizes via [application default
-credentials](https://developers.google.com/identity/protocols/application-default-credentials).
-On your workstation, you'll need to first login via [gcloud](https://cloud.google.com/sdk/docs/quickstarts).
-
-```
-gcloud auth application-default login
-ln -sf dsub-google-compose.yml docker-compose.yml
-docker-compose up
-```
-
-Navigate to http://localhost:4200?parentId=MY_CLOUD_PROJECT_ID.
-
+1. Changes to `package.json` or `requirements.txt` require a rebuild with:
+  ```
+  docker-compose up --build
+  ```
+  Alternatively, rebuild a single component:
+  ```
+  docker-compose build ui
+  ```
 
 ### Updating the API using swagger-codegen
+We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to automatically implement the API, as defined in `api/jobs.yaml`, for all
+servers and the UI. Whenever the API is updated, follow these steps to
+update the UI implementation:
 
-We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to automatically implement the API as defined in api/jobs.yaml.
-Whenever the API is updated, follow these steps to update the UI implementation:
-
-If you do not already have the jar, you can download it here:
-```
-wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
-```
-
-Clear out existing generated models:
-```
-rm ui/src/app/shared/model/*
-rm servers/dsub/jobs/models/*
-rm servers/cromwell/jobs/models/*
-```
-
-Regenerate both the python and angular definitions.
-```
-java -jar swagger-codegen-cli.jar generate \
- -i api/jobs.yaml \
- -l typescript-angular2 \
- -o ui/src/app/shared
-java -jar swagger-codegen-cli.jar generate \
- -i api/jobs.yaml \
- -l python-flask \
- -o servers/dsub \
- -DsupportPython2=true,packageName=jobs
-java -jar swagger-codegen-cli.jar generate \
- -i api/jobs.yaml \
- -l python-flask \
- -o servers/cromwell \
- -DsupportPython2=true,packageName=jobs
-```
-
-Finally, update the UI implementation to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
+1. If you do not already have the jar, you can download it here:
+  ```
+  # Linux
+  wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+  # macOS
+  brew install swagger-codegen
+  ```
+1. Clear out existing generated models:
+  ```
+  rm ui/src/app/shared/model/*
+  rm servers/dsub/jobs/models/*
+  rm servers/cromwell/jobs/models/*
+  ```
+1. Regenerate both the python and angular definitions.
+  ```
+  java -jar swagger-codegen-cli.jar generate \
+    -i api/jobs.yaml \
+    -l typescript-angular2 \
+    -o ui/src/app/shared
+  java -jar swagger-codegen-cli.jar generate \
+    -i api/jobs.yaml \
+    -l python-flask \
+    -o servers/dsub \
+    -DsupportPython2=true,packageName=jobs
+  java -jar swagger-codegen-cli.jar generate \
+    -i api/jobs.yaml \
+    -l python-flask \
+    -o servers/cromwell \
+    -DsupportPython2=true,packageName=jobs
+  ```
+1. Update the UI implementation to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
 ## Job Manager UI Server
+For UI server documentation, see [ui](ui/).
 
-For UI-specific documentation, see [ui/](ui/README.md).
+## Job Manager `dsub` Server
+For `dsub` server documentation, see [servers/dsub](servers/dsub/README.md).
 
-### Running Tests
-Unit tests are run via [Karma](https://karma-runner.github.io) and end-to-end
-tests are run via [Protractor](http://www.protractortest.org/).
-```
-cd ui
-# Run unit tests
-ng test
-# Run end-to-end tests
-ng serve
-ng e2e
-```
-
-
-## Job Manager API Server: `dsub`
-
-Thin shim around [dsub](https://github.com/googlegenomics/dsub), see
-[servers/dsub](servers/dsub).
-
-### Running Tests
-To run unit and integration tests on the python-flask app, install
-[`tox`](https://github.com/tox-dev/tox) or
-[`detox`](https://github.com/tox-dev/detox) (recommended for `dsub`
-integration tests with the Google provider). Integration tests with the google
-provider also require access to the [bvdp-jmui-testing](https://console.cloud.google.com/home/dashboard?project=bvdp-jmui-testing)
-Google Cloud project. File a Github issue assigned to
-[@bfcrampton](https://github.com/bfcrampton) to gain access.
-
-```
-cd servers/dsub
-# Run all the tests
-detox -- -s
-# Run all local provider tests
-detox jobs/test/test_jobs_controller_local.py
-# Run specific local provider test
-detox jobs/test/test_jobs_controller_local.py:TestJobsControllerLocal.test_abort_job
-# Run only google provider tests
-detox jobs/test/test_jobs_controller_local.py
-# Run specific google provider test
-detox jobs/test/test_jobs_controller_local.py:TestJobsControllerLocal.test_abort_job
-```
-
-### Generating `requirements.txt`
-
-`requirements.txt` is autogenerated from `requirements-to-freeze.txt`. The
-latter lists only direct dependencies. To regenerate run:
-```
-virtualenv --python=/usr/bin/python2 /tmp/dsub-server-requirements
-source /tmp/dsub-server-requirements/bin/activate
-pip install -r servers/dsub/requirements-to-freeze.txt
-pip freeze | sort > servers/dsub/requirements.txt
-deactivate
-```
-
-
-## Job Manager API Server: `cromwell`
-
-Thin shim around [cromwell](https://github.com/broadinstitute/cromwell), see
-[servers/cromwell](servers/cromwell).
-
-### Running Tests
-To run unit and integration tests on the python-flask app, install
-[`tox`](https://github.com/tox-dev/tox).
-```
-cd servers/cromwell
-tox -- -s
-```
-
-### Generating `requirements.txt`
-
-`requirements.txt` is autogenerated from `requirements-to-freeze.txt`. The
-latter lists only direct dependencies. To regenerate run:
-```
-virtualenv --python=/usr/bin/python2 /tmp/cromwell-server-requirements
-source /tmp/cromwell-server-requirements/bin/activate
-pip install -r servers/cromwell/requirements-to-freeze.txt
-pip freeze | sort > servers/cromwell/requirements.txt
-deactivate
-```
+## Job Manager `cromwell` Server
+For `cromwell` server documentation, see [servers/cromwell](servers/cromwell/README.md).
