@@ -2,7 +2,6 @@
 
 from __future__ import absolute_import
 
-import json
 import requests_mock
 from flask import json
 from datetime import datetime
@@ -10,6 +9,8 @@ from . import BaseTestCase
 
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_result import QueryJobsResult
+from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
+from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.controllers import jobs_controller
 
 
@@ -58,13 +59,275 @@ class TestJobsController(BaseTestCase):
                 format(workflow_id)
             }
 
-        # mock cromwell response
         abort_url = self.base_url + '/{id}/abort'.format(id=workflow_id)
         mock_request.post(abort_url, json=_request_callback)
 
         response = self.client.open(
             '/jobs/{id}/abort'.format(id=workflow_id), method='POST')
         self.assertStatus(response, 404)
+
+    @requests_mock.mock()
+    def test_update_job_labels_returns_200(self, mock_request):
+        """
+        Test case for update_job_labels.
+
+        Update job's labels. Currently Cromwell will ONLY return the UPDATED labels instead of ALL labels of the job,
+            the Job Manager makes two separate HTTP requests here to Cromwell so that it can get ALL labels.
+        """
+        workflow_id = 'id'
+        workflow_name = 'test'
+        status = 'Succeeded'
+        timestamp = '2017-11-08T05:06:41.424Z'
+        response_timestamp = '2017-11-08T05:06:41.424000Z'
+        inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
+        outputs = {
+            'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
+        }
+        labels = {}
+        job_id = 'operations/abcde'
+        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
+        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        attempts = 1
+        return_code = 0
+
+        def _request_callback_labels(request, context):
+            context.status_code = 200
+            return {"labels": {"test_label": "test_label_value"}}
+
+        def _request_callback_get_job(request, context):
+            context.status_code = 200
+            return {
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
+                'calls': {
+                    'test.analysis': [{
+                        'jobId': job_id,
+                        'executionStatus': 'Done',
+                        'start': timestamp,
+                        'end': timestamp,
+                        'stderr': std_err,
+                        'stdout': std_out,
+                        'returnCode': return_code,
+                        'inputs': inputs,
+                        'attempt': attempts
+                    }]
+                },
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
+                'failures': [{
+                    'causedBy': [],
+                    'message': 'Task test.analysis failed'
+                }]
+            }  # yapf: disable
+
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+
+        mock_request.patch(update_label_url, json=_request_callback_labels)
+        mock_request.get(cromwell_url, json=_request_callback_get_job)
+
+        payload = UpdateJobLabelsRequest(labels={
+            "test_label": "test_label_value"
+        })
+        response = self.client.open(
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json')
+        self.assertStatus(response, 200)
+        self.assertEquals(response.json, {
+            "labels": {
+                "test_label": "test_label_value"
+            }
+        })
+
+    @requests_mock.mock()
+    def test_update_job_labels_returns_all_labels(self, mock_request):
+
+        workflow_id = 'id'
+        workflow_name = 'test'
+        status = 'Succeeded'
+        timestamp = '2017-11-08T05:06:41.424Z'
+        response_timestamp = '2017-11-08T05:06:41.424000Z'
+        inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
+        outputs = {
+            'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
+        }
+        labels = {
+            "existing_test_label1": "existing_test_label_value1",
+            "existing_test_label2": "existing_test_label_value2"
+        }
+        job_id = 'operations/abcde'
+        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
+        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        attempts = 1
+        return_code = 0
+
+        def _request_callback_labels(request, context):
+            context.status_code = 200
+            return {"labels": {"new_test_label": "new_test_label_value"}}
+
+        def _request_callback_get_job(request, context):
+            context.status_code = 200
+            return {
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
+                'calls': {
+                    'test.analysis': [{
+                        'jobId': job_id,
+                        'executionStatus': 'Done',
+                        'start': timestamp,
+                        'end': timestamp,
+                        'stderr': std_err,
+                        'stdout': std_out,
+                        'returnCode': return_code,
+                        'inputs': inputs,
+                        'attempt': attempts
+                    }]
+                },
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
+                'failures': [{
+                    'causedBy': [],
+                    'message': 'Task test.analysis failed'
+                }]
+            }  # yapf: disable
+
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback_labels)
+        mock_request.get(cromwell_url, json=_request_callback_get_job)
+
+        payload = UpdateJobLabelsRequest(
+            labels={
+                "new_test_label": "new_test_label_value"
+            })
+        response = self.client.open(
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json')
+
+        expected_result = UpdateJobLabelsResponse.from_dict({
+            "labels": {
+                "existing_test_label1": "existing_test_label_value1",
+                "existing_test_label2": "existing_test_label_value2",
+                "new_test_label": "new_test_label_value"
+            }
+        })
+
+        result = UpdateJobLabelsResponse.from_dict(response.json)
+
+        self.assertStatus(response, 200)
+        self.assertDictEqual(result.labels, expected_result.labels)
+
+    @requests_mock.mock()
+    def test_update_job_labels_bad_request(self, mock_request):
+        workflow_id = 'id'
+        error_message = "Invalid label: `` did not match the regex [a-z]([-a-z0-9]*[a-z0-9])?."
+
+        def _request_callback(request, context):
+            context.status_code = 400
+            return {"status": "fail", "message": error_message}
+
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback)
+
+        payload = UpdateJobLabelsRequest(labels={"": "test_invalid_label"})
+        response = self.client.open(
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json')
+        self.assertStatus(response, 400)
+        self.assertEquals(json.loads(response.data)['detail'], error_message)
+
+    @requests_mock.mock()
+    def test_update_job_labels_internal_server_error(self, mock_request):
+        workflow_id = 'id'
+        error_message = "Invalid workflow ID: test_invalid_workflow_id"
+
+        def _request_callback(request, context):
+            context.status_code = 500
+            return {"status": "error", "message": error_message}
+
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback)
+
+        payload = UpdateJobLabelsRequest(labels={
+            "test_label": "test_label_value"
+        })
+        response = self.client.open(
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json')
+        self.assertStatus(response, 500)
+        self.assertEquals(json.loads(response.data)['detail'], error_message)
+
+    @requests_mock.mock()
+    def test_update_job_labels_not_found(self, mock_request):
+        """Note: This status code is not currently properly returned by the Cromwell actually the error 'Unrecognized
+            workflow ID' will return with a status code 500 now, the Cromwell team will address this issue in
+            the near future."""
+        workflow_id = 'id'
+        error_message = "Unrecognized workflow ID: 12345678-aaaa-bbbb-cccc-dddddddddddd"
+
+        def _request_callback(request, context):
+            context.status_code = 404
+            return {"status": "error", "message": error_message}
+
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback)
+
+        payload = UpdateJobLabelsRequest(labels={
+            "test_label": "test_label_value"
+        })
+        response = self.client.open(
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json')
+        self.assertStatus(response, 404)
+        self.assertEquals(json.loads(response.data)['detail'], error_message)
+
+    @requests_mock.mock()
+    def test_update_job_labels_undefined_unsupported_media_type_exception(
+            self, mock_request):
+        workflow_id = 'id'
+        error_message = b'Invalid Content-type (), expected JSON data'
+
+        def _request_callback(request, context):
+            context.status_code = 415
+            return error_message
+
+        update_label_url = self.base_url + '/{id}/labels'.format(
+            id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback)
+
+        payload = UpdateJobLabelsRequest(labels={"test_label": None})
+        response = self.client.open(
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            headers={'Accept': 'application/json'},
+            method='POST',
+            data=json.dumps(payload))
+        self.assertStatus(response, 415)
+        self.assertEquals(json.loads(response.data)['detail'], error_message)
 
     @requests_mock.mock()
     def test_get_job_returns_200(self, mock_request):
@@ -92,12 +355,9 @@ class TestJobsController(BaseTestCase):
         def _request_callback(request, context):
             context.status_code = 200
             return {
-                'workflowName':
-                workflow_name,
-                'id':
-                workflow_id,
-                'status':
-                status,
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
                 'calls': {
                     'test.analysis': [{
                         'jobId': job_id,
@@ -111,23 +371,17 @@ class TestJobsController(BaseTestCase):
                         'attempt': attempts
                     }]
                 },
-                'inputs':
-                inputs,
-                'labels':
-                labels,
-                'outputs':
-                outputs,
-                'submission':
-                timestamp,
-                'end':
-                timestamp,
-                'start':
-                timestamp,
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
                 'failures': [{
                     'causedBy': [],
                     'message': 'Task test.analysis failed'
                 }]
-            }
+            }  # yapf: disable
 
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
@@ -137,24 +391,15 @@ class TestJobsController(BaseTestCase):
         self.assertStatus(response, 200)
         response_data = json.loads(response.data)
         expected_data = {
-            'name':
-            workflow_name,
-            'id':
-            workflow_id,
-            'status':
-            status,
-            'submission':
-            response_timestamp,
-            'start':
-            response_timestamp,
-            'end':
-            response_timestamp,
-            'inputs':
-            jobs_controller.update_key_names(inputs),
-            'outputs':
-            jobs_controller.update_key_names(outputs),
-            'labels':
-            labels,
+            'name': workflow_name,
+            'id': workflow_id,
+            'status': status,
+            'submission': response_timestamp,
+            'start': response_timestamp,
+            'end': response_timestamp,
+            'inputs': jobs_controller.update_key_names(inputs),
+            'outputs': jobs_controller.update_key_names(outputs),
+            'labels': labels,
             'failures': [{
                 'failure': 'Task test.analysis failed'
             }],
@@ -170,7 +415,7 @@ class TestJobsController(BaseTestCase):
                 'returnCode': return_code,
                 'attempts': attempts
             }]
-        }
+        }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)
 
     @requests_mock.mock()
@@ -236,7 +481,6 @@ class TestJobsController(BaseTestCase):
             context.status_code = 200
             return {'results': []}
 
-        # mock cromwell response
         query_url = self.base_url + '/query'
         mock_request.post(query_url, json=_request_callback)
 

@@ -10,6 +10,8 @@ from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
+from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
+from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 
 CROMWELL_DONE_STATUS = 'Done'
 API_SUCCESS_STATUS = 'Succeeded'
@@ -42,7 +44,28 @@ def update_job_labels(id, body):
 
     :rtype: UpdateJobLabelsResponse
     """
-    return 'update job labels'
+    payload = UpdateJobLabelsRequest.from_dict(body).labels
+    url = '{cromwell_url}/{id}/labels'.format(
+        cromwell_url=_get_base_url(), id=id)
+    response = requests.patch(url, json=payload, auth=_get_user_auth())
+
+    if response.status_code == InternalServerError.code:
+        raise InternalServerError(response.json().get('message'))
+    elif response.status_code == BadRequest.code:
+        raise BadRequest(response.json().get('message'))
+    elif response.status_code == NotFound.code:
+        raise NotFound(response.json().get('message'))
+    response.raise_for_status()
+
+    # Follow API spec
+    result = response.json()
+    all_labels = get_job(id).labels
+    if not all_labels:
+        all_labels = {}
+
+    # Redundantly update all_labels with updated labels to provide consistency guarantees
+    all_labels.update(result.get('labels'))
+    return UpdateJobLabelsResponse(labels=all_labels)
 
 
 def get_job(id):
