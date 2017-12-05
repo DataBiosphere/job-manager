@@ -126,7 +126,8 @@ def format_task(task_name, task_metadata):
         stdout=task_metadata.get('stdout'),
         inputs=update_key_names(task_metadata.get('inputs', {})),
         return_code=task_metadata.get('returnCode'),
-        attempts=task_metadata.get('attempt'))
+        attempts=task_metadata.get('attempt'),
+        subworkflow_id=task_metadata.get('subWorkflowId'))
 
 
 def cromwell_to_api_status(status):

@@ -11,7 +11,10 @@
     <!-- Task name column -->
     <ng-container mdColumnDef="name">
       <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
-      <md-cell *mdCellDef="let t">{{ t.name }}</md-cell>
+      <md-cell *mdCellDef="let t">
+        <a class="title-link" *ngIf="t.subworkflowId" href="{{ '/jobs/' + t.subworkflowId }}">{{ t.name }}</a>
+        <p *ngIf="!t.subworkflowId">{{ t.name }}</p>
+      </md-cell>
     </ng-container>
 
     <!-- Status column -->
