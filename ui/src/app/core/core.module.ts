@@ -2,7 +2,7 @@ import {NgModule, Optional, SkipSelf} from '@angular/core';
 
 import {AuthActivator} from "./auth-activator.service"
 import {AuthService} from "./auth.service"
-import {JobMonitorService} from './job-monitor.service';
+import {JobManagerService} from './job-manager.service';
 import {SearchComponent} from './search/search.component';
 
 /** Provides all of the common singleton components and services that can be
@@ -11,7 +11,7 @@ import {SearchComponent} from './search/search.component';
   imports: [],
   declarations: [SearchComponent],
   exports: [],
-  providers: [AuthActivator, AuthService, JobMonitorService]
+  providers: [AuthActivator, AuthService, JobManagerService]
 })
 export class CoreModule {
   constructor( @Optional() @SkipSelf() parentModule: CoreModule) {

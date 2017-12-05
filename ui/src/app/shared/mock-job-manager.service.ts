@@ -6,10 +6,10 @@ import {QueryJobsResult} from './model/QueryJobsResult';
 import {TaskMetadata} from './model/TaskMetadata';
 
 /**
-* MockJobMonitorService implements an in-memory fake job monitor server via
+* MockJobManagerService implements an in-memory fake job manager server via
 * Angular's MockBackend.
 */
-export class MockJobMonitorService {
+export class MockJobManagerService {
   constructor(
     private jobs:QueryJobsResult[],
   ){}
@@ -94,7 +94,7 @@ export class MockJobMonitorService {
   }
 }
 
-export function newDefaultMockJobMonitorService(): MockJobMonitorService {
+export function newDefaultMockJobManagerService(): MockJobManagerService {
   let mockJobs: QueryJobsResult[] =
     [
       { id: 'JOB1',
@@ -146,5 +146,5 @@ export function newDefaultMockJobMonitorService(): MockJobMonitorService {
         start: new Date(new Date().getTime() - 10099000),
         end: new Date(new Date().getTime() - 11844000)},
     ];
-  return new MockJobMonitorService(mockJobs);
+  return new MockJobManagerService(mockJobs);
 }

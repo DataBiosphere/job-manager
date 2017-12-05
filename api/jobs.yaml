@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
-  title: Job Monitor Service
-  description: Job Monitor API for interacting with asynchronous batch jobs and workflows.
+  title: Job Manager Service
+  description: Job Manager API for interacting with asynchronous batch jobs and workflows.
   license:
     name: BSD
     url: 'http://opensource.org/licenses/BSD-3-Clause'
@@ -179,7 +179,7 @@ definitions:
         type: object
         description: Mapping of input fully qualified names to stringified values
       # TODO: Define a generalized enum for this. For details, see
-      # https://github.com/bvprivate/job-monitor/pull/14.
+      # https://github.com/DataBiosphere/job-manager/pull/14.
       executionStatus:
         type: string
         description: Backend-specific task status.

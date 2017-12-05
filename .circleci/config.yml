@@ -11,7 +11,7 @@ jobs:
     machine:
       image: circleci/classic:latest
 
-    working_directory: ~/job-monitor
+    working_directory: ~/job-manager
     steps:
       # Download the relevant code
       - checkout
