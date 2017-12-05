@@ -68,4 +68,9 @@ export interface TaskMetadata {
      */
     attempts?: number;
 
+    /**
+     * Id of the workflow corresponding to the task, if the task is a subworkflow
+     */
+    subworkflowId?: string;
+
 }
