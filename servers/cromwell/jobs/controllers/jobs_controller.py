@@ -100,12 +100,14 @@ def get_job(id):
         format_task(task_name, task_metadata[-1])
         for task_name, task_metadata in job.get('calls', {}).items()
     ]
+    submission = _parse_datetime(job.get('submission'))
+    start = _parse_datetime(job.get('start'))
     return JobMetadataResponse(
         id=id,
         name=job.get('workflowName'),
         status=job.get('status'),
-        submission=_parse_datetime(job.get('submission')),
-        start=_parse_datetime(job.get('start')),
+        submission=submission if submission else start,
+        start=start,
         end=_parse_datetime(job.get('end')),
         inputs=update_key_names(job.get('inputs', {})),
         outputs=update_key_names(job.get('outputs', {})),
