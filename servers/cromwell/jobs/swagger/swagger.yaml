@@ -1,9 +1,9 @@
 ---
 swagger: "2.0"
 info:
-  description: "Job Monitor API for interacting with asynchronous batch jobs and workflows."
+  description: "Job Manager API for interacting with asynchronous batch jobs and workflows."
   version: "0.0.1"
-  title: "Job Monitor Service"
+  title: "Job Manager Service"
   license:
     name: "BSD"
     url: "http://opensource.org/licenses/BSD-3-Clause"

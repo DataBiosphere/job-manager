@@ -20,10 +20,10 @@ import {
 import {RouterTestingModule} from '@angular/router/testing';
 
 import {JobListView} from "../../shared/job-stream";
-import {JobMonitorService} from '../../core/job-monitor.service';
+import {JobManagerService} from '../../core/job-manager.service';
 import {JobsTableComponent} from './table.component';
 import {JobStatus} from '../../shared/model/JobStatus';
-import {newDefaultMockJobMonitorService} from '../../shared/mock-job-monitor.service';
+import {newDefaultMockJobManagerService} from '../../shared/mock-job-manager.service';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {SharedModule} from '../../shared/shared.module';
 import {environment} from '../../../environments/environment';
@@ -97,7 +97,7 @@ describe('JobsTableComponent', () => {
         SharedModule
       ],
       providers: [
-        {provide: JobMonitorService, userValue: newDefaultMockJobMonitorService()}
+        {provide: JobManagerService, userValue: newDefaultMockJobManagerService()}
       ],
     }).compileComponents();
   }));

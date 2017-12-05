@@ -18,16 +18,15 @@ REQUIRES = ["connexion"]
 setup(
     name=NAME,
     version=VERSION,
-    description="Job Monitor Service",
+    description="Job Manager Service",
     author_email="",
     url="",
-    keywords=["Swagger", "Job Monitor Service"],
+    keywords=["Swagger", "Job Manager Service"],
     install_requires=REQUIRES,
     packages=find_packages(),
     package_data={'': ['swagger/swagger.yaml']},
     include_package_data=True,
     long_description="""\
-    Job Monitor API for interacting with asynchronous batch jobs and workflows.
+    Job Manager API for interacting with asynchronous batch jobs and workflows.
     """
 )
-

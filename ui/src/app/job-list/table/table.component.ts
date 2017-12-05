@@ -25,7 +25,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 
-import {JobMonitorService} from '../../core/job-monitor.service';
+import {JobManagerService} from '../../core/job-manager.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/error-message-formatter.pipe';
@@ -76,7 +76,7 @@ export class JobsTableComponent implements OnInit {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly jobMonitorService: JobMonitorService,
+    private readonly JobManagerService: JobManagerService,
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MdSnackBar,
   ) {}
@@ -120,7 +120,7 @@ export class JobsTableComponent implements OnInit {
   }
 
   abortJob(job: QueryJobsResult): void {
-    this.jobMonitorService.abortJob(job.id)
+    this.JobManagerService.abortJob(job.id)
       .then(() => job.status = JobStatus.Aborted)
       .catch((error) => this.handleError(error));
   }

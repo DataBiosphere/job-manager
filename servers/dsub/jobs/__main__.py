@@ -30,7 +30,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     '--provider_type',
     type=str,
-    help='The dsub provider type to use for monitoring jobs',
+    help='The dsub provider type to use for managing jobs',
     default=os.environ.get('PROVIDER_TYPE'))
 parser.add_argument(
     '--path_prefix',
