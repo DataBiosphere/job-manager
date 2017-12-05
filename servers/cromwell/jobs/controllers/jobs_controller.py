@@ -49,15 +49,13 @@ def update_job_labels(id, body):
         cromwell_url=_get_base_url(), id=id)
     response = requests.patch(url, json=payload, auth=_get_user_auth())
 
-    if not response.ok:
-        if response.status_code == InternalServerError.code:
-            raise InternalServerError(response.json().get('message'))
-        elif response.status_code == BadRequest.code:
-            raise BadRequest(response.json().get('message'))
-        elif response.status_code == NotFound.code:
-            raise NotFound(response.json().get('message'))
-        else:
-            response.raise_for_status()
+    if response.status_code == InternalServerError.code:
+        raise InternalServerError(response.json().get('message'))
+    elif response.status_code == BadRequest.code:
+        raise BadRequest(response.json().get('message'))
+    elif response.status_code == NotFound.code:
+        raise NotFound(response.json().get('message'))
+    response.raise_for_status()
 
     # Follow API spec
     result = response.json()
