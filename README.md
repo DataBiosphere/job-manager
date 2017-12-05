@@ -42,7 +42,7 @@ https://github.com/angular/angular-cli/issues/6349).
 ### Updating the API using swagger-codegen
 We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to automatically implement the API, as defined in `api/jobs.yaml`, for all
 servers and the UI. Whenever the API is updated, follow these steps to
-update the UI implementation:
+update the server implementations:
 
 1. If you do not already have the jar, you can download it here:
   ```
@@ -74,7 +74,7 @@ update the UI implementation:
     -o servers/cromwell \
     -DsupportPython2=true,packageName=jobs
   ```
-1. Update the UI implementation to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
+1. Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
 ## Job Manager UI Server
 For UI server documentation, see [ui](ui/).
