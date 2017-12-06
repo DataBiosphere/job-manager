@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   ui:
     build:
@@ -35,7 +35,7 @@ services:
     environment:
       - PATH_PREFIX=/api/v1
       - CROMWELL_CREDENTIALS=/etc/job-manager/config.json
-      - CROMWELL_URL=https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1
+      - CROMWELL_URL=${CROMWELL_URL:-https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1}
     volumes:
       - ./servers/cromwell/jobs:/app/jobs
       - /private/etc/job-manager:/etc/job-manager
