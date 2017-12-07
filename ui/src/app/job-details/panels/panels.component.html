@@ -11,7 +11,7 @@
     <md-card-title>Status</md-card-title>
     <md-card-content>
       <p><b>
-        {{ job.status }}
+        {{ job.status }}:
         <ng-container *ngIf="numTasks > 0">
           {{ numCompletedTasks }} of {{ numTasks }} tasks completed
         </ng-container>
