@@ -1,5 +1,5 @@
 # Job Manager
-See also the [development guide] below(#development)
+See also the [development guide](#development) below
 
 The Job Manager is an API and UI for monitoring and managing jobs in a backend execution engine. 
 
