@@ -1,7 +1,5 @@
 # Job Manager
-[Development Readme](#development)
-
-## What is the Job Manager?
+See also the [development guide] below(#development)
 
 The Job Manager is an API and UI for monitoring and managing jobs in a backend execution engine. 
 
@@ -10,9 +8,9 @@ The Broad, Verily, and many other organizations in the life sciences execute eno
 The Job Manager aspires to bring ease and efficiency to developing and debugging workflows while seamlessly scaling to production operations management.
 
 ## Key Features
-* Sits on top of either [Cromwell](https://github.com/broadinstitute/cromwell) or [dsub](https://github.com/googlegenomics/dsub)
+* Supports visualization over [Cromwell](https://github.com/broadinstitute/cromwell) or [dsub](https://github.com/googlegenomics/dsub) backends
 * Service provider interface can be extended to support other engines
-* Rich, search capabilities across current and historic workflows
+* Rich search capabilities across current and historic workflows
 * Aborting workflows
 * Clean, intuitive UX based on material design principles
 
@@ -40,9 +38,9 @@ Monitors jobs launched by the [Cromwell workflow engine](https://github.com/broa
 
 ### dsub
 
-Monitors jobs that were launched via the [dsub](https://github.com/googlegenomics/dsub) CLI. Thin stateless wrapper around the dsub Python library. Authorization is required for deploying the UI, which is used to communicate with the [Google Genomics Pipelines API](https://cloud.google.com/genomics/pipelines). The wrapper itself is implemented in Python Flask using Swagger codegen models.
+Monitors jobs that were launched via the [dsub](https://github.com/googlegenomics/dsub) CLI. Thin stateless wrapper around the dsub Python library. Authorization is required for deploying the UI, which is used to communicate with the [Google Genomics Pipelines API](https://cloud.google.com/genomics/pipelines). The wrapper itself is implemented in Python Flask using Swagger codegen models. A Dockerfile is provided which serves for production deployment using gunicorn.
 
-Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s “job”. A Dockerfile is provided which serves for production deployment using gunicorn.
+Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s “job”. 
 
 ## Development
 
