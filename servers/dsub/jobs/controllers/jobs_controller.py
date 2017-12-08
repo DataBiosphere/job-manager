@@ -8,8 +8,9 @@ from dsub.lib import resources
 from flask import current_app, request
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound, NotImplemented, PreconditionFailed, Unauthorized
 
+from jm_utils import page_tokens
 from jobs.common import execute_redirect_stdout
-from jobs.controllers.utils import failures, job_ids, job_statuses, labels, logs, page_tokens, providers, query_parameters
+from jobs.controllers.utils import failures, job_ids, job_statuses, labels, logs, providers, query_parameters
 from jobs.models.failure_message import FailureMessage
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
@@ -122,13 +123,10 @@ def query_jobs(body):
     if query.page_size <= 0:
         raise ValueError("The page_size parameter must be positive")
 
-    offset = 0
     # Request one extra job to confirm whether there's more data to return
     # in a subsequent page.
-    max_tasks = query.page_size + 1
-    if query.page_token:
-        offset = page_tokens.decode(query.page_token)
-        max_tasks += offset
+    offset = page_tokens.decode(query.page_token)
+    max_tasks = offset + query.page_size + 1
 
     jobs = []
     try:

@@ -492,26 +492,38 @@ class TestJobsController(BaseTestCase):
             content_type='application/json')
         self.assertStatus(response, 200)
 
-    def test_format_empty_query_json(self):
+    def test_empty_cromwell_query_params(self):
         query = QueryJobsRequest()
-        self.assertEqual(jobs_controller.format_query_json(query), [])
+        self.assertEqual(
+            sorted(jobs_controller.cromwell_query_params(query, 1, 64)),
+            sorted([{
+                'page': '1'
+            }, {
+                'pageSize': '64'
+            }]))
 
-    def test_format_query_json(self):
+    def test_cromwell_query_params(self):
         query = QueryJobsRequest(
             name='test',
             start='2017-10-30T18:04:47.271Z',
             end='2017-10-31T18:04:47.271Z',
-            statuses=['Submitted', 'Running', 'Succeeded'])
-        formatted_query = [{
+            statuses=['Submitted', 'Running', 'Succeeded'],
+            page_size=100)
+        query_params = [{
             'name': query.name
         }, {
             'start': query.start
         }, {
             'end': query.end
+        }, {
+            'pageSize': '100'
+        }, {
+            'page': '23'
         }]
-        formatted_query.extend([{'status': s} for s in query.statuses])
-        self.assertItemsEqual(formatted_query,
-                              jobs_controller.format_query_json(query))
+        query_params.extend([{'status': s} for s in query.statuses])
+        self.assertItemsEqual(
+            sorted(query_params),
+            sorted(jobs_controller.cromwell_query_params(query, 23, 100)))
 
     def test_format_job(self):
         time = '2017-10-27T18:04:47.271Z'
@@ -571,6 +583,24 @@ class TestJobsController(BaseTestCase):
             start=formatted_time,
             end=None)
         self.assertEqual(jobs_controller.format_job(job), result)
+
+    def test_page_from_offset(self):
+        self.assertEqual(
+            jobs_controller.page_from_offset(offset=0, page_size=None), 1)
+        self.assertEqual(
+            jobs_controller.page_from_offset(offset=0, page_size=1), 1)
+        self.assertEqual(
+            jobs_controller.page_from_offset(offset=1, page_size=1), 2)
+        self.assertEqual(
+            jobs_controller.page_from_offset(offset=1, page_size=10), 1)
+        self.assertEqual(
+            jobs_controller.page_from_offset(offset=0, page_size=10), 1)
+        self.assertEqual(
+            jobs_controller.page_from_offset(offset=10, page_size=10), 2)
+        self.assertEqual(
+            jobs_controller.page_from_offset(offset=11, page_size=10), 2)
+        self.assertEqual(
+            jobs_controller.page_from_offset(offset=10, page_size=1), 11)
 
 
 if __name__ == '__main__':

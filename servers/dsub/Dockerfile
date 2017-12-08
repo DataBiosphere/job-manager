@@ -7,9 +7,12 @@ ENV VIRTUAL_ENV /env
 ENV PATH /env/bin:$PATH
 
 WORKDIR /app
-ADD requirements.txt /app/
-RUN pip install -r requirements.txt
-ADD jobs /app/jobs
+ADD jm_utils /app/jm_utils
+ADD dsub/jobs /app/jobs
+ADD dsub/requirements.txt /app/jobs
+RUN cd jobs && pip install -r requirements.txt
+# We installed jm_utils so don't need local copy anymore, which breaks imports
+RUN rm -rf jm_utils
 
 # Missing required arguments -b PORT, -e ... which must be provided by the
 # docker image user.

@@ -4,6 +4,7 @@ from flask import current_app
 from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
 from datetime import datetime
 
+from jm_utils import page_tokens
 from jobs.models.query_jobs_result import QueryJobsResult
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_response import QueryJobsResponse
@@ -15,6 +16,7 @@ from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 
 CROMWELL_DONE_STATUS = 'Done'
 API_SUCCESS_STATUS = 'Succeeded'
+_DEFAULT_PAGE_SIZE = 64
 
 
 def abort_job(id):
@@ -157,17 +159,35 @@ def query_jobs(body):
     :rtype: QueryJobsResponse
     """
     query = QueryJobsRequest.from_dict(body)
-    query_url = _get_base_url() + '/query'
-    query_params = format_query_json(query)
+
+    page_size = query.page_size
+    if not page_size:
+        page_size = _DEFAULT_PAGE_SIZE
+    offset = page_tokens.decode(query.page_token)
+    page = page_from_offset(offset, page_size)
+    params_for_cromwell = cromwell_query_params(query, page, page_size)
+
     response = requests.post(
-        query_url, json=query_params, auth=_get_user_auth())
+        _get_base_url() + '/query',
+        json=params_for_cromwell,
+        auth=_get_user_auth())
     results = [format_job(job) for job in response.json()['results']]
     # Reverse so that newest jobs are listed first
     results.reverse()
-    return QueryJobsResponse(results=results)
+
+    next_offset = offset + page_size
+    next_page_token = page_tokens.encode(next_offset)
+
+    return QueryJobsResponse(results=results, next_page_token=next_page_token)
 
 
-def format_query_json(query):
+def page_from_offset(offset, page_size):
+    if not page_size:
+        page_size = _DEFAULT_PAGE_SIZE
+    return 1 + offset / page_size
+
+
+def cromwell_query_params(query, page, page_size):
     query_params = []
     if query.start:
         query_params.append({'start': query.start})
@@ -178,6 +198,8 @@ def format_query_json(query):
     if query.statuses:
         statuses = [{'status': s} for s in set(query.statuses)]
         query_params.extend(statuses)
+    query_params.append({'pageSize': str(page_size)})
+    query_params.append({'page': str(page)})
     return query_params
 
 
