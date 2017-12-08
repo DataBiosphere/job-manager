@@ -337,6 +337,7 @@ class TestJobsController(BaseTestCase):
         Query for job and task-level metadata for a specified job
         """
         workflow_id = 'id'
+        subworkflow_id = 'subworkflow_id'
         workflow_name = 'test'
         status = 'Succeeded'
         timestamp = '2017-11-08T05:06:41.424Z'
@@ -368,7 +369,8 @@ class TestJobsController(BaseTestCase):
                         'stdout': std_out,
                         'returnCode': return_code,
                         'inputs': inputs,
-                        'attempt': attempts
+                        'attempt': attempts,
+                        'subWorkflowId': subworkflow_id
                     }]
                 },
                 'inputs': inputs,
@@ -405,7 +407,7 @@ class TestJobsController(BaseTestCase):
             }],
             'tasks': [{
                 'name': 'analysis',
-                'jobId': job_id,
+                'executionId': job_id,
                 'executionStatus': 'Succeeded',
                 'start': response_timestamp,
                 'end': response_timestamp,
@@ -413,7 +415,8 @@ class TestJobsController(BaseTestCase):
                 'stdout': std_out,
                 'inputs': jobs_controller.update_key_names(inputs),
                 'returnCode': return_code,
-                'attempts': attempts
+                'attempts': attempts,
+                'jobId': subworkflow_id
             }]
         }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)

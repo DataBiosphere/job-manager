@@ -100,12 +100,14 @@ def get_job(id):
         format_task(task_name, task_metadata[-1])
         for task_name, task_metadata in job.get('calls', {}).items()
     ]
+    submission = _parse_datetime(job.get('submission'))
+    start = _parse_datetime(job.get('start'))
     return JobMetadataResponse(
         id=id,
         name=job.get('workflowName'),
         status=job.get('status'),
-        submission=_parse_datetime(job.get('submission')),
-        start=_parse_datetime(job.get('start')),
+        submission=submission if submission else start,
+        start=start,
         end=_parse_datetime(job.get('end')),
         inputs=update_key_names(job.get('inputs', {})),
         outputs=update_key_names(job.get('outputs', {})),
@@ -117,7 +119,7 @@ def get_job(id):
 def format_task(task_name, task_metadata):
     return TaskMetadata(
         name=remove_workflow_name(task_name),
-        job_id=task_metadata.get('jobId'),
+        execution_id=task_metadata.get('jobId'),
         execution_status=cromwell_to_api_status(
             task_metadata.get('executionStatus')),
         start=_parse_datetime(task_metadata.get('start')),
@@ -126,7 +128,8 @@ def format_task(task_name, task_metadata):
         stdout=task_metadata.get('stdout'),
         inputs=update_key_names(task_metadata.get('inputs', {})),
         return_code=task_metadata.get('returnCode'),
-        attempts=task_metadata.get('attempt'))
+        attempts=task_metadata.get('attempt'),
+        job_id=task_metadata.get('subWorkflowId'))
 
 
 def cromwell_to_api_status(status):
