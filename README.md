@@ -1,5 +1,7 @@
 # Job Manager
-See also the [development guide](#development) below.
+_This product is in Alpha and not yet ready for production use. We welcome all feedback!_
+
+See the [development guide](#development) below.
 
 The Job Manager is an API and UI for monitoring and managing jobs in a backend execution engine. 
 
