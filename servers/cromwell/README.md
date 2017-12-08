@@ -4,8 +4,11 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 
 ## Development
 For cromwell setup see the Cromwell README:
-1. Create a local job-manager dir: `mkdir /private/etc/job-manager/`
-1. Then add a config.json file with the Cromwell username and password:
+1. Set the `CROMWELL_URL` environment variable to specify which cromwell instance to use. Job Manager pulls workflow data from `https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1` by default:
+```
+export CROMWELL_URL=https://cromwell.test-cromwell.broadinstitute.org/api/workflows/v1
+```
+2. Add a file named `config.json` to `job-manager/servers/cromwell/jobs` that contains the username and password for the specified cromwell instance:
 ```
 {
   "cromwell_user" : "USERNAME",
