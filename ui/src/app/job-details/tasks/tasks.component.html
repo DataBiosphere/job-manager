@@ -12,8 +12,8 @@
     <ng-container mdColumnDef="name">
       <md-header-cell *mdHeaderCellDef> Name </md-header-cell>
       <md-cell *mdCellDef="let t">
-        <a class="title-link" *ngIf="t.subworkflowId" href="{{ '/jobs/' + t.subworkflowId }}">{{ t.name }}</a>
-        <p *ngIf="!t.subworkflowId">{{ t.name }}</p>
+        <a class="title-link" *ngIf="t.jobId" href="{{ '/jobs/' + t.jobId }}">{{ t.name }}</a>
+        <p *ngIf="!t.jobId">{{ t.name }}</p>
       </md-cell>
     </ng-container>
 

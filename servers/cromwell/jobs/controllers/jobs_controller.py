@@ -119,7 +119,7 @@ def get_job(id):
 def format_task(task_name, task_metadata):
     return TaskMetadata(
         name=remove_workflow_name(task_name),
-        job_id=task_metadata.get('jobId'),
+        execution_id=task_metadata.get('jobId'),
         execution_status=cromwell_to_api_status(
             task_metadata.get('executionStatus')),
         start=_parse_datetime(task_metadata.get('start')),
@@ -129,7 +129,7 @@ def format_task(task_name, task_metadata):
         inputs=update_key_names(task_metadata.get('inputs', {})),
         return_code=task_metadata.get('returnCode'),
         attempts=task_metadata.get('attempt'),
-        subworkflow_id=task_metadata.get('subWorkflowId'))
+        job_id=task_metadata.get('subWorkflowId'))
 
 
 def cromwell_to_api_status(status):

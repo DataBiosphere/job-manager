@@ -19,7 +19,7 @@ describe('TaskDetailsComponent', () => {
   let fixture: ComponentFixture<TestTasksComponent>;
   let task: TaskMetadata = {
     name: 'task1',
-    jobId: '',
+    executionId: '',
     executionStatus: 'Failed',
     start: new Date("2017-11-14T13:00:00"),
     end: new Date("2017-11-14T13:15:00"),
@@ -29,7 +29,7 @@ describe('TaskDetailsComponent', () => {
     stderr: 'gs://test-bucket/stderr.txt',
     stdout: 'gs://test-bucket/stdout.txt',
     inputs: {},
-    subworkflowId: 'subworkflow123'
+    jobId: 'subworkflow123'
   };
   let testTasks: TaskMetadata[] = [task];
 
@@ -68,7 +68,7 @@ describe('TaskDetailsComponent', () => {
     expect(de.query(By.css('.title-link')).nativeElement.textContent)
       .toContain(task.name);
     expect(de.query(By.css('.title-link')).nativeElement.href)
-      .toContain('/jobs/' + task.subworkflowId);
+      .toContain('/jobs/' + task.jobId);
     expect(de.query(By.css('.task-status-tooltip')).attributes['ng-reflect-message'])
       .toContain('Failed');
     expect(de.queryAll(By.css('.mat-column-startTime'))[1].nativeElement.textContent)
