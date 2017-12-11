@@ -6,6 +6,7 @@ from dsub.commands import ddel, dstat
 from dsub.providers import google, local, stub
 from dsub.lib import resources
 from flask import current_app, request
+import requests
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound, NotImplemented, PreconditionFailed, Unauthorized
 
 from jm_utils import page_tokens
@@ -19,6 +20,9 @@ from jobs.models.query_jobs_result import QueryJobsResult
 
 _DEFAULT_PAGE_SIZE = 64
 _MAX_PAGE_SIZE = 64
+
+NOT_FOUND_CODE = requests.codes.not_found
+FORBIDDEN_CODE = requests.codes.forbidden
 
 
 def abort_job(id):
@@ -81,13 +85,16 @@ def get_job(id):
     proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
     provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
 
-    # dstat_job_producer returns a generator of lists of task dictionaries.
-    jobs = dstat.dstat_job_producer(
-        provider=provider,
-        statuses={'*'},
-        job_ids={job_id},
-        task_ids={task_id} if task_id else None,
-        full_output=True).next()
+    jobs = []
+    try:
+        jobs = dstat.dstat_job_producer(
+            provider=provider,
+            statuses={'*'},
+            job_ids={job_id},
+            task_ids={task_id} if task_id else None,
+            full_output=True).next()
+    except apiclient.errors.HttpError as e:
+        _handle_http_error(e)
 
     # A job_id and task_id define a unique job (should only be one)
     if len(jobs) > 1:
@@ -139,14 +146,7 @@ def query_jobs(body):
             full_output=True,
             max_tasks=max_tasks).next()
     except apiclient.errors.HttpError as e:
-        # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
-        # provider-specific error translation down into dstat.
-        if e.resp.status == requests.codes.not_found:
-            raise NotFound('Project "{}" not found'.format(query.parent_id))
-        elif e.resp.status == requests.codes.forbidden:
-            raise Forbidden('Permission denied for project "{}"'.format(
-                query.parent_id))
-        raise InternalServerError("Unexpected failure querying dsub jobs")
+        _handle_http_error(e)
 
     # This pagination strategy is very inefficient and brittle. Paginating
     # the entire collection of jobs requires O(n^2 / p) work, where n is the
@@ -182,6 +182,17 @@ def _auth_token():
 
 def _client():
     return current_app.config['CLIENT']
+
+
+def _handle_http_error(e):
+    # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
+    # provider-specific error translation down into dstat.
+    if e.resp.status == NOT_FOUND_CODE:
+        raise NotFound('Project "{}" not found'.format(query.parent_id))
+    elif e.resp.status == FORBIDDEN_CODE:
+        raise Forbidden('Permission denied for project "{}"'.format(
+            query.parent_id))
+    raise InternalServerError("Unexpected failure running dstat")
 
 
 def _provider_type():
