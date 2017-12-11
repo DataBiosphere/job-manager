@@ -84,7 +84,7 @@ class BaseTestCases:
             self.assert_status(resp, 200)
             return JobMetadataResponse.from_dict(resp.json)
 
-        def must_query_jobs(self, parameters, parent_id=None):
+        def must_query_jobs(self, parameters):
             resp = self.client.open(
                 '/jobs/query',
                 method='POST',

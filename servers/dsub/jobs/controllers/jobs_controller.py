@@ -21,9 +21,6 @@ from jobs.models.query_jobs_result import QueryJobsResult
 _DEFAULT_PAGE_SIZE = 64
 _MAX_PAGE_SIZE = 64
 
-NOT_FOUND_CODE = requests.codes.not_found
-FORBIDDEN_CODE = requests.codes.forbidden
-
 
 def abort_job(id):
     """Abort a job by API Job ID.
@@ -93,8 +90,8 @@ def get_job(id):
             job_ids={job_id},
             task_ids={task_id} if task_id else None,
             full_output=True).next()
-    except apiclient.errors.HttpError as e:
-        _handle_http_error(e)
+    except apiclient.errors.HttpError as error:
+        _handle_http_error(error, proj_id)
 
     # A job_id and task_id define a unique job (should only be one)
     if len(jobs) > 1:
@@ -145,8 +142,8 @@ def query_jobs(body):
             labels=dstat_params['labels'],
             full_output=True,
             max_tasks=max_tasks).next()
-    except apiclient.errors.HttpError as e:
-        _handle_http_error(e)
+    except apiclient.errors.HttpError as error:
+        _handle_http_error(error, query.parent_id)
 
     # This pagination strategy is very inefficient and brittle. Paginating
     # the entire collection of jobs requires O(n^2 / p) work, where n is the
@@ -184,14 +181,13 @@ def _client():
     return current_app.config['CLIENT']
 
 
-def _handle_http_error(e):
+def _handle_http_error(error, parent_id):
     # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
     # provider-specific error translation down into dstat.
-    if e.resp.status == NOT_FOUND_CODE:
-        raise NotFound('Project "{}" not found'.format(query.parent_id))
-    elif e.resp.status == FORBIDDEN_CODE:
-        raise Forbidden('Permission denied for project "{}"'.format(
-            query.parent_id))
+    if error.resp.status == requests.codes.not_found:
+        raise NotFound('Project "{}" not found'.format(parent_id))
+    elif error.resp.status == requests.codes.forbidden:
+        raise Forbidden('Permission denied for project "{}"'.format(parent_id))
     raise InternalServerError("Unexpected failure running dstat")
 
 
