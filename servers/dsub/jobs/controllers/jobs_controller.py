@@ -118,6 +118,8 @@ def query_jobs(body):
         query.page_size = _DEFAULT_PAGE_SIZE
     elif query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
+    if query.start:
+        query.start = query.start.replace(tzinfo=tzlocal())
     query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
     provider = providers.get_provider(_provider_type(), query.parent_id,
                                       _auth_token())
