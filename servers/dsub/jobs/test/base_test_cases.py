@@ -333,9 +333,11 @@ class BaseTestCases:
             fourth_job = self.start_job('echo FOURTH_JOB', name='job4')
 
             self.assert_query_matches(
-                QueryJobsRequest(start=first_time), [first_job, second_job, third_job, fourth_job])
+                QueryJobsRequest(start=first_time),
+                [first_job, second_job, third_job, fourth_job])
             self.assert_query_matches(
-                QueryJobsRequest(start=second_time), [second_job, third_job, fourth_job])
+                QueryJobsRequest(start=second_time),
+                [second_job, third_job, fourth_job])
             self.assert_query_matches(
                 QueryJobsRequest(start=third_time), [third_job, fourth_job])
             self.assert_query_matches(
