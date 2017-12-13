@@ -12,8 +12,6 @@ import {JobListModule} from './job-list/job-list.module';
 import {SignInModule} from './sign-in/sign-in.module';
 import {ProjectsModule} from './projects/projects.module';
 
-import {environment} from '../environments/environment';
-
 @NgModule({
   imports: [
     AppRoutingModule,

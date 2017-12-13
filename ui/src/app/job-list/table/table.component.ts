@@ -13,8 +13,6 @@ import {DataSource} from '@angular/cdk/collections';
 import {
   MdPaginator,
   MdSnackBar,
-  MdSnackBarConfig,
-  MdTabChangeEvent,
   PageEvent
 } from '@angular/material';
 import {Observable} from 'rxjs/Observable';
@@ -29,9 +27,9 @@ import {JobManagerService} from '../../core/job-manager.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/error-message-formatter.pipe';
-import {JobStatusImage, StatusGroup, LabelColumn} from '../../shared/common';
+import {JobStatusImage, PRIMARY_COLUMNS} from '../../shared/common';
 import {JobListView} from '../../shared/job-stream';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Params} from '@angular/router';
 import {environment} from '../../../environments/environment';
 
 @Component({
@@ -41,35 +39,18 @@ import {environment} from '../../../environments/environment';
 })
 export class JobsTableComponent implements OnInit {
   @Input() jobs: BehaviorSubject<JobListView>;
-  @Output() onStatusTabChange = new EventEmitter<StatusGroup>();
   @Output() onPage = new EventEmitter<PageEvent>();
 
 
   private mouseoverJob: QueryJobsResult;
-  private reverseStatusGroupStringMap: Map<string, StatusGroup> = new Map([
-    ["Active Jobs", StatusGroup.Active],
-    ["Failed", StatusGroup.Failed],
-    ["Completed", StatusGroup.Completed]
-  ]);
 
-  public statusGroup = StatusGroup;
   public additionalColumns: string[] = [];
   public allSelected: boolean = false;
-  public currentStatusGroup: StatusGroup;
   public selectedJobs: QueryJobsResult[] = [];
-  public statusGroupStringMap: Map<StatusGroup, string> = new Map([
-    [StatusGroup.Active, "Active Jobs"],
-    [StatusGroup.Failed, "Failed"],
-    [StatusGroup.Completed, "Completed"]
-  ]);
 
   dataSource: JobsDataSource | null;
   // TODO(alanhwang): Allow these columns to be configured by the user
-  displayedColumns = [
-    'Job',
-    'Status',
-    'Submitted',
-  ];
+  displayedColumns = PRIMARY_COLUMNS;
 
   @ViewChild(MdPaginator) paginator: MdPaginator;
   @ViewChild('filter') filter: ElementRef;
@@ -83,10 +64,6 @@ export class JobsTableComponent implements OnInit {
 
   ngOnInit() {
     this.dataSource = new JobsDataSource(this.jobs, this.paginator);
-    this.currentStatusGroup = this.route.snapshot.queryParams['statusGroup'];
-    if (!this.currentStatusGroup) {
-      this.currentStatusGroup = StatusGroup.Active;
-    }
     if (environment.additionalColumns) {
       this.additionalColumns = environment.additionalColumns;
     }
@@ -94,13 +71,6 @@ export class JobsTableComponent implements OnInit {
       this.displayedColumns.push(column);
     }
     this.paginator.page.subscribe((e) => this.onPage.emit(e));
-    Observable.fromEvent(this.filter.nativeElement, 'keyup')
-      .debounceTime(150)
-      .distinctUntilChanged()
-      .subscribe(() => {
-        if (!this.dataSource) { return; }
-        this.dataSource.filter = this.filter.nativeElement.value;
-      });
   }
 
   private onJobsChanged(): void {
@@ -133,11 +103,6 @@ export class JobsTableComponent implements OnInit {
     return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
   }
 
-
-  getStatusUrl(status: JobStatus): string {
-    return JobStatusImage[status];
-  }
-
   getJobLabel(job: QueryJobsResult, label: string): string {
     if (job.labels && job.labels[label]) {
       return job.labels[label];
@@ -145,19 +110,12 @@ export class JobsTableComponent implements OnInit {
     return "";
   }
 
-  getTabSelectedIndex(): number {
-    switch(this.currentStatusGroup) {
-      case StatusGroup.Active: {
-        return 0;
-      }
-      case StatusGroup.Failed: {
-        return 1;
-      }
+  getQueryParams(): Params {
+    return this.route.snapshot.queryParams;
+  }
 
-      case StatusGroup.Completed: {
-        return 2;
-      }
-    }
+  getStatusUrl(status: JobStatus): string {
+    return JobStatusImage[status];
   }
 
   isSelected(job: QueryJobsResult): boolean {
@@ -173,12 +131,6 @@ export class JobsTableComponent implements OnInit {
 
   showDropdownArrow(job: QueryJobsResult): boolean {
     return job == this.mouseoverJob;
-  }
-
-  toggleActive(event: MdTabChangeEvent): void {
-    this.currentStatusGroup = this.reverseStatusGroupStringMap.get(event.tab.textLabel);
-    this.onStatusTabChange.emit(this.currentStatusGroup);
-    this.onJobsChanged();
   }
 
   toggleMouseOver(job: QueryJobsResult): void {

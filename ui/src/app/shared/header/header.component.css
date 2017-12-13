@@ -1,0 +1,22 @@
+.content {
+  margin-left: 2rem;
+}
+
+.query-form {
+  width: 100%;
+}
+
+.query-input {
+  width: 18rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.search-button {
+  margin-right: 3rem;
+}
+
+.status-button {
+  width: 7rem;
+  margin-right: .5rem;
+}

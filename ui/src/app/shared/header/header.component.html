@@ -1,0 +1,52 @@
+<div class="content">
+  <md-form-field class="query-form">
+    <md-chip-list #chipList>
+      <md-chip *ngFor="let chipKey of getChipKeys()"
+               [mdMenuTriggerFor]="menu"
+               (remove)="removeChip(chipKey)"
+               (click)="setCurrentChip(chipKey)">
+        {{getDisplayValue(chipKey)}}
+        <img mdChipRemove
+             src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_18dp.png">
+      </md-chip>
+      <md-menu #menu="mdMenu" [overlapTrigger]="false" class="wide-menu">
+        <md-input-container class="query-input">
+          <input mdInput
+                 placeholder="Equals"
+                 type="search"
+                 [(ngModel)]="currentChipValue"
+                 (keyup.enter)="completeChip()"
+                 (click)="$event.stopPropagation()"/>
+        </md-input-container>
+      </md-menu>
+      <input mdInput
+             placeholder="Filter jobs..."
+             [(ngModel)]="inputValue"
+             value="{{inputValue}}"
+             [mdAutocomplete]="auto"
+             [mdChipInputFor]="chipList"
+             [mdChipInputSeparatorKeyCodes]="separatorKeysCodes"
+             [mdChipInputAddOnBlur]="false"
+             (mdChipInputTokenEnd)="addChip($event)"
+             [formControl]="control"/>
+      <md-autocomplete #auto="mdAutocomplete">
+        <md-option
+          *ngFor="let option of filteredOptions | async"
+          [value]="option"
+          (click)="stageChip(option)">
+          {{ option }}
+        </md-option>
+      </md-autocomplete>
+    </md-chip-list>
+    <button md-icon-button mdSuffix class="search-button" (click)="search()">
+      <img src="https://www.gstatic.com/images/icons/material/system/1x/search_grey600_24dp.png">
+    </button>
+  </md-form-field>
+
+  <div *ngIf="shouldDisplayStatusButtons()">
+    <button md-raised-button class="status-button" (click)="showActiveJobs()">ACTIVE</button>
+    <button md-raised-button class="status-button" (click)="showFailedJobs()">FAILED</button>
+    <button md-raised-button class="status-button" (click)="showCompletedJobs()">COMPLETED</button>
+  </div>
+</div>
+
