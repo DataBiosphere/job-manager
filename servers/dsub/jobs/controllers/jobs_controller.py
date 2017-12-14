@@ -131,7 +131,7 @@ def query_jobs(body):
 
     # Request one extra job to confirm whether there's more data to return
     # in a subsequent page.
-    offset = page_tokens.decode(query.page_token)
+    offset = page_tokens.decode_offset(query.page_token) or 0
     max_tasks = offset + query.page_size + 1
 
     jobs = []
@@ -162,7 +162,7 @@ def query_jobs(body):
     next_offset = offset + query.page_size
     if len(jobs) > next_offset:
         jobs = jobs[offset:next_offset]
-        next_page_token = page_tokens.encode(next_offset)
+        next_page_token = page_tokens.encode_offset(next_offset)
     elif len(jobs) == next_offset:
         jobs = jobs[offset:]
 
