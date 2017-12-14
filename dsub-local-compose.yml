@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   ui:
     extends:
@@ -10,8 +10,8 @@ services:
     command: ["npm", "run-script", "ng", "--", "serve", "--host", "ui", "--env=dsub_local"]
   dsub:
     build:
-      context: servers/dsub
-      dockerfile: Dockerfile.local
+      context: servers
+      dockerfile: dsub/Dockerfile.local
     extends:
       file: common-compose.yml
       service: dsub

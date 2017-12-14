@@ -19,7 +19,7 @@ describe('TaskDetailsComponent', () => {
   let fixture: ComponentFixture<TestTasksComponent>;
   let task: TaskMetadata = {
     name: 'task1',
-    jobId: '',
+    executionId: '',
     executionStatus: 'Failed',
     start: new Date("2017-11-14T13:00:00"),
     end: new Date("2017-11-14T13:15:00"),
@@ -28,7 +28,8 @@ describe('TaskDetailsComponent', () => {
     returnCode: 0,
     stderr: 'gs://test-bucket/stderr.txt',
     stdout: 'gs://test-bucket/stdout.txt',
-    inputs: {}
+    inputs: {},
+    jobId: 'subworkflow123'
   };
   let testTasks: TaskMetadata[] = [task];
 
@@ -64,8 +65,10 @@ describe('TaskDetailsComponent', () => {
   it('should display task data in each row', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('.mat-column-name'))[1].nativeElement.textContent)
-      .toEqual(task.name);
+    expect(de.query(By.css('.title-link')).nativeElement.textContent)
+      .toContain(task.name);
+    expect(de.query(By.css('.title-link')).nativeElement.href)
+      .toContain('/jobs/' + task.jobId);
     expect(de.query(By.css('.task-status-tooltip')).attributes['ng-reflect-message'])
       .toContain('Failed');
     expect(de.queryAll(By.css('.mat-column-startTime'))[1].nativeElement.textContent)

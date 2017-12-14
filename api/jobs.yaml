@@ -194,7 +194,7 @@ definitions:
       name:
         type: string
         description: The name of the job
-      jobId:
+      executionId:
         type: string
         description: Backend-specific job ID
       failures:
@@ -213,6 +213,10 @@ definitions:
       attempts:
         type: integer
         description: Number of times the task was run
+      jobId:
+        type: string
+        description: Id of the job corresponding to this task, if this task is a nested child job. Expresses a child:parent relationship between this job and the job containing this task.
+
   FailureMessage:
     description: Failure messages
     required:

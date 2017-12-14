@@ -1,4 +1,5 @@
 import connexion
+import datetime
 from dsub.commands import dsub
 from dsub.lib import job_util, param_util
 import flask
@@ -84,7 +85,7 @@ class BaseTestCases:
             self.assert_status(resp, 200)
             return JobMetadataResponse.from_dict(resp.json)
 
-        def must_query_jobs(self, parameters, parent_id=None):
+        def must_query_jobs(self, parameters):
             resp = self.client.open(
                 '/jobs/query',
                 method='POST',
@@ -317,3 +318,27 @@ class BaseTestCases:
                 QueryJobsRequest(labels={
                     'overlap_key': 'overlap_value'
                 }), [label_job, other_label_job])
+
+        def test_query_jobs_by_start(self):
+            first_time = datetime.datetime.now()
+            first_job = self.start_job('echo FIRST_JOB', name='job1')
+            time.sleep(1)
+            second_time = datetime.datetime.now()
+            second_job = self.start_job('echo SECOND_JOB', name='job2')
+            time.sleep(1)
+            third_time = datetime.datetime.now()
+            third_job = self.start_job('echo THIRD_JOB', name='job3')
+            time.sleep(1)
+            fourth_time = datetime.datetime.now()
+            fourth_job = self.start_job('echo FOURTH_JOB', name='job4')
+
+            self.assert_query_matches(
+                QueryJobsRequest(start=first_time),
+                [first_job, second_job, third_job, fourth_job])
+            self.assert_query_matches(
+                QueryJobsRequest(start=second_time),
+                [second_job, third_job, fourth_job])
+            self.assert_query_matches(
+                QueryJobsRequest(start=third_time), [third_job, fourth_job])
+            self.assert_query_matches(
+                QueryJobsRequest(start=fourth_time), [fourth_job])

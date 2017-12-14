@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import datetime
 from dsub.providers import google
+import flask
 import operator
 import unittest
 
@@ -67,6 +68,18 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
             outputs=outputs,
             outputs_recursive=outputs_recursive,
             wait=wait)
+
+    def test_query_jobs_invalid_project(self):
+        params = QueryJobsRequest(
+            statuses=['Succeeded'], parent_id='some-bogus-project-id')
+        resp = self.client.open(
+            '/jobs/query',
+            method='POST',
+            data=flask.json.dumps(params),
+            content_type='application/json')
+        self.assert_status(resp, 404)
+        self.assertEqual(resp.json['detail'],
+                         'Project \"some-bogus-project-id\" not found')
 
 
 if __name__ == '__main__':

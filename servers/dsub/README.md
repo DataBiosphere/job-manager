@@ -51,7 +51,13 @@ latter lists only direct dependencies. To regenerate run:
 ```
 virtualenv --python=/usr/bin/python2 /tmp/dsub-server-requirements
 source /tmp/dsub-server-requirements/bin/activate
-pip install -r servers/dsub/requirements-to-freeze.txt
-pip freeze | sort > servers/dsub/requirements.txt
+```
+Then, from the dsub directory of this repo:
+```
+pip install -r requirements-to-freeze.txt
+pip freeze | sort -f | sed 's/^jm-utils.*/\.\.\/jm_utils/g' > requirements.txt
 deactivate
 ```
+
+The sed command above replaces jm-utils=x.y.z with ../jm_utils, which is required
+to allow pip to install from the local jm_utils directory.

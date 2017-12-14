@@ -6,10 +6,12 @@ from dsub.commands import ddel, dstat
 from dsub.providers import google, local, stub
 from dsub.lib import resources
 from flask import current_app, request
+import requests
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound, NotImplemented, PreconditionFailed, Unauthorized
 
+from jm_utils import page_tokens
 from jobs.common import execute_redirect_stdout
-from jobs.controllers.utils import failures, job_ids, job_statuses, labels, logs, page_tokens, providers, query_parameters
+from jobs.controllers.utils import failures, job_ids, job_statuses, labels, logs, providers, query_parameters
 from jobs.models.failure_message import FailureMessage
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
@@ -80,13 +82,16 @@ def get_job(id):
     proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
     provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
 
-    # dstat_job_producer returns a generator of lists of task dictionaries.
-    jobs = dstat.dstat_job_producer(
-        provider=provider,
-        statuses={'*'},
-        job_ids={job_id},
-        task_ids={task_id} if task_id else None,
-        full_output=True).next()
+    jobs = []
+    try:
+        jobs = dstat.dstat_job_producer(
+            provider=provider,
+            statuses={'*'},
+            job_ids={job_id},
+            task_ids={task_id} if task_id else None,
+            full_output=True).next()
+    except apiclient.errors.HttpError as error:
+        _handle_http_error(error, proj_id)
 
     # A job_id and task_id define a unique job (should only be one)
     if len(jobs) > 1:
@@ -113,6 +118,8 @@ def query_jobs(body):
         query.page_size = _DEFAULT_PAGE_SIZE
     elif query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
+    if query.start:
+        query.start = query.start.replace(tzinfo=tzlocal())
     query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
     provider = providers.get_provider(_provider_type(), query.parent_id,
                                       _auth_token())
@@ -122,13 +129,10 @@ def query_jobs(body):
     if query.page_size <= 0:
         raise ValueError("The page_size parameter must be positive")
 
-    offset = 0
     # Request one extra job to confirm whether there's more data to return
     # in a subsequent page.
-    max_tasks = query.page_size + 1
-    if query.page_token:
-        offset = page_tokens.decode(query.page_token)
-        max_tasks += offset
+    offset = page_tokens.decode(query.page_token)
+    max_tasks = offset + query.page_size + 1
 
     jobs = []
     try:
@@ -140,15 +144,8 @@ def query_jobs(body):
             labels=dstat_params['labels'],
             full_output=True,
             max_tasks=max_tasks).next()
-    except apiclient.errors.HttpError as e:
-        # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
-        # provider-specific error translation down into dstat.
-        if e.resp.status == requests.codes.not_found:
-            raise NotFound('Project "{}" not found'.format(query.parent_id))
-        elif e.resp.status == requests.codes.forbidden:
-            raise Forbidden('Permission denied for project "{}"'.format(
-                query.parent_id))
-        raise InternalServerError("Unexpected failure querying dsub jobs")
+    except apiclient.errors.HttpError as error:
+        _handle_http_error(error, query.parent_id)
 
     # This pagination strategy is very inefficient and brittle. Paginating
     # the entire collection of jobs requires O(n^2 / p) work, where n is the
@@ -184,6 +181,16 @@ def _auth_token():
 
 def _client():
     return current_app.config['CLIENT']
+
+
+def _handle_http_error(error, parent_id):
+    # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
+    # provider-specific error translation down into dstat.
+    if error.resp.status == requests.codes.not_found:
+        raise NotFound('Project "{}" not found'.format(parent_id))
+    elif error.resp.status == requests.codes.forbidden:
+        raise Forbidden('Permission denied for project "{}"'.format(parent_id))
+    raise InternalServerError("Unexpected failure running dstat")
 
 
 def _provider_type():

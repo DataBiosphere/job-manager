@@ -4,8 +4,11 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 
 ## Development
 For cromwell setup see the Cromwell README:
-1. Create a local job-manager dir: `mkdir /private/etc/job-manager/`
-1. Then add a config.json file with the Cromwell username and password:
+1. Set the `CROMWELL_URL` environment variable to specify which cromwell instance to use. Job Manager pulls workflow data from `https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1` by default:
+```
+export CROMWELL_URL=https://cromwell.test-cromwell.broadinstitute.org/api/workflows/v1
+```
+2. Add a file named `config.json` to `job-manager/servers/cromwell/jobs` that contains the username and password for the specified cromwell instance:
 ```
 {
   "cromwell_user" : "USERNAME",
@@ -28,7 +31,13 @@ latter lists only direct dependencies. To regenerate run:
 ```
 virtualenv --python=/usr/bin/python2 /tmp/cromwell-server-requirements
 source /tmp/cromwell-server-requirements/bin/activate
-pip install -r servers/cromwell/requirements-to-freeze.txt
-pip freeze | sort > servers/cromwell/requirements.txt
+```
+Then, from the cromwell directory in this repo:
+```
+pip install -r requirements-to-freeze.txt
+pip freeze | sort -f | sed 's/^jm-utils.*/\.\.\/jm_utils/g' > requirements.txt
 deactivate
 ```
+
+The sed command above replaces jm-utils=x.y.z with ../jm_utils, which is required
+to allow pip to install from the local jm_utils directory.

@@ -1,4 +1,4 @@
-certifi==2017.7.27.1
+certifi==2017.11.5
 chardet==3.0.4
 click==6.7
 clickclick==1.2.2
@@ -9,7 +9,8 @@ gunicorn==19.7.1
 idna==2.6
 inflection==0.3.1
 itsdangerous==0.24
-Jinja2==2.9.6
+Jinja2==2.10
+../jm_utils
 jsonschema==2.6.0
 MarkupSafe==1.0
 pathlib==1.0.1

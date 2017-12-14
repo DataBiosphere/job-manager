@@ -11,7 +11,7 @@
     <md-card-title>Status</md-card-title>
     <md-card-content>
       <p><b>
-        {{ job.status }}
+        {{ job.status }}:
         <ng-container *ngIf="numTasks > 0">
           {{ numCompletedTasks }} of {{ numTasks }} tasks completed
         </ng-container>
@@ -19,7 +19,7 @@
       <p id="submitted" *ngIf="job.submission">Submitted {{ job.submission | jmShortDateTime }}</p>
       <p id="started" *ngIf="job.start">
         Started {{ job.start | jmShortDateTime }}
-        ({{ job.submission | jmDuration: job.end }})
+        ({{ job.start | jmDuration: job.end }})
       </p>
       <p id="ended" *ngIf="job.end">Ended {{ job.end | jmShortDateTime }}</p>
     </md-card-content>

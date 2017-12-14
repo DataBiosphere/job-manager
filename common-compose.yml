@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   ui:
     build:
@@ -34,11 +34,10 @@ services:
     command: ["-b", ":8190"]
     environment:
       - PATH_PREFIX=/api/v1
-      - CROMWELL_CREDENTIALS=/etc/job-manager/config.json
-      - CROMWELL_URL=https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1
+      - CROMWELL_CREDENTIALS=/app/jobs/config.json
+      - CROMWELL_URL=${CROMWELL_URL:-https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1}
     volumes:
       - ./servers/cromwell/jobs:/app/jobs
-      - /private/etc/job-manager:/etc/job-manager
     ports:
       - 8190:8190
   jobs-proxy:
