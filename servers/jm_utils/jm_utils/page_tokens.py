@@ -1,37 +1,38 @@
+"""
+We implement the pagination token via base64-encoded JSON s.t. tokens are
+opaque to clients and enable us to make backwards compatible changes to our
+pagination implementation. Base64+JSON are used specifically as they are
+easily portable across language.
+"""
 import base64
 import datetime
 import json
 import numbers
 
-# We implement the pagination token via base64-encoded JSON s.t. tokens are
-# opaque to clients and enable us to make backwards compatible changes to our
-# pagination implementation. Base64+JSON are used specifically as they are
-# easily portable across language.
-
 
 def _encode(dictionary):
-    """Encodes any arbitrary dictionary into a jobs pagination token.
+    """Encodes any arbitrary dictionary into a pagination token.
 
     Args:
         dictionary: (dict) Dictionary to basee64-encode
     
     Returns:
-        (string) encoded page token representing a page of jobs
+        (string) encoded page token representing a page of items
     """
     # Strip ugly base64 padding.
     return base64.urlsafe_b64encode(json.dumps(dictionary)).rstrip('=')
 
 
 def _decode(token):
-    """Decodes the jobs pagination token.
+    """Decodes the pagination token.
 
     Args:
         token: (string) Base64 encoded JSON pagination token
 
     Returns:
-        (dict) The token dictionary representing a page of jobs.
+        (dict) The token dictionary representing a page of items.
     """
-    if not token:
+    if token is None:
         return None
     # Pad the token out to be divisible by 4.
     padded_token = token + '=' * (4 - (len(token) % 4))
@@ -43,15 +44,15 @@ def _decode(token):
 
 
 def encode_offset(offset):
-    """Encodes an offset integer into a jobs pagination token.
+    """Encodes an offset integer into a pagination token.
     
     Args:
-      offset: (int) index into the overall list of jobs matching the query
+      offset: (int) index into the overall list of items matching the query
     
     Returns:
-      (string) encoded page token representing a page of jobs
+      (string) encoded page token representing a page of items.
     """
-    if offset == None:
+    if offset is None:
         return None
 
     if not isinstance(offset, numbers.Number) or offset <= 0:
@@ -60,17 +61,17 @@ def encode_offset(offset):
 
 
 def encode_created_before(created_before, offset_id=None):
-    """Encodes a created_before and optional offset job ID into a jobs pagination token.
+    """Encodes a created_before and optional offset ID into a pagination token.
     
     Args:
-      created_before: (datetime) The create-time of the first job to include in the associated page.
-      offset_id: (str) The unique job-id of the first job to include in the associated page. Needed
-        only if the previous page ends with a job containing the same create-time.
+      created_before: (datetime) The create-time of the first item to include in the associated page.
+      offset_id: (str) The unique ID of the first item to include in the associated page. Needed
+        only if the previous page ends with an item containing the same create-time.
     
     Returns:
-      (string) encoded page token representing a page of jobs.
+      (string) encoded page token representing a page of items.
     """
-    if not created_before:
+    if created_before is None:
         return None
 
     if not isinstance(created_before, datetime.datetime):
@@ -82,23 +83,23 @@ def encode_created_before(created_before, offset_id=None):
 
     epoch = datetime.datetime.utcfromtimestamp(0)
     seconds_epoch = int((created_before - epoch).total_seconds())
-    token_dict = {'created-before': seconds_epoch}
+    token_dict = {'cb': seconds_epoch}
     if offset_id:
-        token_dict['offset-id'] = offset_id
+        token_dict['oi'] = offset_id
     return _encode(token_dict)
 
 
 def decode_offset(token):
-    """Decodes the jobs offset-pagination token.
+    """Decodes the offset-pagination token.
 
     Args:
         token: (string) base64 encoded JSON offset-pagination token
 
     Returns:
-        (number) the pagination offset, defaults to 0 if token is None
+        (number) the pagination offset, defaults to None if token is None
     """
     token_dict = _decode(token)
-    if not token_dict:
+    if token_dict is None:
         return None
 
     offset = token_dict.get('of')
@@ -108,21 +109,23 @@ def decode_offset(token):
 
 
 def decode_created_before(token):
-    """Decode a created_before and optional offset job ID pagination token.
+    """Decode a created_before and optional offset ID pagination token.
 
     Args:
         token: (string) base64 encoded JSON offset-pagination token
 
     Returns:
-        (datetime) The create-time of the first job to include in this page.
-        (str) The unique job-id of the first job to include in this page.
+        (datetime, str) A tuple of created_before, offset_id, defaults to 
+            None if token is None. created_before is the create-time of the 
+            first item to include in this page. If present, offset_id is a 
+            unique ID of the first item to include in this page.
     """
     token_dict = _decode(token)
-    if not token_dict:
+    if token_dict is None:
         return None
 
-    created_before = token_dict.get('created-before')
-    offset_id = token_dict.get('offset-id')
+    created_before = token_dict.get('cb')
+    offset_id = token_dict.get('oi')
 
     if created_before and isinstance(created_before, numbers.Number):
         created_before = datetime.datetime.utcfromtimestamp(created_before)

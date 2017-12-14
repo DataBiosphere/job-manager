@@ -50,12 +50,12 @@ class TestJmUtils(unittest.TestCase):
             context.exception))
 
     def test_decode_created_before_invalid(self):
-        encoded = page_tokens._encode({'created-before': 'not-a-date'})
+        encoded = page_tokens._encode({'cb': 'not-a-date'})
         with self.assertRaises(ValueError) as context:
             page_tokens.decode_created_before(encoded)
         self.assertIn('Invalid created before in token JSON',
                       str(context.exception))
-        encoded = page_tokens._encode({'created-before': 10, 'offset-id': 123})
+        encoded = page_tokens._encode({'cb': 10, 'oi': 123})
         with self.assertRaises(ValueError) as context:
             page_tokens.decode_created_before(encoded)
         self.assertIn('Invalid offset ID in token JSON', str(
