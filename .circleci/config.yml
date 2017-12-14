@@ -52,11 +52,11 @@ jobs:
           name: Run dsub server tests
           command: |
             if [ -z "$GCLOUD_SERVICE_KEY" ]; then
-              tox -c ./servers/dsub -- \
+              tox -c ./servers/dsub -- -s \
                 --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle
             else
               echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > /home/circleci/gcloud-service-key.json
-              tox -c ./servers/dsub --
+              tox -c ./servers/dsub -- -s
               rm /home/circleci/gcloud-service-key.json
             fi
       - run:
