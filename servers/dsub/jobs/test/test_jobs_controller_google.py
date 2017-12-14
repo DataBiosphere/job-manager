@@ -45,7 +45,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
             query_params.labels.update(self.test_token_label)
         else:
             query_params.labels = self.test_token_label
-        super(TestJobsControllerGoogle, self).assert_query_matches(
+        return super(TestJobsControllerGoogle, self).assert_query_matches(
             query_params, job_list)
 
     def start_job(self,

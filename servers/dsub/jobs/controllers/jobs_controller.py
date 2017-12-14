@@ -1,17 +1,19 @@
 import apiclient
+import bisect
 import connexion
-from datetime import datetime
+import copy
+import datetime
 from dateutil.tz import tzlocal
 from dsub.commands import ddel, dstat
 from dsub.providers import google, local, stub
-from dsub.lib import resources
+from dsub.lib import param_util, resources
 from flask import current_app, request
 import requests
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound, NotImplemented, PreconditionFailed, Unauthorized
 
 from jm_utils import page_tokens
 from jobs.common import execute_redirect_stdout
-from jobs.controllers.utils import failures, job_ids, job_statuses, labels, logs, providers, query_parameters
+from jobs.controllers.utils import failures, job_ids, job_statuses, labels, logs, providers
 from jobs.models.failure_message import FailureMessage
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
@@ -72,10 +74,8 @@ def update_job_labels(id, body):
 
 def get_job(id):
     """Get a job's metadata by API Job ID.
-
     Args:
         id (str): Job ID to get
-
     Returns:
         JobMetadataResponse: Response containing relevant metadata
     """
@@ -100,6 +100,7 @@ def get_job(id):
     elif len(jobs) == 0:
         raise NotFound('Could not find any jobs with ID {}+{}'.format(
             job_id, task_id))
+
     return _metadata_response(id, jobs[0])
 
 
@@ -123,20 +124,110 @@ def query_jobs(body):
     query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
     provider = providers.get_provider(_provider_type(), query.parent_id,
                                       _auth_token())
-
-    dstat_params = query_parameters.api_to_dsub(query)
-
-    if query.page_size <= 0:
-        raise ValueError("The page_size parameter must be positive")
-
-    # Request one extra job to confirm whether there's more data to return
-    # in a subsequent page.
-    offset = page_tokens.decode_offset(query.page_token) or 0
-    max_tasks = offset + query.page_size + 1
+    create_time_max, offset_id = page_tokens.decode_create_time_max(
+        query.page_token) or (None, None)
 
     jobs = []
+    if offset_id and create_time_max:
+        if query.start and query.start > create_time_max:
+            raise ValueError(
+                "Invalid pagination token with query start parameter")
+
+        # The presence of offset_id indicates we are getting a page token in
+        # which multiple pages of jobs have the same create-time. We must
+        # get all jobs with that create time, sort them by Job ID and calcuate
+        # where the offset_id is located within the list.
+        create_time_jobs = _query_dstat_jobs_single_create_time(
+            provider, query, create_time_max)
+        sorted_jobs = sorted(
+            create_time_jobs, key=lambda j: j['job-id'] + j.get('task-id', ''))
+        offset_idx = _get_offset_id_index(offset_id, sorted_jobs)
+        new_jobs = sorted_jobs[offset_idx:]
+        if len(new_jobs) > query.page_size:
+            return _get_query_jobs_response(new_jobs[:query.page_size],
+                                            query.parent_id, create_time_max,
+                                            new_jobs[query.page_size])
+        elif query.start and query.start == create_time_max:
+            # We are at the end of pagination for the given query.start, return
+            # the results with no token
+            return _get_query_jobs_response(new_jobs, query.parent_id)
+        else:
+            jobs = new_jobs
+            create_time_max -= datetime.timedelta(seconds=1)
+
+    # Get one additional task than requested to determine if we should return a
+    # page_token
+    max_tasks = query.page_size - len(jobs) + 1
+    more_jobs = _query_dstat_jobs(
+        provider, query, create_time_max, max_tasks=max_tasks)
+    # We shouldn't get more jobs than requested, but if we do ignore
+    # all the extras.
+    if len(more_jobs) > max_tasks:
+        more_jobs = more_jobs[:max_tasks]
+
+    if len(more_jobs) == 1 and max_tasks == 1:
+        # We requested one job to see if there is another page, there is
+        # so return the existing jobs and a page_token
+        return _get_query_jobs_response(jobs, query.parent_id, create_time_max)
+    elif len(more_jobs) >= max_tasks:
+        last_create_time = more_jobs[-1]['create-time']
+        penultimate_create_time = more_jobs[-2]['create-time']
+        if last_create_time == penultimate_create_time:
+            # The last job in this page has the same create-time as the first
+            # job in the next page. We need to get all jobs with this
+            # create-time and provide an offset_id with the page_token.
+            create_time_jobs = _query_dstat_jobs_single_create_time(
+                provider, query, create_time_max)
+            sorted_jobs = sorted(
+                create_time_jobs,
+                key=lambda j: j['job-id'] + j.get('task-id', ''))
+            # Add all jobs with a different create-time to the already fetched
+            # jobs
+            create_time_cutoff = _get_create_time_index(
+                last_create_time, more_jobs)
+            jobs = jobs + more_jobs[:create_time_cutoff]
+            # Add enough jobs from the sorted list to fill the page and return
+            # a token with this create_time and the offset_id of the first job
+            # on the next page
+            needed_jobs = query.page_size - len(jobs)
+            jobs = jobs + sorted_jobs[:needed_jobs]
+            return _get_query_jobs_response(jobs, query.parent_id,
+                                            last_create_time,
+                                            sorted_jobs[needed_jobs])
+
+        else:
+            return _get_query_jobs_response(jobs + more_jobs[:-1],
+                                            query.parent_id, last_create_time)
+    else:
+        # Not enough jobs to fill the page, return everything we have
+        # and no page_token
+        return _get_query_jobs_response(jobs + more_jobs, query.parent_id)
+
+
+def _get_query_jobs_response(jobs,
+                             project_id,
+                             create_time_max=None,
+                             job_offset=None):
+    results = [_query_result(j, project_id) for j in jobs]
+    offset_id = job_offset['job-id'] + job_offset.get(
+        'task-id', '') if job_offset else None
+    token = page_tokens.encode_create_time_max(create_time_max, offset_id)
+    return QueryJobsResponse(results=results, next_page_token=token)
+
+    # If we're trying to paginate earlier than the query's minimum start time,
+    # don't return anything
+    if query.start and create_time_max and query.start > create_time_max:
+        return []
+
+
+def _query_dstat_jobs(provider, query, create_time_max, max_tasks=0):
+    labels = {param_util.LabelParam(k, v)
+              for (k, v) in query.labels.items()} if query.labels else set()
+    statuses = {job_statuses.api_to_dsub(s)
+                for s in query.statuses} if query.statuses else set()
+
     try:
-        jobs = dstat.dstat_job_producer(
+        return dstat.dstat_job_producer(
             provider=provider,
             statuses=dstat_params['statuses'],
             user_ids=dstat_params.get('user_ids'),
@@ -147,30 +238,15 @@ def query_jobs(body):
             labels=dstat_params.get('labels'),
             full_output=True,
             max_tasks=max_tasks).next()
-    except apiclient.errors.HttpError as error:
-        _handle_http_error(error, query.parent_id)
+    except apiclient.errors.HttpError as e:
+        _handle_http_error(e, query.parent_id)
 
-    # This pagination strategy is very inefficient and brittle. Paginating
-    # the entire collection of jobs requires O(n^2 / p) work, where n is the
-    # number of jobs and p is the page size. This is a first pass
-    # implementation which allows for quick lookup of the first page of
-    # operations which is the expected common usage pattern for clients.
-    # The current approach also uses a numeric offset, which is brittle in
-    # that new jobs may be created/deleted mid-pagination, causing other
-    # elements to be duplicated or disappear in the overall pagination
-    # stream.
-    # TODO(calbach): Fix the above issues once pagination is supported in
-    # the dstat library.
-    next_page_token = None
-    next_offset = offset + query.page_size
-    if len(jobs) > next_offset:
-        jobs = jobs[offset:next_offset]
-        next_page_token = page_tokens.encode_offset(next_offset)
-    elif len(jobs) == next_offset:
-        jobs = jobs[offset:]
 
-    results = [_query_result(j, query.parent_id) for j in jobs]
-    return QueryJobsResponse(results=results, next_page_token=next_page_token)
+def _query_dstat_jobs_single_create_time(provider, query, create_time):
+    # Copy the query object and modify its 'start' field
+    new_query = copy.deepcopy(query)
+    new_query.start = create_time
+    return _query_dstat_jobs(provider, new_query, create_time_max=create_time)
 
 
 def _auth_token():
@@ -182,18 +258,28 @@ def _auth_token():
     return None
 
 
-def _client():
-    return current_app.config['CLIENT']
+def _get_offset_id_index(offset_id, sorted_jobs):
+    job_ids = [j['job-id'] + j.get('task-id', '') for j in sorted_jobs]
+    return bisect.bisect_left(job_ids, offset_id)
 
 
-def _handle_http_error(error, parent_id):
+def _get_create_time_index(create_time, sorted_jobs):
+    create_times = [j['create-time'] for j in sorted_jobs]
+    return bisect.bisect_left(create_times, create_time)
+
+
+def _handle_http_error(error, proj_id):
     # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
     # provider-specific error translation down into dstat.
     if error.resp.status == requests.codes.not_found:
-        raise NotFound('Project "{}" not found'.format(parent_id))
+        raise NotFound('Project "{}" not found'.format(proj_id))
     elif error.resp.status == requests.codes.forbidden:
-        raise Forbidden('Permission denied for project "{}"'.format(parent_id))
-    raise InternalServerError("Unexpected failure running dstat")
+        raise Forbidden('Permission denied for project "{}"'.format(proj_id))
+    raise InternalServerError("Unexpected failure getting dsub jobs")
+
+
+def _client():
+    return current_app.config['CLIENT']
 
 
 def _provider_type():
@@ -202,7 +288,8 @@ def _provider_type():
 
 def _query_result(job, project_id=None):
     return QueryJobsResult(
-        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
+        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get(
+            'task-id', '')),
         name=job['job-name'],
         status=job_statuses.dsub_to_api(job),
         submission=job['create-time'],
