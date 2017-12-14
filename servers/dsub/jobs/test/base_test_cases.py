@@ -56,6 +56,7 @@ class BaseTestCases:
             for result, job in zip(sorted_results, sorted_job_list):
                 self.assertEqual(result.id, self.get_api_job_id(job))
                 self.assertEqual(result.labels['user-id'], job['user-id'])
+            return response
 
         def create_app(self):
             logging.getLogger('connexion.operation').setLevel('ERROR')
@@ -362,3 +363,47 @@ class BaseTestCases:
                 QueryJobsRequest(start=third_time), [third_job, fourth_job])
             self.assert_query_matches(
                 QueryJobsRequest(start=fourth_time), [fourth_job])
+
+        def test_query_jobs_pagination(self):
+            # Jobs are sorted first by create-time then by job-id. We cannot
+            # guarantee these start at the exact same second, but we know some
+            # of them will. Thus, lets make the job name sort in the same order
+            # as create-time so the order is deterministic.
+            job1 = self.start_job('echo FIRST_JOB', name='job_z')
+            job2 = self.start_job('echo SECOND_JOB', name='job_y')
+            job3 = self.start_job('echo THIRD_JOB', name='job_x')
+            job4 = self.start_job('echo FOURTH_JOB', name='job_w')
+            job5 = self.start_job('echo FIFTH_JOB', name='job_v')
+
+            response = self.assert_query_matches(
+                QueryJobsRequest(page_size=2), [job4, job5])
+            response = self.assert_query_matches(
+                QueryJobsRequest(
+                    page_size=2, page_token=response.next_page_token),
+                [job2, job3])
+            response = self.assert_query_matches(
+                QueryJobsRequest(
+                    page_size=2, page_token=response.next_page_token), [job1])
+
+        def test_query_jobs_start_pagination(self):
+            job1 = self.start_job('echo FIRST_JOB', name='job_z')
+            time.sleep(1)
+            min_time = datetime.datetime.now()
+            job2 = self.start_job('echo SECOND_JOB', name='job_y')
+            job3 = self.start_job('echo THIRD_JOB', name='job_x')
+            job4 = self.start_job('echo FOURTH_JOB', name='job_w')
+            job5 = self.start_job('echo FIFTH_JOB', name='job_v')
+            job6 = self.start_job('echo SIXTH_JOB', name='job_u')
+
+            response = self.assert_query_matches(
+                QueryJobsRequest(page_size=2, start=min_time), [job5, job6])
+            response = self.assert_query_matches(
+                QueryJobsRequest(
+                    page_size=2,
+                    start=min_time,
+                    page_token=response.next_page_token), [job3, job4])
+            response = self.assert_query_matches(
+                QueryJobsRequest(
+                    page_size=2,
+                    start=min_time,
+                    page_token=response.next_page_token), [job2])

@@ -5,10 +5,11 @@ import {PageEvent, MdSnackBar} from '@angular/material'
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
+import {initialBackendPageSize} from '../shared/common';
 import {ErrorMessageFormatterPipe} from '../shared/error-message-formatter.pipe';
-import {JobsTableComponent} from './table/table.component';
 import {JobListView, JobStream} from '../shared/job-stream';
 import {URLSearchParamsUtils} from "../shared/url-search-params.utils";
+import {JobsTableComponent} from './table/table.component';
 
 @Component({
   selector: 'jm-job-list',
@@ -18,7 +19,6 @@ import {URLSearchParamsUtils} from "../shared/url-search-params.utils";
 export class JobListComponent implements OnInit {
   @ViewChild(JobsTableComponent) table: JobsTableComponent;
 
-  private static readonly initialBackendPageSize = 200;
   private jobStream: JobStream;
   private streamSubscription: Subscription;
 
@@ -56,7 +56,7 @@ export class JobListComponent implements OnInit {
       this.jobStream = new JobStream(this.jobManagerService,
         URLSearchParamsUtils.unpackURLSearchParams(query));
       this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
-      this.jobStream.loadAtLeast(JobListComponent.initialBackendPageSize)
+      this.jobStream.loadAtLeast(initialBackendPageSize)
         .catch((error) => this.handleError(error));
     }
   }
