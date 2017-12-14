@@ -3,7 +3,6 @@ import datetime
 import json
 import numbers
 
-
 # We implement the pagination token via base64-encoded JSON s.t. tokens are
 # opaque to clients and enable us to make backwards compatible changes to our
 # pagination implementation. Base64+JSON are used specifically as they are
@@ -21,6 +20,7 @@ def _encode(dictionary):
     """
     # Strip ugly base64 padding.
     return base64.urlsafe_b64encode(json.dumps(dictionary)).rstrip('=')
+
 
 def _decode(token):
     """Decodes the jobs pagination token.
@@ -74,9 +74,11 @@ def encode_created_before(created_before, offset_id=None):
         return None
 
     if not isinstance(created_before, datetime.datetime):
-        raise ValueError('Invalid create time must be datetime: {}'.format(created_before))
+        raise ValueError(
+            'Invalid create time must be datetime: {}'.format(created_before))
     if offset_id and not isinstance(offset_id, basestring):
-        raise ValueError('Invalid offset id must be string: {}'.format(offset_id))
+        raise ValueError(
+            'Invalid offset id must be string: {}'.format(offset_id))
 
     epoch = datetime.datetime.utcfromtimestamp(0)
     seconds_epoch = int((created_before - epoch).total_seconds())
@@ -125,9 +127,11 @@ def decode_created_before(token):
     if created_before and isinstance(created_before, numbers.Number):
         created_before = datetime.datetime.utcfromtimestamp(created_before)
     else:
-        raise ValueError('Invalid created before in token JSON: {}'.format(token_dict))
+        raise ValueError(
+            'Invalid created before in token JSON: {}'.format(token_dict))
 
     if offset_id and not isinstance(offset_id, basestring):
-        raise ValueError('Invalid offset ID in token JSON: {}'.format(token_dict))
+        raise ValueError(
+            'Invalid offset ID in token JSON: {}'.format(token_dict))
 
     return created_before, offset_id
