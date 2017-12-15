@@ -306,12 +306,6 @@ class BaseTestCases:
             no_label_job = self.start_job('echo NO_LABEL', name='nolabeljob')
             no_label_job_id = self.get_api_job_id(no_label_job)
 
-            # TODO(https://github.com/googlegenomics/dsub/issues/82) remove
-            # waiting for running which shouldn't be needed
-            self.wait_for_job_status(label_job_id, ApiStatus.RUNNING)
-            self.wait_for_job_status(other_label_job_id, ApiStatus.RUNNING)
-            self.wait_for_job_status(no_label_job_id, ApiStatus.RUNNING)
-
             self.assert_query_matches(
                 QueryJobsRequest(labels=labels), [label_job])
             self.assert_query_matches(
