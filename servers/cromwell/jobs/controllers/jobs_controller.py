@@ -163,10 +163,8 @@ def query_jobs(body):
     """
     query = QueryJobsRequest.from_dict(body)
 
-    page_size = query.page_size
-    if not page_size:
-        page_size = _DEFAULT_PAGE_SIZE
-    offset = page_tokens.decode(query.page_token)
+    page_size = query.page_size or _DEFAULT_PAGE_SIZE
+    offset = page_tokens.decode_offset(query.page_token) or 0
     page = page_from_offset(offset, page_size)
     params_for_cromwell = cromwell_query_params(query, page, page_size)
 
@@ -179,14 +177,12 @@ def query_jobs(body):
     results.reverse()
 
     next_offset = offset + page_size
-    next_page_token = page_tokens.encode(next_offset)
+    next_page_token = page_tokens.encode_offset(next_offset)
 
     return QueryJobsResponse(results=results, next_page_token=next_page_token)
 
 
 def page_from_offset(offset, page_size):
-    if not page_size:
-        page_size = _DEFAULT_PAGE_SIZE
     return 1 + offset / page_size
 
 
