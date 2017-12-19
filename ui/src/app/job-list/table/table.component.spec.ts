@@ -168,6 +168,25 @@ describe('JobsTableComponent', () => {
       .toEqual("Precondition Failed (412): Job already in terminal status `FAILED` Dismiss");
   }))
 
+  it('should only show length for exhaustive job streams', async(() => {
+    testComponent.jobs.next({
+      results: [testJob1],
+      exhaustive: false
+    });
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+      .toContain('of many');
+
+    testComponent.jobs.next({
+      results: [testJob1, testJob1],
+      exhaustive: true
+    });
+    fixture.detectChanges();
+    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+      .toContain('of 2');
+  }));
+
   // TODO(alanhwang): Add unit tests for component logic
 
   @Component({

@@ -1,4 +1,5 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Subject} from 'rxjs/Subject';
 import {
   Component,
   ElementRef,
@@ -12,6 +13,7 @@ import {
 import {DataSource} from '@angular/cdk/collections';
 import {
   MdPaginator,
+  MdPaginatorIntl,
   MdSnackBar,
   MdSnackBarConfig,
   MdTabChangeEvent,
@@ -82,6 +84,13 @@ export class JobsTableComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Our paginator details depend on the state of backend pagination,
+    // therefore we cannot simply inject an alternate MdPaginatorIntl, as
+    // recommended by the paginator documentation. _intl is public, and
+    // overwriting it seems preferable to providing our own version of
+    // MdPaginator.
+    this.paginator._intl = new JobsPaginatorIntl(
+      this.jobs, this.paginator._intl.changes);
     this.dataSource = new JobsDataSource(this.jobs, this.paginator);
     this.currentStatusGroup = this.route.snapshot.queryParams['statusGroup'];
     if (!this.currentStatusGroup) {
@@ -207,6 +216,42 @@ export class JobsTableComponent implements OnInit {
       this.selectedJobs = this.jobs.value.results.slice();
       this.allSelected = true;
     }
+  }
+}
+
+/**
+ * Paginator details for the jobs table. Accounts for the case where we haven't
+ * loaded all jobs (matching the query) onto the client; we need to indicate
+ * this rather than showing a misleading count for the number of jobs that have
+ * been loaded onto the client so far.
+ */
+export class JobsPaginatorIntl extends MdPaginatorIntl {
+  private defaultIntl = new MdPaginatorIntl()
+
+  constructor(private backendJobs: BehaviorSubject<JobListView>,
+              public changes: Subject<void>) {
+    super();
+    backendJobs.subscribe((jobList: JobListView) => {
+      // Ensure that the paginator component is redrawn once we transition to
+      // an exhaustive list of jobs.
+      if (jobList.exhaustive) {
+        changes.next();
+      }
+    });
+  }
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (this.backendJobs.value.exhaustive) {
+      // Can't use proper inheritance here, since MdPaginatorIntl only defines
+      // properties, rather than class methods.
+      return this.defaultIntl.getRangeLabel(page, pageSize, length);
+    }
+    // Ported from MdPaginatorIntl - boundary checks likely unneeded.
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+    return `${startIndex + 1} - ${endIndex} of many`;
   }
 }
 
