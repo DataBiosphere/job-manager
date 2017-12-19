@@ -1,11 +1,11 @@
 <div class="content">
   <md-form-field class="query-form">
     <md-chip-list #chipList>
-      <md-chip *ngFor="let chipKey of getChipKeys()"
+      <md-chip id="chip" *ngFor="let chipKey of getChipKeys()"
                [mdMenuTriggerFor]="menu"
                (remove)="removeChip(chipKey)"
                (click)="setCurrentChip(chipKey)">
-        {{getDisplayValue(chipKey)}}
+        {{ getDisplayValue(chipKey) }}
         <img mdChipRemove
              src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_18dp.png">
       </md-chip>
@@ -15,7 +15,7 @@
                  placeholder="Equals"
                  type="search"
                  [(ngModel)]="currentChipValue"
-                 (keyup.enter)="completeChip()"
+                 (keyup.enter)="assignChipValue($event)"
                  (click)="$event.stopPropagation()"/>
         </md-input-container>
       </md-menu>
@@ -27,13 +27,13 @@
              [mdChipInputFor]="chipList"
              [mdChipInputSeparatorKeyCodes]="separatorKeysCodes"
              [mdChipInputAddOnBlur]="false"
-             (mdChipInputTokenEnd)="addChip($event)"
+             (mdChipInputTokenEnd)="addChip($event.value)"
              [formControl]="control"/>
       <md-autocomplete #auto="mdAutocomplete">
         <md-option
           *ngFor="let option of filteredOptions | async"
           [value]="option"
-          (click)="stageChip(option)">
+          (click)="addChip(option)">
           {{ option }}
         </md-option>
       </md-autocomplete>

@@ -20,7 +20,6 @@ export class HeaderComponent implements OnInit {
   separatorKeysCodes = [ENTER];
   control: FormControl = new FormControl();
   options: string[] = [];
-  currentChip: string = "";
   currentChipKey: string = "";
   currentChipValue: string = "";
   inputValue: string = "";
@@ -39,7 +38,9 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
+    if (this.route.snapshot.queryParams['q']) {
+      this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
+    }
     this.filterOptions();
     this.options = URLSearchParamsUtils.getQueryFields();
     if (environment.additionalColumns) {
@@ -47,30 +48,26 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  addChip(event: MdChipInputEvent): void {
-    let value = event.value;
-    this.replaceChipIfExists(value);
+  addChip(value: string): void {
     if ((value || '').trim()) {
-      // Parse as a full key:value pair
       if (value.split(': ').length == 2) {
+        // Parse as a full key:value pair
         let keyVal: string[] = value.split(': ');
+        this.deleteChipIfExists(keyVal[0]);
         this.chips.set(keyVal[0].trim(), keyVal[1].trim());
       }
-      // Parse as just the key
       else {
+        // Parse as just the key
+        this.deleteChipIfExists(value);
         this.chips.set(value.trim(), '');
       }
-
+      this.inputValue = "";
     }
-    this.currentChipKey = value;
-    this.inputValue = "";
-    this.filterOptions();
   }
 
-  completeChip(): void {
-    this.removeChip(this.currentChip);
-    this.chips.set(this.currentChipKey, '');
-    this.inputValue = "";
+  assignChipValue(): void {
+    this.removeChip(this.currentChipKey);
+    this.chips.set(this.currentChipKey, this.currentChipValue);
   }
 
   filter(val: string): string[] {
@@ -119,7 +116,8 @@ export class HeaderComponent implements OnInit {
   }
 
   setCurrentChip(chipKey: string): void {
-    this.currentChip = this.chips.get(chipKey);
+    this.currentChipKey = chipKey;
+    this.currentChipValue = this.chips.get(chipKey);
   }
 
   shouldDisplayStatusButtons(): boolean {
@@ -138,19 +136,11 @@ export class HeaderComponent implements OnInit {
     this.navigateWithStatus([JobStatus.Failed]);
   }
 
-  stageChip(option: string): void {
-    this.replaceChipIfExists(option);
-    this.chips.set(option.trim(), '');
-    this.currentChipKey = option;
-    this.inputValue = "";
-    this.filterOptions();
-  }
-
   private refreshChips(query: string): void {
     this.zone.run(() => this.chips = URLSearchParamsUtils.getChips(query));
   }
 
-  private replaceChipIfExists(key: string): void {
+  private deleteChipIfExists(key: string): void {
     if (this.chips.has(key)) {
       this.chips.delete(key);
     }

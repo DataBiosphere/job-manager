@@ -27,7 +27,7 @@ import {JobManagerService} from '../../core/job-manager.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/error-message-formatter.pipe';
-import {JobStatusImage, PRIMARY_COLUMNS} from '../../shared/common';
+import {JobStatusImage, primaryColumns} from '../../shared/common';
 import {JobListView} from '../../shared/job-stream';
 import {ActivatedRoute, Params} from '@angular/router';
 import {environment} from '../../../environments/environment';
@@ -50,7 +50,7 @@ export class JobsTableComponent implements OnInit {
 
   dataSource: JobsDataSource | null;
   // TODO(alanhwang): Allow these columns to be configured by the user
-  displayedColumns = PRIMARY_COLUMNS;
+  displayedColumns = primaryColumns;
 
   @ViewChild(MdPaginator) paginator: MdPaginator;
   @ViewChild('filter') filter: ElementRef;

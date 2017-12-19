@@ -9,11 +9,9 @@ import {
   MdMenuModule,
   MdSortModule,
   MdTableModule,
-  MdTabsModule,
   MdPaginatorModule,
   MdSnackBarModule,
   MdTooltipModule,
-  MdInputModule,
   MdCheckboxModule
 } from '@angular/material';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -43,13 +41,11 @@ describe('JobListComponent', () => {
         MdButtonModule,
         MdCardModule,
         MdCheckboxModule,
-        MdInputModule,
         MdMenuModule,
         MdPaginatorModule,
         MdSnackBarModule,
         MdSortModule,
         MdTableModule,
-        MdTabsModule,
         MdTooltipModule,
         RouterTestingModule.withRoutes([
           {path: '', redirectTo: 'jobs', pathMatch: 'full'},

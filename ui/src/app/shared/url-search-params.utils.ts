@@ -23,8 +23,9 @@ export class URLSearchParamsUtils {
     }
 
     if (request.labels) {
-      urlSearchParams.set('user-id', request.labels['user-id']);
-      urlSearchParams.set('status-detail', request.labels['status-detail']);
+      (request.labels as Map<String, String>).forEach((value: string, key: string) => {
+        urlSearchParams.set(key, value);
+      });
     }
     return urlSearchParams.toString();
   }
@@ -46,7 +47,7 @@ export class URLSearchParamsUtils {
   public static unpackURLSearchParams(query: string): QueryJobsRequest {
     let urlSearchParams = new URLSearchParams(query);
     let queryRequest = {
-      labels: {},
+      labels: new Map(),
     };
 
     urlSearchParams.paramsMap.forEach((values: string[], key: string) => {
@@ -61,6 +62,7 @@ export class URLSearchParamsUtils {
         for (let status of urlSearchParams.getAll(QueryFields.statuses)) {
           statuses.push(JobStatus[status]);
         }
+        queryRequest['statuses'] = statuses;
       }
       else if (key == QueryFields.start) {
         queryRequest['start'] = new Date(urlSearchParams.get(QueryFields.start));
@@ -70,7 +72,7 @@ export class URLSearchParamsUtils {
       }
       // Assume that any filters not matching a primary field should be interpreted as a label
       else {
-        queryRequest.labels[key] = urlSearchParams.get(key);
+        queryRequest.labels.set(key, urlSearchParams.get(key));
       }
     });
 

@@ -21,7 +21,7 @@ export const QueryFields = {
 }
 
 /** The list of non-configurable primary columns that can be displayed and queried over. */
-export const PRIMARY_COLUMNS: string[] = [
+export const primaryColumns: string[] = [
   'Job',
   'Status',
   'Submitted',
