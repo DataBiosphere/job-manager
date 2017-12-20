@@ -1,3 +1,5 @@
+import datetime
+from dateutil.tz import tzutc
 from dsub.lib import param_util
 
 import job_statuses
@@ -13,11 +15,13 @@ def api_to_dsub(query):
             dict: Key value pairs of query parameters, formatted for dstat
     """
 
-    dstat_params = {
-        'create_time': query.start,
-        'end_time': query.end,
-        'job_names': [query.name] if query.name else None,
-    }
+    dstat_params = {}
+
+    epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=tzutc())
+    dstat_params['create_time'] = int(
+        (query.start - epoch).total_seconds()) if query.start else None
+
+    dstat_params['job_names'] = {query.name} if query.name else None
 
     dstat_params['statuses'] = {
         job_statuses.api_to_dsub(s)

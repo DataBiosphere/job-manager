@@ -589,8 +589,6 @@ class TestJobsController(BaseTestCase):
 
     def test_page_from_offset(self):
         self.assertEqual(
-            jobs_controller.page_from_offset(offset=0, page_size=None), 1)
-        self.assertEqual(
             jobs_controller.page_from_offset(offset=0, page_size=1), 1)
         self.assertEqual(
             jobs_controller.page_from_offset(offset=1, page_size=1), 2)
