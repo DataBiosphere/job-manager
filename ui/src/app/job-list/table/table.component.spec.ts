@@ -178,6 +178,7 @@ describe('JobsTableComponent', () => {
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
       .toContain('of many');
 
+    // Transition to exhaustive, "of X" should now display length.
     testComponent.jobs.next({
       results: [testJob1, testJob1],
       exhaustive: true
