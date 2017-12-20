@@ -7,7 +7,7 @@ const queryRequest: QueryJobsRequest = {
   parentId: 'parent-id',
   name: 'name',
   statuses: [JobStatus.Running, JobStatus.Aborted],
-  labels: new Map().set('key', 'value')
+  labels: {'key': 'value'}
 };
 
 const queryMap:  Map<String, String[]> = new Map()
@@ -43,10 +43,7 @@ describe('URLSearchParamsUtils', () => {
     expect(actualRequest.parentId).toBe(queryRequest.parentId);
     expect(actualRequest.name).toBe(queryRequest.name);
     expect(actualRequest.statuses.toString()).toBe(queryRequest.statuses.toString());
-    expect((<Map<string, string>> actualRequest.labels).size)
-      .toBe((<Map<string, string>> queryRequest.labels).size);
-    expect((<Map<string, string>> actualRequest.labels).get('key'))
-      .toBe((<Map<string, string>> queryRequest.labels).get('key'));
+    expect(actualRequest.labels['key']).toBe(queryRequest.labels['key']);
   });
 
   it('should get list of chips', () => {

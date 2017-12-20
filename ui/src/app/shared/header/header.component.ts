@@ -9,7 +9,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {JobStatus} from "../model/JobStatus";
 import {QueryJobsRequest} from "../model/QueryJobsRequest";
 import {environment} from "../../../environments/environment";
-import {QueryFields} from "../common";
+import {queryFields} from "../common";
 
 @Component({
   selector: 'jm-header',
@@ -50,10 +50,10 @@ export class HeaderComponent implements OnInit {
 
   addChip(value: string): void {
     if ((value || '').trim()) {
-      if (value.split(': ').length == 2) {
+      if (value.split(':').length == 2) {
         // Parse as a full key:value pair
-        let keyVal: string[] = value.split(': ');
-        this.deleteChipIfExists(keyVal[0]);
+        let keyVal: string[] = value.split(':');
+        this.deleteChipIfExists(keyVal[0].trim());
         this.chips.set(keyVal[0].trim(), keyVal[1].trim());
       }
       else {
@@ -90,7 +90,8 @@ export class HeaderComponent implements OnInit {
   }
 
   navigateWithStatus(statuses: JobStatus[]): void {
-    let query: QueryJobsRequest = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
+    let query: QueryJobsRequest =
+      URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
     query.statuses = statuses;
     this.router.navigate(
       ['jobs'],
@@ -121,7 +122,8 @@ export class HeaderComponent implements OnInit {
   }
 
   shouldDisplayStatusButtons(): boolean {
-    return !URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q'])[QueryFields.statuses];
+    return !URLSearchParamsUtils.unpackURLSearchParams(
+      this.route.snapshot.queryParams['q'])[queryFields.statuses];
   }
 
   showActiveJobs(): void {

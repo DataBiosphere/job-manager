@@ -36,8 +36,7 @@ export class JobListComponent implements OnInit {
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MdSnackBar,
   ) {
-  route.queryParams.subscribe(
-      params => this.reloadJobs(params['q']));
+  route.queryParams.subscribe(params => this.reloadJobs(params['q']));
   }
 
   ngOnInit(): void {

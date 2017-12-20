@@ -10,9 +10,9 @@ export enum JobStatusImage {
   Aborted = <any> 'https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png'
 }
 
-/** Constant strings for non-configurable primary fields that can be queried over. Each should have a corresponding
- *  field on QueryJobsRequest. */
-export const QueryFields = {
+/** Constant strings for non-configurable primary fields that can be queried
+ *  over. Each should have a corresponding field on QueryJobsRequest. */
+export const queryFields = {
   parentId: 'parent-id',
   jobName: 'job-name',
   statuses: 'statuses',
