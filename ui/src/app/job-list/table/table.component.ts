@@ -55,7 +55,6 @@ export class JobsTableComponent implements OnInit {
   displayedColumns = primaryColumns;
 
   @ViewChild(MdPaginator) paginator: MdPaginator;
-  @ViewChild('filter') filter: ElementRef;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -133,7 +132,9 @@ export class JobsTableComponent implements OnInit {
 
   onAbortJobs(jobs: QueryJobsResult[]): void {
     for (let job of jobs) {
-      this.abortJob(job);
+      if (job.status == JobStatus.Running || job.status == JobStatus.Submitted) {
+        this.abortJob(job);
+      }
     }
     this.onJobsChanged();
   }
@@ -209,9 +210,6 @@ export class JobsPaginatorIntl extends MdPaginatorIntl {
 
 /** DataSource providing the list of jobs to be rendered in the table. */
 export class JobsDataSource extends DataSource<any> {
-  private filterChange = new BehaviorSubject('');
-  get filter(): string { return this.filterChange.value; }
-  set filter(filter: string) { this.filterChange.next(filter); }
 
   constructor(private backendJobs: BehaviorSubject<JobListView>, private paginator: MdPaginator) {
     super();
@@ -221,19 +219,13 @@ export class JobsDataSource extends DataSource<any> {
     const displayDataChanges = [
       this.backendJobs,
       this.paginator.page,
-      this.filterChange,
     ];
     return Observable.merge(...displayDataChanges).map(() => {
       const data = this.backendJobs.value.results.slice();
 
       // Get only the requested page
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      return data
-        .filter((job: QueryJobsResult) => {
-          let searchStr = (job.name + job.status).toLowerCase();
-          return searchStr.indexOf(this.filter.toLowerCase()) != -1;
-        })
-        .splice(startIndex, this.paginator.pageSize);
+      return data.splice(startIndex, this.paginator.pageSize);
     });
   }
 

@@ -4,12 +4,14 @@ import {ResponseOptions, Response} from '@angular/http';
 import {JobStatus} from './model/JobStatus';
 import {QueryJobsResult} from './model/QueryJobsResult';
 import {TaskMetadata} from './model/TaskMetadata';
+import {AuthService} from "../core/auth.service";
 
 /**
 * MockJobManagerService implements an in-memory fake job manager server via
 * Angular's MockBackend.
 */
 export class MockJobManagerService {
+  private authService: AuthService;
   constructor(
     private jobs:QueryJobsResult[],
   ){}
