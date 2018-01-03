@@ -1,8 +1,8 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {JobManagerService} from '../core/job-manager.service';
-import {JobStatus, QueryJobsResponse, QueryJobsResult} from './model/models';
-import {StatusGroup} from './common';
+import {QueryJobsResponse, QueryJobsResult} from './model/models';
+import {QueryJobsRequest} from "./model/QueryJobsRequest";
 
 // An observable stream of the client's materialized jobs, where each update
 // contains all jobs that have been loaded so far.
@@ -14,9 +14,9 @@ export class JobStream extends BehaviorSubject<JobListView> {
   // data loading.
   private queryPromise: Promise<QueryJobsResponse> = Promise.resolve({});
 
-  constructor(private JobManagerService: JobManagerService,
-              private statusGroup: StatusGroup,
-              private parentId?: string) {
+  // This class handles pagination, so the request's paging info need not be defined.
+  constructor(private jobManagerService: JobManagerService,
+              private request: QueryJobsRequest) {
     super({
       results: [],
       exhaustive: false
@@ -39,7 +39,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
         this.next({
           results: this.value.results.concat(resp.results),
           exhaustive: !resp.nextPageToken
-        })
+        });
         return resp;
       });
     });
@@ -47,34 +47,14 @@ export class JobStream extends BehaviorSubject<JobListView> {
   }
 
   private queryJobs(pageSize: number, pageToken?: string): Promise<QueryJobsResponse> {
-    return this.JobManagerService.queryJobs({
-      parentId: this.parentId,
-      statuses: this.statusGroupToJobStatuses(this.statusGroup),
-      pageSize: pageSize,
-      pageToken: pageToken
-    });
-  }
-
-  private statusGroupToJobStatuses(statusGroup: StatusGroup): JobStatus[] {
-    switch(statusGroup) {
-      case StatusGroup.Active: {
-        return [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
-      }
-      case StatusGroup.Completed: {
-        return [JobStatus.Succeeded, JobStatus.Aborted];
-      }
-      case StatusGroup.Failed: {
-        return [JobStatus.Failed];
-      }
-      default: {
-        return [];
-      }
-    }
+    this.request.pageSize = pageSize;
+    this.request.pageToken = pageToken;
+    return this.jobManagerService.queryJobs(this.request);
   }
 }
 
 
-// A view of a logical list of jobs, typically coresponding to a particular
+// A view of a logical list of jobs, typically corresponding to a particular
 // API query. This may only be a partial view of a larger job list, as indicated
 // by the exhaustive flag.
 export type JobListView = {

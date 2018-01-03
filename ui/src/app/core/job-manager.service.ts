@@ -13,8 +13,8 @@ import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 @Injectable()
 export class JobManagerService {
 
-  private static readonly defaultErrorDetail = "An unknown error has ocurred. Please try again later."
-  private static readonly defaultErrorTitle = "Unknown"
+  private static readonly defaultErrorDetail = "An unknown error has ocurred. Please try again later.";
+  private static readonly defaultErrorTitle = "Unknown";
 
   constructor(private readonly authService: AuthService, private http: Http) {}
 

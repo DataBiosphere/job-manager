@@ -38,17 +38,6 @@
   margin-right: 1rem;
 }
 
-/* Search/filter */
-.filter-form {
-  min-width: 15px;
-  max-width: 50rem;
-  width: 100%;
-}
-
-.filter-input {
-  width: 100%;
-}
-
 /* Job details dropdown */
 .jobs-dropdown-arrow {
   visibility: hidden;

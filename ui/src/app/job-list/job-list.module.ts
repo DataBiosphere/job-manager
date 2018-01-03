@@ -3,16 +3,14 @@ import {
   MdButtonModule,
   MdCardModule,
   MdCheckboxModule,
-  MdInputModule,
   MdMenuModule,
   MdPaginatorModule,
   MdSnackBarModule,
   MdSortModule,
   MdTableModule,
-  MdTabsModule,
   MdTooltipModule,
 } from '@angular/material';
-import {NgModule, ViewContainerRef} from '@angular/core';
+import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 
 import {JobDetailsResolver} from '../job-details/job-details-resolver.service';
@@ -26,13 +24,11 @@ import {SharedModule} from '../shared/shared.module';
     MdButtonModule,
     MdCardModule,
     MdCheckboxModule,
-    MdInputModule,
     MdMenuModule,
     MdPaginatorModule,
     MdSnackBarModule,
     MdSortModule,
     MdTableModule,
-    MdTabsModule,
     MdTooltipModule,
     RouterModule,
     SharedModule,

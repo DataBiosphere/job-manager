@@ -25,6 +25,7 @@ import 'rxjs/add/operator/filter';
 import {AuthService} from '../core/auth.service';
 import {ErrorMessageFormatterPipe} from '../shared/error-message-formatter.pipe';
 import {ProjectsService} from './projects.service'
+import {URLSearchParamsUtils} from "../shared/url-search-params.utils";
 
 @Component({
   selector: 'jm-projects',
@@ -97,7 +98,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   navigateJobs() {
-    let extras = {queryParams: {parentId: this.projectsControl.value}}
+    let extras = {queryParams: {q: URLSearchParamsUtils.encodeURLSearchParams({parentId: this.projectsControl.value})}};
     this.router.navigate(['jobs'], extras);
   }
 }

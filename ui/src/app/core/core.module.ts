@@ -1,15 +1,14 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
 
-import {AuthActivator} from "./auth-activator.service"
-import {AuthService} from "./auth.service"
+import {AuthActivator} from "./auth-activator.service";
+import {AuthService} from "./auth.service";
 import {JobManagerService} from './job-manager.service';
-import {SearchComponent} from './search/search.component';
 
 /** Provides all of the common singleton components and services that can be
  *  shared across the app and should only ever be instantiated once. */
 @NgModule({
   imports: [],
-  declarations: [SearchComponent],
+  declarations: [],
   exports: [],
   providers: [AuthActivator, AuthService, JobManagerService]
 })
