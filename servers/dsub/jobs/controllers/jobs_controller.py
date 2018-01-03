@@ -120,7 +120,8 @@ def query_jobs(body):
     elif query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
     if query.start:
-        query.start = query.start.replace(tzinfo=tzlocal())
+        query.start = query.start.replace(tzinfo=tzlocal()).replace(
+            microsecond=0)
     query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
     provider = providers.get_provider(_provider_type(), query.parent_id,
                                       _auth_token())
@@ -139,10 +140,8 @@ def query_jobs(body):
         # where the offset_id is located within the list.
         create_time_jobs = _query_dstat_jobs_single_create_time(
             provider, query, create_time_max)
-        sorted_jobs = sorted(
-            create_time_jobs, key=lambda j: j['job-id'] + j.get('task-id', ''))
-        offset_idx = _get_offset_id_index(offset_id, sorted_jobs)
-        new_jobs = sorted_jobs[offset_idx:]
+        offset_idx = _get_offset_id_index(offset_id, create_time_jobs)
+        new_jobs = create_time_jobs[offset_idx:]
         if len(new_jobs) > query.page_size:
             return _get_query_jobs_response(new_jobs[:query.page_size],
                                             query.parent_id, create_time_max,
@@ -171,16 +170,13 @@ def query_jobs(body):
         return _get_query_jobs_response(jobs, query.parent_id, create_time_max)
     elif len(more_jobs) >= max_tasks:
         last_create_time = more_jobs[-1]['create-time']
-        penultimate_create_time = more_jobs[-2]['create-time']
-        if last_create_time == penultimate_create_time:
+        penult_create_time = more_jobs[-2]['create-time']
+        if last_create_time == penult_create_time:
             # The last job in this page has the same create-time as the first
             # job in the next page. We need to get all jobs with this
             # create-time and provide an offset_id with the page_token.
             create_time_jobs = _query_dstat_jobs_single_create_time(
-                provider, query, create_time_max)
-            sorted_jobs = sorted(
-                create_time_jobs,
-                key=lambda j: j['job-id'] + j.get('task-id', ''))
+                provider, query, last_create_time)
             # Add all jobs with a different create-time to the already fetched
             # jobs
             create_time_cutoff = _get_create_time_index(
@@ -190,10 +186,10 @@ def query_jobs(body):
             # a token with this create_time and the offset_id of the first job
             # on the next page
             needed_jobs = query.page_size - len(jobs)
-            jobs = jobs + sorted_jobs[:needed_jobs]
+            jobs = jobs + create_time_jobs[:needed_jobs]
             return _get_query_jobs_response(jobs, query.parent_id,
                                             last_create_time,
-                                            sorted_jobs[needed_jobs])
+                                            create_time_jobs[needed_jobs])
 
         else:
             return _get_query_jobs_response(jobs + more_jobs[:-1],
@@ -227,7 +223,7 @@ def _query_dstat_jobs(provider, query, create_time_max, max_tasks=0):
                 for s in query.statuses} if query.statuses else set()
 
     try:
-        return dstat.dstat_job_producer(
+        jobs = dstat.dstat_job_producer(
             provider=provider,
             statuses=dstat_params['statuses'],
             user_ids=dstat_params.get('user_ids'),
@@ -238,6 +234,16 @@ def _query_dstat_jobs(provider, query, create_time_max, max_tasks=0):
             labels=dstat_params.get('labels'),
             full_output=True,
             max_tasks=max_tasks).next()
+
+        # The local provider gives millisecond granularity, trim it to second
+        # grunularity for consistency with the google provider
+        for j in jobs:
+            j['create-time'] = j['create-time'].replace(microsecond=0)
+        # Sort returned jobs first by create-time then by job-id + task-id
+        return sorted(
+            jobs,
+            key=
+            lambda j: (j['create-time'], j['job-id'] + j.get('task-id', '')))
     except apiclient.errors.HttpError as e:
         _handle_http_error(e, query.parent_id)
 
