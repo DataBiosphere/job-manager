@@ -1,10 +1,12 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
+import {Subscription} from 'rxjs/Subscription';
 import {
   Component,
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
@@ -39,11 +41,11 @@ import {environment} from '../../../environments/environment';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
-export class JobsTableComponent implements OnInit {
+export class JobsTableComponent implements OnInit, OnDestroy {
   @Input() jobs: BehaviorSubject<JobListView>;
   @Output() onPage = new EventEmitter<PageEvent>();
 
-
+  private pageSubscription: Subscription;
   private mouseoverJob: QueryJobsResult;
 
   public additionalColumns: string[] = [];
@@ -52,7 +54,7 @@ export class JobsTableComponent implements OnInit {
 
   dataSource: JobsDataSource | null;
   // TODO(alanhwang): Allow these columns to be configured by the user
-  displayedColumns = primaryColumns;
+  displayedColumns = primaryColumns.slice();
 
   @ViewChild(MdPaginator) paginator: MdPaginator;
 
@@ -78,7 +80,12 @@ export class JobsTableComponent implements OnInit {
     for (let column of this.additionalColumns) {
       this.displayedColumns.push(column);
     }
-    this.paginator.page.subscribe((e) => this.onPage.emit(e));
+    this.pageSubscription =
+      this.paginator.page.subscribe((e) => this.onPage.emit(e));
+  }
+
+  ngOnDestroy() {
+    this.pageSubscription.unsubscribe();
   }
 
   private onJobsChanged(): void {
