@@ -4,6 +4,6 @@ export const environment = {
   production: false,
   requiresAuth: false,
   scope: '',
-  additionalColumns: ['user-id', 'status-detail'],
+  additionalColumns: ['user-id'],
   entryPoint: 'jobs',
 };
