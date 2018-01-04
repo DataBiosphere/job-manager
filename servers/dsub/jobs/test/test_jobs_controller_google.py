@@ -41,6 +41,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         return app
 
     def assert_query_matches(self, query_params, job_list):
+        query_params.parent_id = self.testing_project
         if query_params.labels:
             query_params.labels.update(self.test_token_label)
         else:

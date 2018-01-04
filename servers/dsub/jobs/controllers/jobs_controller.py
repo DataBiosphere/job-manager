@@ -210,11 +210,6 @@ def _get_query_jobs_response(jobs,
     token = page_tokens.encode_create_time_max(create_time_max, offset_id)
     return QueryJobsResponse(results=results, next_page_token=token)
 
-    # If we're trying to paginate earlier than the query's minimum start time,
-    # don't return anything
-    if query.start and create_time_max and query.start > create_time_max:
-        return []
-
 
 def _query_dstat_jobs(provider, query, create_time_max, max_tasks=0):
     labels = {param_util.LabelParam(k, v)

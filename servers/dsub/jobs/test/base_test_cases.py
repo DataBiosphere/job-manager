@@ -49,13 +49,13 @@ class BaseTestCases:
                     'user-id' keys
             """
             response = self.must_query_jobs(query_params)
+            self.assertEqual(len(response.results), len(job_list))
             sorted_results = sorted(
                 response.results, key=operator.attrgetter('id'))
-            self.assertEqual(len(response.results), len(job_list))
             sorted_job_list = sorted(job_list, key=self.get_api_job_id)
-            # for result, job in zip(sorted_results, sorted_job_list):
-            #     self.assertEqual(result.id, self.get_api_job_id(job))
-            #     self.assertEqual(result.labels['user-id'], job['user-id'])
+            for result, job in zip(sorted_results, sorted_job_list):
+                self.assertEqual(result.id, self.get_api_job_id(job))
+                self.assertEqual(result.labels['user-id'], job['user-id'])
             return response
 
         def create_app(self):
@@ -379,6 +379,7 @@ class BaseTestCases:
             job8 = self.start_job('echo EIGHTH_JOB', name='job_s')
             job9 = self.start_job('echo NINTH_JOB', name='job_r')
             job10 = self.start_job('echo TENTH_JOB', name='job_q')
+            time.sleep(2)
 
             response = self.assert_query_matches(
                 QueryJobsRequest(page_size=3), [job8, job9, job10])
@@ -403,6 +404,7 @@ class BaseTestCases:
             job4 = self.start_job('echo FOURTH_JOB', name='job_w')
             job5 = self.start_job('echo FIFTH_JOB', name='job_v')
             job6 = self.start_job('echo SIXTH_JOB', name='job_u')
+            time.sleep(2)
 
             response = self.assert_query_matches(
                 QueryJobsRequest(page_size=2, start=min_time), [job5, job6])
