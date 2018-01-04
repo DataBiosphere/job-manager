@@ -6,6 +6,7 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   ViewChild,
@@ -40,7 +41,7 @@ import {environment} from '../../../environments/environment';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
-export class JobsTableComponent implements OnInit {
+export class JobsTableComponent implements OnInit, OnDestroy {
   @Input() jobs: BehaviorSubject<JobListView>;
   @Output() onPage = new EventEmitter<PageEvent>();
 
