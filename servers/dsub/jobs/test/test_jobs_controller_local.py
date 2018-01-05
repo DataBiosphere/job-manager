@@ -53,6 +53,16 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
             return job.labels['status-detail'] != PROCESS_NOT_FOUND_MESSAGE
         return has_status
 
+    def test_abort_job(self):
+        started = self.start_job('sleep 30')
+        api_job_id = self.get_api_job_id(started)
+        # TODO(https://github.com/googlegenomics/dsub/issues/101): Remove
+        # this sleep once the local and google statuses are consistent
+        time.sleep(10)
+        self.wait_for_job_status(api_job_id, ApiStatus.RUNNING)
+        self.must_abort_job(api_job_id)
+        self.wait_for_job_status(api_job_id, ApiStatus.ABORTED)
+
     def test_get_succeeded_job(self):
         inputs_dir = '{}/inputs'.format(self.testing_root)
         outputs_dir = '{}/outputs'.format(self.testing_root)

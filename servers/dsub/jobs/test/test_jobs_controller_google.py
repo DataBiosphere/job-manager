@@ -21,7 +21,8 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         cls.testing_project = 'bvdp-jmui-testing'
         cls.provider = google.GoogleJobProvider(False, False,
                                                 cls.testing_project)
-        cls.wait_timeout = 120
+        cls.wait_timeout = 360
+        cls.poll_interval = 5
 
     def setUp(self):
         self.log_path = '{}/logging'.format(self.testing_root)
@@ -68,6 +69,13 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
             outputs=outputs,
             outputs_recursive=outputs_recursive,
             wait=wait)
+
+    def test_abort_job(self):
+        started = self.start_job('sleep 30')
+        api_job_id = self.get_api_job_id(started)
+        self.wait_for_job_status(api_job_id, ApiStatus.RUNNING)
+        self.must_abort_job(api_job_id)
+        self.wait_for_job_status(api_job_id, ApiStatus.ABORTED)
 
     def test_query_jobs_invalid_project(self):
         params = QueryJobsRequest(
