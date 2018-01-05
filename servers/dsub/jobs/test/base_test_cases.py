@@ -72,7 +72,9 @@ class BaseTestCases:
 
         def get_api_job_id(self, dsub_job):
             if self.testing_project and dsub_job.get('task-id'):
-                return '{}+{}+{}'.format(self.testing_project, dsub_job['job-id'], dsub_job['task-id'])
+                return '{}+{}+{}'.format(self.testing_project,
+                                         dsub_job['job-id'],
+                                         dsub_job['task-id'])
             elif self.testing_project:
                 return '{}+{}'.format(self.testing_project, dsub_job['job-id'])
             elif dsub_job.get('task-id'):
@@ -152,7 +154,9 @@ class BaseTestCases:
             }
 
             if task_count > 1:
-                all_task_data = [{'task-id': i+1} for i in xrange(task_count)]
+                all_task_data = [{
+                    'task-id': i + 1
+                } for i in xrange(task_count)]
             else:
                 all_task_data = [job_data]
 
@@ -285,19 +289,32 @@ class BaseTestCases:
 
         def test_query_jobs_by_label_job_id(self):
             job = self.start_job('echo BY_JOB_ID', name='by_job_id')
-            self.assert_query_matches(QueryJobsRequest(labels={'job-id' : job['job-id']}), [job])
+            self.assert_query_matches(
+                QueryJobsRequest(labels={
+                    'job-id': job['job-id']
+                }), [job])
 
         def test_query_jobs_by_label_task_id(self):
-            started = self.start_job('echo BY_TASK_ID', name='by_task_id', task_count=2)
-            jobs = self.must_query_jobs(QueryJobsRequest(labels={'job-id' : started['job-id']}))
+            started = self.start_job(
+                'echo BY_TASK_ID', name='by_task_id', task_count=2)
+            jobs = self.must_query_jobs(
+                QueryJobsRequest(labels={
+                    'job-id': started['job-id']
+                }))
             for task_id in started['task-id']:
                 task = started.copy()
                 task['task-id'] = task_id
-                self.assert_query_matches(QueryJobsRequest(labels={'task-id' : task_id}), [task])
+                self.assert_query_matches(
+                    QueryJobsRequest(labels={
+                        'task-id': task_id
+                    }), [task])
 
         def test_query_jobs_by_label_user_id(self):
             job = self.start_job('echo BY_USER_ID', name='by_user_id')
-            self.assert_query_matches(QueryJobsRequest(labels={'user-id' : job['user-id']}), [job])
+            self.assert_query_matches(
+                QueryJobsRequest(labels={
+                    'user-id': job['user-id']
+                }), [job])
 
         def test_query_jobs_by_label(self):
             labels = {
