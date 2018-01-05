@@ -35,6 +35,7 @@ class BaseTestCases:
             cls.testing_project = None
             cls.provider = None
             cls.wait_timeout = 30
+            cls.poll_interval = 1
 
         def assert_query_matches(self, query_params, job_list):
             """Executes query and asserts that the results match the given job_list
@@ -167,7 +168,7 @@ class BaseTestCases:
                 '/jobs/{}/abort'.format(job_id), method='POST')
             self.assert_status(resp, 200)
 
-        def wait_for_job_status(self, job_id, status, poll_interval=5):
+        def wait_for_job_status(self, job_id, status):
             has_status = False
             job = None
             remaining = self.wait_timeout
@@ -175,9 +176,9 @@ class BaseTestCases:
                 job = self.must_get_job(job_id)
                 has_status = self.job_has_status(job, status)
                 if has_status: break
-                time.sleep(poll_interval)
+                time.sleep(self.poll_interval)
                 if remaining is not None:
-                    remaining -= poll_interval
+                    remaining -= self.poll_interval
 
             if remaining <= 0:
                 raise Exception(
@@ -185,13 +186,6 @@ class BaseTestCases:
                     .format(job_id, status, self.wait_timeout))
 
             return job
-
-        def test_abort_job(self):
-            started = self.start_job('sleep 30')
-            api_job_id = self.get_api_job_id(started)
-            self.wait_for_job_status(api_job_id, ApiStatus.RUNNING)
-            self.must_abort_job(api_job_id)
-            self.wait_for_job_status(api_job_id, ApiStatus.ABORTED)
 
         def test_update_job_labels(self):
             resp = self.client.open('/jobs/asdf/updateLabels', method='POST')
