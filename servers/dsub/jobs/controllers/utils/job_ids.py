@@ -20,11 +20,11 @@ def api_to_dsub(api_id, provider_type):
             BadRequest if the api_id format is invalid for the given provider
     """
     project, job, task = None, None, None
-    id_split = api_id.split(":")
+    id_split = api_id.split('+')
 
     if provider_type == ProviderType.GOOGLE:
         # If we are running on Google cloud the id format should be:
-        # <project-id>:<job-id>:<task-id> or <project-id>:<job-id> if there is
+        # <project-id>+<job-id>+<task-id> or <project-id>+<job-id> if there is
         # no task ID
         if len(id_split) == 2:
             project, job = id_split
@@ -32,9 +32,9 @@ def api_to_dsub(api_id, provider_type):
             project, job, task = id_split
         else:
             raise BadRequest('Job ID format for google provider is: ' +
-                             '<project-id>:<job-id>[:<task-id>]?')
+                             '<project-id>+<job-id>[+<task-id>]?')
     else:
-        # Otherwise, the id format should be: <job-id>:<task-id> or <job-id> if
+        # Otherwise, the id format should be: <job-id>+<task-id> or <job-id> if
         # there is no task ID
         if len(id_split) == 1:
             job = id_split[0]
@@ -42,7 +42,7 @@ def api_to_dsub(api_id, provider_type):
             job, task = id_split
         else:
             raise BadRequest('Job ID format for non-google provider is: ' +
-                             '<job-id>[:<task-id>]?')
+                             '<job-id>[+<task-id>]?')
 
     return project, job, task
 
@@ -62,11 +62,11 @@ def dsub_to_api(proj_id, job_id, task_id):
             BadRequest if no job_id is provided
     """
     if proj_id and job_id and task_id:
-        return '{}:{}:{}'.format(proj_id, job_id, task_id)
+        return '{}+{}+{}'.format(proj_id, job_id, task_id)
     elif proj_id and job_id:
-        return '{}:{}'.format(proj_id, job_id)
+        return '{}+{}'.format(proj_id, job_id)
     elif job_id and task_id:
-        return '{}:{}'.format(job_id, task_id)
+        return '{}+{}'.format(job_id, task_id)
     elif job_id:
         return job_id
     else:

@@ -47,8 +47,6 @@ class BaseTestCases:
                     dsub.run(). Specifically contains 'job-id', 'task-id', and
                     'user-id' keys
             """
-            if self.testing_project:
-                query_params.parent_id = self.testing_project
             response = self.must_query_jobs(query_params)
             self.assertEqual(len(response.results), len(job_list))
             sorted_results = sorted(
@@ -73,8 +71,12 @@ class BaseTestCases:
             }
 
         def get_api_job_id(self, dsub_job):
-            if self.testing_project:
-                return '{}:{}'.format(self.testing_project, dsub_job['job-id'])
+            if self.testing_project and dsub_job.get('task-id'):
+                return '{}+{}+{}'.format(self.testing_project, dsub_job['job-id'], dsub_job['task-id'])
+            elif self.testing_project:
+                return '{}+{}'.format(self.testing_project, dsub_job['job-id'])
+            elif dsub_job.get('task-id'):
+                return '{}+{}'.format(dsub_job['job-id'], dsub_job['task-id'])
             else:
                 return dsub_job['job-id']
 
@@ -87,6 +89,8 @@ class BaseTestCases:
             return JobMetadataResponse.from_dict(resp.json)
 
         def must_query_jobs(self, parameters):
+            if self.testing_project:
+                parameters.parent_id = self.testing_project
             resp = self.client.open(
                 '/jobs/query',
                 method='POST',
@@ -104,6 +108,7 @@ class BaseTestCases:
                       inputs_recursive={},
                       outputs={},
                       outputs_recursive={},
+                      task_count=1,
                       wait=False):
             logging = param_util.build_logging_param(self.log_path)
             resources = job_util.JobResources(
@@ -145,12 +150,11 @@ class BaseTestCases:
                 'outputs': output_data,
                 'labels': label_data,
             }
-            all_task_data = [{
-                'envs': env_data,
-                'labels': label_data,
-                'inputs': input_data,
-                'outputs': output_data,
-            }]
+
+            if task_count > 1:
+                all_task_data = [{'task-id': i+1} for i in xrange(task_count)]
+            else:
+                all_task_data = [job_data]
 
             return execute_redirect_stdout(lambda:
                 dsub.run(
@@ -278,6 +282,22 @@ class BaseTestCases:
                 QueryJobsRequest(
                     statuses=[ApiStatus.SUCCEEDED, ApiStatus.RUNNING]),
                 [succeeded_job, running_job])
+
+        def test_query_jobs_by_label_job_id(self):
+            job = self.start_job('echo BY_JOB_ID', name='by_job_id')
+            self.assert_query_matches(QueryJobsRequest(labels={'job-id' : job['job-id']}), [job])
+
+        def test_query_jobs_by_label_task_id(self):
+            started = self.start_job('echo BY_TASK_ID', name='by_task_id', task_count=2)
+            jobs = self.must_query_jobs(QueryJobsRequest(labels={'job-id' : started['job-id']}))
+            for task_id in started['task-id']:
+                task = started.copy()
+                task['task-id'] = task_id
+                self.assert_query_matches(QueryJobsRequest(labels={'task-id' : task_id}), [task])
+
+        def test_query_jobs_by_label_user_id(self):
+            job = self.start_job('echo BY_USER_ID', name='by_user_id')
+            self.assert_query_matches(QueryJobsRequest(labels={'user-id' : job['user-id']}), [job])
 
         def test_query_jobs_by_label(self):
             labels = {
