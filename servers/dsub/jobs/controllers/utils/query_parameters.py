@@ -29,18 +29,13 @@ def api_to_dsub(query):
     if query.name:
         dstat_params['job_names'] = {query.name}
     if query.labels:
-        dstat_params['job_ids'] = {
-            v
-            for (k, v) in query.labels.items() if k == 'job-id'
-        }
-        dstat_params['task_ids'] = {
-            v
-            for (k, v) in query.labels.items() if k == 'task-id'
-        }
-        dstat_params['user_ids'] = {
-            v
-            for (k, v) in query.labels.items() if k == 'user-id'
-        }
+        if query.labels.get('job-id'):
+            dstat_params['job_ids'] = {query.labels['job-id']}
+        if query.labels.get('task-id'):
+            dstat_params['task_ids'] = {query.labels['task-id']}
+        if query.labels.get('user-id'):
+            dstat_params['user_ids'] = {query.labels['user-id']}
+
         dstat_params['labels'] = {
             param_util.LabelParam(k, v)
             for (k, v) in query.labels.items()

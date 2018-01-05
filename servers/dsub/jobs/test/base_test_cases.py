@@ -11,6 +11,7 @@ import string
 import time
 
 from jobs.common import execute_redirect_stdout
+from jobs.controllers.utils import job_ids
 from jobs.controllers.utils.job_statuses import ApiStatus
 from jobs.encoder import JSONEncoder
 from jobs.models.job_metadata_response import JobMetadataResponse
@@ -71,16 +72,9 @@ class BaseTestCases:
             }
 
         def get_api_job_id(self, dsub_job):
-            if self.testing_project and dsub_job.get('task-id'):
-                return '{}+{}+{}'.format(self.testing_project,
-                                         dsub_job['job-id'],
-                                         dsub_job['task-id'])
-            elif self.testing_project:
-                return '{}+{}'.format(self.testing_project, dsub_job['job-id'])
-            elif dsub_job.get('task-id'):
-                return '{}+{}'.format(dsub_job['job-id'], dsub_job['task-id'])
-            else:
-                return dsub_job['job-id']
+            return job_ids.dsub_to_api(self.testing_project,
+                                       dsub_job.get('job-id'),
+                                       dsub_job.get('task-id'))
 
         def job_has_status(self, job, status):
             return job.status == status
@@ -231,6 +225,7 @@ class BaseTestCases:
                 outputs=outputs)
             api_job_id = self.get_api_job_id(started)
             self.wait_for_job_status(api_job_id, ApiStatus.SUCCEEDED)
+
             # Get job and validate that the metadata is accurate
             job = self.must_get_job(api_job_id)
             self.assertEqual(job.id, api_job_id)
