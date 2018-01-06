@@ -57,6 +57,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
                   inputs_recursive={},
                   outputs={},
                   outputs_recursive={},
+                  task_count=1,
                   wait=False):
         labels.update(self.test_token_label)
         return super(TestJobsControllerGoogle, self).start_job(
@@ -68,6 +69,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
             inputs_recursive=inputs_recursive,
             outputs=outputs,
             outputs_recursive=outputs_recursive,
+            task_count=task_count,
             wait=wait)
 
     def test_abort_job(self):

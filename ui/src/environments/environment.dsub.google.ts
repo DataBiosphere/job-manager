@@ -5,6 +5,6 @@ export const environment = {
   production: false,
   requiresAuth: true,
   scope: 'https://www.googleapis.com/auth/genomics https://www.googleapis.com/auth/cloudplatformprojects.readonly',
-  additionalColumns: ['user-id'],
+  additionalColumns: ['user-id', 'job-id', 'task-id'],
   entryPoint: 'projects',
 };

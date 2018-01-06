@@ -95,10 +95,10 @@ def get_job(id):
 
     # A job_id and task_id define a unique job (should only be one)
     if len(jobs) > 1:
-        raise BadRequest('Found more than one job with ID {}:{}'.format(
+        raise BadRequest('Found more than one job with ID {}+{}'.format(
             job_id, task_id))
     elif len(jobs) == 0:
-        raise NotFound('Could not find any jobs with ID {}:{}'.format(
+        raise NotFound('Could not find any jobs with ID {}+{}'.format(
             job_id, task_id))
     return _metadata_response(id, jobs[0])
 
@@ -139,9 +139,12 @@ def query_jobs(body):
         jobs = dstat.dstat_job_producer(
             provider=provider,
             statuses=dstat_params['statuses'],
-            create_time=dstat_params['create_time'],
-            job_names=dstat_params['job_names'],
-            labels=dstat_params['labels'],
+            user_ids=dstat_params.get('user_ids'),
+            job_ids=dstat_params.get('job_ids'),
+            task_ids=dstat_params.get('task_ids'),
+            create_time=dstat_params.get('create_time'),
+            job_names=dstat_params.get('job_names'),
+            labels=dstat_params.get('labels'),
             full_output=True,
             max_tasks=max_tasks).next()
     except apiclient.errors.HttpError as error:

@@ -16,4 +16,9 @@ def dsub_to_api(job):
         labels['last-update'] = job['last-update']
     if 'user-id' in job:
         labels['user-id'] = job['user-id']
+    if 'job-id' in job:
+        labels['job-id'] = job['job-id']
+    if 'task-id' in job:
+        labels['task-id'] = job['task-id']
+
     return labels
