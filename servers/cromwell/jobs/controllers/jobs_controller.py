@@ -100,6 +100,7 @@ def get_job(id):
         format_task(task_name, task_metadata[-1])
         for task_name, task_metadata in job.get('calls', {}).items()
     ]
+    sorted_tasks = sorted(tasks, key=lambda t: t.start)
     submission = _parse_datetime(job.get('submission'))
     start = _parse_datetime(job.get('start'))
     return JobMetadataResponse(
@@ -113,7 +114,7 @@ def get_job(id):
         outputs=update_key_names(job.get('outputs', {})),
         labels=job.get('labels'),
         failures=failures,
-        tasks=tasks)
+        tasks=sorted_tasks)
 
 
 def format_task(task_name, task_metadata):
