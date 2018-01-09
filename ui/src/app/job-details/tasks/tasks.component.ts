@@ -62,8 +62,11 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
   }
 
   getTimingUrl(serverUrl: string, jobId: string): string {
+<<<<<<< HEAD
     console.log(serverUrl);
     console.log(jobId);
+=======
+>>>>>>> 874a155c4bf0aab428d42806a33ef564c195d65d
     if (serverUrl) {
       return serverUrl + jobId + '/timing';
     } else {
