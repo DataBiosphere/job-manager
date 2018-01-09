@@ -42,7 +42,6 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     if (environment.serverUrl) {
       this.serverUrl = environment.serverUrl;
     }
-    this.serverUrl = '';
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -63,6 +62,8 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
   }
 
   getTimingUrl(serverUrl: string, jobId: string): string {
+    console.log(serverUrl);
+    console.log(jobId);
     if (serverUrl) {
       return serverUrl + jobId + '/timing';
     } else {
