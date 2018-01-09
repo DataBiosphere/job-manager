@@ -346,6 +346,9 @@ definitions:
       labels:
         type: object
         description: Custom job labels with string values
+      parentJobId:
+        type: string
+        description: Id of the parent job.. Expresses a child:parent relationship between this job and the job that called it.
 responses:
   BadRequest:
     description: 'Bad request'

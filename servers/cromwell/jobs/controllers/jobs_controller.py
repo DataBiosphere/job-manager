@@ -173,7 +173,18 @@ def query_jobs(body):
         _get_base_url() + '/query',
         json=params_for_cromwell,
         auth=_get_user_auth())
-    results = [format_job(job) for job in response.json()['results']]
+
+    if response.status_code == BadRequest.code:
+        raise BadRequest(response.json().get('message'))
+    elif response.status_code == InternalServerError.code:
+        raise InternalServerError(response.json().get('message'))
+    response.raise_for_status()
+
+    # Only list parent jobs
+    results = [
+        format_job(job) for job in response.json()['results']
+        if not job.get('parentWorkflowId')
+    ]
     # Reverse so that newest jobs are listed first
     results.reverse()
 
@@ -200,6 +211,7 @@ def cromwell_query_params(query, page, page_size):
         query_params.extend(statuses)
     query_params.append({'pageSize': str(page_size)})
     query_params.append({'page': str(page)})
+    query_params.append({'additionalQueryResultFields': 'parentWorkflowId'})
     return query_params
 
 
@@ -212,7 +224,8 @@ def format_job(job):
         status=job.get('status'),
         submission=start,
         start=start,
-        end=end)
+        end=end,
+        parent_job_id=job.get('parentWorkflowId'))
 
 
 def _parse_datetime(date_string):

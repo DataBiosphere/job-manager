@@ -503,6 +503,8 @@ class TestJobsController(BaseTestCase):
                 'page': '1'
             }, {
                 'pageSize': '64'
+            }, {
+                'additionalQueryResultFields': 'parentWorkflowId'
             }]))
 
     def test_cromwell_query_params(self):
@@ -522,6 +524,8 @@ class TestJobsController(BaseTestCase):
             'pageSize': '100'
         }, {
             'page': '23'
+        }, {
+            'additionalQueryResultFields': 'parentWorkflowId'
         }]
         query_params.extend([{'status': s} for s in query.statuses])
         self.assertItemsEqual(
