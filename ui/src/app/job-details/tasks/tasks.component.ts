@@ -13,6 +13,7 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusImage} from '../../shared/common';
 import {ResourceUtils} from '../../shared/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'jm-tasks',
@@ -21,6 +22,10 @@ import {TaskMetadata} from '../../shared/model/TaskMetadata';
 })
 export class TaskDetailsComponent implements OnInit, OnChanges {
   @Input() tasks: TaskMetadata[] = [];
+  @Input() jobid: string;
+  parentJobId = '';
+  serverUrl = '';
+
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
   displayedColumns = [
@@ -35,10 +40,15 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
+    this.parentJobId = this.jobid;
+    if (environment.serverUrl){
+      this.serverUrl = environment.serverUrl;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.tasks = changes.tasks.currentValue;
+    this.parentJobId = changes.jobid.currentValue;
     this.database.dataChange.next(this.tasks);
   }
 

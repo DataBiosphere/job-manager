@@ -3,7 +3,14 @@
     <p class="title">Tasks</p>
     <md-tab-group>
       <md-tab label = "List view"></md-tab>
-      <md-tab label = "Graph view"></md-tab>
+      <!--<md-tab label = "Graph view"></md-tab>-->
+      <md-tab>
+        <ng-template md-tab-label>
+          <a style="all: unset" href="{{ serverUrl == '' ? '/jobs/' + parentJobId : serverUrl + parentJobId + '/timing' }}" target="_blank">
+            <div>Graph view</div>
+          </a>
+        </ng-template>
+      </md-tab>
     </md-tab-group>
   </div>
 

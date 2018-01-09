@@ -1,0 +1,21 @@
+version: '2.1'
+services:
+  ui:
+    extends:
+      file: common-compose.yml
+      service: ui
+    command: ["npm", "run-script", "ng", "--", "serve", "--host", "ui", "--env=cromwell_staging"]
+  cromwell:
+    build:
+      context: .
+      dockerfile: servers/cromwell/Dockerfile
+    extends:
+      file: common-compose.yml
+      service: cromwell
+  jobs-proxy:
+    extends:
+      file: common-compose.yml
+      service: jobs-proxy
+    links:
+      - ui
+      - cromwell:api
