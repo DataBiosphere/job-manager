@@ -6,5 +6,5 @@ export const environment = {
   scope: '',
   additionalColumns: null,
   entryPoint: 'jobs',
-  serverUrl: 'https://cromwell.mint-staging.broadinstitute.org/api/workflows/v1/'
+  serverUrl: 'https://cromwell.mint-staging.broadinstitute.org/api/workflows/v1/',
 };

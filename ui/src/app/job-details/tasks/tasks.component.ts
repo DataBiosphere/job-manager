@@ -22,8 +22,7 @@ import {environment} from "../../../environments/environment";
 })
 export class TaskDetailsComponent implements OnInit, OnChanges {
   @Input() tasks: TaskMetadata[] = [];
-  @Input() jobid: string;
-  parentJobId = '';
+  @Input() jobId: string = '';
   serverUrl = '';
 
   database = new TasksDatabase(this.tasks);
@@ -40,15 +39,14 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
-    this.parentJobId = this.jobid;
-    if (environment.serverUrl){
+    if (environment.serverUrl) {
       this.serverUrl = environment.serverUrl;
     }
+    this.serverUrl = '';
   }
 
   ngOnChanges(changes: SimpleChanges) {
     this.tasks = changes.tasks.currentValue;
-    this.parentJobId = changes.jobid.currentValue;
     this.database.dataChange.next(this.tasks);
   }
 
@@ -62,6 +60,14 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   getResourceFileName(url: string): string {
     return ResourceUtils.getResourceFileName(url);
+  }
+
+  getTimingUrl(serverUrl: string, jobId: string): string {
+    if (serverUrl) {
+      return serverUrl + jobId + '/timing';
+    } else {
+      return '/jobs/' + jobId;
+    }
   }
 }
 

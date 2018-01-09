@@ -11,5 +11,5 @@ export const environment = {
   scope: '',
   additionalColumns: null,
   entryPoint: 'jobs',
-  serverUrl: ''
+  serverUrl: '',
 };

@@ -6,4 +6,5 @@ export const environment = {
   scope: '',
   additionalColumns: ['user-id', 'job-id', 'task-id'],
   entryPoint: 'jobs',
+  serverUrl: '',
 };
