@@ -85,12 +85,12 @@ def get_job(id):
 
     jobs = []
     try:
-        jobs = dstat.dstat_job_producer(
+        jobs = execute_redirect_stdout(lambda: dstat.dstat_job_producer(
             provider=provider,
             statuses={'*'},
             job_ids={job_id},
             task_ids={task_id} if task_id else None,
-            full_output=True).next()
+            full_output=True).next())
     except apiclient.errors.HttpError as error:
         _handle_http_error(error, proj_id)
 
@@ -165,7 +165,7 @@ def _auth_token():
 def _generate_dstat_jobs(provider, query, create_time_max=None,
                          offset_id=None):
     dstat_params = query_parameters.api_to_dsub(query)
-    jobs = dstat.lookup_job_tasks(
+    jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
         provider=provider,
         statuses=dstat_params['statuses'],
         user_ids=dstat_params.get('user_ids'),
@@ -174,7 +174,7 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
         create_time_min=dstat_params.get('create_time'),
         create_time_max=create_time_max,
         job_names=dstat_params.get('job_names'),
-        labels=dstat_params.get('labels'))
+        labels=dstat_params.get('labels')))
 
     last_create_time = None
     job_buffer = []
