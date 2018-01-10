@@ -125,11 +125,11 @@ def query_jobs(body):
     if query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
     if query.start:
+        query.start = query.start.replace(tzinfo=tzlocal()).replace(
+            microsecond=0)
         if create_time_max and query.start > create_time_max:
             raise BadRequest(
                 "Invalid pagination token with query start parameter.")
-        query.start = query.start.replace(tzinfo=tzlocal()).replace(
-            microsecond=0)
 
     job_generator = _generate_dstat_jobs(provider, query, create_time_max,
                                          offset_id)
