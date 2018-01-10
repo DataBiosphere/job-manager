@@ -13,6 +13,7 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusImage} from '../../shared/common';
 import {ResourceUtils} from '../../shared/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'jm-tasks',
@@ -21,6 +22,9 @@ import {TaskMetadata} from '../../shared/model/TaskMetadata';
 })
 export class TaskDetailsComponent implements OnInit, OnChanges {
   @Input() tasks: TaskMetadata[] = [];
+  @Input() jobId: string = '';
+  serverUrl = '';
+
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
   displayedColumns = [
@@ -35,6 +39,9 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
+    if (environment.serverUrl) {
+      this.serverUrl = environment.serverUrl;
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -52,6 +59,14 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   getResourceFileName(url: string): string {
     return ResourceUtils.getResourceFileName(url);
+  }
+
+  getTimingUrl(serverUrl: string, jobId: string): string {
+    if (serverUrl) {
+      return serverUrl + jobId + '/timing';
+    } else {
+      return '/jobs/' + jobId;
+    }
   }
 }
 

@@ -5,5 +5,6 @@ export const environment = {
   requiresAuth: false,
   scope: '',
   additionalColumns: null,
-  entryPoint: 'jobs'
+  entryPoint: 'jobs',
+  serverUrl: 'https://cromwell.mint-staging.broadinstitute.org/api/workflows/v1/',
 };
