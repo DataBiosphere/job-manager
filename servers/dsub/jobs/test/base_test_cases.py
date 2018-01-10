@@ -366,7 +366,7 @@ class BaseTestCases:
 
         def test_query_jobs_pagination(self):
             # Jobs are sorted first by create-time then by job-id. We cannot
-            # guarentee these start at the exact same second, but we know some
+            # guarantee these start at the exact same second, but we know some
             # of them will. Thus, lets make the job name sort in the same order
             # as create-time so the order is deterministic.
             job1 = self.start_job('echo FIRST_JOB', name='job_z')
@@ -374,26 +374,17 @@ class BaseTestCases:
             job3 = self.start_job('echo THIRD_JOB', name='job_x')
             job4 = self.start_job('echo FOURTH_JOB', name='job_w')
             job5 = self.start_job('echo FIFTH_JOB', name='job_v')
-            job6 = self.start_job('echo SIXTH_JOB', name='job_u')
-            job7 = self.start_job('echo SEVENTH_JOB', name='job_t')
-            job8 = self.start_job('echo EIGHTH_JOB', name='job_s')
-            job9 = self.start_job('echo NINTH_JOB', name='job_r')
-            job10 = self.start_job('echo TENTH_JOB', name='job_q')
-            time.sleep(2)
 
             response = self.assert_query_matches(
-                QueryJobsRequest(page_size=3), [job8, job9, job10])
+                QueryJobsRequest(page_size=2), [job4, job5])
             response = self.assert_query_matches(
                 QueryJobsRequest(
-                    page_size=3, page_token=response.next_page_token),
-                [job5, job6, job7])
+                    page_size=2, page_token=response.next_page_token),
+                [job2, job3])
             response = self.assert_query_matches(
                 QueryJobsRequest(
-                    page_size=3, page_token=response.next_page_token),
-                [job2, job3, job4])
-            response = self.assert_query_matches(
-                QueryJobsRequest(
-                    page_size=3, page_token=response.next_page_token), [job1])
+                    page_size=2, page_token=response.next_page_token),
+                [job1])
 
         def test_query_jobs_start_pagination(self):
             job1 = self.start_job('echo FIRST_JOB', name='job_z')
@@ -404,7 +395,6 @@ class BaseTestCases:
             job4 = self.start_job('echo FOURTH_JOB', name='job_w')
             job5 = self.start_job('echo FIFTH_JOB', name='job_v')
             job6 = self.start_job('echo SIXTH_JOB', name='job_u')
-            time.sleep(2)
 
             response = self.assert_query_matches(
                 QueryJobsRequest(page_size=2, start=min_time), [job5, job6])

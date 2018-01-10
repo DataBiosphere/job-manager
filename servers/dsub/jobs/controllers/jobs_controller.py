@@ -20,8 +20,8 @@ from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_result import QueryJobsResult
 
-_DEFAULT_PAGE_SIZE = 64
-_MAX_PAGE_SIZE = 64
+_DEFAULT_PAGE_SIZE = 32
+_MAX_PAGE_SIZE = 256
 _JOB_SORT_KEY = lambda j: j['job-id'] + j.get('task-id', '')
 
 
@@ -121,7 +121,7 @@ def query_jobs(body):
     create_time_max, offset_id = page_tokens.decode_create_time_max(
         query.page_token) or (None, None)
     query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE,
-                          _DEFAULT_PAGE_SIZE)
+                          _MAX_PAGE_SIZE)
     if query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
     if query.start:
@@ -147,8 +147,8 @@ def query_jobs(body):
         next_ct = next_job['create-time']
         last_ct = jobs[-1]['create-time']
         offset_id = _JOB_SORT_KEY(next_job) if next_ct == last_ct else None
-        return _get_query_jobs_response(jobs, query.parent_id,
-                                        next_job['create-time'], offset_id)
+        return _get_query_jobs_response(jobs, query.parent_id, next_ct,
+            offset_id)
     except StopIteration:
         return _get_query_jobs_response(jobs, query.parent_id)
 
@@ -179,6 +179,9 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
     last_create_time = None
     job_buffer = []
     for job in jobs:
+        # The LocalJobProvider returns datetimes with milliescond granularity.
+        # For consistency with the GoogleJobProvider, truncate to second
+        # granularity.
         job['create-time'] = job['create-time'].replace(microsecond=0)
         # If this job is from the last page, skip it and continue generating
         if create_time_max and job['create-time'] == create_time_max:
@@ -186,7 +189,7 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
                 continue
 
         # Build up a buffer of jobs with the same create time. Once we get a
-        # job with an older create time we yeild all the jobs in the buffer
+        # job with an older create time we yield all the jobs in the buffer
         # sorted by job-id + task-id
         job_buffer.append(job)
         if job['create-time'] != last_create_time:
@@ -195,7 +198,7 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
             job_buffer = []
         last_create_time = job['create-time']
 
-    # If we hit the end of the dstat job generator, ensure to yeild the jobs
+    # If we hit the end of the dstat job generator, ensure to yield the jobs
     # stored in the buffer before returning
     for j in sorted(job_buffer, key=_JOB_SORT_KEY):
         yield j
