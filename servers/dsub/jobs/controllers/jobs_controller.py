@@ -116,9 +116,12 @@ def query_jobs(body):
         QueryJobsResponse: Response containing results from query
     """
     query = QueryJobsRequest.from_dict(body)
-    provider = providers.get_provider(_provider_type(), query.parent_id, _auth_token())
-    create_time_max, offset_id = page_tokens.decode_create_time_max(query.page_token) or (None, None)
-    query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE, _DEFAULT_PAGE_SIZE)
+    provider = providers.get_provider(_provider_type(), query.parent_id,
+                                      _auth_token())
+    create_time_max, offset_id = page_tokens.decode_create_time_max(
+        query.page_token) or (None, None)
+    query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE,
+                          _DEFAULT_PAGE_SIZE)
     if query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
     if query.start:
@@ -128,7 +131,8 @@ def query_jobs(body):
         query.start = query.start.replace(tzinfo=tzlocal()).replace(
             microsecond=0)
 
-    job_generator = _generate_dstat_jobs(provider, query, create_time_max, offset_id)
+    job_generator = _generate_dstat_jobs(provider, query, create_time_max,
+                                         offset_id)
     jobs = []
     for job in job_generator:
         jobs.append(job)
@@ -137,13 +141,16 @@ def query_jobs(body):
 
     try:
         next_job = job_generator.next()
-        offset_id = _JOB_SORT_KEY(next_job) if next_job['create-time'] == jobs[-1]['create-time'] else None
-        return _get_query_jobs_response(jobs, query.parent_id, next_job['create-time'], offset_id)
+        offset_id = _JOB_SORT_KEY(next_job) if next_job['create-time'] == jobs[
+            -1]['create-time'] else None
+        return _get_query_jobs_response(jobs, query.parent_id,
+                                        next_job['create-time'], offset_id)
     except StopIteration:
         return _get_query_jobs_response(jobs, query.parent_id)
 
 
-def _generate_dstat_jobs(provider, query, create_time_max=None, offset_id=None):
+def _generate_dstat_jobs(provider, query, create_time_max=None,
+                         offset_id=None):
     dstat_params = query_parameters.api_to_dsub(query)
     jobs = dstat.lookup_job_tasks(
         provider=provider,
@@ -197,6 +204,7 @@ def _auth_token():
         if len(components) == 2 and components[0] == 'Bearer':
             return components[1]
     return None
+
 
 def _get_offset_id_index(offset_id, sorted_jobs):
     job_ids = [j['job-id'] + j.get('task-id', '') for j in sorted_jobs]
