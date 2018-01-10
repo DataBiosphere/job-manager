@@ -16,9 +16,9 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install tox and yapf
+          name: Install detox and yapf
           command: |
-            pip install tox yapf
+            pip install detox yapf
       - run:
           name: Add nvm to bash environment
           # Adding this line to the BASH_ENV file enables use of nvm in all shells
@@ -52,17 +52,17 @@ jobs:
           name: Run dsub server tests
           command: |
             if [ -z "$GCLOUD_SERVICE_KEY" ]; then
-              tox -c ./servers/dsub -- \
+              detox -c ./servers/dsub -- \
                 --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle
             else
               echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > /home/circleci/gcloud-service-key.json
-              tox -c ./servers/dsub
+              detox -c ./servers/dsub
               rm /home/circleci/gcloud-service-key.json
             fi
       - run:
           name: Run cromwell server tests
           command: |
-            tox -c ./servers/cromwell
+            detox -c ./servers/cromwell
       - run:
           name: Run UI unit tests
           command: |
