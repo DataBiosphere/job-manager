@@ -141,12 +141,22 @@ def query_jobs(body):
 
     try:
         next_job = job_generator.next()
-        offset_id = _JOB_SORT_KEY(next_job) if next_job['create-time'] == jobs[
-            -1]['create-time'] else None
+        next_ct = next_job['create-time']
+        last_ct = jobs[-1]['create-time']
+        offset_id = _JOB_SORT_KEY(next_job) if next_ct == last_ct else None
         return _get_query_jobs_response(jobs, query.parent_id,
                                         next_job['create-time'], offset_id)
     except StopIteration:
         return _get_query_jobs_response(jobs, query.parent_id)
+
+
+def _auth_token():
+    auth_header = request.headers.get('Authentication')
+    if auth_header:
+        components = auth_header.split(' ')
+        if len(components) == 2 and components[0] == 'Bearer':
+            return components[1]
+    return None
 
 
 def _generate_dstat_jobs(provider, query, create_time_max=None,
@@ -197,25 +207,6 @@ def _get_query_jobs_response(jobs,
     return QueryJobsResponse(results=results, next_page_token=token)
 
 
-def _auth_token():
-    auth_header = request.headers.get('Authentication')
-    if auth_header:
-        components = auth_header.split(' ')
-        if len(components) == 2 and components[0] == 'Bearer':
-            return components[1]
-    return None
-
-
-def _get_offset_id_index(offset_id, sorted_jobs):
-    job_ids = [j['job-id'] + j.get('task-id', '') for j in sorted_jobs]
-    return bisect.bisect_left(job_ids, offset_id)
-
-
-def _get_create_time_index(create_time, sorted_jobs):
-    create_times = [j['create-time'] for j in sorted_jobs]
-    return bisect.bisect_left(create_times, create_time)
-
-
 def _handle_http_error(error, proj_id):
     # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
     # provider-specific error translation down into dstat.
@@ -226,8 +217,19 @@ def _handle_http_error(error, proj_id):
     raise InternalServerError("Unexpected failure getting dsub jobs")
 
 
-def _client():
-    return current_app.config['CLIENT']
+def _metadata_response(id, job):
+    return JobMetadataResponse(
+        id=id,
+        name=job['job-name'],
+        status=job_statuses.dsub_to_api(job),
+        submission=job['create-time'],
+        start=job.get('start-time'),
+        end=job['end-time'],
+        inputs=job['inputs'],
+        outputs=job['outputs'],
+        labels=labels.dsub_to_api(job),
+        logs=logs.dsub_to_api(job),
+        failures=failures.get_failures(job))
 
 
 def _provider_type():
@@ -244,18 +246,3 @@ def _query_result(job, project_id=None):
         start=job.get('start-time'),
         end=job['end-time'],
         labels=labels.dsub_to_api(job))
-
-
-def _metadata_response(id, job):
-    return JobMetadataResponse(
-        id=id,
-        name=job['job-name'],
-        status=job_statuses.dsub_to_api(job),
-        submission=job['create-time'],
-        start=job.get('start-time'),
-        end=job['end-time'],
-        inputs=job['inputs'],
-        outputs=job['outputs'],
-        labels=labels.dsub_to_api(job),
-        logs=logs.dsub_to_api(job),
-        failures=failures.get_failures(job))
