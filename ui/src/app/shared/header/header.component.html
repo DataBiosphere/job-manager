@@ -15,7 +15,7 @@
                  placeholder="Equals"
                  type="search"
                  [(ngModel)]="currentChipValue"
-                 (keyup.enter)="assignChipValue($event)"
+                 (keyup.enter)="assignChipValue()"
                  (click)="$event.stopPropagation()"/>
         </md-input-container>
       </md-menu>
@@ -49,4 +49,3 @@
     <button md-raised-button class="status-button" (click)="showCompletedJobs()">COMPLETED</button>
   </div>
 </div>
-
