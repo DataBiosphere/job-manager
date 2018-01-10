@@ -48,7 +48,6 @@ jobs:
       # Unit and Integration Tests
       # TODO(calbach): Cache the tox venvs per https://discuss.circleci.com/t/cached-venv-in-tox/1499.
       - run:
-          # TODO(calbach): Re-enable Google tests, fails due to lack of auth.
           name: Run dsub server tests
           command: |
             if [ -z "$GCLOUD_SERVICE_KEY" ]; then
@@ -63,6 +62,10 @@ jobs:
           name: Run cromwell server tests
           command: |
             detox -c ./servers/cromwell
+      - run:
+          name: Run jm_utils server tests
+          command: |
+            detox -c ./servers/jm_utils
       - run:
           name: Run UI unit tests
           command: |
