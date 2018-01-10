@@ -81,8 +81,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         self.wait_for_job_status(api_job_id, ApiStatus.ABORTED)
 
     def test_query_jobs_invalid_project(self):
-        params = QueryJobsRequest(
-            statuses=['Succeeded'], parent_id='some-bogus-project-id')
+        params = QueryJobsRequest(parent_id='some-bogus-project-id')
         resp = self.client.open(
             '/jobs/query',
             method='POST',
