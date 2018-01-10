@@ -6,7 +6,7 @@ google-compute-engine==2.7.2
 google-api-python-client == 1.5.5
 gunicorn == 19.7.1
 oauth2client == 3.0.0
-# TODO(bryancrampton): Update this once a new version of dsub is released
+# TODO(bryancrampton): Create a dsub release and pin to it before merging
 -e git+https://github.com/bfcrampton/dsub.git#egg=dsub
 flask-cors == 3.0.3
 ../jm_utils

@@ -13,7 +13,7 @@ from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotF
 
 from jm_utils import page_tokens
 from jobs.common import execute_redirect_stdout
-from jobs.controllers.utils import failures, job_ids, job_statuses, labels, logs, providers
+from jobs.controllers.utils import failures, job_ids, job_statuses, labels, logs, providers, query_parameters
 from jobs.models.failure_message import FailureMessage
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
@@ -22,6 +22,7 @@ from jobs.models.query_jobs_result import QueryJobsResult
 
 _DEFAULT_PAGE_SIZE = 64
 _MAX_PAGE_SIZE = 64
+_JOB_SORT_KEY = lambda j: j['job-id'] + j.get('task-id', '')
 
 
 def abort_job(id):
@@ -115,139 +116,78 @@ def query_jobs(body):
         QueryJobsResponse: Response containing results from query
     """
     query = QueryJobsRequest.from_dict(body)
-    if not query.page_size:
-        query.page_size = _DEFAULT_PAGE_SIZE
-    elif query.page_size < 0:
+    provider = providers.get_provider(_provider_type(), query.parent_id, _auth_token())
+    create_time_max, offset_id = page_tokens.decode_create_time_max(query.page_token) or (None, None)
+    query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE, _DEFAULT_PAGE_SIZE)
+    if query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
     if query.start:
-        query.start = query.start.replace(tzinfo=tzlocal()).replace(
-            microsecond=0)
-    query.page_size = min(query.page_size, _MAX_PAGE_SIZE)
-    provider = providers.get_provider(_provider_type(), query.parent_id,
-                                      _auth_token())
-    create_time_max, offset_id = page_tokens.decode_create_time_max(
-        query.page_token) or (None, None)
-
-    jobs = []
-    if offset_id and create_time_max:
-        if query.start and query.start > create_time_max:
+        if create_time_max and query.start > create_time_max:
             raise ValueError(
                 "Invalid pagination token with query start parameter")
+        query.start = query.start.replace(tzinfo=tzlocal()).replace(
+            microsecond=0)
 
-        # The presence of offset_id indicates we are getting a page token in
-        # which multiple pages of jobs have the same create-time. We must
-        # get all jobs with that create time, sort them by Job ID and calcuate
-        # where the offset_id is located within the list.
-        create_time_jobs = _query_dstat_jobs_single_create_time(
-            provider, query, create_time_max)
-        offset_idx = _get_offset_id_index(offset_id, create_time_jobs)
-        new_jobs = create_time_jobs[offset_idx:]
-        if len(new_jobs) > query.page_size:
-            return _get_query_jobs_response(new_jobs[:query.page_size],
-                                            query.parent_id, create_time_max,
-                                            new_jobs[query.page_size])
-        elif query.start and query.start == create_time_max:
-            # We are at the end of pagination for the given query.start, return
-            # the results with no token
-            return _get_query_jobs_response(new_jobs, query.parent_id)
-        else:
-            jobs = new_jobs
-            create_time_max -= datetime.timedelta(seconds=1)
+    job_generator = _generate_dstat_jobs(provider, query, create_time_max, offset_id)
+    jobs = []
+    for job in job_generator:
+        jobs.append(job)
+        if len(jobs) == query.page_size:
+            break
 
-    # Get one additional task than requested to determine if we should return a
-    # page_token
-    max_tasks = query.page_size - len(jobs) + 1
-    more_jobs = _query_dstat_jobs(
-        provider, query, create_time_max, max_tasks=max_tasks)
-    # We shouldn't get more jobs than requested, but if we do ignore
-    # all the extras.
-    if len(more_jobs) > max_tasks:
-        more_jobs = more_jobs[:max_tasks]
+    try:
+        next_job = job_generator.next()
+        offset_id = _JOB_SORT_KEY(next_job) if next_job['create-time'] == jobs[-1]['create-time'] else None
+        return _get_query_jobs_response(jobs, query.parent_id, next_job['create-time'], offset_id)
+    except StopIteration:
+        return _get_query_jobs_response(jobs, query.parent_id)
 
-    if len(more_jobs) == 1 and max_tasks == 1:
-        # We requested one job to see if there is another page, there is
-        # so return the existing jobs and a page_token
-        return _get_query_jobs_response(jobs, query.parent_id, create_time_max)
-    elif len(more_jobs) >= max_tasks:
-        last_create_time = more_jobs[-1]['create-time']
-        penult_create_time = more_jobs[-2]['create-time']
-        if last_create_time == penult_create_time:
-            # The last job in this page has the same create-time as the first
-            # job in the next page. We need to get all jobs with this
-            # create-time and provide an offset_id with the page_token.
-            create_time_jobs = _query_dstat_jobs_single_create_time(
-                provider, query, last_create_time)
-            # Add all jobs with a different create-time to the already fetched
-            # jobs
-            create_time_cutoff = _get_create_time_index(
-                last_create_time, more_jobs)
-            jobs = jobs + more_jobs[:create_time_cutoff]
-            # Add enough jobs from the sorted list to fill the page and return
-            # a token with this create_time and the offset_id of the first job
-            # on the next page
-            needed_jobs = query.page_size - len(jobs)
-            jobs = jobs + create_time_jobs[:needed_jobs]
-            return _get_query_jobs_response(jobs, query.parent_id,
-                                            last_create_time,
-                                            create_time_jobs[needed_jobs])
 
-        else:
-            return _get_query_jobs_response(jobs + more_jobs[:-1],
-                                            query.parent_id, last_create_time)
-    else:
-        # Not enough jobs to fill the page, return everything we have
-        # and no page_token
-        return _get_query_jobs_response(jobs + more_jobs, query.parent_id)
+def _generate_dstat_jobs(provider, query, create_time_max=None, offset_id=None):
+    dstat_params = query_parameters.api_to_dsub(query)
+    jobs = dstat.lookup_job_tasks(
+        provider=provider,
+        statuses=dstat_params['statuses'],
+        user_ids=dstat_params.get('user_ids'),
+        job_ids=dstat_params.get('job_ids'),
+        task_ids=dstat_params.get('task_ids'),
+        create_time_min=dstat_params.get('create_time'),
+        create_time_max=create_time_max,
+        job_names=dstat_params.get('job_names'),
+        labels=dstat_params.get('labels'))
+
+    last_create_time = None
+    job_buffer = []
+    for job in jobs:
+        job['create-time'] = job['create-time'].replace(microsecond=0)
+        # If this job is from the last page, skip it and continue generating
+        if create_time_max and job['create-time'] == create_time_max:
+            if offset_id and _JOB_SORT_KEY(job) < offset_id:
+                continue
+
+        # Build up a buffer of jobs with the same create time. Once we get a
+        # job with an older create time we yeild all the jobs in the buffer
+        # sorted by job-id + task-id
+        job_buffer.append(job)
+        if job['create-time'] != last_create_time:
+            for j in sorted(job_buffer, key=_JOB_SORT_KEY):
+                yield j
+            job_buffer = []
+        last_create_time = job['create-time']
+
+    # If we hit the end of the dstat job generator, ensure to yeild the jobs
+    # stored in the buffer before returning
+    for j in sorted(job_buffer, key=_JOB_SORT_KEY):
+        yield j
 
 
 def _get_query_jobs_response(jobs,
                              project_id,
                              create_time_max=None,
-                             job_offset=None):
+                             offset_id=None):
     results = [_query_result(j, project_id) for j in jobs]
-    offset_id = job_offset['job-id'] + job_offset.get(
-        'task-id', '') if job_offset else None
     token = page_tokens.encode_create_time_max(create_time_max, offset_id)
     return QueryJobsResponse(results=results, next_page_token=token)
-
-
-def _query_dstat_jobs(provider, query, create_time_max, max_tasks=0):
-    labels = {param_util.LabelParam(k, v)
-              for (k, v) in query.labels.items()} if query.labels else set()
-    statuses = {job_statuses.api_to_dsub(s)
-                for s in query.statuses} if query.statuses else set()
-
-    try:
-        jobs = dstat.dstat_job_producer(
-            provider=provider,
-            statuses=dstat_params['statuses'],
-            user_ids=dstat_params.get('user_ids'),
-            job_ids=dstat_params.get('job_ids'),
-            task_ids=dstat_params.get('task_ids'),
-            create_time=dstat_params.get('create_time'),
-            job_names=dstat_params.get('job_names'),
-            labels=dstat_params.get('labels'),
-            full_output=True,
-            max_tasks=max_tasks).next()
-
-        # The local provider gives millisecond granularity, trim it to second
-        # grunularity for consistency with the google provider
-        for j in jobs:
-            j['create-time'] = j['create-time'].replace(microsecond=0)
-        # Sort returned jobs first by create-time then by job-id + task-id
-        return sorted(
-            jobs,
-            key=
-            lambda j: (j['create-time'], j['job-id'] + j.get('task-id', '')))
-    except apiclient.errors.HttpError as e:
-        _handle_http_error(e, query.parent_id)
-
-
-def _query_dstat_jobs_single_create_time(provider, query, create_time):
-    # Copy the query object and modify its 'start' field
-    new_query = copy.deepcopy(query)
-    new_query.start = create_time
-    return _query_dstat_jobs(provider, new_query, create_time_max=create_time)
 
 
 def _auth_token():
@@ -257,7 +197,6 @@ def _auth_token():
         if len(components) == 2 and components[0] == 'Bearer':
             return components[1]
     return None
-
 
 def _get_offset_id_index(offset_id, sorted_jobs):
     job_ids = [j['job-id'] + j.get('task-id', '') for j in sorted_jobs]
