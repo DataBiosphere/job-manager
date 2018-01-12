@@ -5,10 +5,10 @@ import {PageEvent, MdSnackBar} from '@angular/material'
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
-import {ErrorMessageFormatterPipe} from '../shared/error-message-formatter.pipe';
+import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {JobsTableComponent} from './table/table.component';
 import {JobListView, JobStream} from '../shared/job-stream';
-import {URLSearchParamsUtils} from "../shared/url-search-params.utils";
+import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 
 @Component({
   selector: 'jm-job-list',

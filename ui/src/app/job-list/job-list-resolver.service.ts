@@ -12,7 +12,7 @@ import {JobManagerService} from '../core/job-manager.service';
 import {JobStream} from '../shared/job-stream';
 
 import {environment} from '../../environments/environment';
-import {URLSearchParamsUtils} from "../shared/url-search-params.utils";
+import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 
 @Injectable()
 export class JobListResolver implements Resolve<JobStream> {

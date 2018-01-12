@@ -1,8 +1,8 @@
 import {URLSearchParams} from '@angular/http';
 
-import {QueryJobsRequest} from "./model/QueryJobsRequest";
-import {JobStatus} from "./model/JobStatus";
-import {queryFields} from "./common";
+import {QueryJobsRequest} from "../model/QueryJobsRequest";
+import {JobStatus} from "../model/JobStatus";
+import {queryFields} from "../common";
 
 /** Utilities for working with URLSearchParams*/
 export class URLSearchParamsUtils {

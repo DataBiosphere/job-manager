@@ -23,9 +23,9 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 
 import {AuthService} from '../core/auth.service';
-import {ErrorMessageFormatterPipe} from '../shared/error-message-formatter.pipe';
+import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {ProjectsService} from './projects.service'
-import {URLSearchParamsUtils} from "../shared/url-search-params.utils";
+import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 
 @Component({
   selector: 'jm-projects',
