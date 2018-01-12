@@ -12,7 +12,7 @@ VERSION = "1.0.0"
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
 
-REQUIRES = ['pytz']
+REQUIRES = []
 
 setup(
     name=NAME,
@@ -28,3 +28,4 @@ setup(
     Utilities needed by multiple Job Manager backends.
     """
 )
+
