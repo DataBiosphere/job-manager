@@ -18,7 +18,6 @@ import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 export class JobListComponent implements OnInit {
   @ViewChild(JobsTableComponent) table: JobsTableComponent;
 
-  private static readonly initialBackendPageSize = 200;
   private jobStream: JobStream;
   private streamSubscription: Subscription;
 
@@ -56,7 +55,7 @@ export class JobListComponent implements OnInit {
       this.jobStream = new JobStream(this.jobManagerService,
         URLSearchParamsUtils.unpackURLSearchParams(query));
       this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
-      this.jobStream.loadAtLeast(JobListComponent.initialBackendPageSize)
+      this.jobStream.loadAtLeast(initialBackendPageSize)
         .catch((error) => this.handleError(error));
     }
   }

@@ -8,6 +8,7 @@ import base64
 import datetime
 import json
 import numbers
+import pytz
 
 
 def _encode(dictionary):
@@ -15,7 +16,7 @@ def _encode(dictionary):
 
     Args:
         dictionary: (dict) Dictionary to basee64-encode
-    
+
     Returns:
         (string) encoded page token representing a page of items
     """
@@ -45,10 +46,10 @@ def _decode(token):
 
 def encode_offset(offset):
     """Encodes an offset integer into a pagination token.
-    
+
     Args:
       offset: (int) index into the overall list of items matching the query
-    
+
     Returns:
       (string) encoded page token representing a page of items.
     """
@@ -60,29 +61,29 @@ def encode_offset(offset):
     return _encode({'of': offset})
 
 
-def encode_created_before(created_before, offset_id=None):
-    """Encodes a created_before and optional offset ID into a pagination token.
-    
+def encode_create_time_max(create_time_max, offset_id=None):
+    """Encodes a create_time_max and optional offset ID into a pagination token.
+
     Args:
-      created_before: (datetime) The create-time of the first item to include in the associated page.
+      create_time_max: (datetime) The create-time of the first item to include in the associated page.
       offset_id: (str) The unique ID of the first item to include in the associated page. Needed
         only if the previous page ends with an item containing the same create-time.
-    
+
     Returns:
       (string) encoded page token representing a page of items.
     """
-    if created_before is None:
+    if create_time_max is None:
         return None
 
-    if not isinstance(created_before, datetime.datetime):
+    if not isinstance(create_time_max, datetime.datetime):
         raise ValueError(
-            'Invalid create time must be datetime: {}'.format(created_before))
+            'Invalid create time must be datetime: {}'.format(create_time_max))
     if offset_id and not isinstance(offset_id, basestring):
         raise ValueError(
             'Invalid offset id must be string: {}'.format(offset_id))
 
-    epoch = datetime.datetime.utcfromtimestamp(0)
-    seconds_epoch = int((created_before - epoch).total_seconds())
+    epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=pytz.utc)
+    seconds_epoch = int((create_time_max - epoch).total_seconds())
     token_dict = {'cb': seconds_epoch}
     if offset_id:
         token_dict['oi'] = offset_id
@@ -108,27 +109,28 @@ def decode_offset(token):
     return offset
 
 
-def decode_created_before(token):
-    """Decode a created_before and optional offset ID pagination token.
+def decode_create_time_max(token):
+    """Decode a create_time_max and optional offset ID pagination token.
 
     Args:
         token: (string) base64 encoded JSON offset-pagination token
 
     Returns:
-        (datetime, str) A tuple of created_before, offset_id, defaults to 
-            None if token is None. created_before is the create-time of the 
-            first item to include in this page. If present, offset_id is a 
+        (datetime, str) A tuple of create_time_max, offset_id, defaults to
+            None if token is None. create_time_max is the create-time of the
+            first item to include in this page. If present, offset_id is a
             unique ID of the first item to include in this page.
     """
     token_dict = _decode(token)
     if token_dict is None:
         return None
 
-    created_before = token_dict.get('cb')
+    create_time_max = token_dict.get('cb')
     offset_id = token_dict.get('oi')
 
-    if created_before and isinstance(created_before, numbers.Number):
-        created_before = datetime.datetime.utcfromtimestamp(created_before)
+    if create_time_max and isinstance(create_time_max, numbers.Number):
+        create_time_max = datetime.datetime.utcfromtimestamp(
+            create_time_max).replace(tzinfo=pytz.utc)
     else:
         raise ValueError(
             'Invalid created before in token JSON: {}'.format(token_dict))
@@ -137,4 +139,4 @@ def decode_created_before(token):
         raise ValueError(
             'Invalid offset ID in token JSON: {}'.format(token_dict))
 
-    return created_before, offset_id
+    return create_time_max, offset_id
