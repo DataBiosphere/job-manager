@@ -148,7 +148,7 @@ def query_jobs(body):
         last_ct = jobs[-1]['create-time']
         offset_id = _JOB_SORT_KEY(next_job) if next_ct == last_ct else None
         return _get_query_jobs_response(jobs, query.parent_id, next_ct,
-            offset_id)
+                                        offset_id)
     except StopIteration:
         return _get_query_jobs_response(jobs, query.parent_id)
 

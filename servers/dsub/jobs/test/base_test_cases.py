@@ -383,8 +383,7 @@ class BaseTestCases:
                 [job2, job3])
             response = self.assert_query_matches(
                 QueryJobsRequest(
-                    page_size=2, page_token=response.next_page_token),
-                [job1])
+                    page_size=2, page_token=response.next_page_token), [job1])
 
         def test_query_jobs_start_pagination(self):
             job1 = self.start_job('echo FIRST_JOB', name='job_z')

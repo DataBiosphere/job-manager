@@ -27,6 +27,6 @@ export const primaryColumns: string[] = [
   'Submitted',
 ];
 
-/** The minimum page size to initially request from the backend. The maximum size of a
- *  page is 100 jobs, so get 100 initially. */
+/** The page size to initially request from the backend. The maximum number of jobs on a
+ *  page is 100, so request 100 initially. */
 private static readonly initialBackendPageSize = 100;
