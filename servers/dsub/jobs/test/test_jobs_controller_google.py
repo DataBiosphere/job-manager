@@ -41,11 +41,12 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         return app
 
     def assert_query_matches(self, query_params, job_list):
+        query_params.parent_id = self.testing_project
         if query_params.labels:
             query_params.labels.update(self.test_token_label)
         else:
             query_params.labels = self.test_token_label
-        super(TestJobsControllerGoogle, self).assert_query_matches(
+        return super(TestJobsControllerGoogle, self).assert_query_matches(
             query_params, job_list)
 
     def start_job(self,
@@ -80,8 +81,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         self.wait_for_job_status(api_job_id, ApiStatus.ABORTED)
 
     def test_query_jobs_invalid_project(self):
-        params = QueryJobsRequest(
-            statuses=['Succeeded'], parent_id='some-bogus-project-id')
+        params = QueryJobsRequest(parent_id='some-bogus-project-id')
         resp = self.client.open(
             '/jobs/query',
             method='POST',

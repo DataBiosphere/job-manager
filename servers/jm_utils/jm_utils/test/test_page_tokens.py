@@ -4,6 +4,7 @@ from __future__ import absolute_import
 
 import datetime
 import unittest
+import pytz
 
 from .. import page_tokens
 
@@ -31,38 +32,39 @@ class TestJmUtils(unittest.TestCase):
     def test_decode_offset_none(self):
         self.assertEqual(page_tokens.decode_offset(None), None)
 
-    def test_encode_decode_created_before(self):
-        now = datetime.datetime.now().replace(microsecond=0)
-        encoded = page_tokens.encode_created_before(now, 'offset-id')
-        decoded_create_time, decoded_offset_id = page_tokens.decode_created_before(
+    def test_encode_decode_create_time_max(self):
+        now = datetime.datetime.now().replace(microsecond=0).replace(
+            tzinfo=pytz.utc)
+        encoded = page_tokens.encode_create_time_max(now, 'offset-id')
+        decoded_create_time, decoded_offset_id = page_tokens.decode_create_time_max(
             encoded)
         self.assertEqual(decoded_create_time, now)
         self.assertEqual(decoded_offset_id, 'offset-id')
 
-    def test_encode_created_before_invalid(self):
+    def test_encode_create_time_max_invalid(self):
         with self.assertRaises(ValueError) as context:
-            page_tokens.encode_created_before('not-a-date')
+            page_tokens.encode_create_time_max('not-a-date')
         self.assertIn('Invalid create time must be datetime',
                       str(context.exception))
         with self.assertRaises(ValueError) as context:
-            page_tokens.encode_created_before(datetime.datetime.now(), 123)
+            page_tokens.encode_create_time_max(datetime.datetime.now(), 123)
         self.assertIn('Invalid offset id must be string', str(
             context.exception))
 
-    def test_decode_created_before_invalid(self):
+    def test_decode_create_time_max_invalid(self):
         encoded = page_tokens._encode({'cb': 'not-a-date'})
         with self.assertRaises(ValueError) as context:
-            page_tokens.decode_created_before(encoded)
+            page_tokens.decode_create_time_max(encoded)
         self.assertIn('Invalid created before in token JSON',
                       str(context.exception))
         encoded = page_tokens._encode({'cb': 10, 'oi': 123})
         with self.assertRaises(ValueError) as context:
-            page_tokens.decode_created_before(encoded)
+            page_tokens.decode_create_time_max(encoded)
         self.assertIn('Invalid offset ID in token JSON', str(
             context.exception))
 
-    def test_decode_created_before_none(self):
-        self.assertEqual(page_tokens.decode_created_before(None), None)
+    def test_decode_create_time_max_none(self):
+        self.assertEqual(page_tokens.decode_create_time_max(None), None)
 
 
 if __name__ == '__main__':

@@ -48,8 +48,5 @@ pip freeze > servers/jm_utils/requirements.txt
 deactivate
 ```
 
-Currently, requirements-to-freeze.txt is empty, so you'll get a warning
-that can be safely ignored:
-```
-You must give at least one requirement to install
-```
+Any library dependencies also need to be added to the `REQUIRES` list in
+`setup.py`
