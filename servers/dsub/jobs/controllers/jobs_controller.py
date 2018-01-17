@@ -141,7 +141,8 @@ def query_jobs(body):
     jobs = []
     try:
         for job in job_generator:
-            if not query.end or job.get('end-time') and job['end-time'] < query.end:
+            if not query.end or job.get(
+                    'end-time') and job['end-time'] < query.end:
                 jobs.append(job)
             if len(jobs) == query.page_size:
                 break

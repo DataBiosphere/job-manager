@@ -245,10 +245,9 @@ class BaseTestCases:
 
         def test_get_non_existent_job_fails(self):
             resp = self.client.open(
-                '/jobs/{}'.format(
-                    self.api_job_id({
-                        'job-id': 'not-a-job'
-                    })),
+                '/jobs/{}'.format(self.api_job_id({
+                    'job-id': 'not-a-job'
+                })),
                 method='GET')
             self.assert_status(resp, 404)
 
@@ -361,18 +360,15 @@ class BaseTestCases:
             self.assert_query_matches(
                 QueryJobsRequest(start=fourth_time), [fourth_job])
             self.assert_query_matches(
-                QueryJobsRequest(end=second_time),
-                [first_job])
+                QueryJobsRequest(end=second_time), [first_job])
             self.assert_query_matches(
-                QueryJobsRequest(end=third_time),
-                [first_job, second_job])
+                QueryJobsRequest(end=third_time), [first_job, second_job])
             self.assert_query_matches(
                 QueryJobsRequest(end=fourth_time),
                 [first_job, second_job, third_job])
             self.assert_query_matches(
                 QueryJobsRequest(start=second_time, end=fourth_time),
                 [second_job, third_job])
-
 
         def test_query_jobs_pagination(self):
             # Jobs are sorted first by create-time then by job-id. We cannot
