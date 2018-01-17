@@ -129,14 +129,20 @@ def query_jobs(body):
             microsecond=0)
         if create_time_max and query.start > create_time_max:
             raise BadRequest(
-                "Invalid pagination token with query start parameter.")
+                "Invalid query: start date is invalid with pagination token.")
+    if query.end:
+        query.end = query.end.replace(tzinfo=tzlocal()).replace(microsecond=0)
+        if query.start and query.start >= query.end:
+            raise BadRequest(
+                "Invalid query: start date must precede end date.")
 
     job_generator = _generate_dstat_jobs(provider, query, create_time_max,
                                          offset_id)
     jobs = []
     try:
         for job in job_generator:
-            jobs.append(job)
+            if not query.end or job.get('end-time') and job['end-time'] < query.end:
+                jobs.append(job)
             if len(jobs) == query.page_size:
                 break
     except apiclient.errors.HttpError as error:

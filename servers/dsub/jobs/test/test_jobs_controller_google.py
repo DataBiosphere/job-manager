@@ -75,10 +75,10 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
 
     def test_abort_job(self):
         started = self.start_job('sleep 30')
-        api_job_id = self.get_api_job_id(started)
-        self.wait_for_job_status(api_job_id, ApiStatus.RUNNING)
+        api_job_id = self.api_job_id(started)
+        self.wait_status(api_job_id, ApiStatus.RUNNING)
         self.must_abort_job(api_job_id)
-        self.wait_for_job_status(api_job_id, ApiStatus.ABORTED)
+        self.wait_status(api_job_id, ApiStatus.ABORTED)
 
     def test_query_jobs_invalid_project(self):
         params = QueryJobsRequest(parent_id='some-bogus-project-id')
