@@ -104,10 +104,10 @@ def get_job(id):
     start = _parse_datetime(job.get('start'))
     submission = _parse_datetime(job.get('submission'))
     if submission is None:
-      # Submission is required by the common jobs API. Submission may be missing
-      # for subworkflows in which case we fallback to the workflow start time
-      # or, if not started, the current time.
-      submission = start or datetime.utcnow()
+        # Submission is required by the common jobs API. Submission may be missing
+        # for subworkflows in which case we fallback to the workflow start time
+        # or, if not started, the current time.
+        submission = start or datetime.utcnow()
     return JobMetadataResponse(
         id=id,
         name=job.get('workflowName'),
@@ -225,11 +225,11 @@ def format_job(job, now):
     start = _parse_datetime(job.get('start'))
     submission = start
     if submission is None:
-      # Submission is required by the common jobs API. Submission is not
-      # currently returned via Cromwell QueryJobs, so start is used as a
-      # stand-in value. If the job hasn't actually started yet, fake the
-      # submission time as 'now' rather than returning null.
-      submission = now
+        # Submission is required by the common jobs API. Submission is not
+        # currently returned via Cromwell QueryJobs, so start is used as a
+        # stand-in value. If the job hasn't actually started yet, fake the
+        # submission time as 'now' rather than returning null.
+        submission = now
     end = _parse_datetime(job.get('end'))
     return QueryJobsResult(
         id=job.get('id'),

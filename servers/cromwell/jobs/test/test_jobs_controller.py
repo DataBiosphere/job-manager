@@ -132,20 +132,18 @@ class TestJobsController(BaseTestCase):
         mock_request.patch(update_label_url, json=_request_callback_labels)
         mock_request.get(cromwell_url, json=_request_callback_get_job)
 
-        payload = UpdateJobLabelsRequest(labels={
-            "test_label": "test_label_value"
-        })
+        payload = UpdateJobLabelsRequest(
+            labels={"test_label": "test_label_value"})
         response = self.client.open(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
             method='POST',
             data=json.dumps(payload),
             content_type='application/json')
         self.assertStatus(response, 200)
-        self.assertEquals(response.json, {
-            "labels": {
-                "test_label": "test_label_value"
-            }
-        })
+        self.assertEquals(response.json,
+                          {"labels": {
+                              "test_label": "test_label_value"
+                          }})
 
     @requests_mock.mock()
     def test_update_job_labels_returns_all_labels(self, mock_request):
@@ -211,9 +209,7 @@ class TestJobsController(BaseTestCase):
         mock_request.get(cromwell_url, json=_request_callback_get_job)
 
         payload = UpdateJobLabelsRequest(
-            labels={
-                "new_test_label": "new_test_label_value"
-            })
+            labels={"new_test_label": "new_test_label_value"})
         response = self.client.open(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
             method='POST',
@@ -268,9 +264,8 @@ class TestJobsController(BaseTestCase):
             id=workflow_id)
         mock_request.patch(update_label_url, json=_request_callback)
 
-        payload = UpdateJobLabelsRequest(labels={
-            "test_label": "test_label_value"
-        })
+        payload = UpdateJobLabelsRequest(
+            labels={"test_label": "test_label_value"})
         response = self.client.open(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
             method='POST',
@@ -295,9 +290,8 @@ class TestJobsController(BaseTestCase):
             id=workflow_id)
         mock_request.patch(update_label_url, json=_request_callback)
 
-        payload = UpdateJobLabelsRequest(labels={
-            "test_label": "test_label_value"
-        })
+        payload = UpdateJobLabelsRequest(
+            labels={"test_label": "test_label_value"})
         response = self.client.open(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
             method='POST',
@@ -549,7 +543,8 @@ class TestJobsController(BaseTestCase):
             submission=formatted_time,
             start=formatted_time,
             end=formatted_time)
-        self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
+        self.assertEqual(
+            jobs_controller.format_job(job, formatted_time), result)
 
     def test_format_job_without_milliseconds(self):
         time = '2017-10-27T18:04:47Z'
@@ -568,22 +563,20 @@ class TestJobsController(BaseTestCase):
             submission=formatted_time,
             start=formatted_time,
             end=formatted_time)
-        self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
+        self.assertEqual(
+            jobs_controller.format_job(job, formatted_time), result)
 
     def test_format_job_with_no_start(self):
         time = '2017-10-27T18:04:47Z'
-        job = {
-            'id': '12345',
-            'name': 'TestJob',
-            'status': 'Failed'
-        }
+        job = {'id': '12345', 'name': 'TestJob', 'status': 'Failed'}
         formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
         result = QueryJobsResult(
             id=job.get('id'),
             name=job.get('name'),
             status=job.get('status'),
             submission=formatted_time)
-        self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
+        self.assertEqual(
+            jobs_controller.format_job(job, formatted_time), result)
 
     def test_format_job_with_no_end_date(self):
         time = '2017-10-27T18:04:47Z'
@@ -601,7 +594,8 @@ class TestJobsController(BaseTestCase):
             submission=formatted_time,
             start=formatted_time,
             end=None)
-        self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
+        self.assertEqual(
+            jobs_controller.format_job(job, formatted_time), result)
 
     def test_page_from_offset(self):
         self.assertEqual(
