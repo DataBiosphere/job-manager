@@ -129,7 +129,12 @@ def query_jobs(body):
             microsecond=0)
         if create_time_max and query.start > create_time_max:
             raise BadRequest(
-                "Invalid pagination token with query start parameter.")
+                "Invalid query: start date is invalid with pagination token.")
+    if query.end:
+        query.end = query.end.replace(tzinfo=tzlocal()).replace(microsecond=0)
+        if query.start and query.start >= query.end:
+            raise BadRequest(
+                "Invalid query: start date must precede end date.")
 
     job_generator = _generate_dstat_jobs(provider, query, create_time_max,
                                          offset_id)
@@ -164,6 +169,12 @@ def _auth_token():
 
 def _generate_dstat_jobs(provider, query, create_time_max=None,
                          offset_id=None):
+    # If create_time_max is not set, but we have to client-side filter by
+    # end-time, set create_time_max = query.end because all the jobs with
+    # create_time >= query.end cannot possibly match the query.
+    if not create_time_max and query.end:
+        create_time_max = query.end
+
     dstat_params = query_parameters.api_to_dsub(query)
     jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
         provider=provider,
@@ -179,6 +190,10 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
     last_create_time = None
     job_buffer = []
     for job in jobs:
+        if query.end and ('end-time' not in job
+                          or job['end-time'] > query.end):
+            continue
+
         # The LocalJobProvider returns datetimes with milliescond granularity.
         # For consistency with the GoogleJobProvider, truncate to second
         # granularity.
