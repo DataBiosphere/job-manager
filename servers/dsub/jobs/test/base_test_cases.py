@@ -341,24 +341,21 @@ class BaseTestCases:
 
         def test_query_jobs_by_start_end(self):
             first_time = datetime.datetime.now()
-            first_job = self.start_job('sleep 30', name='job1', wait=True)
+            first_job = self.start_job('echo ONE', name='job1', wait=True)
             second_time = datetime.datetime.now()
-            second_job = self.start_job('sleep 30', name='job2', wait=True)
+            second_job = self.start_job('echo TWO', name='job2', wait=True)
             third_time = datetime.datetime.now()
-            third_job = self.start_job('sleep 30', name='job3', wait=True)
+            third_job = self.start_job('echo THREE', name='job3', wait=True)
             fourth_time = datetime.datetime.now()
-            fourth_job = self.start_job('sleep 30', name='job4', wait=True)
 
             self.assert_query_matches(
                 QueryJobsRequest(start=first_time),
-                [first_job, second_job, third_job, fourth_job])
+                [first_job, second_job, third_job])
             self.assert_query_matches(
                 QueryJobsRequest(start=second_time),
-                [second_job, third_job, fourth_job])
+                [second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(start=third_time), [third_job, fourth_job])
-            self.assert_query_matches(
-                QueryJobsRequest(start=fourth_time), [fourth_job])
+                QueryJobsRequest(start=third_time), [third_job])
             self.assert_query_matches(
                 QueryJobsRequest(end=second_time), [first_job])
             self.assert_query_matches(

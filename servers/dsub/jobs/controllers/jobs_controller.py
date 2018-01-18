@@ -172,8 +172,8 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
     # If create_time_max is not set, but we have to client-side filter by
     # end-time, set create_time_max = query.end because all the jobs with
     # create_time >= query.end cannot possibly match the query.
-    if not create_time_max and query.start:
-        create_time_max = query.start
+    if not create_time_max and query.end:
+        create_time_max = query.end
 
     dstat_params = query_parameters.api_to_dsub(query)
     jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
@@ -190,7 +190,7 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
     last_create_time = None
     job_buffer = []
     for job in jobs:
-        if query.end and job['end-time'] > query.end:
+        if query.end and ('end-time' not in job or job['end-time'] > query.end):
             continue
 
         # The LocalJobProvider returns datetimes with milliescond granularity.
