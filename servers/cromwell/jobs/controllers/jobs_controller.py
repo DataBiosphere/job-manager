@@ -101,13 +101,18 @@ def get_job(id):
         for task_name, task_metadata in job.get('calls', {}).items()
     ]
     sorted_tasks = sorted(tasks, key=lambda t: t.start)
-    submission = _parse_datetime(job.get('submission'))
     start = _parse_datetime(job.get('start'))
+    submission = _parse_datetime(job.get('submission'))
+    if submission is None:
+      # Submission is required by the common jobs API. Submission may be missing
+      # for subworkflows in which case we fallback to the workflow start time
+      # or, if not started, the current time.
+      submission = start or datetime.utcnow()
     return JobMetadataResponse(
         id=id,
         name=job.get('workflowName'),
         status=job.get('status'),
-        submission=submission if submission else start,
+        submission=submission,
         start=start,
         end=_parse_datetime(job.get('end')),
         inputs=update_key_names(job.get('inputs', {})),
@@ -181,8 +186,9 @@ def query_jobs(body):
     response.raise_for_status()
 
     # Only list parent jobs
+    now = datetime.utcnow()
     results = [
-        format_job(job) for job in response.json()['results']
+        format_job(job, now) for job in response.json()['results']
         if not job.get('parentWorkflowId')
     ]
     # Reverse so that newest jobs are listed first
@@ -215,14 +221,21 @@ def cromwell_query_params(query, page, page_size):
     return query_params
 
 
-def format_job(job):
+def format_job(job, now):
     start = _parse_datetime(job.get('start'))
+    submission = start
+    if submission is None:
+      # Submission is required by the common jobs API. Submission is not
+      # currently returned via Cromwell QueryJobs, so start is used as a
+      # stand-in value. If the job hasn't actually started yet, fake the
+      # submission time as 'now' rather than returning null.
+      submission = now
     end = _parse_datetime(job.get('end'))
     return QueryJobsResult(
         id=job.get('id'),
         name=job.get('name'),
         status=job.get('status'),
-        submission=start,
+        submission=submission,
         start=start,
         end=end,
         parent_job_id=job.get('parentWorkflowId'))

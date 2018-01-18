@@ -538,7 +538,6 @@ class TestJobsController(BaseTestCase):
             'id': '12345',
             'name': 'TestJob',
             'status': 'Failed',
-            'submission': time,
             'start': time,
             'end': time
         }
@@ -550,7 +549,7 @@ class TestJobsController(BaseTestCase):
             submission=formatted_time,
             start=formatted_time,
             end=formatted_time)
-        self.assertEqual(jobs_controller.format_job(job), result)
+        self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
 
     def test_format_job_without_milliseconds(self):
         time = '2017-10-27T18:04:47Z'
@@ -558,7 +557,6 @@ class TestJobsController(BaseTestCase):
             'id': '12345',
             'name': 'TestJob',
             'status': 'Failed',
-            'submission': time,
             'start': time,
             'end': time
         }
@@ -570,7 +568,22 @@ class TestJobsController(BaseTestCase):
             submission=formatted_time,
             start=formatted_time,
             end=formatted_time)
-        self.assertEqual(jobs_controller.format_job(job), result)
+        self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
+
+    def test_format_job_with_no_start(self):
+        time = '2017-10-27T18:04:47Z'
+        job = {
+            'id': '12345',
+            'name': 'TestJob',
+            'status': 'Failed'
+        }
+        formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
+        result = QueryJobsResult(
+            id=job.get('id'),
+            name=job.get('name'),
+            status=job.get('status'),
+            submission=formatted_time)
+        self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
 
     def test_format_job_with_no_end_date(self):
         time = '2017-10-27T18:04:47Z'
@@ -578,7 +591,6 @@ class TestJobsController(BaseTestCase):
             'id': '12345',
             'name': 'TestJob',
             'status': 'Failed',
-            'submission': time,
             'start': time
         }
         formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
@@ -589,7 +601,7 @@ class TestJobsController(BaseTestCase):
             submission=formatted_time,
             start=formatted_time,
             end=None)
-        self.assertEqual(jobs_controller.format_job(job), result)
+        self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
 
     def test_page_from_offset(self):
         self.assertEqual(
