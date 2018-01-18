@@ -352,8 +352,7 @@ class BaseTestCases:
                 QueryJobsRequest(start=first_time),
                 [first_job, second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(start=second_time),
-                [second_job, third_job])
+                QueryJobsRequest(start=second_time), [second_job, third_job])
             self.assert_query_matches(
                 QueryJobsRequest(start=third_time), [third_job])
             self.assert_query_matches(

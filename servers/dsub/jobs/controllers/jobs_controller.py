@@ -190,7 +190,8 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
     last_create_time = None
     job_buffer = []
     for job in jobs:
-        if query.end and ('end-time' not in job or job['end-time'] > query.end):
+        if query.end and ('end-time' not in job
+                          or job['end-time'] > query.end):
             continue
 
         # The LocalJobProvider returns datetimes with milliescond granularity.
