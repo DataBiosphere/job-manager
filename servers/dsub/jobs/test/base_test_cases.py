@@ -268,14 +268,9 @@ class BaseTestCases:
             self.wait_status(self.api_job_id(succeeded), ApiStatus.SUCCEEDED)
             running = self.start_job(
                 'echo RUNNING && sleep 30', name='running')
-            self.assert_query_matches(
-                QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [running])
             self.wait_status(self.api_job_id(running), ApiStatus.RUNNING)
             self.assert_query_matches(
-                QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [])
-            self.assert_query_matches(
                 QueryJobsRequest(statuses=[ApiStatus.SUCCEEDED]), [succeeded])
-            submitted_job = self.start_job('echo SUBMITTED', name='submitted')
             self.assert_query_matches(
                 QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [running])
             self.assert_query_matches(

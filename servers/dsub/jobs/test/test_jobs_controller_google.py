@@ -91,6 +91,17 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         self.assertEqual(resp.json['detail'],
                          'Project \"some-bogus-project-id\" not found')
 
+    def test_query_jobs_by_submitted_status(self):
+        job1 = self.start_job('echo job1 && sleep 30', name='job1')
+        self.assert_query_matches(
+            QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [job1])
+        self.wait_status(self.api_job_id(job1), ApiStatus.RUNNING)
+        job2 = self.start_job('echo job2 && sleep 30', name='job2')
+        self.assert_query_matches(
+            QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [job2])
+        self.assert_query_matches(
+            QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [job1])
+
 
 if __name__ == '__main__':
     unittest.main()

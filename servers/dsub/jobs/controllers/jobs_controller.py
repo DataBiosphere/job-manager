@@ -177,9 +177,12 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
 
     # If the query explicitly requests submitted jobs which aren't running
     # be sure to filter out jobs with a 'start-time'
-    filter_running = (job_statuses.ApiStatus.SUBMITTED in query.statuses
+    filter_running = (query.statuses
+                      and job_statuses.ApiStatus.SUBMITTED in query.statuses
                       and job_statuses.ApiStatus.RUNNING not in query.statuses)
-    filter_submitted = (job_statuses.ApiStatus.RUNNING in query.statuses and
+    filter_submitted = (query.statuses
+                        and job_statuses.ApiStatus.RUNNING in query.statuses
+                        and
                         job_statuses.ApiStatus.SUBMITTED not in query.statuses)
 
     dstat_params = query_parameters.api_to_dsub(query)
