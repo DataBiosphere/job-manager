@@ -49,7 +49,7 @@ export class JobManagerService {
         result.start = new Date(result.start);
       }
       if (result.end) {
-        result.submission = new Date(result.end);
+        result.end = new Date(result.end);
       }
     }
     return response;
