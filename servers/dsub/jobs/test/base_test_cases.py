@@ -264,23 +264,28 @@ class BaseTestCases:
             self.assert_query_matches(QueryJobsRequest(name='job'), [])
 
         def test_query_jobs_by_status(self):
-            succeeded_job = self.start_job('echo SUCCEEDED', wait=True)
-            running_job = self.start_job('echo RUNNING && sleep 30')
-            running_job_id = self.api_job_id(running_job)
-            self.wait_status(running_job_id, ApiStatus.RUNNING)
+            succeeded = self.start_job('echo SUCCEEDED', name='succeeded')
+            self.wait_status(self.api_job_id(succeeded), ApiStatus.SUCCEEDED)
+            running = self.start_job(
+                'echo RUNNING && sleep 30', name='running')
             self.assert_query_matches(
-                QueryJobsRequest(statuses=[ApiStatus.SUCCEEDED]),
-                [succeeded_job])
+                QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [running])
+            self.wait_status(self.api_job_id(running), ApiStatus.RUNNING)
             self.assert_query_matches(
-                QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [running_job])
+                QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [])
+            self.assert_query_matches(
+                QueryJobsRequest(statuses=[ApiStatus.SUCCEEDED]), [succeeded])
+            submitted_job = self.start_job('echo SUBMITTED', name='submitted')
+            self.assert_query_matches(
+                QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [running])
             self.assert_query_matches(
                 QueryJobsRequest(
                     statuses=[ApiStatus.RUNNING, ApiStatus.SUCCEEDED]),
-                [succeeded_job, running_job])
+                [succeeded, running])
             self.assert_query_matches(
                 QueryJobsRequest(
                     statuses=[ApiStatus.SUCCEEDED, ApiStatus.RUNNING]),
-                [succeeded_job, running_job])
+                [succeeded, running])
 
         def test_query_jobs_by_label_job_id(self):
             job = self.start_job('echo BY_JOB_ID', name='by_job_id')

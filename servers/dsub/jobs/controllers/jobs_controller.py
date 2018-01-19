@@ -175,6 +175,13 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
     if not create_time_max and query.end:
         create_time_max = query.end
 
+    # If the query explicitly requests submitted jobs which aren't running
+    # be sure to filter out jobs with a 'start-time'
+    filter_running = (job_statuses.ApiStatus.SUBMITTED in query.statuses
+                      and job_statuses.ApiStatus.RUNNING not in query.statuses)
+    filter_submitted = (job_statuses.ApiStatus.RUNNING in query.statuses and
+                        job_statuses.ApiStatus.SUBMITTED not in query.statuses)
+
     dstat_params = query_parameters.api_to_dsub(query)
     jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
         provider=provider,
@@ -192,6 +199,11 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
     for job in jobs:
         if query.end and ('end-time' not in job
                           or job['end-time'] > query.end):
+            continue
+
+        if job.get('start-time') and filter_running:
+            continue
+        elif not job.get('start-time') and filter_submitted:
             continue
 
         # The LocalJobProvider returns datetimes with milliescond granularity.
