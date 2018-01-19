@@ -96,11 +96,11 @@ def get_job(id):
 
     # A job_id and task_id define a unique job (should only be one)
     if len(jobs) > 1:
-        raise BadRequest(
-            'Found more than one job with ID {}+{}'.format(job_id, task_id))
+        raise BadRequest('Found more than one job with ID {}+{}'.format(
+            job_id, task_id))
     elif len(jobs) == 0:
-        raise NotFound(
-            'Could not find any jobs with ID {}+{}'.format(job_id, task_id))
+        raise NotFound('Could not find any jobs with ID {}+{}'.format(
+            job_id, task_id))
 
     return _metadata_response(id, jobs[0])
 
@@ -259,8 +259,8 @@ def _provider_type():
 
 def _query_result(job, project_id=None):
     return QueryJobsResult(
-        id=job_ids.dsub_to_api(project_id, job['job-id'],
-                               job.get('task-id', '')),
+        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get(
+            'task-id', '')),
         name=job['job-name'],
         status=job_statuses.dsub_to_api(job),
         submission=job['create-time'],
