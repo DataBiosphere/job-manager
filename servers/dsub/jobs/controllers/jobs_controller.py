@@ -22,7 +22,6 @@ from jobs.models.query_jobs_result import QueryJobsResult
 
 _DEFAULT_PAGE_SIZE = 32
 _MAX_PAGE_SIZE = 256
-_JOB_SORT_KEY = lambda j: j['job-id'] + j.get('task-id', '')
 
 
 def abort_job(id):
@@ -136,8 +135,7 @@ def query_jobs(body):
             raise BadRequest(
                 "Invalid query: start date must precede end date.")
 
-    job_generator = _generate_dstat_jobs(provider, query, create_time_max,
-                                         offset_id)
+    job_generator = _generate_jobs(provider, query, create_time_max, offset_id)
     jobs = []
     try:
         for job in job_generator:
@@ -149,13 +147,28 @@ def query_jobs(body):
 
     try:
         next_job = job_generator.next()
-        next_ct = next_job['create-time']
-        last_ct = jobs[-1]['create-time']
-        offset_id = _JOB_SORT_KEY(next_job) if next_ct == last_ct else None
-        return _get_query_jobs_response(jobs, query.parent_id, next_ct,
-                                        offset_id)
+        next_ct = next_job.submission
+        last_ct = jobs[-1].submission
+        offset_id = next_job.id if next_ct == last_ct else None
+        token = page_tokens.encode_create_time_max(next_ct, offset_id)
+        return QueryJobsResponse(results=jobs, next_page_token=token)
     except StopIteration:
-        return _get_query_jobs_response(jobs, query.parent_id)
+        return QueryJobsResponse(results=jobs)
+
+
+def _api_job(job, project_id=None):
+    return QueryJobsResult(
+        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get(
+            'task-id', '')),
+        name=job['job-name'],
+        status=job_statuses.dsub_to_api(job),
+        # The LocalJobProvider returns create-time with milliescond granularity.
+        # For consistency with the GoogleJobProvider, truncate to second
+        # granularity.
+        submission=job['create-time'].replace(microsecond=0),
+        start=job.get('start-time'),
+        end=job['end-time'],
+        labels=labels.dsub_to_api(job))
 
 
 def _auth_token():
@@ -167,8 +180,7 @@ def _auth_token():
     return None
 
 
-def _generate_dstat_jobs(provider, query, create_time_max=None,
-                         offset_id=None):
+def _generate_jobs(provider, query, create_time_max=None, offset_id=None):
     # If create_time_max is not set, but we have to client-side filter by
     # end-time, set create_time_max = query.end because all the jobs with
     # create_time >= query.end cannot possibly match the query.
@@ -189,43 +201,35 @@ def _generate_dstat_jobs(provider, query, create_time_max=None,
 
     last_create_time = None
     job_buffer = []
-    for job in jobs:
-        if query.end and ('end-time' not in job
-                          or job['end-time'] > query.end):
+    for j in jobs:
+        job = _api_job(j, query.parent_id)
+        if query.end and (not job.end or job.end > query.end):
             continue
 
-        # The LocalJobProvider returns datetimes with milliescond granularity.
-        # For consistency with the GoogleJobProvider, truncate to second
-        # granularity.
-        job['create-time'] = job['create-time'].replace(microsecond=0)
+        # Filter pending vs. running jobs since dstat does not have
+        # a corresponding status (both RUNNING)
+        if query.statuses and job.status not in query.statuses:
+            continue
+
         # If this job is from the last page, skip it and continue generating
-        if create_time_max and job['create-time'] == create_time_max:
-            if offset_id and _JOB_SORT_KEY(job) < offset_id:
+        if create_time_max and job.submission == create_time_max:
+            if offset_id and job.id < offset_id:
                 continue
 
         # Build up a buffer of jobs with the same create time. Once we get a
         # job with an older create time we yield all the jobs in the buffer
         # sorted by job-id + task-id
         job_buffer.append(job)
-        if job['create-time'] != last_create_time:
-            for j in sorted(job_buffer, key=_JOB_SORT_KEY):
+        if job.submission != last_create_time:
+            for j in sorted(job_buffer, key=lambda j: j.id):
                 yield j
             job_buffer = []
-        last_create_time = job['create-time']
+        last_create_time = job.submission
 
     # If we hit the end of the dstat job generator, ensure to yield the jobs
     # stored in the buffer before returning
-    for j in sorted(job_buffer, key=_JOB_SORT_KEY):
+    for j in sorted(job_buffer, key=lambda j: j.id):
         yield j
-
-
-def _get_query_jobs_response(jobs,
-                             project_id,
-                             create_time_max=None,
-                             offset_id=None):
-    results = [_query_result(j, project_id) for j in jobs]
-    token = page_tokens.encode_create_time_max(create_time_max, offset_id)
-    return QueryJobsResponse(results=results, next_page_token=token)
 
 
 def _handle_http_error(error, proj_id):
@@ -255,15 +259,3 @@ def _metadata_response(id, job):
 
 def _provider_type():
     return current_app.config['PROVIDER_TYPE']
-
-
-def _query_result(job, project_id=None):
-    return QueryJobsResult(
-        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get(
-            'task-id', '')),
-        name=job['job-name'],
-        status=job_statuses.dsub_to_api(job),
-        submission=job['create-time'],
-        start=job.get('start-time'),
-        end=job['end-time'],
-        labels=labels.dsub_to_api(job))
