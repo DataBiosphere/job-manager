@@ -150,7 +150,7 @@ def query_jobs(body):
         next_ct = next_job.submission
         last_ct = jobs[-1].submission
         offset_id = next_job.id if next_ct == last_ct else None
-        token = page_tokens.encode_create_time_max(create_time_max, offset_id)
+        token = page_tokens.encode_create_time_max(next_ct, offset_id)
         return QueryJobsResponse(results=jobs, next_page_token=token)
     except StopIteration:
         return QueryJobsResponse(results=jobs)
