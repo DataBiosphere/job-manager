@@ -150,9 +150,10 @@ def query_jobs(body):
         next_ct = next_job.submission
         last_ct = jobs[-1].submission
         offset_id = next_job.id if next_ct == last_ct else None
-        return _query_jobs_response(jobs, query.parent_id, next_ct, offset_id)
+        token = page_tokens.encode_create_time_max(create_time_max, offset_id)
+        return QueryJobsResponse(results=jobs, next_page_token=token)
     except StopIteration:
-        return _query_jobs_response(jobs, query.parent_id)
+        return QueryJobsResponse(results=jobs)
 
 
 def _api_job(job, project_id=None):
@@ -258,11 +259,3 @@ def _metadata_response(id, job):
 
 def _provider_type():
     return current_app.config['PROVIDER_TYPE']
-
-
-def _query_jobs_response(jobs,
-                         project_id,
-                         create_time_max=None,
-                         offset_id=None):
-    token = page_tokens.encode_create_time_max(create_time_max, offset_id)
-    return QueryJobsResponse(results=jobs, next_page_token=token)
