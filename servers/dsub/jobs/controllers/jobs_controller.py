@@ -138,8 +138,7 @@ def query_jobs(body):
         raise BadRequest(
             "Invalid query: submission date must precede end date.")
     if query.start and query.end and query.start >= query.end:
-        raise BadRequest(
-            "Invalid query: start date must precede end date.")
+        raise BadRequest("Invalid query: start date must precede end date.")
     if query.start and create_time_max and query.start > create_time_max:
         raise BadRequest(
             "Invalid query: start date is invalid with pagination token.")
@@ -212,7 +211,7 @@ def _generate_jobs(provider, query, create_time_max=None, offset_id=None):
     job_buffer = []
     for j in jobs:
         job = _api_job(j, query.parent_id)
-        if query.start and (not job.start  or job.start < query.start):
+        if query.start and (not job.start or job.start < query.start):
             continue
         if query.end and (not job.end or job.end > query.end):
             continue

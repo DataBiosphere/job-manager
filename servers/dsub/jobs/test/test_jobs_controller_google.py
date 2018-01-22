@@ -105,11 +105,10 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
     def test_query_jobs_by_start(self):
         date = datetime.datetime.now()
         job = self.start_job('sleep 30', name='job_by_start')
-        self.assert_query_matches(
-            QueryJobsRequest(start=date), [])
+        self.assert_query_matches(QueryJobsRequest(start=date), [])
         self.wait_status(self.api_job_id(job), ApiStatus.RUNNING)
-        self.assert_query_matches(
-            QueryJobsRequest(start=date), [job])
+        self.assert_query_matches(QueryJobsRequest(start=date), [job])
+
 
 if __name__ == '__main__':
     unittest.main()

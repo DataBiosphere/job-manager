@@ -352,7 +352,8 @@ class BaseTestCases:
                 QueryJobsRequest(submission=first_time),
                 [first_job, second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(submission=second_time), [second_job, third_job])
+                QueryJobsRequest(submission=second_time),
+                [second_job, third_job])
             self.assert_query_matches(
                 QueryJobsRequest(submission=third_time), [third_job])
             self.assert_query_matches(
@@ -398,7 +399,8 @@ class BaseTestCases:
             job6 = self.start_job('echo SIXTH_JOB', name='job_u')
 
             response = self.assert_query_matches(
-                QueryJobsRequest(page_size=2, submission=min_time), [job5, job6])
+                QueryJobsRequest(page_size=2, submission=min_time),
+                [job5, job6])
             response = self.assert_query_matches(
                 QueryJobsRequest(
                     page_size=2,
