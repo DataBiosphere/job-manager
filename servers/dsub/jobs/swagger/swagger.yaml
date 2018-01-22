@@ -266,18 +266,21 @@ definitions:
     description: "Response to an update labels request"
   QueryJobsRequest:
     properties:
+      submission:
+        type: "string"
+        format: "date-time"
+        description: "Returns only jobs with an equal or later submission datetime.\
+          \ The submission parameter must be prior or equal to the start datetime\
+          \ and end datetime.\n"
       start:
         type: "string"
         format: "date-time"
-        description: "Returns only jobs with an equal or later start datetime. If\
-          \ both start and end date are specified, start date must be before or equal\
-          \ to end date.\n"
+        description: "Returns only jobs with an equal or later start datetime. The\
+          \ start parameter must be prior or equal to the end datetime and end datetime.\n"
       end:
         type: "string"
         format: "date-time"
-        description: "Returns only jobs with an equal or earlier end datetime. If\
-          \ both start and end date are specified, start date must be before or equal\
-          \ to end date.\n"
+        description: "Returns only jobs with an equal or earlier end datetime.\n"
       statuses:
         type: "array"
         description: "If specified, returns only jobs matching any of these statuses.\n"
@@ -360,7 +363,7 @@ definitions:
         properties: {}
       parentJobId:
         type: "string"
-        description: "Id of the parent job. Expresses a child:parent relationship\
+        description: "Id of the parent job.. Expresses a child:parent relationship\
           \ between this job and the job that called it."
     description: "Result for an individual job returned by a job query"
 responses:

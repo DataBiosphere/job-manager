@@ -247,20 +247,24 @@ definitions:
   QueryJobsRequest:
     description: Job query parameters
     properties:
+      submission:
+        type: string
+        format: date-time
+        description: >
+          Returns only jobs with an equal or later submission datetime. The
+          submission parameter must be prior or equal to the start datetime and
+          end datetime.
       start:
         type: string
         format: date-time
         description: >
-          Returns only jobs with an equal or later start datetime. If both start
-          and end date are specified, start date must be before or equal to end
-          date.
+          Returns only jobs with an equal or later start datetime. The start
+          parameter must be prior or equal to the end datetime and end datetime.
       end:
         type: string
         format: date-time
         description: >
-          Returns only jobs with an equal or earlier end datetime. If both start
-          and end date are specified, start date must be before or equal to end
-          date.
+          Returns only jobs with an equal or earlier end datetime.
       statuses:
         type: array
         items:
