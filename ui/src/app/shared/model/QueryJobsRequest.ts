@@ -22,7 +22,7 @@ export interface QueryJobsRequest {
     submission?: Date;
 
     /**
-     * Returns only jobs with an equal or later start datetime. The start parameter must be prior or equal to the end datetime and end datetime. 
+     * Returns only jobs with an equal or later start datetime. The start parameter must be prior or equal to the end datetime. 
      */
     start?: Date;
 

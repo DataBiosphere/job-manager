@@ -110,7 +110,7 @@ class QueryJobsRequest(Model):
     def start(self):
         """
         Gets the start of this QueryJobsRequest.
-        Returns only jobs with an equal or later start datetime. The start parameter must be prior or equal to the end datetime and end datetime. 
+        Returns only jobs with an equal or later start datetime. The start parameter must be prior or equal to the end datetime. 
 
         :return: The start of this QueryJobsRequest.
         :rtype: datetime
@@ -121,7 +121,7 @@ class QueryJobsRequest(Model):
     def start(self, start):
         """
         Sets the start of this QueryJobsRequest.
-        Returns only jobs with an equal or later start datetime. The start parameter must be prior or equal to the end datetime and end datetime. 
+        Returns only jobs with an equal or later start datetime. The start parameter must be prior or equal to the end datetime. 
 
         :param start: The start of this QueryJobsRequest.
         :type start: datetime

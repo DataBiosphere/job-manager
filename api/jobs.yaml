@@ -259,7 +259,7 @@ definitions:
         format: date-time
         description: >
           Returns only jobs with an equal or later start datetime. The start
-          parameter must be prior or equal to the end datetime and end datetime.
+          parameter must be prior or equal to the end datetime.
       end:
         type: string
         format: date-time
@@ -352,7 +352,9 @@ definitions:
         description: Custom job labels with string values
       parentJobId:
         type: string
-        description: Id of the parent job.. Expresses a child:parent relationship between this job and the job that called it.
+        description: |
+          Id of the parent job. Expresses a child:parent relationship between
+          this job and the job that called it.
 responses:
   BadRequest:
     description: 'Bad request'

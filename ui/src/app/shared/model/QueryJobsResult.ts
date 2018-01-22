@@ -49,7 +49,7 @@ export interface QueryJobsResult {
     labels?: any;
 
     /**
-     * Id of the parent job.. Expresses a child:parent relationship between this job and the job that called it.
+     * Id of the parent job. Expresses a child:parent relationship between this job and the job that called it. 
      */
     parentJobId?: string;
 

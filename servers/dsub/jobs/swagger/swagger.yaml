@@ -276,7 +276,7 @@ definitions:
         type: "string"
         format: "date-time"
         description: "Returns only jobs with an equal or later start datetime. The\
-          \ start parameter must be prior or equal to the end datetime and end datetime.\n"
+          \ start parameter must be prior or equal to the end datetime.\n"
       end:
         type: "string"
         format: "date-time"
@@ -363,8 +363,8 @@ definitions:
         properties: {}
       parentJobId:
         type: "string"
-        description: "Id of the parent job.. Expresses a child:parent relationship\
-          \ between this job and the job that called it."
+        description: "Id of the parent job. Expresses a child:parent relationship\
+          \ between\nthis job and the job that called it.\n"
     description: "Result for an individual job returned by a job query"
 responses:
   BadRequest:
