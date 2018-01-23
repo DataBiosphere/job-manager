@@ -21,6 +21,8 @@ RUN curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID"
 RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
 RUN apt-get update
 RUN apt-get install -y docker-ce
+# We installed jm_utils so don't need local copy anymore, which breaks imports
+RUN rm -rf jm_utils
 
 # Missing required arguments -b PORT, -e ... which must be provided by the
 # docker image user.
