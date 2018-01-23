@@ -75,10 +75,10 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
 
     def test_abort_job(self):
         started = self.start_job('sleep 30')
-        api_job_id = self.get_api_job_id(started)
-        self.wait_for_job_status(api_job_id, ApiStatus.RUNNING)
+        api_job_id = self.api_job_id(started)
+        self.wait_status(api_job_id, ApiStatus.RUNNING)
         self.must_abort_job(api_job_id)
-        self.wait_for_job_status(api_job_id, ApiStatus.ABORTED)
+        self.wait_status(api_job_id, ApiStatus.ABORTED)
 
     def test_query_jobs_invalid_project(self):
         params = QueryJobsRequest(parent_id='some-bogus-project-id')
@@ -90,6 +90,17 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         self.assert_status(resp, 404)
         self.assertEqual(resp.json['detail'],
                          'Project \"some-bogus-project-id\" not found')
+
+    def test_query_jobs_by_submitted_status(self):
+        job1 = self.start_job('echo job1 && sleep 30', name='job1')
+        self.assert_query_matches(
+            QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [job1])
+        self.wait_status(self.api_job_id(job1), ApiStatus.RUNNING)
+        job2 = self.start_job('echo job2 && sleep 30', name='job2')
+        self.assert_query_matches(
+            QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [job2])
+        self.assert_query_matches(
+            QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [job1])
 
 
 if __name__ == '__main__':
