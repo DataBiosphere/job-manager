@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewContainerRef} from '@angular/core';
-import {MdSnackBar, MdSnackBarConfig} from '@angular/material'
+import {MatSnackBar, MatSnackBarConfig} from '@angular/material'
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {AuthService} from '../core/auth.service';
@@ -14,7 +14,7 @@ export class SignInComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly viewContainer: ViewContainerRef,
-    private errorBar: MdSnackBar) {}
+    private errorBar: MatSnackBar) {}
 
   ngOnInit() {
     let returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';

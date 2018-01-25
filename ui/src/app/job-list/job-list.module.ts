@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import {
-  MdButtonModule,
-  MdCardModule,
-  MdCheckboxModule,
-  MdMenuModule,
-  MdPaginatorModule,
-  MdSnackBarModule,
-  MdSortModule,
-  MdTableModule,
-  MdTooltipModule,
+  MatButtonModule,
+  MatCardModule,
+  MatCheckboxModule,
+  MatMenuModule,
+  MatPaginatorModule,
+  MatSnackBarModule,
+  MatSortModule,
+  MatTableModule,
+  MatTooltipModule,
 } from '@angular/material';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
@@ -21,15 +21,15 @@ import {SharedModule} from '../shared/shared.module';
 @NgModule({
   imports: [
     CommonModule,
-    MdButtonModule,
-    MdCardModule,
-    MdCheckboxModule,
-    MdMenuModule,
-    MdPaginatorModule,
-    MdSnackBarModule,
-    MdSortModule,
-    MdTableModule,
-    MdTooltipModule,
+    MatButtonModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatMenuModule,
+    MatPaginatorModule,
+    MatSnackBarModule,
+    MatSortModule,
+    MatTableModule,
+    MatTooltipModule,
     RouterModule,
     SharedModule,
   ],
