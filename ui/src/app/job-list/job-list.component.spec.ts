@@ -4,15 +4,15 @@ import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
-  MdButtonModule,
-  MdCardModule,
-  MdMenuModule,
-  MdSortModule,
-  MdTableModule,
-  MdPaginatorModule,
-  MdSnackBarModule,
-  MdTooltipModule,
-  MdCheckboxModule
+  MatButtonModule,
+  MatCardModule,
+  MatMenuModule,
+  MatSortModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSnackBarModule,
+  MatTooltipModule,
+  MatCheckboxModule
 } from '@angular/material';
 import {RouterTestingModule} from '@angular/router/testing';
 
@@ -51,15 +51,15 @@ describe('JobListComponent', () => {
       imports: [
         BrowserAnimationsModule,
         CommonModule,
-        MdButtonModule,
-        MdCardModule,
-        MdCheckboxModule,
-        MdMenuModule,
-        MdPaginatorModule,
-        MdSnackBarModule,
-        MdSortModule,
-        MdTableModule,
-        MdTooltipModule,
+        MatButtonModule,
+        MatCardModule,
+        MatCheckboxModule,
+        MatMenuModule,
+        MatPaginatorModule,
+        MatSnackBarModule,
+        MatSortModule,
+        MatTableModule,
+        MatTooltipModule,
         RouterTestingModule.withRoutes([
           {path: '', component: TestJobListComponent},
           {path: 'jobs', component: TestJobListComponent}

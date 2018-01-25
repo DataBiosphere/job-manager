@@ -5,17 +5,17 @@ import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
-  MdButtonModule,
-  MdCardModule,
-  MdMenuModule,
-  MdSortModule,
-  MdTableModule,
-  MdTabsModule,
-  MdPaginatorModule,
-  MdSnackBarModule,
-  MdTooltipModule,
-  MdInputModule,
-  MdCheckboxModule
+  MatButtonModule,
+  MatCardModule,
+  MatMenuModule,
+  MatSortModule,
+  MatTableModule,
+  MatTabsModule,
+  MatPaginatorModule,
+  MatSnackBarModule,
+  MatTooltipModule,
+  MatInputModule,
+  MatCheckboxModule
 } from '@angular/material';
 import {RouterTestingModule} from '@angular/router/testing';
 
@@ -79,17 +79,17 @@ describe('JobsTableComponent', () => {
       imports: [
         BrowserAnimationsModule,
         CommonModule,
-        MdButtonModule,
-        MdCardModule,
-        MdCheckboxModule,
-        MdInputModule,
-        MdMenuModule,
-        MdPaginatorModule,
-        MdSnackBarModule,
-        MdSortModule,
-        MdTableModule,
-        MdTabsModule,
-        MdTooltipModule,
+        MatButtonModule,
+        MatCardModule,
+        MatCheckboxModule,
+        MatInputModule,
+        MatMenuModule,
+        MatPaginatorModule,
+        MatSnackBarModule,
+        MatSortModule,
+        MatTableModule,
+        MatTabsModule,
+        MatTooltipModule,
         RouterTestingModule.withRoutes([
           {path: '', redirectTo: 'jobs', pathMatch: 'full'},
           {path: 'jobs', component: TestTableComponent}
@@ -110,7 +110,7 @@ describe('JobsTableComponent', () => {
   it('should display a row for each job', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('.md-row')).length).toEqual(testJobs.length);
+    expect(de.queryAll(By.css('.mat-row')).length).toEqual(testJobs.length);
   }));
 
   it('should display general job data in row', async(() => {

@@ -3,8 +3,8 @@ import {HeaderComponent} from "./header.component";
 import {By} from "@angular/platform-browser";
 import {Component, DebugElement, ViewChild} from "@angular/core";
 import {
-  MdAutocompleteModule, MdButtonModule, MdChipsModule, MdIconModule, MdInputModule,
-  MdMenuModule
+  MatAutocompleteModule, MatButtonModule, MatChipsModule, MatIconModule, MatInputModule,
+  MatMenuModule
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
@@ -23,12 +23,12 @@ describe('HeaderComponent', () => {
       imports: [
         BrowserAnimationsModule,
         FormsModule,
-        MdAutocompleteModule,
-        MdButtonModule,
-        MdChipsModule,
-        MdIconModule,
-        MdInputModule,
-        MdMenuModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatChipsModule,
+        MatIconModule,
+        MatInputModule,
+        MatMenuModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {path: '', component: TestHeaderComponent}

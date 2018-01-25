@@ -1,5 +1,5 @@
 import {Component, NgZone, OnInit} from '@angular/core';
-import {MdChipInputEvent} from '@angular/material';
+import {MatChipInputEvent} from '@angular/material';
 import {ENTER} from '@angular/cdk/keycodes';
 import {FormControl} from "@angular/forms";
 import {Observable} from "rxjs/Observable";

@@ -1,91 +1,91 @@
-<md-table #table [dataSource]="dataSource">
+<mat-table #table [dataSource]="dataSource">
 
   <!-- Job name column -->
-  <ng-container mdColumnDef="Job">
-    <md-header-cell *mdHeaderCellDef>
-      <md-checkbox class = "checkbox" [checked]="allSelected" (change)="toggleSelectAll()">
-      </md-checkbox>
+  <ng-container matColumnDef="Job">
+    <mat-header-cell *matHeaderCellDef>
+      <mat-checkbox class = "checkbox" [checked]="allSelected" (change)="toggleSelectAll()">
+      </mat-checkbox>
       Job
-    </md-header-cell>
-    <md-cell *mdCellDef="let j">
-      <md-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
-      </md-checkbox>
-      <a md-button class="job-details-button" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
+    </mat-header-cell>
+    <mat-cell *matCellDef="let j">
+      <mat-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
+      </mat-checkbox>
+      <a mat-button class="job-details-button" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
 
-      <button md-icon-button class="jobs-dropdown-arrow"
+      <button mat-icon-button class="jobs-dropdown-arrow"
               [class.visible]="showDropdownArrow(j)"
-              [mdMenuTriggerFor]="menu">
+              [matMenuTriggerFor]="menu">
         <img src="{{ getDropdownArrowUrl() }}">
       </button>
-      <md-menu #menu="mdMenu" class="details-menu">
-        <md-card>
-          <md-card-title>{{ j.name }}</md-card-title>
+      <mat-menu #menu="matMenu" class="details-menu">
+        <mat-card>
+          <mat-card-title>{{ j.name }}</mat-card-title>
           <p>{{ j.status }}</p>
           <p>Submitted: {{ j.submission | jmShortDateTime }}</p>
-        </md-card>
+        </mat-card>
 
-        <a md-menu-item [routerLink]="[j.id]" [queryParams]="getQueryParams()">
-          <button md-icon-button>
+        <a mat-menu-item [routerLink]="[j.id]" [queryParams]="getQueryParams()">
+          <button mat-icon-button>
             <img src="https://www.gstatic.com/images/icons/material/system/1x/arrow_forward_grey600_24dp.png">
           </button>
           <span>Job details</span>
         </a>
 
-        <button md-menu-item *ngIf="canAbort(j)" (click)="abortJob(j)">
-          <button md-icon-button>
+        <button mat-menu-item *ngIf="canAbort(j)" (click)="abortJob(j)">
+          <button mat-icon-button>
             <img src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_24dp.png">
           </button>
           <span>Abort job</span>
         </button>
-      </md-menu>
+      </mat-menu>
 
-    </md-cell>
+    </mat-cell>
   </ng-container>
 
   <!-- Status column -->
-  <ng-container mdColumnDef="Status">
-    <md-header-cell *mdHeaderCellDef> Status </md-header-cell>
-    <md-cell *mdCellDef="let j">
-      <button md-icon-button disabled>
-        <img mdTooltip="{{ j.status }}" mdTooltipPosition="before"
+  <ng-container matColumnDef="Status">
+    <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+    <mat-cell *matCellDef="let j">
+      <button mat-icon-button disabled>
+        <img matTooltip="{{ j.status }}" matTooltipPosition="before"
              src="{{ getStatusUrl(j.status) }}">
       </button>
-    </md-cell>
+    </mat-cell>
   </ng-container>
 
   <!-- Submitted column -->
-  <ng-container mdColumnDef="Submitted">
-    <md-header-cell *mdHeaderCellDef> Submitted </md-header-cell>
-    <md-cell id="submitted-column" *mdCellDef="let j">{{ j.submission | jmShortDateTime }}</md-cell>
+  <ng-container matColumnDef="Submitted">
+    <mat-header-cell *matHeaderCellDef> Submitted </mat-header-cell>
+    <mat-cell id="submitted-column" *matCellDef="let j">{{ j.submission | jmShortDateTime }}</mat-cell>
   </ng-container>
 
   <!-- Implementation-specific additional columns -->
   <ng-container *ngFor="let c of additionalColumns">
-    <ng-container mdColumnDef="{{ c }}">
-      <md-header-cell *mdHeaderCellDef>{{ c }}</md-header-cell>
-      <md-cell class="additional-column" *mdCellDef="let j">{{ getJobLabel(j, c) }}</md-cell>
+    <ng-container matColumnDef="{{ c }}">
+      <mat-header-cell *matHeaderCellDef>{{ c }}</mat-header-cell>
+      <mat-cell class="additional-column" *matCellDef="let j">{{ getJobLabel(j, c) }}</mat-cell>
     </ng-container>
   </ng-container>
 
   <!-- Column definitions -->
-  <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
-  <md-row (mouseenter) ="toggleMouseOver(j)"
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row (mouseenter) ="toggleMouseOver(j)"
           (mouseleave) ="toggleMouseOver(j)"
           [class.selected-row]="isSelected(j)"
-          class = "md-row"
-          *mdRowDef="let j; columns: displayedColumns;"></md-row>
+          class = "mat-row"
+          *matRowDef="let j; columns: displayedColumns;"></mat-row>
 
-</md-table>
+</mat-table>
 
 <div class="group-options" *ngIf="selectedJobs.length > 0">
   {{ selectedJobs.length }} jobs selected
-  <button md-raised-button color="accent" class="group-button group-abort"
+  <button mat-raised-button color="accent" class="group-button group-abort"
           (click)="onAbortJobs(selectedJobs)">Abort Jobs</button>
 </div>
 
-<md-paginator #paginator
+<mat-paginator #paginator
               [length]="jobs.value.results.length"
               [pageIndex]="0"
               [pageSize]="10"
               [pageSizeOptions]="[5, 10, 25, 100]">
-</md-paginator>
+</mat-paginator>

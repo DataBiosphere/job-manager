@@ -1,51 +1,51 @@
 <div class="content">
-  <md-form-field class="query-form">
-    <md-chip-list #chipList>
-      <md-chip id="chip" *ngFor="let chipKey of getChipKeys()"
-               [mdMenuTriggerFor]="menu"
+  <mat-form-field class="query-form">
+    <mat-chip-list #chipList>
+      <mat-chip id="chip" *ngFor="let chipKey of getChipKeys()"
+               [matMenuTriggerFor]="menu"
                (remove)="removeChip(chipKey)"
                (click)="setCurrentChip(chipKey)">
         {{ getDisplayValue(chipKey) }}
-        <img mdChipRemove
+        <img matChipRemove
              src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_18dp.png">
-      </md-chip>
-      <md-menu #menu="mdMenu" [overlapTrigger]="false" class="wide-menu">
-        <md-input-container class="query-input">
-          <input mdInput
+      </mat-chip>
+      <mat-menu #menu="matMenu" [overlapTrigger]="false" class="wide-menu">
+        <mat-form-field class="query-input">
+          <input matInput
                  placeholder="Equals"
                  type="search"
                  [(ngModel)]="currentChipValue"
                  (keyup.enter)="assignChipValue()"
                  (click)="$event.stopPropagation()"/>
-        </md-input-container>
-      </md-menu>
-      <input mdInput
+        </mat-form-field>
+      </mat-menu>
+      <input matInput
              placeholder="Filter jobs..."
              [(ngModel)]="inputValue"
              value="{{inputValue}}"
-             [mdAutocomplete]="auto"
-             [mdChipInputFor]="chipList"
-             [mdChipInputSeparatorKeyCodes]="separatorKeysCodes"
-             [mdChipInputAddOnBlur]="false"
-             (mdChipInputTokenEnd)="addChip($event.value)"
+             [matAutocomplete]="auto"
+             [matChipInputFor]="chipList"
+             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+             [matChipInputAddOnBlur]="false"
+             (matChipInputTokenEnd)="addChip($event.value)"
              [formControl]="control"/>
-      <md-autocomplete #auto="mdAutocomplete">
-        <md-option
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option
           *ngFor="let option of filteredOptions | async"
           [value]="option"
           (click)="addChip(option)">
           {{ option }}
-        </md-option>
-      </md-autocomplete>
-    </md-chip-list>
-    <button md-icon-button mdSuffix class="search-button" (click)="search()">
+        </mat-option>
+      </mat-autocomplete>
+    </mat-chip-list>
+    <button mat-icon-button matSuffix class="search-button" (click)="search()">
       <img src="https://www.gstatic.com/images/icons/material/system/1x/search_grey600_24dp.png">
     </button>
-  </md-form-field>
+  </mat-form-field>
 
   <div *ngIf="shouldDisplayStatusButtons()">
-    <button md-raised-button class="status-button" (click)="showActiveJobs()">ACTIVE</button>
-    <button md-raised-button class="status-button" (click)="showFailedJobs()">FAILED</button>
-    <button md-raised-button class="status-button" (click)="showCompletedJobs()">COMPLETED</button>
+    <button mat-raised-button class="status-button" (click)="showActiveJobs()">ACTIVE</button>
+    <button mat-raised-button class="status-button" (click)="showFailedJobs()">FAILED</button>
+    <button mat-raised-button class="status-button" (click)="showCompletedJobs()">COMPLETED</button>
   </div>
 </div>

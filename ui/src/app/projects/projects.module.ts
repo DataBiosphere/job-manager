@@ -3,12 +3,12 @@ import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms'
 import {RouterModule} from '@angular/router';
 import {
-  MdAutocompleteModule,
-  MdButtonModule,
-  MdCardModule,
-  MdInputModule,
-  MdOptionModule,
-  MdSnackBarModule,
+  MatAutocompleteModule,
+  MatButtonModule,
+  MatCardModule,
+  MatInputModule,
+  MatOptionModule,
+  MatSnackBarModule,
 } from '@angular/material'
 
 import {JobListResolver} from '../job-list/job-list-resolver.service';
@@ -21,12 +21,12 @@ import {SharedModule} from '../shared/shared.module';
     CommonModule,
     FormsModule,
     RouterModule,
-    MdAutocompleteModule,
-    MdButtonModule,
-    MdCardModule,
-    MdInputModule,
-    MdOptionModule,
-    MdSnackBarModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatCardModule,
+    MatInputModule,
+    MatOptionModule,
+    MatSnackBarModule,
     ReactiveFormsModule,
     SharedModule,
   ],

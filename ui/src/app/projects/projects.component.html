@@ -1,21 +1,21 @@
 <form class="form">
-  <md-card class="projects-card">
-    <md-form-field class="form-field">
-      <input mdInput
+  <mat-card class="projects-card">
+    <mat-form-field class="form-field">
+      <input matInput
              class="input-field"
              placeholder="Project Name"
-             [mdAutocomplete]="auto"
+             [matAutocomplete]="auto"
              [formControl]="projectsControl">
-      <md-autocomplete #auto="mdAutocomplete">
-        <md-option *ngFor="let project of projectsObservable | async" [value]="project">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let project of projectsObservable | async" [value]="project">
           <span><div class="project-name">{{ project }}</div></span>
-        </md-option>
-      </md-autocomplete>
-    </md-form-field>
-    <button md-button
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <button mat-button
             (click)="navigateJobs()"
             [disabled]="!viewJobsEnabled">
       View Jobs
     </button>
-  </md-card>
+  </mat-card>
 </form>

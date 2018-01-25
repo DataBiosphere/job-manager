@@ -1,12 +1,12 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {
-  MdButtonModule,
-  MdCardModule,
-  MdMenuModule,
-  MdTableModule,
-  MdTabsModule,
-  MdTooltipModule,
+  MatButtonModule,
+  MatCardModule,
+  MatMenuModule,
+  MatTableModule,
+  MatTabsModule,
+  MatTooltipModule,
 } from '@angular/material';
 
 import {JobDetailsComponent} from './job-details.component';
@@ -18,12 +18,12 @@ import {TaskDetailsComponent} from './tasks/tasks.component';
 @NgModule({
   imports: [
     CommonModule,
-    MdButtonModule,
-    MdCardModule,
-    MdMenuModule,
-    MdTableModule,
-    MdTabsModule,
-    MdTooltipModule,
+    MatButtonModule,
+    MatCardModule,
+    MatMenuModule,
+    MatTableModule,
+    MatTabsModule,
+    MatTooltipModule,
     SharedModule,
   ],
   declarations: [
