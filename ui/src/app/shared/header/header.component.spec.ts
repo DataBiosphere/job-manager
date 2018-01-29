@@ -1,14 +1,22 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
-import {HeaderComponent} from "./header.component";
 import {By} from "@angular/platform-browser";
 import {Component, DebugElement, ViewChild} from "@angular/core";
 import {
-  MatAutocompleteModule, MatButtonModule, MatChipsModule, MatIconModule, MatInputModule,
-  MatMenuModule
+  MatAutocompleteModule,
+  MatButtonModule,
+  MatChipsModule, MatDatepickerInputEvent,
+  MatDatepickerModule,
+  MatIconModule,
+  MatInputModule,
+  MatMenuModule,
+  MatNativeDateModule,
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+
+import {HeaderComponent} from "./header.component";
+import {start} from "../common";
 
 
 describe('HeaderComponent', () => {
@@ -26,9 +34,11 @@ describe('HeaderComponent', () => {
         MatAutocompleteModule,
         MatButtonModule,
         MatChipsModule,
+        MatDatepickerModule,
         MatIconModule,
         MatInputModule,
         MatMenuModule,
+        MatNativeDateModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {path: '', component: TestHeaderComponent}

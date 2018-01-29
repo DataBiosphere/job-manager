@@ -8,9 +8,11 @@ import {
   MatAutocompleteModule,
   MatButtonModule,
   MatChipsModule,
+  MatDatepickerModule,
   MatIconModule,
   MatInputModule,
-  MatMenuModule
+  MatMenuModule,
+  MatNativeDateModule,
 } from "@angular/material";
 import {HeaderComponent} from "./header/header.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -22,9 +24,11 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     MatAutocompleteModule,
     MatButtonModule,
     MatChipsModule,
+    MatDatepickerModule,
     MatIconModule,
     MatInputModule,
     MatMenuModule,
+    MatNativeDateModule,
     ReactiveFormsModule,
   ],
   declarations: [

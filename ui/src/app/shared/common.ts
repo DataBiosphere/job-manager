@@ -10,15 +10,19 @@ export enum JobStatusImage {
   Aborted = <any> 'https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png'
 }
 
+export const start = 'start';
+export const end = 'end';
+export const dateColumns: string[] = [start, end];
+
 /** Constant strings for non-configurable primary fields that can be queried
  *  over. Each should have a corresponding field on QueryJobsRequest. */
 export const queryFields = {
   parentId: 'parent-id',
   jobName: 'job-name',
   statuses: 'statuses',
-  start: 'start',
-  end: 'end',
-}
+  start: start,
+  end: end,
+};
 
 /** The list of non-configurable primary columns that can be displayed and queried over. */
 export const primaryColumns: string[] = [

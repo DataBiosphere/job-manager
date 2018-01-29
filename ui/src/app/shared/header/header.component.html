@@ -10,13 +10,25 @@
              src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_18dp.png">
       </mat-chip>
       <mat-menu #menu="matMenu" [overlapTrigger]="false" class="wide-menu">
-        <mat-form-field class="query-input">
+        <mat-form-field *ngIf="isFreeText()" class="query-input">
+          <!--Free text input-->
           <input matInput
                  placeholder="Equals"
                  type="search"
                  [(ngModel)]="currentChipValue"
                  (keyup.enter)="assignChipValue()"
                  (click)="$event.stopPropagation()"/>
+        </mat-form-field>
+        <!-- Datepicker input -->
+        <mat-form-field *ngIf="isDate()" class="query-input">
+          <input matInput
+                 [matDatepicker]="picker"
+                 placeholder="{{ getDatePlaceholder() }}"
+                 [(ngModel)]="currentChipValue"
+                 (click)="$event.stopPropagation()"
+                 (dateChange)="assignDateValue($event)">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker (keyup.enter)="assignChipValue()"></mat-datepicker>
         </mat-form-field>
       </mat-menu>
       <input matInput
