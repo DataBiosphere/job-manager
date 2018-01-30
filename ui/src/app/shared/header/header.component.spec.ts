@@ -1,14 +1,22 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
-import {HeaderComponent} from "./header.component";
 import {By} from "@angular/platform-browser";
 import {Component, DebugElement, ViewChild} from "@angular/core";
 import {
-  MatAutocompleteModule, MatButtonModule, MatChipsModule, MatIconModule, MatInputModule,
-  MatMenuModule
+  MatAutocompleteModule,
+  MatButtonModule,
+  MatChipsModule, MatDatepickerInputEvent,
+  MatDatepickerModule,
+  MatIconModule,
+  MatInputModule,
+  MatMenuModule,
+  MatNativeDateModule,
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+
+import {HeaderComponent} from "./header.component";
+import {startCol} from "../common";
 
 
 describe('HeaderComponent', () => {
@@ -26,9 +34,11 @@ describe('HeaderComponent', () => {
         MatAutocompleteModule,
         MatButtonModule,
         MatChipsModule,
+        MatDatepickerModule,
         MatIconModule,
         MatInputModule,
         MatMenuModule,
+        MatNativeDateModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {path: '', component: TestHeaderComponent}
@@ -58,13 +68,22 @@ describe('HeaderComponent', () => {
     expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
   }));
 
-  it('should stage and complete a chip', async (() => {
+  it('should stage and complete a free text chip', async (() => {
     testComponent.addChip('key');
     testComponent.setCurrentChip('key');
     testComponent.currentChipValue = 'value';
     testComponent.assignChipValue();
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('value');
+    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
+  }));
+
+  it('should stage and complete a date chip', async (() => {
+    testComponent.addChip(startCol);
+    testComponent.setCurrentChip(startCol);
+    testComponent.assignDateValue(new Date("11/11/2011"));
+    fixture.detectChanges();
+    expect(testComponent.chips.get(startCol)).toEqual('11/11/2011');
     expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
   }));
 
