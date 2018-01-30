@@ -109,7 +109,7 @@ export class HeaderComponent implements OnInit {
     if (this.currentChipKey == startCol) {
       return "Jobs on or after...";
     } else if (this.currentChipKey == endCol) {
-      return "Jobs before..."
+      return "Jobs on or before..."
     }
   }
 

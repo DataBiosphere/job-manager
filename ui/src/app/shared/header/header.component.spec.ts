@@ -4,7 +4,7 @@ import {Component, DebugElement, ViewChild} from "@angular/core";
 import {
   MatAutocompleteModule,
   MatButtonModule,
-  MatChipsModule, MatDatepickerInputEvent,
+  MatChipsModule,
   MatDatepickerModule,
   MatIconModule,
   MatInputModule,
