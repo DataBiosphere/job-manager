@@ -16,7 +16,7 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 import {HeaderComponent} from "./header.component";
-import {start} from "../common";
+import {startCol} from "../common";
 
 
 describe('HeaderComponent', () => {
@@ -68,13 +68,22 @@ describe('HeaderComponent', () => {
     expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
   }));
 
-  it('should stage and complete a chip', async (() => {
+  it('should stage and complete a free text chip', async (() => {
     testComponent.addChip('key');
     testComponent.setCurrentChip('key');
     testComponent.currentChipValue = 'value';
     testComponent.assignChipValue();
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('value');
+    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
+  }));
+
+  it('should stage and complete a date chip', async (() => {
+    testComponent.addChip(startCol);
+    testComponent.setCurrentChip(startCol);
+    testComponent.assignDateValue(new Date("11/11/2011"));
+    fixture.detectChanges();
+    expect(testComponent.chips.get(startCol)).toEqual('11/11/2011');
     expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
   }));
 

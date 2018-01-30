@@ -8,7 +8,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {JobStatus} from "../model/JobStatus";
 import {QueryJobsRequest} from "../model/QueryJobsRequest";
 import {environment} from "../../../environments/environment";
-import {dateColumns, end, queryFields, start} from "../common";
+import {dateColumns, endCol, queryFields, startCol} from "../common";
 import {MatDatepickerInputEvent, MatMenuTrigger} from "@angular/material";
 
 @Component({
@@ -75,9 +75,9 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  assignDateValue(event: MatDatepickerInputEvent<Date>): void {
+  assignDateValue(date: Date): void {
     this.removeChip(this.currentChipKey);
-    this.chips.set(this.currentChipKey, new Date(event.value).toLocaleDateString());
+    this.chips.set(this.currentChipKey, date.toLocaleDateString());
     if (this.chipMenuTrigger) {
       this.chipMenuTrigger.closeMenu();
     }
@@ -98,24 +98,23 @@ export class HeaderComponent implements OnInit {
     return Array.from(this.chips.keys());
   }
 
+  getCurrentChipType(): string {
+    if (dateColumns.indexOf(this.currentChipKey) > -1) {
+      return "date";
+    }
+    return "free text";
+  }
+
   getDatePlaceholder(): string {
-    if (this.currentChipKey == start) {
+    if (this.currentChipKey == startCol) {
       return "Jobs on or after...";
-    } else if (this.currentChipKey == end) {
+    } else if (this.currentChipKey == endCol) {
       return "Jobs before..."
     }
   }
 
   getDisplayValue(chipKey: string) {
     return chipKey + ': ' + this.chips.get(chipKey);
-  }
-
-  isDate(): boolean {
-    return dateColumns.indexOf(this.currentChipKey) > -1;
-  }
-
-  isFreeText(): boolean {
-    return !this.isDate();
   }
 
   navigateWithStatus(statuses: JobStatus[]): void {
