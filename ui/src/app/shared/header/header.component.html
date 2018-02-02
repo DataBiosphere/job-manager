@@ -19,6 +19,17 @@
                  (keyup.enter)="assignChipValue()"
                  (click)="$event.stopPropagation()"/>
         </mat-form-field>
+        <!-- Statuses -->
+        <mat-list *ngSwitchCase="'statuses'">
+          <mat-list-item  *ngFor="let status of jobStatuses">
+            <mat-checkbox
+              (click)="$event.stopPropagation()"
+              [checked]="isChecked(status)"
+              (change)="changeStatus(status, $event.checked)">
+              {{ status }}
+            </mat-checkbox>
+          </mat-list-item>
+        </mat-list>
         <!-- Datepicker input -->
         <mat-form-field *ngSwitchCase="'date'" class="query-input">
           <input id="dateInput"

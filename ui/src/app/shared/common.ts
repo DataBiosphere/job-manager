@@ -10,6 +10,7 @@ export enum JobStatusImage {
   Aborted = <any> 'https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png'
 }
 
+export const statusesCol = 'statuses';
 export const startCol = 'start';
 export const endCol = 'end';
 export const dateColumns: string[] = [startCol, endCol];
@@ -19,7 +20,7 @@ export const dateColumns: string[] = [startCol, endCol];
 export const queryFields = {
   parentId: 'parent-id',
   jobName: 'job-name',
-  statuses: 'statuses',
+  statuses: statusesCol,
   start: startCol,
   end: endCol,
 };
