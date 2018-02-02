@@ -21,8 +21,8 @@ def api_to_dsub(query):
         for s in query.statuses
     } if query.statuses else {'*'}
 
-    if query.start:
-        dstat_params['create_time'] = query.start
+    if query.submission:
+        dstat_params['create_time'] = query.submission
     if query.name:
         dstat_params['job_names'] = {query.name}
     if query.labels:

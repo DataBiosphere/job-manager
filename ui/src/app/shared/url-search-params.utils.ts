@@ -16,6 +16,9 @@ export class URLSearchParamsUtils {
     for (let s in request.statuses) {
       urlSearchParams.append('statuses', JobStatus[request.statuses[s]]);
     }
+    if (request.submission) {
+      urlSearchParams.set(queryFields.submission, request.submission.toISOString());
+    }
     if (request.start) {
       urlSearchParams.set(queryFields.start, request.start.toISOString());
     }
@@ -66,6 +69,10 @@ export class URLSearchParamsUtils {
           statuses.push(JobStatus[status]);
         }
         queryRequest['statuses'] = statuses;
+      }
+      else if (key == queryFields.submission) {
+        queryRequest['submission'] =
+          new Date(urlSearchParams.get(queryFields.submission));
       }
       else if (key == queryFields.start) {
         queryRequest['start'] = new Date(urlSearchParams.get(queryFields.start));

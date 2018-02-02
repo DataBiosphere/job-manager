@@ -339,7 +339,7 @@ class BaseTestCases:
                     'overlap_key': 'overlap_value'
                 }), [label_job, other_label_job])
 
-        def test_query_jobs_by_start_end(self):
+        def test_query_jobs_by_submission_end(self):
             first_time = datetime.datetime.now()
             first_job = self.start_job('echo ONE', name='job1', wait=True)
             second_time = datetime.datetime.now()
@@ -349,12 +349,13 @@ class BaseTestCases:
             fourth_time = datetime.datetime.now()
 
             self.assert_query_matches(
-                QueryJobsRequest(start=first_time),
+                QueryJobsRequest(submission=first_time),
                 [first_job, second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(start=second_time), [second_job, third_job])
+                QueryJobsRequest(submission=second_time),
+                [second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(start=third_time), [third_job])
+                QueryJobsRequest(submission=third_time), [third_job])
             self.assert_query_matches(
                 QueryJobsRequest(end=second_time), [first_job])
             self.assert_query_matches(
@@ -363,7 +364,7 @@ class BaseTestCases:
                 QueryJobsRequest(end=fourth_time),
                 [first_job, second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(start=second_time, end=fourth_time),
+                QueryJobsRequest(submission=second_time, end=fourth_time),
                 [second_job, third_job])
 
         def test_query_jobs_pagination(self):
@@ -387,7 +388,7 @@ class BaseTestCases:
                 QueryJobsRequest(
                     page_size=2, page_token=response.next_page_token), [job1])
 
-        def test_query_jobs_start_pagination(self):
+        def test_query_jobs_submission_pagination(self):
             job1 = self.start_job('echo FIRST_JOB', name='job_z')
             time.sleep(1)
             min_time = datetime.datetime.now()
@@ -398,14 +399,15 @@ class BaseTestCases:
             job6 = self.start_job('echo SIXTH_JOB', name='job_u')
 
             response = self.assert_query_matches(
-                QueryJobsRequest(page_size=2, start=min_time), [job5, job6])
+                QueryJobsRequest(page_size=2, submission=min_time),
+                [job5, job6])
             response = self.assert_query_matches(
                 QueryJobsRequest(
                     page_size=2,
-                    start=min_time,
+                    submission=min_time,
                     page_token=response.next_page_token), [job3, job4])
             response = self.assert_query_matches(
                 QueryJobsRequest(
                     page_size=2,
-                    start=min_time,
+                    submission=min_time,
                     page_token=response.next_page_token), [job2])
