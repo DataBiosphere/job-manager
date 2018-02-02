@@ -190,7 +190,7 @@ def query_jobs(body):
     now = datetime.utcnow()
     results = [
         format_job(job, now) for job in response.json()['results']
-        if not job.get('parentWorkflowId')
+        if _is_parent_workflow(job)
     ]
     # Reverse so that newest jobs are listed first
     results.reverse()
@@ -219,6 +219,7 @@ def cromwell_query_params(query, page, page_size):
     query_params.append({'pageSize': str(page_size)})
     query_params.append({'page': str(page)})
     query_params.append({'additionalQueryResultFields': 'parentWorkflowId'})
+    query_params.append({'additionalQueryResultFields': 'labels'})
     return query_params
 
 
@@ -240,7 +241,8 @@ def format_job(job, now):
         submission=submission,
         start=start,
         end=end,
-        parent_job_id=job.get('parentWorkflowId'))
+        parent_job_id=job.get('parentWorkflowId'),
+        labels=job.get('labels'))
 
 
 def _parse_datetime(date_string):
@@ -267,3 +269,7 @@ def _get_base_url():
 def _get_user_auth():
     return HTTPBasicAuth(current_app.config['cromwell_user'],
                          current_app.config['cromwell_password'])
+
+
+def _is_parent_workflow(job):
+    return not job.get('parentWorkflowId')

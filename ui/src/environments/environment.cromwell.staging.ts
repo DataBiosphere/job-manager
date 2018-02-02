@@ -4,7 +4,7 @@ export const environment = {
   production: false,
   requiresAuth: false,
   scope: '',
-  additionalColumns: null,
+  additionalColumns: ['cromwell-workflow-name', 'cromwell-workflow-id', 'other-labels'],
   entryPoint: 'jobs',
   serverUrl: 'https://cromwell.mint-staging.broadinstitute.org/api/workflows/v1/',
 };
