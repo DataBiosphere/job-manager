@@ -161,7 +161,8 @@ def update_key_names(metadata):
 
 def query_jobs(body):
     """
-    Query jobs by various filter criteria. Returned jobs are ordered from newest to oldest submission time.
+    Query jobs by various filter criteria. Additional jobs are requested if the number of results is less than the
+    requested page size. The returned jobs are ordered from newest to oldest submission time.
 
     :param body:
     :type body: dict | bytes
@@ -169,11 +170,44 @@ def query_jobs(body):
     :rtype: QueryJobsResponse
     """
     query = QueryJobsRequest.from_dict(body)
-    page_size = query.page_size or _DEFAULT_PAGE_SIZE
+    page_size = query.page_size * 2  # Request more than query.page_size since subworkflows will get filtered out
+    total_results = get_total_results(query)
+
+    results = []
     offset = page_tokens.decode_offset(query.page_token) or 0
     page = page_from_offset(offset, page_size)
-    params_for_cromwell = cromwell_query_params(query, page, page_size)
+    last_page = get_last_page(total_results, page_size)
 
+    while len(results) < query.page_size and page <= last_page:
+        page_from_end = last_page - page + 1
+        response = requests.post(
+            _get_base_url() + '/query',
+            json=cromwell_query_params(query, page_from_end, page_size),
+            auth=_get_user_auth())
+
+        if response.status_code == BadRequest.code:
+            raise BadRequest(response.json().get('message'))
+        elif response.status_code == InternalServerError.code:
+            raise InternalServerError(response.json().get('message'))
+        response.raise_for_status()
+
+        # Only list parent jobs
+        now = datetime.utcnow()
+        jobs_list = [
+            format_job(job, now) for job in response.json()['results']
+            if _is_parent_workflow(job)
+        ]
+        jobs_list.reverse()
+        results.extend(jobs_list)
+        offset = offset + page_size
+        page = page_from_offset(offset, page_size)
+
+    next_page_token = page_tokens.encode_offset(offset)
+    return QueryJobsResponse(results=results, next_page_token=next_page_token)
+
+
+def get_total_results(query):
+    params_for_cromwell = cromwell_query_params(query, page=1, page_size=1)
     response = requests.post(
         _get_base_url() + '/query',
         json=params_for_cromwell,
@@ -185,19 +219,13 @@ def query_jobs(body):
         raise InternalServerError(response.json().get('message'))
     response.raise_for_status()
 
-    # Only list parent jobs
-    now = datetime.utcnow()
-    results = [
-        format_job(job, now) for job in response.json()['results']
-        if _is_parent_workflow(job)
-    ]
-    # Reverse so that newest jobs are listed first
-    results.reverse()
+    return response.json()['totalResultsCount']
 
-    next_offset = offset + page_size
-    next_page_token = page_tokens.encode_offset(next_offset)
 
-    return QueryJobsResponse(results=results, next_page_token=next_page_token)
+def get_last_page(total_results, page_size):
+    if total_results % page_size != 0:
+        return total_results/page_size + 1
+    return total_results/page_size
 
 
 def page_from_offset(offset, page_size):
