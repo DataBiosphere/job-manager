@@ -508,17 +508,19 @@ class TestJobsController(BaseTestCase):
             }]))
 
     def test_cromwell_query_params(self):
-        datetime_format='%Y-%m-%dT%H:%M:%S.%fZ'
+        datetime_format = '%Y-%m-%dT%H:%M:%S.%fZ'
         query = QueryJobsRequest(
             name='test',
-            start=datetime.strptime('2017-10-30T18:04:47.271Z', datetime_format),
+            start=datetime.strptime('2017-10-30T18:04:47.271Z',
+                                    datetime_format),
             end=datetime.strptime('2017-10-31T18:04:47.271Z', datetime_format),
             statuses=['Submitted', 'Running', 'Succeeded'],
             page_size=100)
         query_params = [{
             'name': query.name
         }, {
-            'start': datetime.strftime(query.start, datetime_format)
+            'start':
+            datetime.strftime(query.start, datetime_format)
         }, {
             'end': datetime.strftime(query.end, datetime_format)
         }, {
