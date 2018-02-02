@@ -45,3 +45,6 @@ venv/
 # e2e
 /ui/e2e/*.js
 /ui/e2e/*.map
+
+# OS generated files
+.DS_Store
