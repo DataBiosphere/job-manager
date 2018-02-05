@@ -31,7 +31,7 @@ services:
     ports:
       - 8190:8190
   cromwell:
-    command: ["-b", ":8190"]
+    command: ["-b", ":8190", "-t", "60"]
     environment:
       - PATH_PREFIX=/api/v1
       - CROMWELL_CREDENTIALS=/app/jobs/config.json
