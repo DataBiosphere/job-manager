@@ -482,7 +482,7 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback(request, context):
             context.status_code = 200
-            return {'results': []}
+            return {'results': [], 'totalResultsCount': 0}
 
         query_url = self.base_url + '/query'
         mock_request.post(query_url, json=_request_callback)

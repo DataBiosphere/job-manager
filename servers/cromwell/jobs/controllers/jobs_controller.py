@@ -170,7 +170,9 @@ def query_jobs(body):
     :rtype: QueryJobsResponse
     """
     query = QueryJobsRequest.from_dict(body)
-    page_size = query.page_size * 2  # Request more than query.page_size since subworkflows will get filtered out
+    query_page_size = query.page_size or _DEFAULT_PAGE_SIZE
+    # Request more than query.page_size from cromwell since subworkflows will get filtered out
+    page_size = query_page_size * 2
     total_results = get_total_results(query)
 
     results = []
@@ -178,8 +180,9 @@ def query_jobs(body):
     page = page_from_offset(offset, page_size)
     last_page = get_last_page(total_results, page_size)
 
-    while len(results) < query.page_size and page <= last_page:
+    while len(results) < query_page_size and page <= last_page:
         page_from_end = last_page - page + 1
+        print(page_from_end)
         response = requests.post(
             _get_base_url() + '/query',
             json=cromwell_query_params(query, page_from_end, page_size),
@@ -223,9 +226,11 @@ def get_total_results(query):
 
 
 def get_last_page(total_results, page_size):
-    if total_results % page_size != 0:
-        return total_results/page_size + 1
-    return total_results/page_size
+    if total_results == 0:
+        return 1
+    elif total_results % page_size != 0:
+        return total_results / page_size + 1
+    return total_results / page_size
 
 
 def page_from_offset(offset, page_size):
