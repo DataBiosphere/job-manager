@@ -169,7 +169,6 @@ def query_jobs(body):
     :rtype: QueryJobsResponse
     """
     query = QueryJobsRequest.from_dict(body)
-
     page_size = query.page_size or _DEFAULT_PAGE_SIZE
     offset = page_tokens.decode_offset(query.page_token) or 0
     page = page_from_offset(offset, page_size)
@@ -208,9 +207,11 @@ def page_from_offset(offset, page_size):
 def cromwell_query_params(query, page, page_size):
     query_params = []
     if query.start:
-        query_params.append({'start': query.start})
+        start = datetime.strftime(query.start, '%Y-%m-%dT%H:%M:%S.%fZ')
+        query_params.append({'start': start})
     if query.end:
-        query_params.append({'end': query.end})
+        end = datetime.strftime(query.end, '%Y-%m-%dT%H:%M:%S.%fZ')
+        query_params.append({'end': end})
     if query.name:
         query_params.append({'name': query.name})
     if query.statuses:
