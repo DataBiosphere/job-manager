@@ -5,11 +5,10 @@ import {PageEvent, MatSnackBar} from '@angular/material'
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
-import {initialBackendPageSize} from '../shared/common';
-import {ErrorMessageFormatterPipe} from '../shared/error-message-formatter.pipe';
-import {JobListView, JobStream} from '../shared/job-stream';
-import {URLSearchParamsUtils} from "../shared/url-search-params.utils";
+import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {JobsTableComponent} from './table/table.component';
+import {JobListView, JobStream} from '../shared/job-stream';
+import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 
 @Component({
   selector: 'jm-job-list',

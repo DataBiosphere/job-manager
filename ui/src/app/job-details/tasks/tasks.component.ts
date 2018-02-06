@@ -11,7 +11,7 @@ import {Observable} from 'rxjs/Observable';
 
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusImage} from '../../shared/common';
-import {ResourceUtils} from '../../shared/resource-utils';
+import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {environment} from "../../../environments/environment";
 

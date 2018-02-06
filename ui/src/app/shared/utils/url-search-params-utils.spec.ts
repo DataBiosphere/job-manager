@@ -1,7 +1,7 @@
 import {async, TestBed} from "@angular/core/testing";
 import {URLSearchParamsUtils} from "./url-search-params.utils";
-import {JobStatus} from "./model/JobStatus";
-import {QueryJobsRequest} from "./model/QueryJobsRequest";
+import {JobStatus} from "../model/JobStatus";
+import {QueryJobsRequest} from "../model/QueryJobsRequest";
 
 const queryRequest: QueryJobsRequest = {
   parentId: 'parent-id',

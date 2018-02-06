@@ -1,9 +1,9 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 
-import {ShortDateTimePipe} from "./short-date-time.pipe";
-import {ErrorMessageFormatterPipe} from "./error-message-formatter.pipe";
-import {DurationPipe} from "./duration.pipe";
+import {ShortDateTimePipe} from "./pipes/short-date-time.pipe";
+import {ErrorMessageFormatterPipe} from "./pipes/error-message-formatter.pipe";
+import {DurationPipe} from "./pipes/duration.pipe";
 import {
   MatAutocompleteModule,
   MatButtonModule,

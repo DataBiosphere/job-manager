@@ -3,7 +3,7 @@ import {ENTER} from '@angular/cdk/keycodes';
 import {FormControl} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
 
-import {URLSearchParamsUtils} from "../url-search-params.utils";
+import {URLSearchParamsUtils} from "../utils/url-search-params.utils";
 import {ActivatedRoute, Router} from "@angular/router";
 import {JobStatus} from "../model/JobStatus";
 import {QueryJobsRequest} from "../model/QueryJobsRequest";
