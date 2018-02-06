@@ -13,9 +13,9 @@ import {
 } from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
 import {
-  MdPaginator,
-  MdPaginatorIntl,
-  MdSnackBar,
+  MatPaginator,
+  MatPaginatorIntl,
+  MatSnackBar,
   PageEvent
 } from '@angular/material';
 import {Observable} from 'rxjs/Observable';
@@ -55,21 +55,21 @@ export class JobsTableComponent implements OnInit, OnDestroy {
   // TODO(alanhwang): Allow these columns to be configured by the user
   displayedColumns = primaryColumns.slice();
 
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly JobManagerService: JobManagerService,
     private readonly viewContainer: ViewContainerRef,
-    private errorBar: MdSnackBar,
+    private errorBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
     // Our paginator details depend on the state of backend pagination,
-    // therefore we cannot simply inject an alternate MdPaginatorIntl, as
+    // therefore we cannot simply inject an alternate MatPaginatorIntl, as
     // recommended by the paginator documentation. _intl is public, and
     // overwriting it seems preferable to providing our own version of
-    // MdPaginator.
+    // MatPaginator.
     this.paginator._intl = new JobsPaginatorIntl(
       this.jobs, this.paginator._intl.changes);
     this.dataSource = new JobsDataSource(this.jobs, this.paginator);
@@ -184,8 +184,8 @@ export class JobsTableComponent implements OnInit, OnDestroy {
  * this rather than showing a misleading count for the number of jobs that have
  * been loaded onto the client so far.
  */
-export class JobsPaginatorIntl extends MdPaginatorIntl {
-  private defaultIntl = new MdPaginatorIntl()
+export class JobsPaginatorIntl extends MatPaginatorIntl {
+  private defaultIntl = new MatPaginatorIntl()
 
   constructor(private backendJobs: BehaviorSubject<JobListView>,
               public changes: Subject<void>) {
@@ -201,11 +201,11 @@ export class JobsPaginatorIntl extends MdPaginatorIntl {
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
     if (this.backendJobs.value.exhaustive) {
-      // Can't use proper inheritance here, since MdPaginatorIntl only defines
+      // Can't use proper inheritance here, since MatPaginatorIntl only defines
       // properties, rather than class methods.
       return this.defaultIntl.getRangeLabel(page, pageSize, length);
     }
-    // Ported from MdPaginatorIntl - boundary checks likely unneeded.
+    // Ported from MatPaginatorIntl - boundary checks likely unneeded.
     const startIndex = page * pageSize;
     const endIndex = startIndex < length ?
         Math.min(startIndex + pageSize, length) :
@@ -217,7 +217,7 @@ export class JobsPaginatorIntl extends MdPaginatorIntl {
 /** DataSource providing the list of jobs to be rendered in the table. */
 export class JobsDataSource extends DataSource<any> {
 
-  constructor(private backendJobs: BehaviorSubject<JobListView>, private paginator: MdPaginator) {
+  constructor(private backendJobs: BehaviorSubject<JobListView>, private paginator: MatPaginator) {
     super();
   }
 

@@ -1,7 +1,7 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subscription} from 'rxjs/Subscription';
 import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {PageEvent, MdSnackBar} from '@angular/material'
+import {PageEvent, MatSnackBar} from '@angular/material'
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
@@ -33,7 +33,7 @@ export class JobListComponent implements OnInit {
     private readonly router: Router,
     private readonly jobManagerService: JobManagerService,
     private readonly viewContainer: ViewContainerRef,
-    private errorBar: MdSnackBar,
+    private errorBar: MatSnackBar,
   ) {
     route.queryParams.subscribe(params => this.reloadJobs(params['q']));
   }

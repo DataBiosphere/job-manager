@@ -8,13 +8,13 @@ import {
 } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {
-  MdAutocomplete,
-  MdButton,
-  MdCard,
-  MdFormField,
-  MdOption,
-  MdSnackBar,
-  MdSnackBarConfig
+  MatAutocomplete,
+  MatButton,
+  MatCard,
+  MatFormField,
+  MatOption,
+  MatSnackBar,
+  MatSnackBarConfig
 } from '@angular/material'
 import {Router, NavigationError} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
@@ -44,7 +44,7 @@ export class ProjectsComponent implements OnInit {
     private readonly projectsService: ProjectsService,
     private readonly router: Router,
     private readonly viewContainer: ViewContainerRef,
-    private errorBar: MdSnackBar) {}
+    private errorBar: MatSnackBar) {}
 
   private validProject(projectId: string): boolean {
     if (this.projects) {

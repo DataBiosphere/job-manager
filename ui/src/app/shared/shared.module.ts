@@ -5,12 +5,16 @@ import {ShortDateTimePipe} from "./pipes/short-date-time.pipe";
 import {ErrorMessageFormatterPipe} from "./pipes/error-message-formatter.pipe";
 import {DurationPipe} from "./pipes/duration.pipe";
 import {
-  MdAutocompleteModule,
-  MdButtonModule,
-  MdChipsModule,
-  MdIconModule,
-  MdInputModule,
-  MdMenuModule
+  MatAutocompleteModule,
+  MatButtonModule,
+  MatCheckboxModule,
+  MatChipsModule,
+  MatDatepickerModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatMenuModule,
+  MatNativeDateModule,
 } from "@angular/material";
 import {HeaderComponent} from "./header/header.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -19,12 +23,16 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
   imports: [
     CommonModule,
     FormsModule,
-    MdAutocompleteModule,
-    MdButtonModule,
-    MdChipsModule,
-    MdIconModule,
-    MdInputModule,
-    MdMenuModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatChipsModule,
+    MatDatepickerModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatNativeDateModule,
     ReactiveFormsModule,
   ],
   declarations: [

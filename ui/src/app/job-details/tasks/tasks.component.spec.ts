@@ -3,10 +3,10 @@ import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
-  MdButtonModule,
-  MdTableModule,
-  MdTabsModule,
-  MdTooltipModule,
+  MatButtonModule,
+  MatTableModule,
+  MatTabsModule,
+  MatTooltipModule,
 } from '@angular/material';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {TaskDetailsComponent} from './tasks.component';
@@ -42,10 +42,10 @@ describe('TaskDetailsComponent', () => {
       imports: [
         BrowserAnimationsModule,
         CommonModule,
-        MdButtonModule,
-        MdTableModule,
-        MdTabsModule,
-        MdTooltipModule,
+        MatButtonModule,
+        MatTableModule,
+        MatTabsModule,
+        MatTooltipModule,
         SharedModule
       ]
     }).compileComponents();

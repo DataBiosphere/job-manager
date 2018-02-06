@@ -1,14 +1,25 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
-import {HeaderComponent} from "./header.component";
 import {By} from "@angular/platform-browser";
 import {Component, DebugElement, ViewChild} from "@angular/core";
 import {
-  MdAutocompleteModule, MdButtonModule, MdChipsModule, MdIconModule, MdInputModule,
-  MdMenuModule
+  MatAutocompleteModule,
+  MatButtonModule,
+  MatCheckboxModule,
+  MatChipsModule,
+  MatDatepickerModule,
+  MatIconModule,
+  MatInputModule,
+  MatListModule,
+  MatMenuModule,
+  MatNativeDateModule,
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+
+import {HeaderComponent} from "./header.component";
+import {startCol, statusesCol} from "../common";
+import {JobStatus} from "../model/JobStatus";
 
 
 describe('HeaderComponent', () => {
@@ -23,12 +34,16 @@ describe('HeaderComponent', () => {
       imports: [
         BrowserAnimationsModule,
         FormsModule,
-        MdAutocompleteModule,
-        MdButtonModule,
-        MdChipsModule,
-        MdIconModule,
-        MdInputModule,
-        MdMenuModule,
+        MatAutocompleteModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatChipsModule,
+        MatDatepickerModule,
+        MatIconModule,
+        MatInputModule,
+        MatListModule,
+        MatMenuModule,
+        MatNativeDateModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {path: '', component: TestHeaderComponent}
@@ -42,30 +57,40 @@ describe('HeaderComponent', () => {
     testComponent = fixture.componentInstance.headerComponent;
     testComponent.chips = new Map()
       .set('parent-id', 'Parent ID')
-      .set('job-name', 'Job Name');
+      .set('job-name', 'Job Name')
+      .set('statuses', 'Running');
   });
 
   it('should display a chip for each query filter', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('#chip')).length).toEqual(2);
+    expect(de.queryAll(By.css('#chip')).length).toEqual(3);
   }));
 
   it('should stage a chip', async ( () => {
     testComponent.addChip('key');
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('');
-    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
+    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(4);
   }));
 
-  it('should stage and complete a chip', async (() => {
+  it('should stage and complete a free text chip', async (() => {
     testComponent.addChip('key');
     testComponent.setCurrentChip('key');
     testComponent.currentChipValue = 'value';
     testComponent.assignChipValue();
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('value');
-    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
+    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(4);
+  }));
+
+  it('should stage and complete a date chip', async (() => {
+    testComponent.addChip(startCol);
+    testComponent.setCurrentChip(startCol);
+    testComponent.assignDateValue(new Date("11/11/2011"));
+    fixture.detectChanges();
+    expect(testComponent.chips.get(startCol)).toEqual('11/11/2011');
+    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(4);
   }));
 
   it('should replace existing chip', async (() => {
@@ -76,7 +101,7 @@ describe('HeaderComponent', () => {
     testComponent.addChip('key: value2');
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('value2');
-    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
+    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(4);
   }));
 
   it('should not show status buttons', async(() => {
@@ -87,6 +112,15 @@ describe('HeaderComponent', () => {
   it('should show status buttons', async(() => {
     testComponent.chips.set('statuses', 'list,of,statuses');
     expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(0);
+  }));
+
+  it('should change statuses', async(() => {
+    testComponent.changeStatus(JobStatus.Running, false);
+    testComponent.changeStatus(JobStatus.Aborted, true);
+    testComponent.changeStatus(JobStatus.Aborting, true);
+    fixture.detectChanges();
+    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
+    expect(testComponent.selectedStatuses.length).toEqual(2);
   }));
 
   @Component({

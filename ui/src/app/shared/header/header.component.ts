@@ -1,5 +1,4 @@
-import {Component, NgZone, OnInit} from '@angular/core';
-import {MdChipInputEvent} from '@angular/material';
+import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
 import {ENTER} from '@angular/cdk/keycodes';
 import {FormControl} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
@@ -9,7 +8,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {JobStatus} from "../model/JobStatus";
 import {QueryJobsRequest} from "../model/QueryJobsRequest";
 import {environment} from "../../../environments/environment";
-import {queryFields} from "../common";
+import {dateColumns, endCol, queryFields, startCol, statusesCol} from "../common";
+import {MatMenuTrigger} from "@angular/material";
 
 @Component({
   selector: 'jm-header',
@@ -17,14 +17,17 @@ import {queryFields} from "../common";
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
+  @ViewChild(MatMenuTrigger) chipMenuTrigger: MatMenuTrigger;
+
   separatorKeysCodes = [ENTER];
   control: FormControl = new FormControl();
   options: string[] = [];
+  chips: Map<string, string>;
   currentChipKey: string = "";
   currentChipValue: string = "";
   inputValue: string = "";
-
-  chips: Map<string, string>;
+  jobStatuses: JobStatus[] = Object.keys(JobStatus).map(k => JobStatus[k]);
+  selectedStatuses: JobStatus[] = [];
 
   filteredOptions: Observable<string[]>;
 
@@ -40,6 +43,9 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {
     if (this.route.snapshot.queryParams['q']) {
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
+    }
+    if (this.chips.get(statusesCol)) {
+      this.selectedStatuses = this.chips.get(statusesCol).split(',').map(k => JobStatus[k]);
     }
     this.filterOptions();
     this.options = URLSearchParamsUtils.getQueryFields();
@@ -68,6 +74,26 @@ export class HeaderComponent implements OnInit {
   assignChipValue(): void {
     this.removeChip(this.currentChipKey);
     this.chips.set(this.currentChipKey, this.currentChipValue);
+    if (this.chipMenuTrigger) {
+      this.chipMenuTrigger.closeMenu();
+    }
+  }
+
+  assignDateValue(date: Date): void {
+    this.removeChip(this.currentChipKey);
+    this.chips.set(this.currentChipKey, date.toLocaleDateString());
+    if (this.chipMenuTrigger) {
+      this.chipMenuTrigger.closeMenu();
+    }
+  }
+
+  changeStatus(status: JobStatus, checked: boolean) {
+    if (checked) {
+      this.selectedStatuses.push(status);
+    } else if (this.selectedStatuses.indexOf(status) > -1) {
+      this.selectedStatuses.splice(this.selectedStatuses.indexOf(status), 1);
+    }
+    this.chips.set(statusesCol, this.selectedStatuses.join(','));
   }
 
   filter(val: string): string[] {
@@ -85,14 +111,37 @@ export class HeaderComponent implements OnInit {
     return Array.from(this.chips.keys());
   }
 
+  getCurrentChipType(): string {
+    if (dateColumns.indexOf(this.currentChipKey) > -1) {
+      return "date";
+    }
+    else if (this.currentChipKey == statusesCol) {
+      return "statuses";
+    }
+    return "free text";
+  }
+
+  getDatePlaceholder(): string {
+    if (this.currentChipKey == startCol) {
+      return "Jobs on or after...";
+    } else if (this.currentChipKey == endCol) {
+      return "Jobs on or before..."
+    }
+  }
+
   getDisplayValue(chipKey: string) {
     return chipKey + ': ' + this.chips.get(chipKey);
+  }
+
+  isChecked(status: JobStatus): boolean {
+    return this.selectedStatuses.indexOf(status) > -1;
   }
 
   navigateWithStatus(statuses: JobStatus[]): void {
     let query: QueryJobsRequest =
       URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
     query.statuses = statuses;
+    this.selectedStatuses = statuses;
     this.router.navigate(
       ['jobs'],
       {queryParams: { q: URLSearchParamsUtils.encodeURLSearchParams(query)}}
@@ -101,6 +150,9 @@ export class HeaderComponent implements OnInit {
 
   removeChip(chipKey: string): void {
     this.chips.delete(chipKey);
+    if (chipKey == statusesCol) {
+      this.selectedStatuses = [];
+    }
   }
 
   // TODO: Cut the dependency on string parsing to represent lists here

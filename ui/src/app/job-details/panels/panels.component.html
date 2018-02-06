@@ -7,9 +7,9 @@
       </span>
   </div>
 
-  <md-card>
-    <md-card-title>Status</md-card-title>
-    <md-card-content>
+  <mat-card>
+    <mat-card-title>Status</mat-card-title>
+    <mat-card-content>
       <p><b>
         {{ job.status }}:
         <ng-container *ngIf="numTasks > 0">
@@ -22,47 +22,47 @@
         ({{ job.start | jmDuration: job.end }})
       </p>
       <p id="ended" *ngIf="job.end">Ended {{ job.end | jmShortDateTime }}</p>
-    </md-card-content>
-  </md-card>
+    </mat-card-content>
+  </mat-card>
 
-  <md-card>
-    <md-card-title>Inputs and Outputs</md-card-title>
+  <mat-card>
+    <mat-card-title>Inputs and Outputs</mat-card-title>
       <p *ngIf="showInputsButton()">
         Input files
-        <button md-button class="view-resources-button" [mdMenuTriggerFor]="inputsMenu">
+        <button mat-button class="view-resources-button" [matMenuTriggerFor]="inputsMenu">
           View
         </button>
       </p>
-      <md-menu #inputsMenu="mdMenu" class="wide-menu">
-        <a md-menu-item *ngFor="let i of inputs" href="{{ getInputResourceURL(i) }}">
+      <mat-menu #inputsMenu="matMenu" class="wide-menu">
+        <a mat-menu-item *ngFor="let i of inputs" href="{{ getInputResourceURL(i) }}">
           <span> {{ getInputResourceFileName(i) }}</span>
         </a>
-      </md-menu>
+      </mat-menu>
 
       <p *ngIf="showOutputsButton()">
         Output files
-        <button md-button class="view-resources-button" [mdMenuTriggerFor]="outputsMenu">
+        <button mat-button class="view-resources-button" [matMenuTriggerFor]="outputsMenu">
           View
         </button>
       </p>
-      <md-menu #outputsMenu="mdMenu" class="wide-menu">
-        <a md-menu-item *ngFor="let o of outputs" href="{{ getOutputResourceURL(o) }}">
+      <mat-menu #outputsMenu="matMenu" class="wide-menu">
+        <a mat-menu-item *ngFor="let o of outputs" href="{{ getOutputResourceURL(o) }}">
           <span>{{ getOutputResourceFileName(o) }}</span>
         </a>
-      </md-menu>
+      </mat-menu>
 
       <p *ngIf="showLogsButton()">
         Log files
-        <button md-button class="view-resources-button" [mdMenuTriggerFor]="logsMenu">
+        <button mat-button class="view-resources-button" [matMenuTriggerFor]="logsMenu">
           View
         </button>
       </p>
-      <md-menu #logsMenu="mdMenu">
-        <a md-menu-item *ngFor="let o of logs" href="{{ getLogResourceURL(o) }}">
+      <mat-menu #logsMenu="matMenu">
+        <a mat-menu-item *ngFor="let o of logs" href="{{ getLogResourceURL(o) }}">
           <span>{{ o }}</span>
         </a>
-      </md-menu>
-    <md-card-content>
-    </md-card-content>
-  </md-card>
+      </mat-menu>
+    <mat-card-content>
+    </mat-card-content>
+  </mat-card>
 </div>
