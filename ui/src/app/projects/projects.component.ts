@@ -35,7 +35,7 @@ import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 export class ProjectsComponent implements OnInit {
   @ViewChild('auto') auto: ElementRef;
   projectsControl: FormControl;
-  projectsObservable: Observable<void|any[]>;
+  projectsObservable: Observable<any[]>;
   projects: any[];
   viewJobsEnabled = false;
 
