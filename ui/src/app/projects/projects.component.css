@@ -25,6 +25,10 @@ p {
   text-align: center;
 }
 
+.mat-option {
+  width: 30%;
+}
+
 .project-name {
   text-align: center;
 }
