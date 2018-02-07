@@ -12,7 +12,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
   // A backend query promise which represents the pending or most recent backend
   // response. All requests synchronize through this promise to avoid duplicate
   // data loading.
-  private queryPromise: Promise<QueryJobsResponse> = Promise.resolve({});
+  private queryPromise: Promise<QueryJobsResponse> = Promise.resolve({results: []});
 
   // This class handles pagination, so the request's paging info need not be defined.
   constructor(private jobManagerService: JobManagerService,
