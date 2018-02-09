@@ -129,6 +129,7 @@ describe('HeaderComponent', () => {
 
   it('should show status buttons', async(() => {
     testComponent.chips.set('statuses', 'list,of,statuses');
+    fixture.detectChanges();
     expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(0);
   }));
 

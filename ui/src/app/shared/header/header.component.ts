@@ -80,11 +80,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (this.chips.get(statusesCol)) {
       this.selectedStatuses = this.chips.get(statusesCol).split(',').map(k => JobStatus[k]);
     }
-    this.filterOptions();
     this.options = URLSearchParamsUtils.getQueryFields();
     if (environment.additionalColumns) {
       this.options = this.options.concat(environment.additionalColumns);
     }
+    this.filterOptions();
     this.pageSubscription = this.paginator.page.subscribe(this.pageSubject);
   }
 
@@ -144,9 +144,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   filterOptions(): void {
-    this.filteredOptions = this.control.valueChanges
-      .startWith(null)
-      .map(val => val ? this.filter(val) : this.options.slice());
+    this.filteredOptions = Observable.create((s) => {
+      s.next(this.options.slice());
+      this.control.valueChanges.subscribe(v => {
+        s.next(v === null ? this.options.slice() : this.filter(v));
+      });
+    });
   }
 
   getChipKeys(): string[] {
