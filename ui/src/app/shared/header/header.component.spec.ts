@@ -12,17 +12,33 @@ import {
   MatListModule,
   MatMenuModule,
   MatNativeDateModule,
+  MatPaginatorModule,
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
+import {JobListView} from "../job-stream";
 import {HeaderComponent} from "./header.component";
 import {startCol, statusesCol} from "../common";
+import {QueryJobsResult} from '../model/QueryJobsResult';
 import {JobStatus} from "../model/JobStatus";
 
 
 describe('HeaderComponent', () => {
+  const baseJob = {
+    status: JobStatus.Running,
+    submission: new Date('2015-04-20T20:00:00'),
+  }
+  const testJob1: QueryJobsResult = { ...baseJob, id: 'JOB1' };
+  const testJob2: QueryJobsResult = { ...baseJob, id: 'JOB2' };
+  const testJob3: QueryJobsResult = { ...baseJob, id: 'JOB3' };
+
+  const initJobs = {
+    results: [testJob1, testJob2, testJob3],
+    exhaustive: false
+  }
 
   let testComponent: HeaderComponent;
   let fixture: ComponentFixture<TestHeaderComponent>;
@@ -44,6 +60,7 @@ describe('HeaderComponent', () => {
         MatListModule,
         MatMenuModule,
         MatNativeDateModule,
+        MatPaginatorModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {path: '', component: TestHeaderComponent}
@@ -52,14 +69,15 @@ describe('HeaderComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async(() => {
     fixture = TestBed.createComponent(TestHeaderComponent);
     testComponent = fixture.componentInstance.headerComponent;
     testComponent.chips = new Map()
       .set('parent-id', 'Parent ID')
       .set('job-name', 'Job Name')
       .set('statuses', 'Running');
-  });
+    fixture.detectChanges();
+  }));
 
   it('should display a chip for each query filter', async(() => {
     fixture.detectChanges();
@@ -126,9 +144,10 @@ describe('HeaderComponent', () => {
   @Component({
     selector: 'jm-test-table-component',
     template:
-      `<jm-header></jm-header>`
+      `<jm-header [jobs]="jobs" [pageSize]="25"></jm-header>`
   })
   class TestHeaderComponent {
+    public jobs = new BehaviorSubject<JobListView>(initJobs);
     @ViewChild(HeaderComponent)
     public headerComponent: HeaderComponent;
   }

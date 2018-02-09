@@ -1,7 +1,25 @@
-import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Subject} from 'rxjs/Subject';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {ENTER} from '@angular/cdk/keycodes';
 import {FormControl} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
+import {Subscription} from 'rxjs/Subscription';
+import {
+  MatPaginator,
+  MatPaginatorIntl,
+  MatSnackBar,
+  PageEvent
+} from '@angular/material';
 
 import {URLSearchParamsUtils} from "../utils/url-search-params.utils";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -10,14 +28,22 @@ import {QueryJobsRequest} from "../model/QueryJobsRequest";
 import {environment} from "../../../environments/environment";
 import {dateColumns, endCol, queryFields, startCol, statusesCol} from "../common";
 import {MatMenuTrigger} from "@angular/material";
+import {JobListView} from '../job-stream';
 
 @Component({
   selector: 'jm-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
+  @Input() jobs: BehaviorSubject<JobListView>;
+  @Input() pageSize: number;
+  public pageSubject: Subject<PageEvent> = new Subject<PageEvent>();
+
   @ViewChild(MatMenuTrigger) chipMenuTrigger: MatMenuTrigger;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  private pageSubscription: Subscription;
 
   separatorKeysCodes = [ENTER];
   control: FormControl = new FormControl();
@@ -41,6 +67,13 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Our paginator details depend on the state of backend pagination,
+    // therefore we cannot simply inject an alternate MatPaginatorIntl, as
+    // recommended by the paginator documentation. _intl is public, and
+    // overwriting it seems preferable to providing our own version of
+    // MatPaginator.
+    this.paginator._intl = new JobsPaginatorIntl(
+        this.jobs, this.paginator._intl.changes);
     if (this.route.snapshot.queryParams['q']) {
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
     }
@@ -52,6 +85,15 @@ export class HeaderComponent implements OnInit {
     if (environment.additionalColumns) {
       this.options = this.options.concat(environment.additionalColumns);
     }
+    this.pageSubscription = this.paginator.page.subscribe(this.pageSubject);
+  }
+
+  ngOnDestroy() {
+    this.pageSubscription.unsubscribe();
+  }
+
+  public resetPagination() {
+    this.paginator.firstPage();
   }
 
   addChip(value: string): void {
@@ -200,3 +242,40 @@ export class HeaderComponent implements OnInit {
     }
   }
 }
+
+/**
+ * Paginator details for the jobs table. Accounts for the case where we haven't
+ * loaded all jobs (matching the query) onto the client; we need to indicate
+ * this rather than showing a misleading count for the number of jobs that have
+ * been loaded onto the client so far.
+ */
+export class JobsPaginatorIntl extends MatPaginatorIntl {
+  private defaultIntl = new MatPaginatorIntl()
+
+  constructor(private backendJobs: BehaviorSubject<JobListView>,
+              public changes: Subject<void>) {
+    super();
+    backendJobs.subscribe((jobList: JobListView) => {
+      // Ensure that the paginator component is redrawn once we transition to
+      // an exhaustive list of jobs.
+      if (jobList.exhaustive) {
+        changes.next();
+      }
+    });
+  }
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (this.backendJobs.value.exhaustive) {
+      // Can't use proper inheritance here, since MatPaginatorIntl only defines
+      // properties, rather than class methods.
+      return this.defaultIntl.getRangeLabel(page, pageSize, length);
+    }
+    // Ported from MatPaginatorIntl - boundary checks likely unneeded.
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+    return `${startIndex + 1} - ${endIndex} of many`;
+  }
+}
+

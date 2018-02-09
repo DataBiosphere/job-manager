@@ -72,4 +72,13 @@
     <button mat-raised-button class="status-button" (click)="showFailedJobs()">FAILED</button>
     <button mat-raised-button class="status-button" (click)="showCompletedJobs()">COMPLETED</button>
   </div>
+
+  <div>
+    <mat-paginator #paginator
+                   [length]="jobs.value.results.length"
+                   [pageIndex]="0"
+                   [pageSize]="pageSize"
+                   [hidePageSize]="true">
+    </mat-paginator>
+  </div>
 </div>

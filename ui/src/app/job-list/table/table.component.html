@@ -3,12 +3,18 @@
   <!-- Job name column -->
   <ng-container matColumnDef="Job">
     <mat-header-cell *matHeaderCellDef>
-      <mat-checkbox class = "checkbox" [checked]="allSelected" (change)="toggleSelectAll()">
+      <mat-checkbox class = "checkbox"
+                    (change)="$event ? toggleSelectAll() : null"
+                    [checked]="selection.hasValue() && allSelected()"
+                    [indeterminate]="selection.hasValue() && !allSelected()">
       </mat-checkbox>
       Job
     </mat-header-cell>
     <mat-cell *matCellDef="let j">
-      <mat-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
+      <mat-checkbox class = "checkbox"
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(j) : null"
+                    [checked]="selection.isSelected(j)">
       </mat-checkbox>
       <a mat-button class="job-details-button" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
 
@@ -69,23 +75,16 @@
 
   <!-- Column definitions -->
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row (mouseenter) ="toggleMouseOver(j)"
-          (mouseleave) ="toggleMouseOver(j)"
-          [class.selected-row]="isSelected(j)"
-          class = "mat-row"
-          *matRowDef="let j; columns: displayedColumns;"></mat-row>
+  <mat-row class = "mat-row"
+           (mouseenter) ="toggleMouseOver(j)"
+           (mouseleave) ="toggleMouseOver(j)"
+           [class.selected-row]="selection.isSelected(j)"
+           *matRowDef="let j; columns: displayedColumns;"></mat-row>
 
 </mat-table>
 
-<div class="group-options" *ngIf="selectedJobs.length > 0">
-  {{ selectedJobs.length }} jobs selected
+<div class="group-options" *ngIf="canAbortAnySelected()">
+  {{ selection.selected.length }} jobs selected
   <button mat-raised-button color="accent" class="group-button group-abort"
           (click)="onAbortJobs(selectedJobs)">Abort Jobs</button>
 </div>
-
-<mat-paginator #paginator
-              [length]="jobs.value.results.length"
-              [pageIndex]="0"
-              [pageSize]="10"
-              [pageSizeOptions]="[5, 10, 25, 100]">
-</mat-paginator>
