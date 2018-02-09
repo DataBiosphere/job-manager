@@ -64,6 +64,7 @@ describe('HeaderComponent', () => {
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {path: '', component: TestHeaderComponent}
+          {path: 'jobs', component: TestHeaderComponent}
         ]),
       ]
     }).compileComponents();
@@ -80,7 +81,6 @@ describe('HeaderComponent', () => {
   }));
 
   it('should display a chip for each query filter', async(() => {
-    fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('#chip')).length).toEqual(3);
   }));
@@ -123,14 +123,23 @@ describe('HeaderComponent', () => {
   }));
 
   it('should not show status buttons', async(() => {
+    testComponent.chips.set('statuses', 'list,of,statuses');
+    testComponent.search();
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(3);
+    fixture.whenStable(() => {
+      fixture.detectChanges();
+      expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(0);
+    });
   }));
 
   it('should show status buttons', async(() => {
-    testComponent.chips.set('statuses', 'list,of,statuses');
+    testComponent.chips.delete('statuses');
+    testComponent.search();
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(0);
+    fixture.whenStable(() => {
+      fixture.detectChanges();
+      expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(3);
+    });
   }));
 
   it('should change statuses', async(() => {
@@ -146,7 +155,7 @@ describe('HeaderComponent', () => {
     testComponent.jobs.next({
       results: [testJob1],
       exhaustive: false
-    );
+    });
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
@@ -156,7 +165,7 @@ describe('HeaderComponent', () => {
     testComponent.jobs.next({
       results: [testJob1, testJob2],
       exhaustive: true
-    );
+    });
     fixture.detectChanges();
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
       .toContain('of 2');

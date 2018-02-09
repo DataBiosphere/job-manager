@@ -67,14 +67,14 @@
     </button>
   </mat-form-field>
 
-  <div *ngIf="shouldDisplayStatusButtons()">
-    <button mat-raised-button class="status-button" (click)="showActiveJobs()">ACTIVE</button>
-    <button mat-raised-button class="status-button" (click)="showFailedJobs()">FAILED</button>
-    <button mat-raised-button class="status-button" (click)="showCompletedJobs()">COMPLETED</button>
-  </div>
+  <div class="search-table-controls">
+    <div *ngIf="shouldDisplayStatusButtons()">
+      <button mat-raised-button class="status-button" (click)="showActiveJobs()">ACTIVE</button>
+      <button mat-raised-button class="status-button" (click)="showFailedJobs()">FAILED</button>
+      <button mat-raised-button class="status-button" (click)="showCompletedJobs()">COMPLETED</button>
+    </div>
 
-  <div>
-    <mat-paginator #paginator
+    <mat-paginator *ngIf="jobs" #paginator
                    [length]="jobs.value.results.length"
                    [pageIndex]="0"
                    [pageSize]="pageSize"

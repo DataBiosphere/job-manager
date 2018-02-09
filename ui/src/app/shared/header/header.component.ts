@@ -1,6 +1,7 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -35,15 +36,16 @@ import {JobListView} from '../job-stream';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
+  // Pagination related controls will only be enabled if the following inputs
+  // are provided.
   @Input() jobs: BehaviorSubject<JobListView>;
   @Input() pageSize: number;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   public pageSubject: Subject<PageEvent> = new Subject<PageEvent>();
+  private pageSubscription: Subscription;
 
   @ViewChild(MatMenuTrigger) chipMenuTrigger: MatMenuTrigger;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
-  private pageSubscription: Subscription;
 
   separatorKeysCodes = [ENTER];
   control: FormControl = new FormControl();
@@ -62,18 +64,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private zone: NgZone,
   ) {
-    route.queryParams.subscribe(
-      params => this.refreshChips(params['q']))
+    route.queryParams.subscribe(params => this.refreshChips(params['q']));
   }
 
   ngOnInit(): void {
-    // Our paginator details depend on the state of backend pagination,
-    // therefore we cannot simply inject an alternate MatPaginatorIntl, as
-    // recommended by the paginator documentation. _intl is public, and
-    // overwriting it seems preferable to providing our own version of
-    // MatPaginator.
-    this.paginator._intl = new JobsPaginatorIntl(
-        this.jobs, this.paginator._intl.changes);
     if (this.route.snapshot.queryParams['q']) {
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
     }
@@ -85,15 +79,32 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.options = this.options.concat(environment.additionalColumns);
     }
     this.filterOptions();
-    this.pageSubscription = this.paginator.page.subscribe(this.pageSubject);
   }
 
-  ngOnDestroy() {
-    this.pageSubscription.unsubscribe();
+  ngAfterViewInit(): void {
+    // The @ViewChild property may not be initialized until after view init.
+    if (this.paginator) {
+      // Our paginator details depend on the state of backend pagination,
+      // therefore we cannot simply inject an alternate MatPaginatorIntl, as
+      // recommended by the paginator documentation. _intl is public, and
+      // overwriting it seems preferable to providing our own version of
+      // MatPaginator.
+      this.paginator._intl = new JobsPaginatorIntl(
+          this.jobs, this.paginator._intl.changes);
+      this.pageSubscription = this.paginator.page.subscribe(this.pageSubject);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.pageSubscription) {
+      this.pageSubscription.unsubscribe();
+    }
   }
 
   public resetPagination() {
-    this.paginator.firstPage();
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
   }
 
   addChip(value: string): void {
@@ -146,9 +157,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   filterOptions(): void {
     this.filteredOptions = Observable.create((s) => {
       s.next(this.options.slice());
-      this.control.valueChanges.subscribe(v => {
-        s.next(v === null ? this.options.slice() : this.filter(v));
-      });
+      this.control.valueChanges.subscribe(v => s.next(this.filter(v)));
     });
   }
 
@@ -219,7 +228,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   shouldDisplayStatusButtons(): boolean {
-    return !URLSearchParamsUtils.unpackURLSearchParams(
+    // jobs is only populated on multi-job views
+    return this.jobs && !URLSearchParamsUtils.unpackURLSearchParams(
       this.route.snapshot.queryParams['q'])[queryFields.statuses];
   }
 
@@ -281,4 +291,3 @@ export class JobsPaginatorIntl extends MatPaginatorIntl {
     return `${startIndex + 1} - ${endIndex} of many`;
   }
 }
-
