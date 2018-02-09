@@ -142,6 +142,26 @@ describe('HeaderComponent', () => {
     expect(testComponent.selectedStatuses.length).toEqual(2);
   }));
 
+  it('should only show length for exhaustive job streams', async(() => {
+    testComponent.jobs.next({
+      results: [testJob1],
+      exhaustive: false
+    );
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+      .toContain('of many');
+
+    // Transition to exhaustive, "of X" should now display length.
+    testComponent.jobs.next({
+      results: [testJob1, testJob2],
+      exhaustive: true
+    );
+    fixture.detectChanges();
+    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+      .toContain('of 2');
+  }));
+
   @Component({
     selector: 'jm-test-table-component',
     template:
