@@ -63,7 +63,7 @@ describe('HeaderComponent', () => {
         MatPaginatorModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
-          {path: '', component: TestHeaderComponent}
+          {path: '', component: TestHeaderComponent},
           {path: 'jobs', component: TestHeaderComponent}
         ]),
       ]
@@ -126,7 +126,7 @@ describe('HeaderComponent', () => {
     testComponent.chips.set('statuses', 'list,of,statuses');
     testComponent.search();
     fixture.detectChanges();
-    fixture.whenStable(() => {
+    fixture.whenStable().then(() => {
       fixture.detectChanges();
       expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(0);
     });
@@ -136,7 +136,7 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.search();
     fixture.detectChanges();
-    fixture.whenStable(() => {
+    fixture.whenStable().then(() => {
       fixture.detectChanges();
       expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(3);
     });
