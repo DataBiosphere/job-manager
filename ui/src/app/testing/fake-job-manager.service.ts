@@ -18,7 +18,15 @@ export class FakeJobManagerService extends JobManagerService {
   }
 
   private cloneJob(j: QueryJobsResult): QueryJobsResult {
-    return JSON.parse(JSON.stringify(j));
+    // Low effort mechanism to clone all properties. Date types don't get
+    // preserved during this process, so add these explicitly after.
+    const clone: QueryJobsResult = JSON.parse(JSON.stringify(j));
+    return {
+      ...clone,
+      submission: new Date(j.submission),
+      start: new Date(j.start),
+      end: new Date(j.end)
+    }
   }
 
   abortJob(id: string): Promise<void> {
@@ -44,7 +52,7 @@ export class FakeJobManagerService extends JobManagerService {
       id: j.id,
       name: j.name,
       status: j.status,
-      submission: j.start,
+      submission: j.submission,
       start: j.start,
       end: j.end,
       labels: j.labels,
