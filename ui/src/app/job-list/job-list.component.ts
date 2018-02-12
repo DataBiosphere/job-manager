@@ -2,7 +2,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
 import {DataSource} from '@angular/cdk/collections';
-import {Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {PageEvent, MatPaginator, MatSnackBar} from '@angular/material'
 import {Observable} from 'rxjs/Observable';
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
@@ -22,7 +22,7 @@ import {QueryJobsResult} from '../shared/model/QueryJobsResult';
   styleUrls: ['./job-list.component.css'],
 })
 export class JobListComponent implements OnInit {
-  readonly pageSize = 25;
+  @Input() pageSize: number = 50;
 
   @ViewChild(HeaderComponent) header: HeaderComponent;
   dataSource: DataSource<QueryJobsResult>;
@@ -72,8 +72,8 @@ export class JobListComponent implements OnInit {
         .then(() => {
           // Only subscribe after the initial page load finishes, to avoid
           // briefly loading an empty list of jobs.
+          this.header.resetPagination();
           this.streamSubscription = this.jobStream.subscribe(this.jobs);
-          this.header.resetPagination()
         })
         .catch(error => this.handleError(error));
     }

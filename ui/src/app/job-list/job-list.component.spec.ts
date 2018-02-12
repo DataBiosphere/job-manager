@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
@@ -25,17 +25,35 @@ import {JobStream} from "../shared/job-stream";
 import {ActivatedRoute} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import 'rxjs/add/observable/of';
+import {QueryJobsResult} from '../shared/model/QueryJobsResult';
+import {JobStatus} from "../shared/model/JobStatus";
 
 describe('JobListComponent', () => {
 
+  // Jobs with IDs JOB0 -> JOB4.
+  function testJobs(): QueryJobsResult[] {
+    const base = {
+      status: JobStatus.Running,
+      submission: new Date('2015-04-20T20:00:00')
+    };
+    return (new Array(5)).map((_, i) => {
+      return {
+        ...base,
+        id: `JOB${i}`
+      };
+    });
+  }
+
   let testComponent: TestJobListComponent;
   let fixture: ComponentFixture<TestJobListComponent>;
+  let jobStream: JobStream;
 
   beforeEach(async(() => {
-
-    let routeStub = {
+    const svc = new FakeJobManagerService(testJobs());
+    jobStream = new JobStream(svc, {})
+    const routeStub = {
       snapshot: {
-        data: {stream: new JobStream(null, {})},
+        data: {stream: jobStream},
         queryParams: Observable.of({q: 'query'}),
       },
       queryParams: Observable.of({q: 'query'}),
@@ -68,7 +86,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: ActivatedRoute, useValue: routeStub},
-        {provide: JobManagerService, useValue: new FakeJobManagerService([])}
+        {provide: JobManagerService, useValue: svc}
       ],
     }).compileComponents();
   }));
@@ -76,6 +94,7 @@ describe('JobListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TestJobListComponent);
     testComponent = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it ('displays error message bar', async(() => {
@@ -91,9 +110,17 @@ describe('JobListComponent', () => {
       .toEqual("Bad Request (400): Missing required field `parentId` Dismiss");
   }));
 
+  it ('renders job rows', fakeAsync(() => {
+    jobStream.loadAtLeast(3);
+    tick();
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('.mat-row')).length).toEqual(3);
+  }));
+
   @Component({
     selector: 'jm-test-job-list-component',
-    template: '<jm-job-list></jm-job-list>'
+    template: '<jm-job-list [pageSize]="3"></jm-job-list>'
   })
   class TestJobListComponent {
     @ViewChild(JobListComponent)

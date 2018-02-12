@@ -31,7 +31,6 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
 import {JobStatusImage, primaryColumns} from '../../shared/common';
-import {JobListView} from '../../shared/job-stream';
 import {ActivatedRoute, Params} from '@angular/router';
 import {environment} from '../../../environments/environment';
 

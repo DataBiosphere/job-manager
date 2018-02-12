@@ -46,7 +46,7 @@ describe('HeaderComponent', () => {
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent, TestHeaderComponent],
+      declarations: [HeaderComponent, TestHeaderComponent, JoblessTestHeaderComponent],
       imports: [
         BrowserAnimationsModule,
         FormsModule,
@@ -171,14 +171,33 @@ describe('HeaderComponent', () => {
       .toContain('of 2');
   }));
 
+  it('should render properly on non-table views', async(() => {
+    fixture = TestBed.createComponent(JoblessTestHeaderComponent);
+    testComponent = fixture.componentInstance.headerComponent;
+    testComponent.chips = new Map().set('parent-id', 'Parent ID');
+    fixture.detectChanges();
+
+    // e.g. on the details page, should not see status tabs or pagination controls
+    expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(0);
+    expect(fixture.debugElement.queryAll(By.css('.mat-paginator')).length).toEqual(0);
+  }));
+
   @Component({
     selector: 'jm-test-table-component',
     template:
-      `<jm-header [jobs]="jobs" [pageSize]="25"></jm-header>`
+      `<jm-header [showControls]="true" [jobs]="jobs" [pageSize]="25"></jm-header>`
   })
   class TestHeaderComponent {
     public jobs = new BehaviorSubject<JobListView>(initJobs);
     @ViewChild(HeaderComponent)
     public headerComponent: HeaderComponent;
+  }
+
+  @Component({
+    selector: 'jm-test-table-component',
+    template: `<jm-header [showControls]="false"></jm-header>`
+  })
+  class JoblessTestHeaderComponent extends TestHeaderComponent {
+    public jobs = null;
   }
 });

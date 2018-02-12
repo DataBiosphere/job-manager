@@ -37,8 +37,9 @@ import {JobListView} from '../job-stream';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
-  // Pagination related controls will only be enabled if the following inputs
-  // are provided.
+  // Whether the status tabs and pagination controls are displayed. If true,
+  // jobs and pageSize must also be provided.
+  @Input() showControls: boolean = false;
   @Input() jobs: BehaviorSubject<JobListView>;
   @Input() pageSize: number;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -228,8 +229,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   shouldDisplayStatusButtons(): boolean {
-    // jobs is only populated on multi-job views
-    return this.jobs && !URLSearchParamsUtils.unpackURLSearchParams(
+    return !URLSearchParamsUtils.unpackURLSearchParams(
       this.route.snapshot.queryParams['q'])[queryFields.statuses];
   }
 
