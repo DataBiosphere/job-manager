@@ -36,7 +36,7 @@ describe('JobListComponent', () => {
       status: JobStatus.Running,
       submission: new Date('2015-04-20T20:00:00')
     };
-    return (new Array(5)).map((_, i) => {
+    return (new Array(5)).fill(null).map((_, i) => {
       return {
         ...base,
         id: `JOB${i}`
