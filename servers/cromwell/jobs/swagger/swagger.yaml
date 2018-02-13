@@ -10,6 +10,23 @@ info:
 produces:
 - "application/json"
 paths:
+  /capabilities:
+    get:
+      tags:
+      - "Capabilities"
+      summary: "Get the capabilities of this backend implementation"
+      operationId: "get_capabilities"
+      parameters: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/CapabilitiesResponse"
+        404:
+          description: "Job not found"
+        500:
+          description: "Internal server error"
+      x-swagger-router-controller: "jobs.controllers.capabilities_controller"
   /jobs/{id}/abort:
     post:
       tags:
@@ -127,9 +144,52 @@ securityDefinitions:
     scopes:
       https://www.googleapis.com/auth/genomics: "Full access to google genomics and\
         \ pipelines API"
+      https://www.googleapis.com/auth/cloudplatformprojects.readonly: "Read-only access\
+        \ to Google Cloud projects"
     x-google-issuer: "https://accounts.google.com"
     x-google-jwks_uri: "https://www.googleapis.com/oauth2/v1/certs"
 definitions:
+  AuthenticationCapability:
+    required:
+    - "required"
+    properties:
+      required:
+        type: "boolean"
+        description: "Whether or not authentication is required"
+      client_id:
+        type: "string"
+        description: "OAuth 2.0 client ID"
+      scopes:
+        type: "array"
+        description: "OAuth 2.0 requested scopes"
+        items:
+          type: "string"
+    description: "Specification of the backend's authentication capabilities"
+  CapabilitiesResponse:
+    required:
+    - "authentication"
+    properties:
+      authentication:
+        $ref: "#/definitions/AuthenticationCapability"
+      display_fields:
+        type: "object"
+        description: "Fields on QueryJobsResult returned from POST /jobs/query populated\
+          \ on some or all jobs. The fields are mapped to their display names, in\
+          \ order of importance. The UI will attempt to display as many columns as\
+          \ possible given space constraints. Extended fields and labels can be included,\
+          \ such as 'label.foo' or 'extended_fields.user_id'"
+        properties: {}
+      label_query_fields:
+        type: "object"
+        description: "Labels on QueryJobsRequest which are queryable, mapped to their\
+          \ display names."
+        properties: {}
+      extended_query_fields:
+        type: "object"
+        description: "Fields on ExtendedQueryFields which are queryable, mapped to\
+          \ their display names."
+        properties: {}
+    description: "Specification of the backend's capabilities"
   JobMetadataResponse:
     required:
     - "id"
