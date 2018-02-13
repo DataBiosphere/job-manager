@@ -61,8 +61,16 @@ export class FakeJobManagerService extends JobManagerService {
   }
 
   queryJobs(req: QueryJobsRequest): Promise<QueryJobsResponse> {
+    const statuses: Set<JobStatus> = new Set(req.statuses);
     return Promise.resolve({
-      results: this.jobs.map(j => this.cloneJob(j))
+      results: this.jobs
+        .filter(j => {
+          if (req.statuses) {
+            return statuses.has(j.status);
+          }
+          return true;
+        })
+        .map(j => this.cloneJob(j))
     });
   }
 }
