@@ -61,6 +61,7 @@ export class HeaderComponent implements OnInit {
         let keyVal: string[] = value.split(':');
         this.deleteChipIfExists(keyVal[0].trim());
         this.chips.set(keyVal[0].trim(), keyVal[1].trim());
+        this.search();
       }
       else {
         // Parse as just the key
@@ -68,6 +69,8 @@ export class HeaderComponent implements OnInit {
         this.chips.set(value.trim(), '');
       }
       this.inputValue = "";
+    } else {
+      this.search();
     }
   }
 
@@ -77,6 +80,7 @@ export class HeaderComponent implements OnInit {
     if (this.chipMenuTrigger) {
       this.chipMenuTrigger.closeMenu();
     }
+    this.search();
   }
 
   assignDateValue(date: Date): void {
@@ -85,6 +89,7 @@ export class HeaderComponent implements OnInit {
     if (this.chipMenuTrigger) {
       this.chipMenuTrigger.closeMenu();
     }
+    this.search();
   }
 
   changeStatus(status: JobStatus, checked: boolean) {
@@ -94,6 +99,7 @@ export class HeaderComponent implements OnInit {
       this.selectedStatuses.splice(this.selectedStatuses.indexOf(status), 1);
     }
     this.chips.set(statusesCol, this.selectedStatuses.join(','));
+    this.search();
   }
 
   filter(val: string): string[] {
@@ -159,7 +165,9 @@ export class HeaderComponent implements OnInit {
   search(): void {
     let paramMap: Map<string, string[]> = new Map();
     this.chips.forEach((value: string, key: string) => {
-      paramMap.set(key, value.split(','));
+      if (value && value.length > 0) {
+        paramMap.set(key, value.split(','));
+      }
     });
     let query: string = URLSearchParamsUtils.encodeURLSearchParamsFromMap(paramMap);
     this.router.navigate(

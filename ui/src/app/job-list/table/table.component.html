@@ -47,8 +47,7 @@
     <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
     <mat-cell *matCellDef="let j">
       <button mat-icon-button disabled>
-        <img matTooltip="{{ j.status }}" matTooltipPosition="before"
-             src="{{ getStatusUrl(j.status) }}">
+        <img matTooltip="{{ j.status }}" src="{{ getStatusUrl(j.status) }}">
       </button>
     </mat-cell>
   </ng-container>
