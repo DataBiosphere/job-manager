@@ -85,5 +85,5 @@
 <div class="group-options" *ngIf="canAbortAnySelected()">
   {{ selection.selected.length }} jobs selected
   <button mat-raised-button color="accent" class="group-button group-abort"
-          (click)="onAbortJobs(selectedJobs)">Abort Jobs</button>
+          (click)="onAbortJobs()">Abort Jobs</button>
 </div>

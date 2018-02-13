@@ -19,10 +19,10 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {JobListComponent} from "./job-list.component"
 import {JobsTableComponent} from "./table/table.component"
 import {JobManagerService} from '../core/job-manager.service';
+import {JobListResolver} from './job-list-resolver.service';
 import {FakeJobManagerService} from '../testing/fake-job-manager.service';
 import {SharedModule} from '../shared/shared.module';
-import {JobStream} from "../shared/job-stream";
-import {ActivatedRoute} from "@angular/router";
+import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import 'rxjs/add/observable/of';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
@@ -31,37 +31,30 @@ import {JobStatus} from "../shared/model/JobStatus";
 describe('JobListComponent', () => {
 
   // Jobs with IDs JOB0 -> JOB4.
-  function testJobs(): QueryJobsResult[] {
+  function testJobs(count: number): QueryJobsResult[] {
     const base = {
       status: JobStatus.Running,
       submission: new Date('2015-04-20T20:00:00')
     };
-    return (new Array(5)).fill(null).map((_, i) => {
+    return (new Array(count)).fill(null).map((_, i) => {
       return {
         ...base,
-        id: `JOB${i}`
+        id: `JOB${i}`,
+        name: `JOB ${i}`
       };
     });
   }
 
-  let testComponent: TestJobListComponent;
+  let testComponent: JobListComponent;
   let fixture: ComponentFixture<TestJobListComponent>;
-  let jobStream: JobStream;
+  let fakeJobService: FakeJobManagerService;
 
   beforeEach(async(() => {
-    const svc = new FakeJobManagerService(testJobs());
-    jobStream = new JobStream(svc, {})
-    const routeStub = {
-      snapshot: {
-        data: {stream: jobStream},
-        queryParams: Observable.of({q: 'query'}),
-      },
-      queryParams: Observable.of({q: 'query'}),
-      params: Observable.of({q: 'query'})
-    };
+    fakeJobService = new FakeJobManagerService(testJobs(5));
 
     TestBed.configureTestingModule({
       declarations: [
+        AppComponent,
         JobListComponent,
         TestJobListComponent,
         JobsTableComponent
@@ -79,51 +72,135 @@ describe('JobListComponent', () => {
         MatTableModule,
         MatTooltipModule,
         RouterTestingModule.withRoutes([
-          {path: '', component: TestJobListComponent},
-          {path: 'jobs', component: TestJobListComponent}
+          {path: '', component: TestJobListComponent, resolve: {stream: JobListResolver}},
+          {path: 'jobs', component: TestJobListComponent, resolve: {stream: JobListResolver}}
         ]),
         SharedModule
       ],
       providers: [
-        {provide: ActivatedRoute, useValue: routeStub},
-        {provide: JobManagerService, useValue: svc}
+        {provide: JobManagerService, useValue: fakeJobService},
+        JobListResolver
       ],
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(TestJobListComponent);
-    testComponent = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(fakeAsync(() => {
+    fixture = TestBed.createComponent(AppComponent);
 
-  it ('displays error message bar', async(() => {
+    const router: Router = TestBed.get(Router);
+    router.initialNavigation();
+    router.navigate(['']);
+    tick();
+
+    testComponent = fixture.debugElement.query(By.css('jm-job-list')).componentInstance;
+  }));
+
+  function expectJobsRendered(jobs: QueryJobsResult[]) {
+    const de: DebugElement = fixture.debugElement;
+    const rows = de.queryAll(By.css('.mat-row'))
+    expect(rows.length).toEqual(jobs.length);
+    rows.forEach((row, i) => {
+      expect(row.nativeElement.textContent).toContain(jobs[i].name);
+    });
+  }
+
+  it('displays error message bar', async(() => {
     let error = {
       status: 400,
       title: 'Bad Request',
       message: 'Missing required field `parentId`'
     };
-    testComponent.jobListComponent.handleError(error);
+    testComponent.handleError(error);
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.mat-simple-snackbar')).nativeElement.textContent)
       .toEqual("Bad Request (400): Missing required field `parentId` Dismiss");
   }));
 
-  it ('renders job rows', fakeAsync(() => {
-    jobStream.loadAtLeast(3);
+  it('renders job rows', fakeAsync(() => {
     tick();
     fixture.detectChanges();
-    let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('.mat-row')).length).toEqual(3);
+
+    expectJobsRendered(fakeJobService.jobs.slice(0, 3));
   }));
+
+  it('paginates properly', fakeAsync(() => {
+    fakeJobService.jobs = testJobs(5);
+    tick();
+    fixture.detectChanges();
+    const de: DebugElement = fixture.debugElement;
+    de.query(By.css('.mat-paginator-increment')).nativeElement.click();
+    fixture.detectChanges();
+
+    // Page 2.
+    expectJobsRendered(fakeJobService.jobs.slice(3, 5));
+
+    // Back to page 1, which should have the first 3 jobs.
+    de.query(By.css('.mat-paginator-decrement')).nativeElement.click();
+    fixture.detectChanges();
+    expectJobsRendered(fakeJobService.jobs.slice(0, 3));
+  }));
+
+  it('reloads properly on filter', fakeAsync(() => {
+    const jobs: QueryJobsResult[] = testJobs(5);
+    jobs[1].status = JobStatus.Succeeded;
+    jobs[3].status = JobStatus.Aborted;
+    fakeJobService.jobs = jobs;
+    tick();
+    fixture.detectChanges();
+
+    let de: DebugElement = fixture.debugElement;
+    de.query(By.css('.completed-button')).nativeElement.click();
+    tick();
+    fixture.detectChanges();
+    expectJobsRendered([jobs[1], jobs[3]]);
+  }));
+
+  it('reloads properly on abort', fakeAsync(() => {
+    const jobs = testJobs(5);
+    fakeJobService.jobs = jobs;
+    tick();
+    fixture.detectChanges();
+
+    let de: DebugElement = fixture.debugElement;
+    de.query(By.css('.active-button')).nativeElement.click();
+    tick();
+    fixture.detectChanges();
+
+    de.query(By.css('jm-job-list-table')).componentInstance.toggleSelectAll();
+    fixture.detectChanges();
+    de.query(By.css('.group-abort')).nativeElement.click();
+    tick();
+    fixture.detectChanges();
+    expectJobsRendered(jobs.slice(3, 5));
+  }));
+
+  it('pagination resets on filter', fakeAsync(() => {
+    const jobs = testJobs(5);
+    jobs[3].status = JobStatus.Failed;
+    fakeJobService.jobs = jobs;
+    tick();
+    fixture.detectChanges();
+
+    const de: DebugElement = fixture.debugElement;
+    de.query(By.css('.mat-paginator-increment')).nativeElement.click();
+    fixture.detectChanges();
+
+    de.query(By.css('.failed-button')).nativeElement.click();
+    tick();
+    fixture.detectChanges();
+    expectJobsRendered([jobs[3]]);
+  }));
+
+  @Component({
+    selector: 'app',
+    template: '<router-outlet></router-outlet>'
+  })
+  class AppComponent {}
 
   @Component({
     selector: 'jm-test-job-list-component',
     template: '<jm-job-list [pageSize]="3"></jm-job-list>'
   })
-  class TestJobListComponent {
-    @ViewChild(JobListComponent)
-    public jobListComponent: JobListComponent;
-  }
+  class TestJobListComponent {}
 });

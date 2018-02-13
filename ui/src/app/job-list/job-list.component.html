@@ -2,5 +2,7 @@
   [showControls]="true"
   [jobs]="jobs"
   [pageSize]="pageSize"></jm-header>
-<jm-job-list-table [dataSource]="dataSource">
+<jm-job-list-table
+  [dataSource]="dataSource"
+  (onJobsChanged)="handleJobsChanged(jobs)">
 </jm-job-list-table>

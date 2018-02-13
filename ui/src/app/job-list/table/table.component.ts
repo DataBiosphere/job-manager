@@ -54,7 +54,7 @@ export class JobsTableComponent implements OnInit {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly JobManagerService: JobManagerService,
+    private readonly jobManagerService: JobManagerService,
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MatSnackBar,
   ) {}
@@ -73,8 +73,12 @@ export class JobsTableComponent implements OnInit {
   }
 
   handleError(error: any) {
+    this.handleErrorMessage(new ErrorMessageFormatterPipe().transform(error));
+  }
+
+  handleErrorMessage(msg: string) {
     this.errorBar.open(
-      new ErrorMessageFormatterPipe().transform(error),
+      msg,
       'Dismiss',
       {
         viewContainerRef: this.viewContainer,
@@ -82,9 +86,12 @@ export class JobsTableComponent implements OnInit {
       });
   }
 
-  abortJob(job: QueryJobsResult): void {
-    this.JobManagerService.abortJob(job.id)
-      .then(() => job.status = JobStatus.Aborted)
+  abortJob(job: QueryJobsResult) {
+    this.jobManagerService.abortJob(job.id)
+      .then(() => {
+        job.status = JobStatus.Aborted;
+        this.onJobsChanged.emit([job]);
+      })
       .catch((error) => this.handleError(error));
   }
 
@@ -120,13 +127,20 @@ export class JobsTableComponent implements OnInit {
     return JobStatusImage[status];
   }
 
-  onAbortJobs(jobs: QueryJobsResult[]): void {
-    for (let job of jobs) {
+  onAbortJobs(): void {
+    const aborts: Promise<void>[] = [];
+    const selected = this.selection.selected.slice();
+    for (let job of selected) {
       if (job.status == JobStatus.Running || job.status == JobStatus.Submitted) {
-        this.abortJob(job);
+        aborts.push(
+          this.jobManagerService.abortJob(job.id)
+            .then(() => { job.status = JobStatus.Aborted; }));
       }
     }
-    this.onJobsChanged.emit(jobs);
+    Promise.all(aborts)
+      .then(() => this.onJobsChanged.emit(selected))
+      .error((errs) => this.handleErrorMessage(
+        `failed to abort ${errs.length}/${selected.length} jobs`));
   }
 
   showDropdownArrow(job: QueryJobsResult): boolean {
