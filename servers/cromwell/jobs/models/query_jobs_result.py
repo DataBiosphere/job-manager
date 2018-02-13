@@ -246,7 +246,7 @@ class QueryJobsResult(Model):
     def parent_job_id(self):
         """
         Gets the parent_job_id of this QueryJobsResult.
-        Id of the parent job. Expresses a child:parent relationship between this job and the job that called it.
+        Id of the parent job. Expresses a child:parent relationship between this job and the job that called it. 
 
         :return: The parent_job_id of this QueryJobsResult.
         :rtype: str
@@ -257,7 +257,7 @@ class QueryJobsResult(Model):
     def parent_job_id(self, parent_job_id):
         """
         Sets the parent_job_id of this QueryJobsResult.
-        Id of the parent job. Expresses a child:parent relationship between this job and the job that called it.
+        Id of the parent job. Expresses a child:parent relationship between this job and the job that called it. 
 
         :param parent_job_id: The parent_job_id of this QueryJobsResult.
         :type parent_job_id: str
