@@ -207,7 +207,7 @@ describe('JobListComponent', () => {
   }));
 
   @Component({
-    selector: 'app',
+    selector: 'jm-test-app',
     template: '<router-outlet></router-outlet>'
   })
   class AppComponent {}
