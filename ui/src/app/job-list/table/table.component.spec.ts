@@ -111,7 +111,7 @@ describe('JobsTableComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TestTableComponent);
     testComponent = fixture.componentInstance;
-    jobs = testJobs();
+    jobs = testJobs(5);
     testComponent.jobs.next(jobs);
   });
 
@@ -153,35 +153,38 @@ describe('JobsTableComponent', () => {
 
   it('hides the abort button on 0 selection', async(() => {
     fixture.detectChanges();
-    expect(isGroupAbortRendered()).toBeFalse();
+    expect(isGroupAbortRendered()).toBeFalsy();
   }))
 
   it('hides the abort button for non-abortable selection', async(() => {
+    fixture.detectChanges();
     for (let j of jobs) {
       j.status = JobStatus.Succeeded;
     }
     testComponent.jobs.next(jobs);
     testComponent.jobsTableComponent.toggleSelectAll();
     fixture.detectChanges();
-    expect(isGroupAbortRendered()).toBeFalse();
+    expect(isGroupAbortRendered()).toBeFalsy();
   }))
 
   it('shows the abort button when some selected are abortable', async(() => {
+    fixture.detectChanges();
     jobs[2].status = JobStatus.Running;
     testComponent.jobs.next(jobs);
     testComponent.jobsTableComponent.toggleSelectAll();
     fixture.detectChanges();
-    expect(isGroupAbortRendered()).toBeTrue();
+    expect(isGroupAbortRendered()).toBeTruthy();
   }))
 
   it('shows the abort button when all selected are abortable', async(() => {
+    fixture.detectChanges();
     for (let j of jobs) {
       j.status = JobStatus.Running;
     }
     testComponent.jobs.next(jobs);
     testComponent.jobsTableComponent.toggleSelectAll();
     fixture.detectChanges();
-    expect(isGroupAbortRendered()).toBeTrue();
+    expect(isGroupAbortRendered()).toBeTruthy();
   }))
 
   it ('displays error message bar', async(() => {

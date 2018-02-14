@@ -139,7 +139,7 @@ export class JobsTableComponent implements OnInit {
     }
     Promise.all(aborts)
       .then(() => this.onJobsChanged.emit(selected))
-      .error((errs) => this.handleErrorMessage(
+      .catch((errs) => this.handleErrorMessage(
         `failed to abort ${errs.length}/${selected.length} jobs`));
   }
 
@@ -163,7 +163,7 @@ export class JobsTableComponent implements OnInit {
 
   /** Whether some, but not all, jobs are selected. */
   partiallySelected(): boolean {
-    return selection.hasValue() && !allSelected();
+    return this.selection.hasValue() && !this.allSelected();
   }
 
   toggleSelectAll(): void {
