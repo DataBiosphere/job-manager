@@ -5,8 +5,8 @@
     <mat-header-cell *matHeaderCellDef>
       <mat-checkbox class = "checkbox"
                     (change)="$event ? toggleSelectAll() : null"
-                    [checked]="selection.hasValue() && allSelected()"
-                    [indeterminate]="selection.hasValue() && !allSelected()">
+                    [checked]="allSelected()"
+                    [indeterminate]="partiallySelected()">
       </mat-checkbox>
       Job
     </mat-header-cell>

@@ -115,6 +115,10 @@ describe('JobsTableComponent', () => {
     testComponent.jobs.next(jobs);
   });
 
+  function isGroupAbortRendered(): boolean {
+    return fixture.debugElement.queryAll(By.css('.group-abort')).length > 0;
+  }
+
   it('should display a row for each job', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
@@ -147,37 +151,38 @@ describe('JobsTableComponent', () => {
       .toEqual(jobs[0].labels['status-detail']);
   }));
 
-  it('displays the abort button for selected active jobs', async(() => {
-    // None selected.
+  it('hides the abort button on 0 selection', async(() => {
     fixture.detectChanges();
-    let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('.group-abort')).length).toEqual(0);
+    expect(isGroupAbortRendered()).toBeFalse();
+  }))
 
-    // All selected, none abortable.
+  it('hides the abort button for non-abortable selection', async(() => {
     for (let j of jobs) {
       j.status = JobStatus.Succeeded;
     }
     testComponent.jobs.next(jobs);
     testComponent.jobsTableComponent.toggleSelectAll();
     fixture.detectChanges();
-    expect(de.queryAll(By.css('.group-abort')).length).toEqual(0);
+    expect(isGroupAbortRendered()).toBeFalse();
+  }))
 
-    // All selected, 1 abortable.
+  it('shows the abort button when some selected are abortable', async(() => {
     jobs[2].status = JobStatus.Running;
     testComponent.jobs.next(jobs);
     testComponent.jobsTableComponent.toggleSelectAll();
     fixture.detectChanges();
-    expect(de.queryAll(By.css('.group-abort')).length).toEqual(1);
+    expect(isGroupAbortRendered()).toBeTrue();
+  }))
 
-    // All selected, all abortable.
+  it('shows the abort button when all selected are abortable', async(() => {
     for (let j of jobs) {
       j.status = JobStatus.Running;
     }
     testComponent.jobs.next(jobs);
     testComponent.jobsTableComponent.toggleSelectAll();
     fixture.detectChanges();
-    expect(de.queryAll(By.css('.group-abort')).length).toEqual(1);
-  }));
+    expect(isGroupAbortRendered()).toBeTrue();
+  }))
 
   it ('displays error message bar', async(() => {
     let error = {

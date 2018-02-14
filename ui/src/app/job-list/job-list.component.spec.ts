@@ -124,7 +124,7 @@ describe('JobListComponent', () => {
     expectJobsRendered(fakeJobService.jobs.slice(0, 3));
   }));
 
-  it('paginates properly', fakeAsync(() => {
+  it('paginates forward', fakeAsync(() => {
     fakeJobService.jobs = testJobs(5);
     tick();
     fixture.detectChanges();
@@ -134,6 +134,15 @@ describe('JobListComponent', () => {
 
     // Page 2.
     expectJobsRendered(fakeJobService.jobs.slice(3, 5));
+  }));
+
+  it('paginates backwards', fakeAsync(() => {
+    fakeJobService.jobs = testJobs(5);
+    tick();
+    fixture.detectChanges();
+    const de: DebugElement = fixture.debugElement;
+    de.query(By.css('.mat-paginator-increment')).nativeElement.click();
+    fixture.detectChanges();
 
     // Back to page 1, which should have the first 3 jobs.
     de.query(By.css('.mat-paginator-decrement')).nativeElement.click();
@@ -162,16 +171,21 @@ describe('JobListComponent', () => {
     tick();
     fixture.detectChanges();
 
+    // Filter by active to filter out jobs after they've been aborted.
     let de: DebugElement = fixture.debugElement;
     de.query(By.css('.active-button')).nativeElement.click();
     tick();
     fixture.detectChanges();
 
+    // We select the first page (3 jobs) and abort. Jobs 3 and 4 are unaffected.
     de.query(By.css('jm-job-list-table')).componentInstance.toggleSelectAll();
     fixture.detectChanges();
     de.query(By.css('.group-abort')).nativeElement.click();
     tick();
     fixture.detectChanges();
+
+    // Jobs 3 and 4 should be the only jobs displayed, as they are the only
+    // remaining active jobs.
     expectJobsRendered(jobs.slice(3, 5));
   }));
 

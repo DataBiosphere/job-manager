@@ -155,8 +155,15 @@ export class JobsTableComponent implements OnInit {
     }
   }
 
+  /** Whether all jobs are selected. False if no jobs are displayed. */
   allSelected(): boolean {
-    return this.selection.selected.length === this.jobs.length;
+    return this.selection.hasValue() &&
+      this.selection.selected.length === this.jobs.length;
+  }
+
+  /** Whether some, but not all, jobs are selected. */
+  partiallySelected(): boolean {
+    return selection.hasValue() && !allSelected();
   }
 
   toggleSelectAll(): void {
