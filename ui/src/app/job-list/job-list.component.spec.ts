@@ -19,7 +19,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {JobListComponent} from "./job-list.component"
 import {JobsTableComponent} from "./table/table.component"
 import {JobManagerService} from '../core/job-manager.service';
-import {newDefaultMockJobManagerService} from '../shared/mock-job-manager.service';
+import {FakeJobManagerService} from '../testing/fake-job-manager.service';
 import {SharedModule} from '../shared/shared.module';
 import {JobStream} from "../shared/job-stream";
 import {ActivatedRoute} from "@angular/router";
@@ -68,7 +68,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: ActivatedRoute, useValue: routeStub},
-        {provide: JobManagerService, useValue: newDefaultMockJobManagerService()}
+        {provide: JobManagerService, useValue: new FakeJobManagerService([])}
       ],
     }).compileComponents();
   }));

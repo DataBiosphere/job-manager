@@ -23,7 +23,7 @@ import {JobListView} from "../../shared/job-stream";
 import {JobManagerService} from '../../core/job-manager.service';
 import {JobsTableComponent} from './table.component';
 import {JobStatus} from '../../shared/model/JobStatus';
-import {newDefaultMockJobManagerService} from '../../shared/mock-job-manager.service';
+import {FakeJobManagerService} from '../../testing/fake-job-manager.service';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {SharedModule} from '../../shared/shared.module';
 import {environment} from '../../../environments/environment';
@@ -97,7 +97,7 @@ describe('JobsTableComponent', () => {
         SharedModule
       ],
       providers: [
-        {provide: JobManagerService, userValue: newDefaultMockJobManagerService()}
+        {provide: JobManagerService, userValue: new FakeJobManagerService([])}
       ],
     }).compileComponents();
   }));
