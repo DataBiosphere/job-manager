@@ -134,7 +134,7 @@ definitions:
   AuthenticationCapability:
     description: Specification of the backend's authentication capabilities
     properties:
-      is_required:
+      isRequired:
         type: boolean
         description: Whether or not authentication is required
       scopes:
@@ -147,20 +147,20 @@ definitions:
     properties:
       authentication:
         $ref: '#/definitions/AuthenticationCapability'
-      display_fields:
+      displayFields:
         type: object
         description: >
           Fields on QueryJobsResult returned from POST /jobs/query
           populated on some or all jobs. The fields are mapped to their
           display names, in order of importance. Extended fields and
           labels can be included, such as 'label.foo' or
-          'extended_fields.user_id'
-      common_labels:
+          'extendedFields.userId'
+      commonLabels:
         type: array
         description: Common labels which are present on most jobs returned
         items:
           type: string
-      extended_query_fields:
+      extendedQueryFields:
         type: array
         description: Fields on ExtendedQueryFields which are queryable
         items:

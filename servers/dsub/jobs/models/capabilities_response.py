@@ -35,9 +35,9 @@ class CapabilitiesResponse(Model):
 
         self.attribute_map = {
             'authentication': 'authentication',
-            'display_fields': 'display_fields',
-            'common_labels': 'common_labels',
-            'extended_query_fields': 'extended_query_fields'
+            'display_fields': 'displayFields',
+            'common_labels': 'commonLabels',
+            'extended_query_fields': 'extendedQueryFields'
         }
 
         self._authentication = authentication
@@ -82,7 +82,7 @@ class CapabilitiesResponse(Model):
     def display_fields(self):
         """
         Gets the display_fields of this CapabilitiesResponse.
-        Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extended_fields.user_id' 
+        Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extendedFields.userId' 
 
         :return: The display_fields of this CapabilitiesResponse.
         :rtype: object
@@ -93,7 +93,7 @@ class CapabilitiesResponse(Model):
     def display_fields(self, display_fields):
         """
         Sets the display_fields of this CapabilitiesResponse.
-        Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extended_fields.user_id' 
+        Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extendedFields.userId' 
 
         :param display_fields: The display_fields of this CapabilitiesResponse.
         :type display_fields: object

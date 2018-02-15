@@ -27,7 +27,7 @@ class AuthenticationCapability(Model):
         }
 
         self.attribute_map = {
-            'is_required': 'is_required',
+            'is_required': 'isRequired',
             'scopes': 'scopes'
         }
 
