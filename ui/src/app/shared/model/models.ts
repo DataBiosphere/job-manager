@@ -1,5 +1,7 @@
 export * from './AuthenticationCapability';
 export * from './CapabilitiesResponse';
+export * from './ExtendedFields';
+export * from './ExtendedQueryFields';
 export * from './FailureMessage';
 export * from './JobMetadataResponse';
 export * from './JobStatus';
