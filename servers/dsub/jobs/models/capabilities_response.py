@@ -22,15 +22,15 @@ class CapabilitiesResponse(Model):
         :param display_fields: The display_fields of this CapabilitiesResponse.
         :type display_fields: object
         :param label_query_fields: The label_query_fields of this CapabilitiesResponse.
-        :type label_query_fields: object
+        :type label_query_fields: List[str]
         :param extended_query_fields: The extended_query_fields of this CapabilitiesResponse.
-        :type extended_query_fields: object
+        :type extended_query_fields: List[str]
         """
         self.swagger_types = {
             'authentication': AuthenticationCapability,
             'display_fields': object,
-            'label_query_fields': object,
-            'extended_query_fields': object
+            'label_query_fields': List[str],
+            'extended_query_fields': List[str]
         }
 
         self.attribute_map = {
@@ -75,8 +75,6 @@ class CapabilitiesResponse(Model):
         :param authentication: The authentication of this CapabilitiesResponse.
         :type authentication: AuthenticationCapability
         """
-        if authentication is None:
-            raise ValueError("Invalid value for `authentication`, must not be `None`")
 
         self._authentication = authentication
 
@@ -84,7 +82,7 @@ class CapabilitiesResponse(Model):
     def display_fields(self):
         """
         Gets the display_fields of this CapabilitiesResponse.
-        Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their display names, in order of importance. The UI will attempt to display as many columns as possible given space constraints. Extended fields and labels can be included, such as 'label.foo' or 'extended_fields.user_id'
+        Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their  display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extended_fields.user_id' 
 
         :return: The display_fields of this CapabilitiesResponse.
         :rtype: object
@@ -95,7 +93,7 @@ class CapabilitiesResponse(Model):
     def display_fields(self, display_fields):
         """
         Sets the display_fields of this CapabilitiesResponse.
-        Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their display names, in order of importance. The UI will attempt to display as many columns as possible given space constraints. Extended fields and labels can be included, such as 'label.foo' or 'extended_fields.user_id'
+        Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their  display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extended_fields.user_id' 
 
         :param display_fields: The display_fields of this CapabilitiesResponse.
         :type display_fields: object
@@ -107,10 +105,10 @@ class CapabilitiesResponse(Model):
     def label_query_fields(self):
         """
         Gets the label_query_fields of this CapabilitiesResponse.
-        Labels on QueryJobsRequest which are queryable, mapped to their display names.
+        Labels on QueryJobsRequest which are queryable
 
         :return: The label_query_fields of this CapabilitiesResponse.
-        :rtype: object
+        :rtype: List[str]
         """
         return self._label_query_fields
 
@@ -118,10 +116,10 @@ class CapabilitiesResponse(Model):
     def label_query_fields(self, label_query_fields):
         """
         Sets the label_query_fields of this CapabilitiesResponse.
-        Labels on QueryJobsRequest which are queryable, mapped to their display names.
+        Labels on QueryJobsRequest which are queryable
 
         :param label_query_fields: The label_query_fields of this CapabilitiesResponse.
-        :type label_query_fields: object
+        :type label_query_fields: List[str]
         """
 
         self._label_query_fields = label_query_fields
@@ -130,10 +128,10 @@ class CapabilitiesResponse(Model):
     def extended_query_fields(self):
         """
         Gets the extended_query_fields of this CapabilitiesResponse.
-        Fields on ExtendedQueryFields which are queryable, mapped to their display names.
+        Fields on ExtendedQueryFields which are queryable
 
         :return: The extended_query_fields of this CapabilitiesResponse.
-        :rtype: object
+        :rtype: List[str]
         """
         return self._extended_query_fields
 
@@ -141,10 +139,10 @@ class CapabilitiesResponse(Model):
     def extended_query_fields(self, extended_query_fields):
         """
         Sets the extended_query_fields of this CapabilitiesResponse.
-        Fields on ExtendedQueryFields which are queryable, mapped to their display names.
+        Fields on ExtendedQueryFields which are queryable
 
         :param extended_query_fields: The extended_query_fields of this CapabilitiesResponse.
-        :type extended_query_fields: object
+        :type extended_query_fields: List[str]
         """
 
         self._extended_query_fields = extended_query_fields

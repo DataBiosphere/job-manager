@@ -150,15 +150,10 @@ securityDefinitions:
     x-google-jwks_uri: "https://www.googleapis.com/oauth2/v1/certs"
 definitions:
   AuthenticationCapability:
-    required:
-    - "required"
     properties:
-      required:
+      is_required:
         type: "boolean"
         description: "Whether or not authentication is required"
-      client_id:
-        type: "string"
-        description: "OAuth 2.0 client ID"
       scopes:
         type: "array"
         description: "OAuth 2.0 requested scopes"
@@ -166,29 +161,26 @@ definitions:
           type: "string"
     description: "Specification of the backend's authentication capabilities"
   CapabilitiesResponse:
-    required:
-    - "authentication"
     properties:
       authentication:
         $ref: "#/definitions/AuthenticationCapability"
       display_fields:
         type: "object"
         description: "Fields on QueryJobsResult returned from POST /jobs/query populated\
-          \ on some or all jobs. The fields are mapped to their display names, in\
-          \ order of importance. The UI will attempt to display as many columns as\
-          \ possible given space constraints. Extended fields and labels can be included,\
-          \ such as 'label.foo' or 'extended_fields.user_id'"
+          \ on some or all jobs. The fields are mapped to their  display names, in\
+          \ order of importance. Extended fields and labels can be included, such\
+          \ as 'label.foo' or 'extended_fields.user_id'\n"
         properties: {}
       label_query_fields:
-        type: "object"
-        description: "Labels on QueryJobsRequest which are queryable, mapped to their\
-          \ display names."
-        properties: {}
+        type: "array"
+        description: "Labels on QueryJobsRequest which are queryable"
+        items:
+          type: "string"
       extended_query_fields:
-        type: "object"
-        description: "Fields on ExtendedQueryFields which are queryable, mapped to\
-          \ their display names."
-        properties: {}
+        type: "array"
+        description: "Fields on ExtendedQueryFields which are queryable"
+        items:
+          type: "string"
     description: "Specification of the backend's capabilities"
   JobMetadataResponse:
     required:
@@ -293,8 +285,8 @@ definitions:
       jobId:
         type: "string"
         description: "Id of the job corresponding to this task, if this task is a\
-          \ nested child job. Expresses a child:parent relationship between this job\
-          \ and the job containing this task."
+          \ nested  child job. Expresses a child:parent relationship between this\
+          \ job  and the job containing this task.\n"
     description: "Task level metadata"
   FailureMessage:
     required:

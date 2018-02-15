@@ -352,7 +352,7 @@ class TaskMetadata(Model):
     def job_id(self):
         """
         Gets the job_id of this TaskMetadata.
-        Id of the job corresponding to this task, if this task is a nested child job. Expresses a child:parent relationship between this job and the job containing this task.
+        Id of the job corresponding to this task, if this task is a nested  child job. Expresses a child:parent relationship between this job  and the job containing this task. 
 
         :return: The job_id of this TaskMetadata.
         :rtype: str
@@ -363,7 +363,7 @@ class TaskMetadata(Model):
     def job_id(self, job_id):
         """
         Sets the job_id of this TaskMetadata.
-        Id of the job corresponding to this task, if this task is a nested child job. Expresses a child:parent relationship between this job and the job containing this task.
+        Id of the job corresponding to this task, if this task is a nested  child job. Expresses a child:parent relationship between this job  and the job containing this task. 
 
         :param job_id: The job_id of this TaskMetadata.
         :type job_id: str

@@ -16,21 +16,21 @@ import * as models from './models';
  * Specification of the backend's capabilities
  */
 export interface CapabilitiesResponse {
-    authentication: models.AuthenticationCapability;
+    authentication?: models.AuthenticationCapability;
 
     /**
-     * Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their display names, in order of importance. The UI will attempt to display as many columns as possible given space constraints. Extended fields and labels can be included, such as 'label.foo' or 'extended_fields.user_id'
+     * Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their  display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extended_fields.user_id' 
      */
     displayFields?: any;
 
     /**
-     * Labels on QueryJobsRequest which are queryable, mapped to their display names.
+     * Labels on QueryJobsRequest which are queryable
      */
-    labelQueryFields?: any;
+    labelQueryFields?: Array<string>;
 
     /**
-     * Fields on ExtendedQueryFields which are queryable, mapped to their display names.
+     * Fields on ExtendedQueryFields which are queryable
      */
-    extendedQueryFields?: any;
+    extendedQueryFields?: Array<string>;
 
 }

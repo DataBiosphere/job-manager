@@ -19,12 +19,7 @@ export interface AuthenticationCapability {
     /**
      * Whether or not authentication is required
      */
-    required: boolean;
-
-    /**
-     * OAuth 2.0 client ID
-     */
-    clientId?: string;
+    isRequired?: boolean;
 
     /**
      * OAuth 2.0 requested scopes
