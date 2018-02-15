@@ -1,5 +1,8 @@
-<jm-header></jm-header>
-<jm-job-list-table
+<jm-header
+  [showControls]="true"
   [jobs]="jobs"
-  (onPage)="onClientPaginate($event)">
+  [pageSize]="pageSize"></jm-header>
+<jm-job-list-table
+  [dataSource]="dataSource"
+  (onJobsChanged)="handleJobsChanged(jobs)">
 </jm-job-list-table>

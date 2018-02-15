@@ -20,3 +20,9 @@
   width: 7rem;
   margin-right: .5rem;
 }
+
+.search-table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

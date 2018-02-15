@@ -12,17 +12,33 @@ import {
   MatListModule,
   MatMenuModule,
   MatNativeDateModule,
+  MatPaginatorModule,
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
+import {JobListView} from "../job-stream";
 import {HeaderComponent} from "./header.component";
 import {startCol, statusesCol} from "../common";
+import {QueryJobsResult} from '../model/QueryJobsResult';
 import {JobStatus} from "../model/JobStatus";
 
 
 describe('HeaderComponent', () => {
+  const baseJob = {
+    status: JobStatus.Running,
+    submission: new Date('2015-04-20T20:00:00'),
+  }
+  const testJob1: QueryJobsResult = { ...baseJob, id: 'JOB1' };
+  const testJob2: QueryJobsResult = { ...baseJob, id: 'JOB2' };
+  const testJob3: QueryJobsResult = { ...baseJob, id: 'JOB3' };
+
+  const initJobs = {
+    results: [testJob1, testJob2, testJob3],
+    exhaustive: false
+  }
 
   let testComponent: HeaderComponent;
   let fixture: ComponentFixture<TestHeaderComponent>;
@@ -30,7 +46,7 @@ describe('HeaderComponent', () => {
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent, TestHeaderComponent],
+      declarations: [HeaderComponent, TestHeaderComponent, JoblessTestHeaderComponent],
       imports: [
         BrowserAnimationsModule,
         FormsModule,
@@ -44,25 +60,27 @@ describe('HeaderComponent', () => {
         MatListModule,
         MatMenuModule,
         MatNativeDateModule,
+        MatPaginatorModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
-          {path: '', component: TestHeaderComponent}
+          {path: '', component: TestHeaderComponent},
+          {path: 'jobs', component: TestHeaderComponent}
         ]),
       ]
     }).compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(async(() => {
     fixture = TestBed.createComponent(TestHeaderComponent);
     testComponent = fixture.componentInstance.headerComponent;
     testComponent.chips = new Map()
       .set('parent-id', 'Parent ID')
       .set('job-name', 'Job Name')
       .set('statuses', 'Running');
-  });
+    fixture.detectChanges();
+  }));
 
   it('should display a chip for each query filter', async(() => {
-    fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('#chip')).length).toEqual(3);
   }));
@@ -105,13 +123,23 @@ describe('HeaderComponent', () => {
   }));
 
   it('should not show status buttons', async(() => {
+    testComponent.chips.set('statuses', 'list,of,statuses');
+    testComponent.search();
     fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(3);
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(0);
+    });
   }));
 
   it('should show status buttons', async(() => {
-    testComponent.chips.set('statuses', 'list,of,statuses');
-    expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(0);
+    testComponent.chips.delete('statuses');
+    testComponent.search();
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(3);
+    });
   }));
 
   it('should change statuses', async(() => {
@@ -123,13 +151,53 @@ describe('HeaderComponent', () => {
     expect(testComponent.selectedStatuses.length).toEqual(2);
   }));
 
+  it('should only show length for exhaustive job streams', async(() => {
+    testComponent.jobs.next({
+      results: [testJob1],
+      exhaustive: false
+    });
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+      .toContain('of many');
+
+    // Transition to exhaustive, "of X" should now display length.
+    testComponent.jobs.next({
+      results: [testJob1, testJob2],
+      exhaustive: true
+    });
+    fixture.detectChanges();
+    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+      .toContain('of 2');
+  }));
+
+  it('should render properly on non-table views', async(() => {
+    fixture = TestBed.createComponent(JoblessTestHeaderComponent);
+    testComponent = fixture.componentInstance.headerComponent;
+    testComponent.chips = new Map().set('parent-id', 'Parent ID');
+    fixture.detectChanges();
+
+    // e.g. on the details page, should not see status tabs or pagination controls
+    expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(0);
+    expect(fixture.debugElement.queryAll(By.css('.mat-paginator')).length).toEqual(0);
+  }));
+
   @Component({
     selector: 'jm-test-table-component',
     template:
-      `<jm-header></jm-header>`
+      `<jm-header [showControls]="true" [jobs]="jobs" [pageSize]="25"></jm-header>`
   })
   class TestHeaderComponent {
+    public jobs = new BehaviorSubject<JobListView>(initJobs);
     @ViewChild(HeaderComponent)
     public headerComponent: HeaderComponent;
+  }
+
+  @Component({
+    selector: 'jm-test-table-component',
+    template: `<jm-header [showControls]="false"></jm-header>`
+  })
+  class JoblessTestHeaderComponent extends TestHeaderComponent {
+    public jobs = null;
   }
 });

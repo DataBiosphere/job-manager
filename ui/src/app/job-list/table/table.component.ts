@@ -11,7 +11,7 @@ import {
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import {DataSource} from '@angular/cdk/collections';
+import {DataSource, SelectionModel} from '@angular/cdk/collections';
 import {
   MatPaginator,
   MatPaginatorIntl,
@@ -31,7 +31,6 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
 import {JobStatusImage, primaryColumns} from '../../shared/common';
-import {JobListView} from '../../shared/job-stream';
 import {ActivatedRoute, Params} from '@angular/router';
 import {environment} from '../../../environments/environment';
 
@@ -40,62 +39,46 @@ import {environment} from '../../../environments/environment';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
-export class JobsTableComponent implements OnInit, OnDestroy {
-  @Input() jobs: BehaviorSubject<JobListView>;
-  @Output() onPage = new EventEmitter<PageEvent>();
+export class JobsTableComponent implements OnInit {
+  @Input() dataSource: DataSource<QueryJobsResult>;
+  @Output() onJobsChanged: EventEmitter<QueryJobsResult[]> = new EventEmitter();
 
-  private pageSubscription: Subscription;
   private mouseoverJob: QueryJobsResult;
 
   public additionalColumns: string[] = [];
-  public allSelected: boolean = false;
-  public selectedJobs: QueryJobsResult[] = [];
+  public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
+  public jobs: QueryJobsResult[] = [];
 
-  dataSource: JobsDataSource | null;
   // TODO(alanhwang): Allow these columns to be configured by the user
   displayedColumns = primaryColumns.slice();
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly JobManagerService: JobManagerService,
+    private readonly jobManagerService: JobManagerService,
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
-    // Our paginator details depend on the state of backend pagination,
-    // therefore we cannot simply inject an alternate MatPaginatorIntl, as
-    // recommended by the paginator documentation. _intl is public, and
-    // overwriting it seems preferable to providing our own version of
-    // MatPaginator.
-    this.paginator._intl = new JobsPaginatorIntl(
-      this.jobs, this.paginator._intl.changes);
-    this.dataSource = new JobsDataSource(this.jobs, this.paginator);
+    this.dataSource.connect(null).subscribe((jobs: QueryJobsResult[]) => {
+      this.jobs = jobs;
+      this.selection.clear();
+    });
     if (environment.additionalColumns) {
       this.additionalColumns = environment.additionalColumns;
     }
     for (let column of this.additionalColumns) {
       this.displayedColumns.push(column);
     }
-    this.pageSubscription =
-      this.paginator.page.subscribe((e) => this.onPage.emit(e));
-  }
-
-  ngOnDestroy() {
-    this.pageSubscription.unsubscribe();
-  }
-
-  private onJobsChanged(): void {
-    this.allSelected = false;
-    this.selectedJobs = [];
-    this.paginator.pageIndex = 0;
   }
 
   handleError(error: any) {
+    this.handleErrorMessage(new ErrorMessageFormatterPipe().transform(error));
+  }
+
+  handleErrorMessage(msg: string) {
     this.errorBar.open(
-      new ErrorMessageFormatterPipe().transform(error),
+      msg,
       'Dismiss',
       {
         viewContainerRef: this.viewContainer,
@@ -103,14 +86,26 @@ export class JobsTableComponent implements OnInit, OnDestroy {
       });
   }
 
-  abortJob(job: QueryJobsResult): void {
-    this.JobManagerService.abortJob(job.id)
-      .then(() => job.status = JobStatus.Aborted)
+  abortJob(job: QueryJobsResult) {
+    this.jobManagerService.abortJob(job.id)
+      .then(() => {
+        job.status = JobStatus.Aborted;
+        this.onJobsChanged.emit([job]);
+      })
       .catch((error) => this.handleError(error));
   }
 
   canAbort(job: QueryJobsResult): boolean {
     return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
+  }
+
+  canAbortAnySelected(): boolean {
+    for (let j of this.selection.selected) {
+      if (this.canAbort(j)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   getDropdownArrowUrl(): string {
@@ -132,17 +127,20 @@ export class JobsTableComponent implements OnInit, OnDestroy {
     return JobStatusImage[status];
   }
 
-  isSelected(job: QueryJobsResult): boolean {
-    return this.selectedJobs.indexOf(job) > -1;
-  }
-
-  onAbortJobs(jobs: QueryJobsResult[]): void {
-    for (let job of jobs) {
+  onAbortJobs(): void {
+    const aborts: Promise<void>[] = [];
+    const selected = this.selection.selected.slice();
+    for (let job of selected) {
       if (job.status == JobStatus.Running || job.status == JobStatus.Submitted) {
-        this.abortJob(job);
+        aborts.push(
+          this.jobManagerService.abortJob(job.id)
+            .then(() => { job.status = JobStatus.Aborted; }));
       }
     }
-    this.onJobsChanged();
+    Promise.all(aborts)
+      .then(() => this.onJobsChanged.emit(selected))
+      .catch((errs) => this.handleErrorMessage(
+        `failed to abort ${errs.length}/${selected.length} jobs`));
   }
 
   showDropdownArrow(job: QueryJobsResult): boolean {
@@ -157,83 +155,22 @@ export class JobsTableComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleSelect(job: QueryJobsResult): void {
-    if (this.isSelected(job)) {
-      this.selectedJobs
-        .splice(this.selectedJobs.indexOf(job), 1);
-      this.allSelected = false;
-    } else {
-      this.selectedJobs.push(job);
-    }
+  /** Whether all jobs are selected. False if no jobs are displayed. */
+  allSelected(): boolean {
+    return this.selection.hasValue() &&
+      this.selection.selected.length === this.jobs.length;
+  }
+
+  /** Whether some, but not all, jobs are selected. */
+  partiallySelected(): boolean {
+    return this.selection.hasValue() && !this.allSelected();
   }
 
   toggleSelectAll(): void {
-    if (this.allSelected) {
-      this.selectedJobs = [];
-      this.allSelected = false;
+    if (this.allSelected()) {
+      this.selection.clear();
     } else {
-      this.selectedJobs = this.jobs.value.results.slice();
-      this.allSelected = true;
+      this.jobs.forEach(j => this.selection.select(j));
     }
   }
-}
-
-/**
- * Paginator details for the jobs table. Accounts for the case where we haven't
- * loaded all jobs (matching the query) onto the client; we need to indicate
- * this rather than showing a misleading count for the number of jobs that have
- * been loaded onto the client so far.
- */
-export class JobsPaginatorIntl extends MatPaginatorIntl {
-  private defaultIntl = new MatPaginatorIntl()
-
-  constructor(private backendJobs: BehaviorSubject<JobListView>,
-              public changes: Subject<void>) {
-    super();
-    backendJobs.subscribe((jobList: JobListView) => {
-      // Ensure that the paginator component is redrawn once we transition to
-      // an exhaustive list of jobs.
-      if (jobList.exhaustive) {
-        changes.next();
-      }
-    });
-  }
-
-  getRangeLabel = (page: number, pageSize: number, length: number) => {
-    if (this.backendJobs.value.exhaustive) {
-      // Can't use proper inheritance here, since MatPaginatorIntl only defines
-      // properties, rather than class methods.
-      return this.defaultIntl.getRangeLabel(page, pageSize, length);
-    }
-    // Ported from MatPaginatorIntl - boundary checks likely unneeded.
-    const startIndex = page * pageSize;
-    const endIndex = startIndex < length ?
-        Math.min(startIndex + pageSize, length) :
-        startIndex + pageSize;
-    return `${startIndex + 1} - ${endIndex} of many`;
-  }
-}
-
-/** DataSource providing the list of jobs to be rendered in the table. */
-export class JobsDataSource extends DataSource<any> {
-
-  constructor(private backendJobs: BehaviorSubject<JobListView>, private paginator: MatPaginator) {
-    super();
-  }
-
-  connect(): Observable<QueryJobsResult[]> {
-    const displayDataChanges = [
-      this.backendJobs,
-      this.paginator.page,
-    ];
-    return Observable.merge(...displayDataChanges).map(() => {
-      const data = this.backendJobs.value.results.slice();
-
-      // Get only the requested page
-      const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-      return data.splice(startIndex, this.paginator.pageSize);
-    });
-  }
-
-  disconnect() {}
 }
