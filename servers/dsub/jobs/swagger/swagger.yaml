@@ -167,13 +167,13 @@ definitions:
       display_fields:
         type: "object"
         description: "Fields on QueryJobsResult returned from POST /jobs/query populated\
-          \ on some or all jobs. The fields are mapped to their  display names, in\
+          \ on some or all jobs. The fields are mapped to their display names, in\
           \ order of importance. Extended fields and labels can be included, such\
           \ as 'label.foo' or 'extended_fields.user_id'\n"
         properties: {}
-      label_query_fields:
+      common_labels:
         type: "array"
-        description: "Labels on QueryJobsRequest which are queryable"
+        description: "Common labels which are present on most jobs returned"
         items:
           type: "string"
       extended_query_fields:
@@ -285,8 +285,8 @@ definitions:
       jobId:
         type: "string"
         description: "Id of the job corresponding to this task, if this task is a\
-          \ nested  child job. Expresses a child:parent relationship between this\
-          \ job  and the job containing this task.\n"
+          \ nested child job. Expresses a child:parent relationship between this job\
+          \ and the job containing this task.\n"
     description: "Task level metadata"
   FailureMessage:
     required:

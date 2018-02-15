@@ -19,14 +19,14 @@ export interface CapabilitiesResponse {
     authentication?: models.AuthenticationCapability;
 
     /**
-     * Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their  display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extended_fields.user_id' 
+     * Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extended_fields.user_id' 
      */
     displayFields?: any;
 
     /**
-     * Labels on QueryJobsRequest which are queryable
+     * Common labels which are present on most jobs returned
      */
-    labelQueryFields?: Array<string>;
+    commonLabels?: Array<string>;
 
     /**
      * Fields on ExtendedQueryFields which are queryable
