@@ -5,6 +5,8 @@ from __future__ import absolute_import
 from .authentication_capability import AuthenticationCapability
 from .capabilities_response import CapabilitiesResponse
 from .display_field import DisplayField
+from .extended_fields import ExtendedFields
+from .extended_query_fields import ExtendedQueryFields
 from .failure_message import FailureMessage
 from .job_metadata_response import JobMetadataResponse
 from .job_status import JobStatus
