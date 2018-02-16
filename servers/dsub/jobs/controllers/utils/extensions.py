@@ -12,7 +12,7 @@ def get_extensions(job):
             ExtendedFields: Populated extensions on the job
     """
     return ExtendedFields(
-    	user_id=job['user-id'],
+        user_id=job['user-id'],
         status_detail=job['status-detail'],
         logs=logs.dsub_to_api(job),
         last_update=job['last-update'],

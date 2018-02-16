@@ -91,7 +91,8 @@ class BaseTestCases:
                 if parameters.extensions:
                     parameters.extensions.project_id = self.testing_project
                 else:
-                    parameters.extensions = ExtendedQueryFields(project_id=self.testing_project)
+                    parameters.extensions = ExtendedQueryFields(
+                        project_id=self.testing_project)
             resp = self.client.open(
                 '/jobs/query',
                 method='POST',

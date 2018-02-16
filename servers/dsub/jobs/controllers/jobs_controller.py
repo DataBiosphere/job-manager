@@ -116,7 +116,7 @@ def query_jobs(body):
     """
     query = QueryJobsRequest.from_dict(body)
     proj_id = query.extensions.project_id if query.extensions else None
-    provider = providers.get_provider(_provider_type(),proj_id, _auth_token())
+    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
     create_time_max, offset_id = page_tokens.decode_create_time_max(
         query.page_token) or (None, None)
     query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE,
