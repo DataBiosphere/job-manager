@@ -1,3 +1,5 @@
+export * from './AuthenticationCapability';
+export * from './CapabilitiesResponse';
 export * from './FailureMessage';
 export * from './JobMetadataResponse';
 export * from './JobStatus';

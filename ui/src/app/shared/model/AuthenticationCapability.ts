@@ -13,14 +13,17 @@
 import * as models from './models';
 
 /**
- * Response to a job query
+ * Specification of the backend's authentication capabilities
  */
-export interface QueryJobsResponse {
-    results: Array<models.QueryJobsResult>;
+export interface AuthenticationCapability {
+    /**
+     * Whether or not authentication is required
+     */
+    isRequired?: boolean;
 
     /**
-     * The continuation token, which is used to page through large result sets. Provide this value in a subsequent request to return the next page of results. This field will be empty if there aren't any additional results. 
+     * OAuth 2.0 requested scopes
      */
-    nextPageToken?: string;
+    scopes?: Array<string>;
 
 }
