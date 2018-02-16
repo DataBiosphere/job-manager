@@ -17,7 +17,7 @@ import * as models from './models';
  */
 export interface ExtendedQueryFields {
     /**
-     * Returns only jobs with the specified project ID. If specified by the /capabilities endpoint, this field is required for all query requests. 
+     * Returns only jobs belonging to the specified project. If specified by the /capabilities endpoint, this field is required for all query requests. All jobs have exactly one parent projectId. 
      */
     projectId?: string;
 

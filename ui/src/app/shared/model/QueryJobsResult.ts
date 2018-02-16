@@ -48,6 +48,6 @@ export interface QueryJobsResult {
      */
     labels?: any;
 
-    extendedFields?: models.ExtendedFields;
+    extensions?: models.ExtendedFields;
 
 }

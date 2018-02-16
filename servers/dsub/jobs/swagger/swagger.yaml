@@ -284,15 +284,16 @@ definitions:
         description: "The continuation token, which is used to page through large\
           \ result\nsets. To get the next page of results, set this parameter to the\
           \ value\nof `nextPageToken` from the previous response.\n"
-      extendedQueryFields:
+      extensions:
         $ref: "#/definitions/ExtendedQueryFields"
     description: "Job query parameters"
   ExtendedQueryFields:
     properties:
       projectId:
         type: "string"
-        description: "Returns only jobs with the specified project ID. If specified\
-          \ by the /capabilities endpoint, this field is required for all query requests.\n"
+        description: "Returns only jobs belonging to the specified project. If specified\
+          \ by the /capabilities endpoint, this field is required for all query requests.\
+          \ All jobs have exactly one parent projectId.\n"
       submission:
         type: "string"
         format: "date-time"
@@ -346,7 +347,7 @@ definitions:
         type: "object"
         description: "Custom job labels with string values"
         properties: {}
-      extendedFields:
+      extensions:
         $ref: "#/definitions/ExtendedFields"
     description: "Result for an individual job returned by a job query"
   JobStatus:

@@ -51,6 +51,6 @@ export interface QueryJobsRequest {
      */
     pageToken?: string;
 
-    extendedQueryFields?: models.ExtendedQueryFields;
+    extensions?: models.ExtendedQueryFields;
 
 }

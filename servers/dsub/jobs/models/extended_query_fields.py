@@ -55,7 +55,7 @@ class ExtendedQueryFields(Model):
     def project_id(self):
         """
         Gets the project_id of this ExtendedQueryFields.
-        Returns only jobs with the specified project ID. If specified by the /capabilities endpoint, this field is required for all query requests. 
+        Returns only jobs belonging to the specified project. If specified by the /capabilities endpoint, this field is required for all query requests. All jobs have exactly one parent projectId. 
 
         :return: The project_id of this ExtendedQueryFields.
         :rtype: str
@@ -66,7 +66,7 @@ class ExtendedQueryFields(Model):
     def project_id(self, project_id):
         """
         Sets the project_id of this ExtendedQueryFields.
-        Returns only jobs with the specified project ID. If specified by the /capabilities endpoint, this field is required for all query requests. 
+        Returns only jobs belonging to the specified project. If specified by the /capabilities endpoint, this field is required for all query requests. All jobs have exactly one parent projectId. 
 
         :param project_id: The project_id of this ExtendedQueryFields.
         :type project_id: str
