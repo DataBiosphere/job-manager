@@ -240,7 +240,7 @@ def _metadata_response(id, job):
         end=job['end-time'],
         inputs=job['inputs'],
         outputs=job['outputs'],
-        labels=labels.get_labels(job),
+        labels=labels.dsub_to_api(job),
         failures=failures.get_failures(job),
         extensions=extensions.get_extensions(job))
 
@@ -251,8 +251,7 @@ def _provider_type():
 
 def _query_jobs_result(job, project_id=None):
     return QueryJobsResult(
-        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get(
-            'task-id', '')),
+        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
         name=job['job-name'],
         status=job_statuses.dsub_to_api(job),
         # The LocalJobProvider returns create-time with milliescond granularity.
@@ -261,5 +260,5 @@ def _query_jobs_result(job, project_id=None):
         submission=job['create-time'].replace(microsecond=0),
         start=job.get('start-time'),
         end=job['end-time'],
-        labels=labels.get_labels(job),
+        labels=labels.dsub_to_api(job),
         extensions=extensions.get_extensions(job))

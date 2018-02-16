@@ -13,7 +13,7 @@ def get_extensions(job):
     """
     return ExtendedFields(
         user_id=job['user-id'],
-        status_detail=job['status-detail'],
+        status_detail=job.get('status-detail'),
         logs=logs.dsub_to_api(job),
-        last_update=job['last-update'],
+        last_update=job.get('last-update'),
         envs=job['envs'])

@@ -1,4 +1,4 @@
-def get_labels(job):
+def dsub_to_api(job):
     """Extracts labels from a job, if present.
 
         Args:
@@ -7,8 +7,6 @@ def get_labels(job):
         Returns:
             dict: Labels key value pairs with dsub-specific information
     """
-    # Put any dsub specific information into the labels. These fields are
-    # candidates for the common jobs API
     labels = job['labels'].copy() if job['labels'] else {}
     if 'job-id' in job:
         labels['job-id'] = job['job-id']
