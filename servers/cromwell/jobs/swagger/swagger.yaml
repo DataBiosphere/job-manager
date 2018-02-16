@@ -371,6 +371,10 @@ definitions:
         type: "object"
         description: "Map of type of log file to its file location"
         properties: {}
+      lastUpdate:
+        type: "string"
+        format: "date-time"
+        description: "Job last update datetime in ISO8601 format"
       envs:
         type: "object"
         description: "Map of ENV variables associated with the job"

@@ -32,6 +32,11 @@ export interface ExtendedFields {
     logs?: any;
 
     /**
+     * Job last update datetime in ISO8601 format
+     */
+    lastUpdate?: Date;
+
+    /**
      * Map of ENV variables associated with the job
      */
     envs?: any;

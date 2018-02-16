@@ -362,7 +362,8 @@ definitions:
         type: object
         description: Map of type of log file to its file location
       lastUpdate:
-        type: date-time
+        type: string
+        format: date-time
         description: Job last update datetime in ISO8601 format
       envs:
         type: object
