@@ -60,6 +60,6 @@ export interface JobMetadataResponse {
 
     failures?: Array<models.FailureMessage>;
 
-    extendedFields?: models.ExtendedFields;
+    extensions?: models.ExtendedFields;
 
 }

@@ -154,7 +154,7 @@ definitions:
           populated on some or all jobs. The fields are mapped to their
           display names, in order of importance. Extended fields and
           labels can be included, such as 'label.foo' or
-          'extendedFields.userId'
+          'extensions.userId'
       commonLabels:
         type: array
         description: Common labels which are present on most jobs returned
@@ -205,7 +205,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/FailureMessage'
-      extendedFields:
+      extensions:
         $ref: '#/definitions/ExtendedFields'
   UpdateJobLabelsRequest:
     description: Update labels on a job
