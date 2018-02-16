@@ -160,7 +160,7 @@ definitions:
         description: Common labels which are present on most jobs returned
         items:
           type: string
-      extendedQueryFields:
+      queryExtensions:
         type: array
         description: Fields on ExtendedQueryFields which are queryable
         items:

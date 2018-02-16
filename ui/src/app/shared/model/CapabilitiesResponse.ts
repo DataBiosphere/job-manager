@@ -31,6 +31,6 @@ export interface CapabilitiesResponse {
     /**
      * Fields on ExtendedQueryFields which are queryable
      */
-    extendedQueryFields?: Array<string>;
+    queryExtensions?: Array<string>;
 
 }
