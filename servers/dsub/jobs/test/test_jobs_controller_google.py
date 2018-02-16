@@ -8,6 +8,7 @@ import unittest
 
 from jobs.test.base_test_cases import BaseTestCases
 from jobs.controllers.utils.job_statuses import ApiStatus
+from jobs.models.extended_query_fields import ExtendedQueryFields
 from jobs.models.query_jobs_request import QueryJobsRequest
 
 
@@ -41,7 +42,11 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         return app
 
     def assert_query_matches(self, query_params, job_list):
-        query_params.parent_id = self.testing_project
+        if query_params.extensions:
+            query_params.extensions.project_id = self.testing_project
+        else:
+            query_params.extensions = ExtendedQueryFields(
+                project_id=self.testing_project)
         if query_params.labels:
             query_params.labels.update(self.test_token_label)
         else:
@@ -81,7 +86,8 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         self.wait_status(api_job_id, ApiStatus.ABORTED)
 
     def test_query_jobs_invalid_project(self):
-        params = QueryJobsRequest(parent_id='some-bogus-project-id')
+        params = QueryJobsRequest(
+            extensions=ExtendedQueryFields(project_id='some-bogus-project-id'))
         resp = self.client.open(
             '/jobs/query',
             method='POST',

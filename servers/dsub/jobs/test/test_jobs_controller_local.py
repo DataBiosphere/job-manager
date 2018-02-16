@@ -50,7 +50,7 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
     def job_has_status(self, job, status):
         has_status = job.status == status
         if has_status and status == ApiStatus.RUNNING:
-            return job.labels['status-detail'] != PROCESS_NOT_FOUND_MESSAGE
+            return not job.extensions or not job.extensions.status_detail or job.extensions.status_detail != PROCESS_NOT_FOUND_MESSAGE
         return has_status
 
     def test_abort_job(self):
