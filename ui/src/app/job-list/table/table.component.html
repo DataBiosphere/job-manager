@@ -12,11 +12,18 @@
     </mat-header-cell>
     <mat-cell *matCellDef="let j">
       <mat-checkbox class = "checkbox"
+                    (click)="$event.stopPropagation()"
                     (change)="$event ? selection.toggle(j) : null"
                     [checked]="selection.isSelected(j)">
       </mat-checkbox>
-      <a mat-button class="job-details-button" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
+      <div class="job-details-button mat-body-1" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</div>
+    </mat-cell>
+  </ng-container>
 
+  <!-- Job details dropdown column -->
+  <ng-container matColumnDef="Details">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let j">
       <button mat-icon-button class="jobs-dropdown-arrow"
               [class.visible]="showDropdownArrow(j)"
               [matMenuTriggerFor]="menu">
