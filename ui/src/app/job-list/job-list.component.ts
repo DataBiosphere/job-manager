@@ -29,7 +29,7 @@ export class JobListComponent implements OnInit {
 
   // This Subject is synchronized to a JobStream, which we destroy and recreate
   // whenever we change query parameters, via a subscription.
-  private jobs = new BehaviorSubject<JobListView>({
+  jobs = new BehaviorSubject<JobListView>({
     results: [],
     exhaustive: false
   });
