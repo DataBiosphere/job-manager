@@ -86,7 +86,7 @@ export class JobListComponent implements OnInit {
       {viewContainerRef: this.viewContainer});
   }
 
-  handleJobsChanged(jobs: QueryJobsResult[]) {
+  handleJobsChanged() {
     this.reloadJobs(this.route.snapshot.queryParams['q']);
   }
 
