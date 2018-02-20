@@ -74,9 +74,12 @@ jobs:
             ng test --watch=false
       - run:
           name: Ensure the UI builds for prod
+          # Target production to emulate deployment, but a dev environment
+          # because we do not have a prod environment file.
+          # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
           command: |
             cd ui
-            ng build --prod
+            ng build --target=production --environment=dev
       - store_artifacts:
           path: /tmp
           destination: test-temp
