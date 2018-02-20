@@ -1,7 +1,26 @@
-import {Component, NgZone, OnInit, ViewChild} from '@angular/core';
+import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {Subject} from 'rxjs/Subject';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {ENTER} from '@angular/cdk/keycodes';
 import {FormControl} from "@angular/forms";
 import {Observable} from "rxjs/Observable";
+import {Subscription} from 'rxjs/Subscription';
+import {
+  MatPaginator,
+  MatPaginatorIntl,
+  MatSnackBar,
+  PageEvent
+} from '@angular/material';
 
 import {URLSearchParamsUtils} from "../utils/url-search-params.utils";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -10,13 +29,23 @@ import {QueryJobsRequest} from "../model/QueryJobsRequest";
 import {environment} from "../../../environments/environment";
 import {dateColumns, endCol, queryFields, startCol, statusesCol} from "../common";
 import {MatMenuTrigger} from "@angular/material";
+import {JobListView} from '../job-stream';
 
 @Component({
   selector: 'jm-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
+  // Whether the status tabs and pagination controls are displayed. If true,
+  // jobs and pageSize must also be provided.
+  @Input() showControls: boolean = false;
+  @Input() jobs: BehaviorSubject<JobListView>;
+  @Input() pageSize: number;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  public pageSubject: Subject<PageEvent> = new Subject<PageEvent>();
+  private pageSubscription: Subscription;
+
   @ViewChild(MatMenuTrigger) chipMenuTrigger: MatMenuTrigger;
 
   separatorKeysCodes = [ENTER];
@@ -36,8 +65,7 @@ export class HeaderComponent implements OnInit {
     private readonly router: Router,
     private zone: NgZone,
   ) {
-    route.queryParams.subscribe(
-      params => this.refreshChips(params['q']))
+    route.queryParams.subscribe(params => this.refreshChips(params['q']));
   }
 
   ngOnInit(): void {
@@ -47,10 +75,36 @@ export class HeaderComponent implements OnInit {
     if (this.chips.get(statusesCol)) {
       this.selectedStatuses = this.chips.get(statusesCol).split(',').map(k => JobStatus[k]);
     }
-    this.filterOptions();
     this.options = URLSearchParamsUtils.getQueryFields();
     if (environment.additionalColumns) {
       this.options = this.options.concat(environment.additionalColumns);
+    }
+    this.filterOptions();
+  }
+
+  ngAfterViewInit(): void {
+    // The @ViewChild property may not be initialized until after view init.
+    if (this.paginator) {
+      // Our paginator details depend on the state of backend pagination,
+      // therefore we cannot simply inject an alternate MatPaginatorIntl, as
+      // recommended by the paginator documentation. _intl is public, and
+      // overwriting it seems preferable to providing our own version of
+      // MatPaginator.
+      this.paginator._intl = new JobsPaginatorIntl(
+          this.jobs, this.paginator._intl.changes);
+      this.pageSubscription = this.paginator.page.subscribe(this.pageSubject);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.pageSubscription) {
+      this.pageSubscription.unsubscribe();
+    }
+  }
+
+  public resetPagination() {
+    if (this.paginator) {
+      this.paginator.firstPage();
     }
   }
 
@@ -108,9 +162,10 @@ export class HeaderComponent implements OnInit {
   }
 
   filterOptions(): void {
-    this.filteredOptions = this.control.valueChanges
-      .startWith(null)
-      .map(val => val ? this.filter(val) : this.options.slice());
+    this.filteredOptions = Observable.create((s) => {
+      s.next(this.options.slice());
+      this.control.valueChanges.subscribe(v => s.next(this.filter(v)));
+    });
   }
 
   getChipKeys(): string[] {
@@ -206,5 +261,41 @@ export class HeaderComponent implements OnInit {
     if (this.chips.has(key)) {
       this.chips.delete(key);
     }
+  }
+}
+
+/**
+ * Paginator details for the jobs table. Accounts for the case where we haven't
+ * loaded all jobs (matching the query) onto the client; we need to indicate
+ * this rather than showing a misleading count for the number of jobs that have
+ * been loaded onto the client so far.
+ */
+export class JobsPaginatorIntl extends MatPaginatorIntl {
+  private defaultIntl = new MatPaginatorIntl()
+
+  constructor(private backendJobs: BehaviorSubject<JobListView>,
+              public changes: Subject<void>) {
+    super();
+    backendJobs.subscribe((jobList: JobListView) => {
+      // Ensure that the paginator component is redrawn once we transition to
+      // an exhaustive list of jobs.
+      if (jobList.exhaustive) {
+        changes.next();
+      }
+    });
+  }
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (this.backendJobs.value.exhaustive) {
+      // Can't use proper inheritance here, since MatPaginatorIntl only defines
+      // properties, rather than class methods.
+      return this.defaultIntl.getRangeLabel(page, pageSize, length);
+    }
+    // Ported from MatPaginatorIntl - boundary checks likely unneeded.
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+    return `${startIndex + 1} - ${endIndex} of many`;
   }
 }

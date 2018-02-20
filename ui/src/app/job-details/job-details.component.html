@@ -1,4 +1,4 @@
-<jm-header></jm-header>
+<jm-header [showControls]="false"></jm-header>
 <jm-panels [job]="job"></jm-panels>
 <!-- Only show the tasks table if there is at least 1 task. -->
 <jm-tasks *ngIf="hasTasks()" [tasks]="job.tasks" [jobId]="job.id"></jm-tasks>

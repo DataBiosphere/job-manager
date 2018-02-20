@@ -285,31 +285,23 @@ class BaseTestCases:
         def test_query_jobs_by_label_job_id(self):
             job = self.start_job('echo BY_JOB_ID', name='by_job_id')
             self.assert_query_matches(
-                QueryJobsRequest(labels={
-                    'job-id': job['job-id']
-                }), [job])
+                QueryJobsRequest(labels={'job-id': job['job-id']}), [job])
 
         def test_query_jobs_by_label_task_id(self):
             started = self.start_job(
                 'echo BY_TASK_ID', name='by_task_id', task_count=2)
             jobs = self.must_query_jobs(
-                QueryJobsRequest(labels={
-                    'job-id': started['job-id']
-                }))
+                QueryJobsRequest(labels={'job-id': started['job-id']}))
             for task_id in started['task-id']:
                 task = started.copy()
                 task['task-id'] = task_id
                 self.assert_query_matches(
-                    QueryJobsRequest(labels={
-                        'task-id': task_id
-                    }), [task])
+                    QueryJobsRequest(labels={'task-id': task_id}), [task])
 
         def test_query_jobs_by_label_user_id(self):
             job = self.start_job('echo BY_USER_ID', name='by_user_id')
             self.assert_query_matches(
-                QueryJobsRequest(labels={
-                    'user-id': job['user-id']
-                }), [job])
+                QueryJobsRequest(labels={'user-id': job['user-id']}), [job])
 
         def test_query_jobs_by_label(self):
             labels = {
@@ -335,9 +327,8 @@ class BaseTestCases:
             self.assert_query_matches(
                 QueryJobsRequest(labels=labels), [label_job])
             self.assert_query_matches(
-                QueryJobsRequest(labels={
-                    'overlap_key': 'overlap_value'
-                }), [label_job, other_label_job])
+                QueryJobsRequest(labels={'overlap_key': 'overlap_value'}),
+                [label_job, other_label_job])
 
         def test_query_jobs_by_start_end(self):
             first_time = datetime.datetime.now()

@@ -15,6 +15,7 @@ import {
   MatListModule,
   MatMenuModule,
   MatNativeDateModule,
+  MatPaginatorModule,
 } from "@angular/material";
 import {HeaderComponent} from "./header/header.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -33,6 +34,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     MatListModule,
     MatMenuModule,
     MatNativeDateModule,
+    MatPaginatorModule,
     ReactiveFormsModule,
   ],
   declarations: [

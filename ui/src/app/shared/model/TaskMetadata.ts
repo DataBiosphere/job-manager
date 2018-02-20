@@ -69,7 +69,7 @@ export interface TaskMetadata {
     attempts?: number;
 
     /**
-     * Id of the job corresponding to this task, if this task is a nested child job. Expresses a child:parent relationship between this job and the job containing this task.
+     * Id of the job corresponding to this task, if this task is a nested child job. Expresses a child:parent relationship between this job and the job containing this task. 
      */
     jobId?: string;
 

@@ -10,6 +10,23 @@ info:
 produces:
 - "application/json"
 paths:
+  /capabilities:
+    get:
+      tags:
+      - "Capabilities"
+      summary: "Get the capabilities of this backend implementation"
+      operationId: "get_capabilities"
+      parameters: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/CapabilitiesResponse"
+        404:
+          description: "Job not found"
+        500:
+          description: "Internal server error"
+      x-swagger-router-controller: "jobs.controllers.capabilities_controller"
   /jobs/{id}/abort:
     post:
       tags:
@@ -127,9 +144,44 @@ securityDefinitions:
     scopes:
       https://www.googleapis.com/auth/genomics: "Full access to google genomics and\
         \ pipelines API"
+      https://www.googleapis.com/auth/cloudplatformprojects.readonly: "Read-only access\
+        \ to Google Cloud projects"
     x-google-issuer: "https://accounts.google.com"
     x-google-jwks_uri: "https://www.googleapis.com/oauth2/v1/certs"
 definitions:
+  AuthenticationCapability:
+    properties:
+      isRequired:
+        type: "boolean"
+        description: "Whether or not authentication is required"
+      scopes:
+        type: "array"
+        description: "OAuth 2.0 requested scopes"
+        items:
+          type: "string"
+    description: "Specification of the backend's authentication capabilities"
+  CapabilitiesResponse:
+    properties:
+      authentication:
+        $ref: "#/definitions/AuthenticationCapability"
+      displayFields:
+        type: "object"
+        description: "Fields on QueryJobsResult returned from POST /jobs/query populated\
+          \ on some or all jobs. The fields are mapped to their display names, in\
+          \ order of importance. Extended fields and labels can be included, such\
+          \ as 'label.foo' or 'extendedFields.userId'\n"
+        properties: {}
+      commonLabels:
+        type: "array"
+        description: "Common labels which are present on most jobs returned"
+        items:
+          type: "string"
+      queryExtensions:
+        type: "array"
+        description: "Fields on ExtendedQueryFields which are queryable"
+        items:
+          type: "string"
+    description: "Specification of the backend's capabilities"
   JobMetadataResponse:
     required:
     - "id"
@@ -234,7 +286,7 @@ definitions:
         type: "string"
         description: "Id of the job corresponding to this task, if this task is a\
           \ nested child job. Expresses a child:parent relationship between this job\
-          \ and the job containing this task."
+          \ and the job containing this task.\n"
     description: "Task level metadata"
   FailureMessage:
     required:

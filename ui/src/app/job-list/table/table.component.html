@@ -3,45 +3,45 @@
   <!-- Job name column -->
   <ng-container matColumnDef="Job">
     <mat-header-cell *matHeaderCellDef>
-      <mat-checkbox class = "checkbox" [checked]="allSelected" (change)="toggleSelectAll()">
+      <mat-checkbox class = "checkbox"
+                    (change)="$event ? toggleSelectAll() : null"
+                    [checked]="allSelected()"
+                    [indeterminate]="partiallySelected()">
       </mat-checkbox>
       Job
     </mat-header-cell>
     <mat-cell *matCellDef="let j">
-      <div class="leftdiv">
-        <mat-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
-        </mat-checkbox>
-        <a [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
-      </div>
-      <div class="rightdiv">
-        <button mat-icon-button class="jobs-dropdown-arrow"
-                [class.visible]="showDropdownArrow(j)"
-                [matMenuTriggerFor]="menu">
-          <img src="{{ getDropdownArrowUrl() }}">
-        </button>
-        <mat-menu #menu="matMenu" class="details-menu">
-          <mat-card>
-            <mat-card-title>{{ j.name }}</mat-card-title>
-            <p>{{ j.status }}</p>
-            <p>Submitted: {{ j.submission | jmShortDateTime }}</p>
-          </mat-card>
+      <mat-checkbox class = "checkbox"
+                    (change)="$event ? selection.toggle(j) : null"
+                    [checked]="selection.isSelected(j)">
+      </mat-checkbox>
+      <a mat-button class="job-details-button" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
 
-          <a mat-menu-item [routerLink]="[j.id]" [queryParams]="getQueryParams()">
-            <button mat-icon-button>
-              <img src="https://www.gstatic.com/images/icons/material/system/1x/arrow_forward_grey600_24dp.png">
-            </button>
-            <span>Job details</span>
-          </a>
-
-          <button mat-menu-item *ngIf="canAbort(j)" (click)="abortJob(j)">
-            <button mat-icon-button>
-              <img src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_24dp.png">
-            </button>
-            <span>Abort job</span>
+      <button mat-icon-button class="jobs-dropdown-arrow"
+              [class.visible]="showDropdownArrow(j)"
+              [matMenuTriggerFor]="menu">
+        <img src="{{ getDropdownArrowUrl() }}">
+      </button>
+      <mat-menu #menu="matMenu" class="details-menu">
+        <mat-card>
+          <mat-card-title>{{ j.name }}</mat-card-title>
+          <p>{{ j.status }}</p>
+          <p>Submitted: {{ j.submission | jmShortDateTime }}</p>
+        </mat-card>
+        <a mat-menu-item [routerLink]="[j.id]" [queryParams]="getQueryParams()">
+          <button mat-icon-button>
+            <img src="https://www.gstatic.com/images/icons/material/system/1x/arrow_forward_grey600_24dp.png">
           </button>
-        </mat-menu>
-      </div>
+          <span>Job details</span>
+        </a>
 
+        <button mat-menu-item *ngIf="canAbort(j)" (click)="abortJob(j)">
+          <button mat-icon-button>
+            <img src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_24dp.png">
+          </button>
+          <span>Abort job</span>
+        </button>
+      </mat-menu>
     </mat-cell>
   </ng-container>
 
@@ -71,23 +71,16 @@
 
   <!-- Column definitions -->
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row (mouseenter) ="toggleMouseOver(j)"
-          (mouseleave) ="toggleMouseOver(j)"
-          [class.selected-row]="isSelected(j)"
-          class = "mat-row"
-          *matRowDef="let j; columns: displayedColumns;"></mat-row>
+  <mat-row class = "mat-row"
+           (mouseenter) ="toggleMouseOver(j)"
+           (mouseleave) ="toggleMouseOver(j)"
+           [class.selected-row]="selection.isSelected(j)"
+           *matRowDef="let j; columns: displayedColumns;"></mat-row>
 
 </mat-table>
 
-<div class="group-options" *ngIf="selectedJobs.length > 0">
-  {{ selectedJobs.length }} jobs selected
+<div class="group-options" *ngIf="canAbortAnySelected()">
+  {{ selection.selected.length }} jobs selected
   <button mat-raised-button color="accent" class="group-button group-abort"
-          (click)="onAbortJobs(selectedJobs)">Abort Jobs</button>
+          (click)="onAbortJobs()">Abort Jobs</button>
 </div>
-
-<mat-paginator #paginator
-              [length]="jobs.value.results.length"
-              [pageIndex]="0"
-              [pageSize]="10"
-              [pageSizeOptions]="[5, 10, 25, 100]">
-</mat-paginator>

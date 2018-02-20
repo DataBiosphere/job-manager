@@ -34,18 +34,18 @@
   background-color: #F5F5F5;
 }
 
-.leftdiv {
-  height: 100%;
-  width: 80%;
-}
+/*.leftdiv {*/
+  /*height: 100%;*/
+  /*width: 80%;*/
+/*}*/
 
-.rightdiv {
-  display:inline-block;
-  height: 100%;
-  width: 20%;
-  align-content: center;
-  vertical-align: center;
-}
+/*.rightdiv {*/
+  /*display:inline-block;*/
+  /*height: 100%;*/
+  /*width: 20%;*/
+  /*align-content: center;*/
+  /*vertical-align: center;*/
+/*}*/
 
 .job-details-button {
   text-decoration: underline;
