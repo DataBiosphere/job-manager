@@ -14,8 +14,8 @@ def get_capabilities():
             'name': 'Job',
             'status': 'Status',
             'submission': 'Submitted',
-            'labels.job_id': 'Job ID',
-            'labels.task_id': 'Task ID',
+            'labels.job-id': 'Job ID',
+            'labels.task-id': 'Task ID',
             'extensions.userId': 'User ID',
             'extensions.statusDetail': 'Status Detail'
         },
