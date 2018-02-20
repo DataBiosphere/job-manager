@@ -19,7 +19,7 @@ def get_capabilities():
             'extensions.userId': 'User ID',
             'extensions.statusDetail': 'Status Detail'
         },
-        common_labels=['job_id', 'task_id'],
+        common_labels=['job-id', 'task-id'],
         query_extensions=['projectId', 'userId', 'submission'])
 
     if _provider_type() == ProviderType.GOOGLE:
