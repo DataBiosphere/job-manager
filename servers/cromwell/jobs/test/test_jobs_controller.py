@@ -7,6 +7,7 @@ from flask import json
 from datetime import datetime
 from . import BaseTestCase
 
+from jobs.models.extended_fields import ExtendedFields
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_result import QueryJobsResult
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
@@ -399,19 +400,21 @@ class TestJobsController(BaseTestCase):
             'failures': [{
                 'failure': 'Task test.analysis failed'
             }],
-            'tasks': [{
-                'name': 'analysis',
-                'executionId': job_id,
-                'executionStatus': 'Succeeded',
-                'start': response_timestamp,
-                'end': response_timestamp,
-                'stderr': std_err,
-                'stdout': std_out,
-                'inputs': jobs_controller.update_key_names(inputs),
-                'returnCode': return_code,
-                'attempts': attempts,
-                'jobId': subworkflow_id
-            }]
+            'extensions':{
+                'tasks': [{
+                    'name': 'analysis',
+                    'executionId': job_id,
+                    'executionStatus': 'Succeeded',
+                    'start': response_timestamp,
+                    'end': response_timestamp,
+                    'stderr': std_err,
+                    'stdout': std_out,
+                    'inputs': jobs_controller.update_key_names(inputs),
+                    'returnCode': return_code,
+                    'attempts': attempts,
+                    'jobId': subworkflow_id
+                }]
+            }
         }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)
 
@@ -549,7 +552,8 @@ class TestJobsController(BaseTestCase):
             status=job.get('status'),
             submission=formatted_time,
             start=formatted_time,
-            end=formatted_time)
+            end=formatted_time,
+            extensions=ExtendedFields())
         self.assertEqual(
             jobs_controller.format_job(job, formatted_time), result)
 
@@ -569,11 +573,12 @@ class TestJobsController(BaseTestCase):
             status=job.get('status'),
             submission=formatted_time,
             start=formatted_time,
-            end=formatted_time)
+            end=formatted_time,
+            extensions=ExtendedFields())
         self.assertEqual(
             jobs_controller.format_job(job, formatted_time), result)
 
-    def test_format_job_with_no_start(self):
+    def test_format_job_with_no_start_date(self):
         time = '2017-10-27T18:04:47Z'
         job = {'id': '12345', 'name': 'TestJob', 'status': 'Failed'}
         formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
@@ -581,7 +586,8 @@ class TestJobsController(BaseTestCase):
             id=job.get('id'),
             name=job.get('name'),
             status=job.get('status'),
-            submission=formatted_time)
+            submission=formatted_time,
+            extensions=ExtendedFields())
         self.assertEqual(
             jobs_controller.format_job(job, formatted_time), result)
 
@@ -600,7 +606,8 @@ class TestJobsController(BaseTestCase):
             status=job.get('status'),
             submission=formatted_time,
             start=formatted_time,
-            end=None)
+            end=None,
+            extensions=ExtendedFields())
         self.assertEqual(
             jobs_controller.format_job(job, formatted_time), result)
 
