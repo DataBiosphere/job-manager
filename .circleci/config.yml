@@ -72,7 +72,11 @@ jobs:
             nvm use 8.5.0
             cd ui
             ng test --watch=false
-
+      - run:
+          name: Ensure the UI builds for prod
+          command: |
+            cd ui
+            ng build --prod
       - store_artifacts:
           path: /tmp
           destination: test-temp
