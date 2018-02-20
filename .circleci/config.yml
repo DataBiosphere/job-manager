@@ -78,6 +78,7 @@ jobs:
           # because we do not have a prod environment file.
           # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
           command: |
+            nvm use 8.5.0
             cd ui
             ng build --target=production --environment=dev
       - store_artifacts:
