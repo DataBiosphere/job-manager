@@ -8,36 +8,39 @@
       Job
     </mat-header-cell>
     <mat-cell *matCellDef="let j">
-      <mat-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
-      </mat-checkbox>
-      <a mat-button class="job-details-button" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
-
-      <button mat-icon-button class="jobs-dropdown-arrow"
-              [class.visible]="showDropdownArrow(j)"
-              [matMenuTriggerFor]="menu">
-        <img src="{{ getDropdownArrowUrl() }}">
-      </button>
-      <mat-menu #menu="matMenu" class="details-menu">
-        <mat-card>
-          <mat-card-title>{{ j.name }}</mat-card-title>
-          <p>{{ j.status }}</p>
-          <p>Submitted: {{ j.submission | jmShortDateTime }}</p>
-        </mat-card>
-
-        <a mat-menu-item [routerLink]="[j.id]" [queryParams]="getQueryParams()">
-          <button mat-icon-button>
-            <img src="https://www.gstatic.com/images/icons/material/system/1x/arrow_forward_grey600_24dp.png">
-          </button>
-          <span>Job details</span>
-        </a>
-
-        <button mat-menu-item *ngIf="canAbort(j)" (click)="abortJob(j)">
-          <button mat-icon-button>
-            <img src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_24dp.png">
-          </button>
-          <span>Abort job</span>
+      <div class="leftdiv">
+        <mat-checkbox class = "checkbox" [checked]="isSelected(j)" (change)="toggleSelect(j)">
+        </mat-checkbox>
+        <a [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
+      </div>
+      <div class="rightdiv">
+        <button mat-icon-button class="jobs-dropdown-arrow"
+                [class.visible]="showDropdownArrow(j)"
+                [matMenuTriggerFor]="menu">
+          <img src="{{ getDropdownArrowUrl() }}">
         </button>
-      </mat-menu>
+        <mat-menu #menu="matMenu" class="details-menu">
+          <mat-card>
+            <mat-card-title>{{ j.name }}</mat-card-title>
+            <p>{{ j.status }}</p>
+            <p>Submitted: {{ j.submission | jmShortDateTime }}</p>
+          </mat-card>
+
+          <a mat-menu-item [routerLink]="[j.id]" [queryParams]="getQueryParams()">
+            <button mat-icon-button>
+              <img src="https://www.gstatic.com/images/icons/material/system/1x/arrow_forward_grey600_24dp.png">
+            </button>
+            <span>Job details</span>
+          </a>
+
+          <button mat-menu-item *ngIf="canAbort(j)" (click)="abortJob(j)">
+            <button mat-icon-button>
+              <img src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_24dp.png">
+            </button>
+            <span>Abort job</span>
+          </button>
+        </mat-menu>
+      </div>
 
     </mat-cell>
   </ng-container>

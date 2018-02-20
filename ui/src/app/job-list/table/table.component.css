@@ -1,4 +1,8 @@
 /* Job Manager table */
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
 .mat-table {
   display: table;
   width: 100%;
@@ -22,10 +26,6 @@
   max-width: 20rem;
 }
 
-.job-details-button {
-  text-decoration: underline;
-}
-
 .selected-row {
   background-color: #E8F0FE !important;
 }
@@ -34,9 +34,28 @@
   background-color: #F5F5F5;
 }
 
-.checkbox {
-  margin-right: 1rem;
+.leftdiv {
+  height: 100%;
+  width: 80%;
 }
+
+.rightdiv {
+  display:inline-block;
+  height: 100%;
+  width: 20%;
+  align-content: center;
+  vertical-align: center;
+}
+
+.job-details-button {
+  text-decoration: underline;
+}
+
+/*.checkbox {*/
+  /*margin-right: 1rem;*/
+  /*float: left;*/
+  /*display: inline-block;*/
+/*}*/
 
 /* Job details dropdown */
 .jobs-dropdown-arrow {
