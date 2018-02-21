@@ -10,7 +10,7 @@
              src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_18dp.png">
       </mat-chip>
       <mat-menu #menu="matMenu" [ngSwitch]="getCurrentChipType()" [overlapTrigger]="false" class="wide-menu">
-        <mat-form-field *ngSwitchCase="'free text'" class="query-input">
+        <mat-form-field *ngSwitchCase="'Text'" class="query-input">
           <!--Free text input-->
           <input matInput
                  placeholder="Equals"
@@ -20,7 +20,7 @@
                  (click)="$event.stopPropagation()"/>
         </mat-form-field>
         <!-- Statuses -->
-        <mat-list *ngSwitchCase="'statuses'">
+        <mat-list *ngSwitchCase="'Enum'">
           <mat-list-item  *ngFor="let status of jobStatuses">
             <mat-checkbox
               (click)="$event.stopPropagation()"
@@ -31,7 +31,7 @@
           </mat-list-item>
         </mat-list>
         <!-- Datepicker input -->
-        <mat-form-field *ngSwitchCase="'date'" class="query-input">
+        <mat-form-field *ngSwitchCase="'Date'" class="query-input">
           <input id="dateInput"
                  matInput
                  [matDatepicker]="picker"

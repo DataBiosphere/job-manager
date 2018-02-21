@@ -1,3 +1,6 @@
+from collections import OrderedDict
+from flask import current_app
+
 from jobs.models.authentication_capability import AuthenticationCapability
 from jobs.models.capabilities_response import CapabilitiesResponse
 from jobs.models.display_field import DisplayField
@@ -12,7 +15,6 @@ def get_capabilities():
     """
     capabilities = CapabilitiesResponse(
         display_fields=[
-            DisplayField(field='name', display='Job'),
             DisplayField(field='status', display='Status'),
             DisplayField(field='submission', display='Submitted'),
             DisplayField(field='labels.job-id', display='Job ID'),
@@ -26,7 +28,7 @@ def get_capabilities():
 
     if _provider_type() == ProviderType.GOOGLE:
         capabilities.authentication = AuthenticationCapability(
-            is_required=true,
+            is_required=True,
             scopes=[
                 'https://www.googleapis.com/auth/genomics',
                 'https://www.googleapis.com/auth/cloudplatformprojects.readonly'

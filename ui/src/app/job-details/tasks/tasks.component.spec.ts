@@ -10,6 +10,8 @@ import {
 } from '@angular/material';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {TaskDetailsComponent} from './tasks.component';
+import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
+import {JobStatus} from '../../shared/model/JobStatus';
 import {SharedModule} from '../../shared/shared.module';
 import {TaskMetadata} from "../../shared/model/TaskMetadata";
 
@@ -17,21 +19,28 @@ import {TaskMetadata} from "../../shared/model/TaskMetadata";
 describe('TaskDetailsComponent', () => {
   let testComponent: TestTasksComponent;
   let fixture: ComponentFixture<TestTasksComponent>;
+
   let task: TaskMetadata = {
-    name: 'task1',
-    executionId: '',
-    executionStatus: 'Failed',
-    start: new Date("2017-11-14T13:00:00"),
-    end: new Date("2017-11-14T13:15:00"),
-    attempts: 1,
-    failures: [],
-    returnCode: 0,
-    stderr: 'gs://test-bucket/stderr.txt',
-    stdout: 'gs://test-bucket/stdout.txt',
-    inputs: {},
-    jobId: 'subworkflow123'
-  };
-  let testTasks: TaskMetadata[] = [task];
+            name: 'task1',
+        executionId: '',
+        executionStatus: 'Failed',
+        start: new Date("2017-11-14T13:00:00"),
+        end: new Date("2017-11-14T13:15:00"),
+        attempts: 1,
+        failures: [],
+        returnCode: 0,
+        stderr: 'gs://test-bucket/stderr.txt',
+        stdout: 'gs://test-bucket/stdout.txt',
+        inputs: {},
+        jobId: 'subworkflow123'
+  }
+  let job: JobMetadataResponse = {
+    id: 'test-id',
+    name: 'test-name',
+    status: JobStatus.Failed,
+    submission: new Date('2015-04-20T20:00:00'),
+    extensions: { tasks: [task] }
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -59,7 +68,7 @@ describe('TaskDetailsComponent', () => {
   it('should display a row for each task', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('.mat-row')).length).toEqual(testComponent.tasks.length);
+    expect(de.queryAll(By.css('.mat-row')).length).toEqual(testComponent.job.extensions.tasks.length);
   }));
 
   it('should display task data in each row', async(() => {
@@ -85,10 +94,10 @@ describe('TaskDetailsComponent', () => {
 
   @Component({
     selector: 'jm-test-tasks-component',
-    template: `<jm-tasks [tasks]="tasks"></jm-tasks>`
+    template: `<jm-tasks [tasks]="job.extensions.tasks" [job]="job"></jm-tasks>`
   })
   class TestTasksComponent {
-    public tasks = testTasks;
+    public job = job;
     @ViewChild(TaskDetailsComponent)
     public taskDetailsComponent: TaskDetailsComponent;
   }

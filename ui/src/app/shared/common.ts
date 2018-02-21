@@ -10,29 +10,31 @@ export enum JobStatusImage {
   Aborted = <any> 'https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png'
 }
 
-export const statusesCol = 'statuses';
-export const startCol = 'start';
-export const endCol = 'end';
-export const dateColumns: string[] = [startCol, endCol];
+// TODO(bryancrampton): We may want to move this to be part of
+// CapabilitiesResponse so that the data type of common labels can be
+// specified.
+export enum FieldDataType {
+  Date,
+  Enum,
+  Text
+}
 
 /** Constant strings for non-configurable primary fields that can be queried
- *  over. Each should have a corresponding field on QueryJobsRequest. */
-export const queryFields = {
-  parentId: 'parent-id',
-  jobName: 'job-name',
-  statuses: statusesCol,
-  start: startCol,
-  end: endCol,
-};
+ *  over. These should encompass all fields on QueryJobsRequest (besides
+ *  pageSize and pageToken). */
+export const queryDataTypes: Map<string, FieldDataType> = new Map([
+  ['name', FieldDataType.Text],
+  ['statuses', FieldDataType.Enum],
+  ['start', FieldDataType.Date],
+  ['end', FieldDataType.Date]
+]);
 
-/** The list of non-configurable primary columns that can be displayed and queried over. */
-export const primaryColumns: string[] = [
-  'Job',
-  'Details',
-  'Status',
-  'Submitted',
-];
+export const queryExtensionsDataTypes: Map<string, FieldDataType> = new Map([
+  ['projectId', FieldDataType.Text],
+  ['userId', FieldDataType.Text],
+  ['submission', FieldDataType.Date]
+]);
 
-/** The page size to initially request from the backend. The maximum number of jobs on a
- *  page is 100, so request 100 initially. */
+/** The page size to initially request from the backend. The maximum number of
+ *  jobs on a page is 100, so request 100 initially. */
 export const initialBackendPageSize = 100;

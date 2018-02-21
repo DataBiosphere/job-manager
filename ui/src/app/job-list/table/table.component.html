@@ -52,27 +52,17 @@
     </mat-cell>
   </ng-container>
 
-  <!-- Status column -->
-  <ng-container matColumnDef="Status">
-    <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
-    <mat-cell *matCellDef="let j">
-      <button mat-icon-button disabled>
-        <img matTooltip="{{ j.status }}" src="{{ getStatusUrl(j.status) }}">
-      </button>
-    </mat-cell>
-  </ng-container>
-
-  <!-- Submitted column -->
-  <ng-container matColumnDef="Submitted">
-    <mat-header-cell *matHeaderCellDef> Submitted </mat-header-cell>
-    <mat-cell id="submitted-column" *matCellDef="let j">{{ j.submission | jmShortDateTime }}</mat-cell>
-  </ng-container>
-
   <!-- Implementation-specific additional columns -->
-  <ng-container *ngFor="let c of additionalColumns">
-    <ng-container matColumnDef="{{ c }}">
-      <mat-header-cell *matHeaderCellDef>{{ c }}</mat-header-cell>
-      <mat-cell class="additional-column" *matCellDef="let j">{{ getJobLabel(j, c) }}</mat-cell>
+  <ng-container *ngFor="let df of displayFields">
+    <ng-container matColumnDef="{{ df.field }}">
+      <mat-header-cell *matHeaderCellDef>{{ df.display }}</mat-header-cell>
+      <mat-cell class="additional-column" *matCellDef="let j">
+        <div *ngIf=!isStatusField(df)>{{ getFieldValue(j, df) }}</div>
+        <button mat-icon-button disabled *ngIf=isStatusField(df)>
+          <img matTooltip="{{ getFieldValue(j, df) }}" matTooltipPosition="before"
+             src="{{ getStatusUrl(getFieldValue(j, df)) }}">
+        </button>
+      </mat-cell>
     </ng-container>
   </ng-container>
 

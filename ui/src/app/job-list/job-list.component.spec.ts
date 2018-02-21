@@ -16,15 +16,18 @@ import {
 } from '@angular/material';
 import {RouterTestingModule} from '@angular/router/testing';
 
+import {CapabilitiesService} from '../core/capabilities.service';
 import {JobListComponent} from "./job-list.component"
 import {JobsTableComponent} from "./table/table.component"
 import {JobManagerService} from '../core/job-manager.service';
 import {JobListResolver} from './job-list-resolver.service';
 import {FakeJobManagerService} from '../testing/fake-job-manager.service';
+import {MockCapabilitiesService} from '../testing/mock-capabilities.service';
 import {SharedModule} from '../shared/shared.module';
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import 'rxjs/add/observable/of';
+import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {JobStatus} from "../shared/model/JobStatus";
 
@@ -34,7 +37,8 @@ describe('JobListComponent', () => {
   function testJobs(count: number): QueryJobsResult[] {
     const base = {
       status: JobStatus.Running,
-      submission: new Date('2015-04-20T20:00:00')
+      submission: new Date('2015-04-20T20:00:00'),
+      extensions: {userId: 'test-user-id'}
     };
     return (new Array(count)).fill(null).map((_, i) => {
       return {
@@ -48,6 +52,15 @@ describe('JobListComponent', () => {
   let testComponent: JobListComponent;
   let fixture: ComponentFixture<TestJobListComponent>;
   let fakeJobService: FakeJobManagerService;
+
+  let capabilities: CapabilitiesResponse = 
+    {
+      displayFields: [
+        {field: 'status', display: 'Status'},
+        {field: 'submission', display: 'Submitted'},
+        {field: 'extensions.userId', display: 'User ID'},
+      ]
+    };
 
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
@@ -79,6 +92,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
+        {provide: CapabilitiesService, useValue: new MockCapabilitiesService(capabilities)},
         JobListResolver
       ],
     }).compileComponents();
@@ -178,8 +192,11 @@ describe('JobListComponent', () => {
     fixture.detectChanges();
 
     // We select the first page (3 jobs) and abort. Jobs 3 and 4 are unaffected.
-    de.query(By.css('jm-job-list-table')).componentInstance.toggleSelectAll();
+    let component = de.query(By.css('jm-job-list-table')).componentInstance;
+    component.toggleSelectAll();
+    tick();
     fixture.detectChanges();
+
     de.query(By.css('.group-abort')).nativeElement.click();
     tick();
     fixture.detectChanges();

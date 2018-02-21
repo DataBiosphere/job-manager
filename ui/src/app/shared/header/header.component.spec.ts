@@ -19,9 +19,11 @@ import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
+import {CapabilitiesService} from "../../core/capabilities.service"
+import {MockCapabilitiesService} from "../../testing/mock-capabilities.service"
 import {JobListView} from "../job-stream";
 import {HeaderComponent} from "./header.component";
-import {startCol, statusesCol} from "../common";
+import {CapabilitiesResponse} from '../model/CapabilitiesResponse';
 import {QueryJobsResult} from '../model/QueryJobsResult';
 import {JobStatus} from "../model/JobStatus";
 
@@ -42,6 +44,16 @@ describe('HeaderComponent', () => {
 
   let testComponent: HeaderComponent;
   let fixture: ComponentFixture<TestHeaderComponent>;
+  let capabilities: CapabilitiesResponse = 
+    {
+      displayFields: [
+        {field: 'status', display: 'Status'},
+        {field: 'submission', display: 'Submitted'},
+        {field: 'extensions.userId', display: 'User ID'},
+        {field: 'labels.job-id', display: 'Job ID'}
+      ],
+      queryExtensions: ['projectId']
+    };
 
   beforeEach(async(() => {
 
@@ -66,6 +78,9 @@ describe('HeaderComponent', () => {
           {path: '', component: TestHeaderComponent},
           {path: 'jobs', component: TestHeaderComponent}
         ]),
+      ],
+      providers: [
+        {provide: CapabilitiesService, useValue: new MockCapabilitiesService(capabilities)}
       ]
     }).compileComponents();
   }));
@@ -74,8 +89,8 @@ describe('HeaderComponent', () => {
     fixture = TestBed.createComponent(TestHeaderComponent);
     testComponent = fixture.componentInstance.headerComponent;
     testComponent.chips = new Map()
-      .set('parent-id', 'Parent ID')
-      .set('job-name', 'Job Name')
+      .set('projectId', 'Project ID')
+      .set('name', 'Job Name')
       .set('statuses', 'Running');
     fixture.detectChanges();
   }));
@@ -103,11 +118,11 @@ describe('HeaderComponent', () => {
   }));
 
   it('should stage and complete a date chip', async (() => {
-    testComponent.addChip(startCol);
-    testComponent.setCurrentChip(startCol);
+    testComponent.addChip('start');
+    testComponent.setCurrentChip('start');
     testComponent.assignDateValue(new Date("11/11/2011"));
     fixture.detectChanges();
-    expect(testComponent.chips.get(startCol)).toEqual('11/11/2011');
+    expect(testComponent.chips.get('start')).toEqual('11/11/2011');
     expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(4);
   }));
 

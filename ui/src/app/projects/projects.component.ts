@@ -98,7 +98,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   navigateJobs() {
-    let extras = {queryParams: {q: URLSearchParamsUtils.encodeURLSearchParams({parentId: this.projectsControl.value})}};
+    let extras = {queryParams: {q: URLSearchParamsUtils.encodeURLSearchParams({extensions: {projectId: this.projectsControl.value}})}};
     this.router.navigate(['jobs'], extras);
   }
 }

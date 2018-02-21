@@ -10,7 +10,6 @@ def get_capabilities():
     """
     return CapabilitiesResponse(
         display_fields=[
-            DisplayField(field='name', display='Job'),
             DisplayField(field='status', display='Status'),
             DisplayField(field='submission', display='Submitted'),
             DisplayField(

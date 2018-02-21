@@ -18,7 +18,9 @@ export class JobDetailsComponent implements OnInit {
   }
 
   hasTasks(): boolean {
-    let tasks: TaskMetadata[] = this.job.tasks || [];
-    return tasks.length > 0;
+    if (this.job.extensions) {
+      let tasks: TaskMetadata[] = this.job.extensions.tasks || [];
+      return tasks.length > 0;
+    }
   }
 }

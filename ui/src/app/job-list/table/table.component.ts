@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Injectable,
   Input,
   OnInit,
   Output,
@@ -15,11 +16,15 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 
+import {CapabilitiesResponse} from '../../shared/model/CapabilitiesResponse';
+import {CapabilitiesService} from '../../core/capabilities.service';
+import {DisplayField} from '../../shared/model/DisplayField';
 import {JobManagerService} from '../../core/job-manager.service';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
-import {JobStatusImage, primaryColumns} from '../../shared/common';
+import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
+import {JobStatusImage} from '../../shared/common';
 import {ActivatedRoute, Params} from '@angular/router';
 import {environment} from '../../../environments/environment';
 
@@ -28,37 +33,40 @@ import {environment} from '../../../environments/environment';
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
 })
+@Injectable()
 export class JobsTableComponent implements OnInit {
   @Input() dataSource: DataSource<QueryJobsResult>;
   @Output() onJobsChanged: EventEmitter<QueryJobsResult[]> = new EventEmitter();
 
   private mouseoverJob: QueryJobsResult;
 
-  public additionalColumns: string[] = [];
+  public displayFields: DisplayField[];
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
 
   // TODO(alanhwang): Allow these columns to be configured by the user
-  displayedColumns = primaryColumns.slice();
+  displayedColumns: string[] = ["Job", "Details"];
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly jobManagerService: JobManagerService,
+    private readonly capabilitiesService: CapabilitiesService,
     private readonly viewContainer: ViewContainerRef,
-    private errorBar: MatSnackBar,
-  ) {}
+    private errorBar: MatSnackBar) { }
 
   ngOnInit() {
+    this.capabilitiesService.getCapabilities().then(capabilities => {
+      this.displayFields = capabilities.displayFields;
+
+      for (let displayField of this.displayFields) {
+        this.displayedColumns.push(displayField.field);
+      }
+    });
+
     this.dataSource.connect(null).subscribe((jobs: QueryJobsResult[]) => {
       this.jobs = jobs;
       this.selection.clear();
     });
-    if (environment.additionalColumns) {
-      this.additionalColumns = environment.additionalColumns;
-    }
-    for (let column of this.additionalColumns) {
-      this.displayedColumns.push(column);
-    }
   }
 
   handleError(error: any) {
@@ -84,6 +92,15 @@ export class JobsTableComponent implements OnInit {
       .catch((error) => this.handleError(error));
   }
 
+  displayStatusColumn(): boolean {
+    for (let field of this.displayFields) {
+      if (field == 'status') {
+        return true;
+      }
+    }
+    return false;
+  }
+
   canAbort(job: QueryJobsResult): boolean {
     return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
   }
@@ -101,11 +118,24 @@ export class JobsTableComponent implements OnInit {
     return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
   }
 
-  getJobLabel(job: QueryJobsResult, label: string): string {
-    if (job.labels && job.labels[label]) {
-      return job.labels[label];
+  isStatusField(df: DisplayField): boolean {
+    return df.field == "status";
+  }
+
+  getFieldValue(job: QueryJobsResult, df: DisplayField): any {
+    // Handle nested fields, separated by '.', i.e. extensions.userId
+    let fields = df.field.split(".");
+    let value = job;
+    for (let field of fields) {
+      value = value[field];
     }
-    return "";
+
+    if (value instanceof Date) {
+      // TODO(bryancrampton): Use the current locale
+      return (new ShortDateTimePipe("en-US")).transform(value);
+    }
+
+    return value;
   }
 
   getQueryParams(): Params {
