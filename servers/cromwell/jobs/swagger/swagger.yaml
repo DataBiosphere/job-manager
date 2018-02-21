@@ -160,17 +160,25 @@ definitions:
         items:
           type: "string"
     description: "Specification of the backend's authentication capabilities"
+  DisplayField:
+    properties:
+      field:
+        type: "string"
+      display:
+        type: "string"
+    description: "Description of a display field"
   CapabilitiesResponse:
     properties:
       authentication:
         $ref: "#/definitions/AuthenticationCapability"
       displayFields:
-        type: "object"
+        type: "array"
         description: "Fields on QueryJobsResult returned from POST /jobs/query populated\
           \ on some or all jobs. The fields are mapped to their display names, in\
           \ order of importance. Extended fields and labels can be included, such\
-          \ as 'label.foo' or 'extendedFields.userId'\n"
-        properties: {}
+          \ as 'label.foo' or 'extensions.userId'\n"
+        items:
+          $ref: "#/definitions/DisplayField"
       commonLabels:
         type: "array"
         description: "Common labels which are present on most jobs returned"
