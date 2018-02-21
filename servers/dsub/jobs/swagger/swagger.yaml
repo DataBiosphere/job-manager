@@ -165,12 +165,11 @@ definitions:
       authentication:
         $ref: "#/definitions/AuthenticationCapability"
       displayFields:
-        type: "object"
+        type: "array"
         description: "Fields on QueryJobsResult returned from POST /jobs/query populated\
           \ on some or all jobs. The fields are mapped to their display names, in\
           \ order of importance. Extended fields and labels can be included, such\
-          \ as 'label.foo' or 'extendedFields.userId'\n"
-        properties: {}
+          \ as 'label.foo' or 'extensions.userId'\n"
       commonLabels:
         type: "array"
         description: "Common labels which are present on most jobs returned"
@@ -220,19 +219,136 @@ definitions:
         type: "object"
         description: "Custom job labels with string values"
         properties: {}
-      logs:
-        type: "object"
-        description: "Map of type of log file to its location"
-        properties: {}
-      tasks:
-        type: "array"
-        items:
-          $ref: "#/definitions/TaskMetadata"
       failures:
         type: "array"
         items:
           $ref: "#/definitions/FailureMessage"
+      extensions:
+        $ref: "#/definitions/ExtendedFields"
     description: "Job and task level metadata"
+  UpdateJobLabelsRequest:
+    properties:
+      labels:
+        type: "object"
+        description: "Labels to be merged into the existing job labels. Overwrites\
+          \ the label\nvalues for all given keys. Existing labels on the job which\
+          \ are not\nreferenced in this request are left unmodified.\n"
+        properties: {}
+    description: "Update labels on a job"
+  UpdateJobLabelsResponse:
+    properties:
+      labels:
+        type: "object"
+        description: "All job labels, after the update has been applied."
+        properties: {}
+    description: "Response to an update labels request"
+  QueryJobsRequest:
+    properties:
+      start:
+        type: "string"
+        format: "date-time"
+        description: "Returns only jobs with an equal or later start datetime. If\
+          \ both start and end date are specified, start date must be before or equal\
+          \ to end date.\n"
+      end:
+        type: "string"
+        format: "date-time"
+        description: "Returns only jobs with an equal or earlier end datetime. If\
+          \ both start and end date are specified, start date must be before or equal\
+          \ to end date.\n"
+      statuses:
+        type: "array"
+        description: "If specified, returns only jobs matching any of these statuses.\n"
+        items:
+          $ref: "#/definitions/JobStatus"
+      labels:
+        type: "object"
+        description: "If specified, returns only jobs containing labels with exact\
+          \ string matches to each of these labels.\n"
+        properties: {}
+      name:
+        type: "string"
+        description: "Returns only jobs with the specified name.\n"
+        pattern: "^[a-zA-Z][a-zA-Z0-9_-]*$"
+        x-regex: "^[a-zA-Z][a-zA-Z0-9_-]*$"
+        x-modifiers: []
+      pageSize:
+        type: "integer"
+        format: "int32"
+        description: "The maximum number of results to return in a single page. If\
+          \ unspecified,\na server default will be used. Note that the server may\
+          \ elect to\nreturn fewer results per page than requested.\n"
+      pageToken:
+        type: "string"
+        description: "The continuation token, which is used to page through large\
+          \ result\nsets. To get the next page of results, set this parameter to the\
+          \ value\nof `nextPageToken` from the previous response.\n"
+      extensions:
+        $ref: "#/definitions/ExtendedQueryFields"
+    description: "Job query parameters"
+  ExtendedQueryFields:
+    properties:
+      projectId:
+        type: "string"
+        description: "Returns only jobs belonging to the specified project. If specified\
+          \ by the /capabilities endpoint, this field is required for all query requests.\
+          \ All jobs have exactly one parent projectId.\n"
+      submission:
+        type: "string"
+        format: "date-time"
+        description: "Returns only jobs with an equal or later submission datetime.\n"
+      userId:
+        type: "string"
+        description: "Returns only jobs with the specified user ID.\n"
+    description: "Extended fields to query by which may not be supported by all backends.\n"
+  QueryJobsResponse:
+    required:
+    - "results"
+    properties:
+      results:
+        type: "array"
+        items:
+          $ref: "#/definitions/QueryJobsResult"
+      nextPageToken:
+        type: "string"
+        description: "The continuation token, which is used to page through large\
+          \ result\nsets. Provide this value in a subsequent request to return the\
+          \ next\npage of results. This field will be empty if there aren't any\n\
+          additional results.\n"
+    description: "Response to a job query"
+  QueryJobsResult:
+    required:
+    - "id"
+    - "status"
+    - "submission"
+    properties:
+      id:
+        type: "string"
+        description: "Job ID"
+      name:
+        type: "string"
+        description: "Job name"
+      status:
+        $ref: "#/definitions/JobStatus"
+      submission:
+        type: "string"
+        format: "date-time"
+        description: "Submission datetime in ISO8601 format"
+      start:
+        type: "string"
+        format: "date-time"
+        description: "Job start datetime in ISO8601 format"
+      end:
+        type: "string"
+        format: "date-time"
+        description: "Job end datetime in ISO8601 format"
+      labels:
+        type: "object"
+        description: "Custom job labels with string values"
+        properties: {}
+      extensions:
+        $ref: "#/definitions/ExtendedFields"
+    description: "Result for an individual job returned by a job query"
   JobStatus:
     type: "string"
     enum:
@@ -242,6 +358,38 @@ definitions:
     - "Failed"
     - "Succeeded"
     - "Aborted"
+  ExtendedFields:
+    properties:
+      userId:
+        type: "string"
+        description: "The user associated with the job"
+      statusDetail:
+        type: "string"
+        description: "Longer text description of the job status."
+      logs:
+        type: "object"
+        description: "Map of type of log file to its file location"
+        properties: {}
+      lastUpdate:
+        type: "string"
+        format: "date-time"
+        description: "Job last update datetime in ISO8601 format"
+      envs:
+        type: "object"
+        description: "Map of ENV variables associated with the job"
+        properties: {}
+      parentJobId:
+        type: "string"
+        description: "The parent job ID for the job"
+      timingUrl:
+        type: "string"
+        description: "URL for tasks timing diagram."
+      tasks:
+        type: "array"
+        items:
+          $ref: "#/definitions/TaskMetadata"
+    description: "Extended fields on jobs which may not be populated by all backends.\
+      \ See the /capabilities endpoint for more details.\n"
   TaskMetadata:
     properties:
       inputs:
@@ -300,121 +448,6 @@ definitions:
         format: "date-time"
         description: "The time at which this failure occurred"
     description: "Failure messages"
-  UpdateJobLabelsRequest:
-    properties:
-      labels:
-        type: "object"
-        description: "Labels to be merged into the existing job labels. Overwrites\
-          \ the label\nvalues for all given keys. Existing labels on the job which\
-          \ are not\nreferenced in this request are left unmodified.\n"
-        properties: {}
-    description: "Update labels on a job"
-  UpdateJobLabelsResponse:
-    properties:
-      labels:
-        type: "object"
-        description: "All job labels, after the update has been applied."
-        properties: {}
-    description: "Response to an update labels request"
-  QueryJobsRequest:
-    properties:
-      start:
-        type: "string"
-        format: "date-time"
-        description: "Returns only jobs with an equal or later start datetime. If\
-          \ both start and end date are specified, start date must be before or equal\
-          \ to end date.\n"
-      end:
-        type: "string"
-        format: "date-time"
-        description: "Returns only jobs with an equal or earlier end datetime. If\
-          \ both start and end date are specified, start date must be before or equal\
-          \ to end date.\n"
-      statuses:
-        type: "array"
-        description: "If specified, returns only jobs matching any of these statuses.\n"
-        items:
-          $ref: "#/definitions/JobStatus"
-      labels:
-        type: "object"
-        description: "If specified, returns only jobs containing labels with exact\
-          \ string matches to each of these labels.\n"
-        properties: {}
-      name:
-        type: "string"
-        description: "Returns only jobs with the specified name.\n"
-        pattern: "^[a-zA-Z][a-zA-Z0-9_-]*$"
-        x-regex: "^[a-zA-Z][a-zA-Z0-9_-]*$"
-        x-modifiers: []
-      pageSize:
-        type: "integer"
-        format: "int32"
-        description: "The maximum number of results to return in a single page. If\
-          \ unspecified,\na server default will be used. Note that the server may\
-          \ elect to\nreturn fewer results per page than requested.\n"
-      pageToken:
-        type: "string"
-        description: "The continuation token, which is used to page through large\
-          \ result\nsets. To get the next page of results, set this parameter to the\
-          \ value\nof `nextPageToken` from the previous response.\n"
-      parentId:
-        type: "string"
-        description: "Returns only jobs with the given parent ID. This parameter may\
-          \ be unsupported for some API implementations or required for others depending\
-          \ on whether there exists a logical noun above a job in the resource hierarchy\
-          \ (for example, a cloud project). If the presence of this parameter is incompatible\
-          \ with the server, it may return a 400 HTTP status.\n"
-    description: "Job query parameters"
-  QueryJobsResponse:
-    required:
-    - "results"
-    properties:
-      results:
-        type: "array"
-        items:
-          $ref: "#/definitions/QueryJobsResult"
-      nextPageToken:
-        type: "string"
-        description: "The continuation token, which is used to page through large\
-          \ result\nsets. Provide this value in a subsequent request to return the\
-          \ next\npage of results. This field will be empty if there aren't any\n\
-          additional results.\n"
-    description: "Response to a job query"
-  QueryJobsResult:
-    required:
-    - "id"
-    - "status"
-    - "submission"
-    properties:
-      id:
-        type: "string"
-        description: "Job ID"
-      name:
-        type: "string"
-        description: "Job name"
-      status:
-        $ref: "#/definitions/JobStatus"
-      submission:
-        type: "string"
-        format: "date-time"
-        description: "Submission datetime in ISO8601 format"
-      start:
-        type: "string"
-        format: "date-time"
-        description: "Job start datetime in ISO8601 format"
-      end:
-        type: "string"
-        format: "date-time"
-        description: "Job end datetime in ISO8601 format"
-      labels:
-        type: "object"
-        description: "Custom job labels with string values"
-        properties: {}
-      parentJobId:
-        type: "string"
-        description: "Id of the parent job. Expresses a child:parent relationship\
-          \ between this job and the job that called it."
-    description: "Result for an individual job returned by a job query"
 responses:
   BadRequest:
     description: "Bad request"

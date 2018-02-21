@@ -148,13 +148,15 @@ definitions:
       authentication:
         $ref: '#/definitions/AuthenticationCapability'
       displayFields:
-        type: object
+        type: array
         description: >
           Fields on QueryJobsResult returned from POST /jobs/query
           populated on some or all jobs. The fields are mapped to their
           display names, in order of importance. Extended fields and
           labels can be included, such as 'label.foo' or
-          'extendedFields.userId'
+          'extensions.userId'
+        items:
+          type: '#/definitions/DisplayField'
       commonLabels:
         type: array
         description: Common labels which are present on most jobs returned
@@ -165,6 +167,11 @@ definitions:
         description: Fields on ExtendedQueryFields which are queryable
         items:
           type: string
+  DisplayField:
+    description: Map of field name to display name
+    properties:
+      field: string
+      display: string
   JobMetadataResponse:
     description: Job and task level metadata
     required:
@@ -201,85 +208,12 @@ definitions:
       labels:
         type: object
         description: Custom job labels with string values
-      logs:
-        type: object
-        description: Map of type of log file to its location
-      tasks:
-        type: array
-        items:
-          $ref: '#/definitions/TaskMetadata'
       failures:
         type: array
         items:
           $ref: '#/definitions/FailureMessage'
-  JobStatus:
-    type: string
-    enum:
-      - Submitted
-      - Running
-      - Aborting
-      - Failed
-      - Succeeded
-      - Aborted
-  TaskMetadata:
-    description: Task level metadata
-    properties:
-      inputs:
-        type: object
-        description: Mapping of input fully qualified names to stringified values
-      # TODO: Define a generalized enum for this. For details, see
-      # https://github.com/DataBiosphere/job-manager/pull/14.
-      executionStatus:
-        type: string
-        description: Backend-specific task status.
-      start:
-        type: string
-        format: date-time
-        description: Start datetime of the task execution in ISO8601 format with milliseconds
-      end:
-        type: string
-        format: date-time
-        description: End datetime of the task execution in ISO8601 format with milliseconds
-      name:
-        type: string
-        description: The name of the job
-      executionId:
-        type: string
-        description: Backend-specific job ID
-      failures:
-        type: array
-        items:
-          $ref: '#/definitions/FailureMessage'
-      returnCode:
-        type: integer
-        description: Task execution return code
-      stdout:
-        type: string
-        description: Path to the standard output file for this task
-      stderr:
-        type: string
-        description: Path to the standard error file for this task
-      attempts:
-        type: integer
-        description: Number of times the task was run
-      jobId:
-        type: string
-        description: >
-          Id of the job corresponding to this task, if this task is a nested
-          child job. Expresses a child:parent relationship between this job
-          and the job containing this task.
-  FailureMessage:
-    description: Failure messages
-    required:
-      - failure
-    properties:
-      failure:
-        type: string
-        description: The failure message
-      timestamp:
-        type: string
-        format: date-time
-        description: The time at which this failure occurred
+      extensions:
+        $ref: '#/definitions/ExtendedFields'
   UpdateJobLabelsRequest:
     description: Update labels on a job
     properties:
@@ -341,15 +275,27 @@ definitions:
           The continuation token, which is used to page through large result
           sets. To get the next page of results, set this parameter to the value
           of `nextPageToken` from the previous response.
-      parentId:
+      extensions:
+        $ref: '#/definitions/ExtendedQueryFields'
+  ExtendedQueryFields:
+    description: >
+      Extended fields to query by which may not be supported by all backends.
+    properties:
+      projectId:
         type: string
         description: >
-          Returns only jobs with the given parent ID. This parameter may be
-          unsupported for some API implementations or required for others
-          depending on whether there exists a logical noun above a job
-          in the resource hierarchy (for example, a cloud project). If the
-          presence of this parameter is incompatible with the server, it may
-          return a 400 HTTP status.
+          Returns only jobs belonging to the specified project. If specified by
+          the /capabilities endpoint, this field is required for all query
+          requests. All jobs have exactly one parent projectId.
+      submission:
+        type: string
+        format: date-time
+        description: >
+          Returns only jobs with an equal or later submission datetime.
+      userId:
+        type: string
+        description: >
+          Returns only jobs with the specified user ID.
   QueryJobsResponse:
     description: Response to a job query
     required:
@@ -366,7 +312,6 @@ definitions:
           sets. Provide this value in a subsequent request to return the next
           page of results. This field will be empty if there aren't any
           additional results.
-  # TODO(calbach): Reconcile QueryJobsResult with JobMetadata.
   QueryJobsResult:
     description: Result for an individual job returned by a job query
     required:
@@ -397,10 +342,108 @@ definitions:
       labels:
         type: object
         description: Custom job labels with string values
+      extensions:
+        $ref: '#/definitions/ExtendedFields'
+  JobStatus:
+    type: string
+    enum:
+      - Submitted
+      - Running
+      - Aborting
+      - Failed
+      - Succeeded
+      - Aborted
+  ExtendedFields:
+    description: >
+      Extended fields on jobs which may not be populated by all backends. See
+      the /capabilities endpoint for more details.
+    properties:
+      userId:
+        type: string
+        description: The user associated with the job
+      statusDetail:
+        type: string
+        description: Longer text description of the job status.
+      logs:
+        type: object
+        description: Map of type of log file to its file location
+      lastUpdate:
+        type: string
+        format: date-time
+        description: Job last update datetime in ISO8601 format
+      envs:
+        type: object
+        description: Map of ENV variables associated with the job
       parentJobId:
         type: string
-        description: Id of the parent job. Expresses a child:parent relationship
-          between this job and the job that called it.
+        description: The parent job ID for the job
+      # TODO: Remove once the diagram is rendered natively.
+      timingUrl:
+        type: string
+        description: URL for tasks timing diagram.
+      tasks:
+        type: array
+        items:
+          $ref: '#/definitions/TaskMetadata'
+  TaskMetadata:
+    description: Task level metadata
+    properties:
+      inputs:
+        type: object
+        description: Mapping of input fully qualified names to stringified values
+      # TODO: Define a generalized enum for this. For details, see
+      # https://github.com/DataBiosphere/job-manager/pull/14.
+      executionStatus:
+        type: string
+        description: Backend-specific task status.
+      start:
+        type: string
+        format: date-time
+        description: Start datetime of the task execution in ISO8601 format with milliseconds
+      end:
+        type: string
+        format: date-time
+        description: End datetime of the task execution in ISO8601 format with milliseconds
+      name:
+        type: string
+        description: The name of the job
+      executionId:
+        type: string
+        description: Backend-specific job ID
+      failures:
+        type: array
+        items:
+          $ref: '#/definitions/FailureMessage'
+      returnCode:
+        type: integer
+        description: Task execution return code
+      stdout:
+        type: string
+        description: Path to the standard output file for this task
+      stderr:
+        type: string
+        description: Path to the standard error file for this task
+      attempts:
+        type: integer
+        description: Number of times the task was run
+      jobId:
+        type: string
+        description: >
+          Id of the job corresponding to this task, if this task is a nested
+          child job. Expresses a child:parent relationship between this job
+          and the job containing this task.
+  FailureMessage:
+    description: Failure messages
+    required:
+      - failure
+    properties:
+      failure:
+        type: string
+        description: The failure message
+      timestamp:
+        type: string
+        format: date-time
+        description: The time at which this failure occurred
 responses:
   BadRequest:
     description: 'Bad request'
