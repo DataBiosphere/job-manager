@@ -1,6 +1,7 @@
-from jobs.controllers.utils.providers import ProviderType
 from jobs.models.authentication_capability import AuthenticationCapability
 from jobs.models.capabilities_response import CapabilitiesResponse
+from jobs.models.display_field import DisplayField
+from jobs.controllers.utils.providers import ProviderType
 
 
 def get_capabilities():

@@ -1,4 +1,5 @@
 from jobs.models.capabilities_response import CapabilitiesResponse
+from jobs.models.display_field import DisplayField
 
 
 def get_capabilities():
