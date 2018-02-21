@@ -7,8 +7,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {DataSource, SelectionModel} from '@angular/cdk/collections';
-import {
-  MatSnackBar} from '@angular/material';
+import {MatSnackBar} from '@angular/material';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';

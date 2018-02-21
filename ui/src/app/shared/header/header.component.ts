@@ -123,8 +123,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
         this.chips.set(value.trim(), '');
       }
       this.inputValue = "";
-    } else {
-      this.search();
     }
   }
 
