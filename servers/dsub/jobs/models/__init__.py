@@ -4,8 +4,7 @@ from __future__ import absolute_import
 # import models into model package
 from .authentication_capability import AuthenticationCapability
 from .capabilities_response import CapabilitiesResponse
-from .extended_fields import ExtendedFields
-from .extended_query_fields import ExtendedQueryFields
+from .display_field import DisplayField
 from .failure_message import FailureMessage
 from .job_metadata_response import JobMetadataResponse
 from .job_status import JobStatus

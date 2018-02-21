@@ -51,6 +51,9 @@ export interface QueryJobsRequest {
      */
     pageToken?: string;
 
-    extensions?: models.ExtendedQueryFields;
+    /**
+     * Returns only jobs with the given parent ID. This parameter may be unsupported for some API implementations or required for others depending on whether there exists a logical noun above a job in the resource hierarchy (for example, a cloud project). If the presence of this parameter is incompatible with the server, it may return a 400 HTTP status. 
+     */
+    parentId?: string;
 
 }

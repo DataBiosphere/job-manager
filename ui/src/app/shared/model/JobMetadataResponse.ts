@@ -58,8 +58,13 @@ export interface JobMetadataResponse {
      */
     labels?: any;
 
-    failures?: Array<models.FailureMessage>;
+    /**
+     * Map of type of log file to its location
+     */
+    logs?: any;
 
-    extensions?: models.ExtendedFields;
+    tasks?: Array<models.TaskMetadata>;
+
+    failures?: Array<models.FailureMessage>;
 
 }
