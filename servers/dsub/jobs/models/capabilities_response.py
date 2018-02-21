@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 from jobs.models.authentication_capability import AuthenticationCapability
+from jobs.models.display_field import DisplayField
 from .base_model_ import Model
 from datetime import date, datetime
 from typing import List, Dict
@@ -20,7 +21,7 @@ class CapabilitiesResponse(Model):
         :param authentication: The authentication of this CapabilitiesResponse.
         :type authentication: AuthenticationCapability
         :param display_fields: The display_fields of this CapabilitiesResponse.
-        :type display_fields: List[ERRORUNKNOWN]
+        :type display_fields: List[DisplayField]
         :param common_labels: The common_labels of this CapabilitiesResponse.
         :type common_labels: List[str]
         :param query_extensions: The query_extensions of this CapabilitiesResponse.
@@ -28,7 +29,7 @@ class CapabilitiesResponse(Model):
         """
         self.swagger_types = {
             'authentication': AuthenticationCapability,
-            'display_fields': List[ERRORUNKNOWN],
+            'display_fields': List[DisplayField],
             'common_labels': List[str],
             'query_extensions': List[str]
         }
@@ -85,7 +86,7 @@ class CapabilitiesResponse(Model):
         Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extensions.userId' 
 
         :return: The display_fields of this CapabilitiesResponse.
-        :rtype: List[ERRORUNKNOWN]
+        :rtype: List[DisplayField]
         """
         return self._display_fields
 
@@ -96,7 +97,7 @@ class CapabilitiesResponse(Model):
         Fields on QueryJobsResult returned from POST /jobs/query populated on some or all jobs. The fields are mapped to their display names, in order of importance. Extended fields and labels can be included, such as 'label.foo' or 'extensions.userId' 
 
         :param display_fields: The display_fields of this CapabilitiesResponse.
-        :type display_fields: List[ERRORUNKNOWN]
+        :type display_fields: List[DisplayField]
         """
 
         self._display_fields = display_fields
