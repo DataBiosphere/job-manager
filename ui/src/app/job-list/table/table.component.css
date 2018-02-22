@@ -1,4 +1,5 @@
 /* Job Manager table */
+
 .mat-table {
   display: table;
   width: 100%;
@@ -22,8 +23,8 @@
   max-width: 20rem;
 }
 
-.job-details-button {
-  text-decoration: underline;
+.mat-column-select {
+  overflow: initial;
 }
 
 .selected-row {
@@ -35,7 +36,15 @@
 }
 
 .checkbox {
+  float: left;
   margin-right: 1rem;
+}
+
+.job-details-button {
+  text-decoration: underline;
+  text-align: center;
+  float: left;
+  cursor: pointer;
 }
 
 /* Job details dropdown */

@@ -1,24 +1,13 @@
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Subject} from 'rxjs/Subject';
-import {Subscription} from 'rxjs/Subscription';
 import {
   Component,
   EventEmitter,
   Input,
-  OnDestroy,
   OnInit,
   Output,
-  ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {DataSource, SelectionModel} from '@angular/cdk/collections';
-import {
-  MatPaginator,
-  MatPaginatorIntl,
-  MatSnackBar,
-  PageEvent
-} from '@angular/material';
-import {Observable} from 'rxjs/Observable';
+import {MatSnackBar} from '@angular/material';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
