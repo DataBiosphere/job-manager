@@ -212,6 +212,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     if (chipKey == statusesCol) {
       this.selectedStatuses = [];
     }
+    this.search();
   }
 
   // TODO: Cut the dependency on string parsing to represent lists here
