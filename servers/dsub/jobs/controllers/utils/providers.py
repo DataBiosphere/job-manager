@@ -45,9 +45,11 @@ def _get_google_provider(parent_id, auth_token):
             raise BadRequest('Missing required field `authToken`.')
         return google.GoogleJobProvider(False, False, parent_id)
 
-    resp = requests.post('https://www.googleapis.com/oauth2/v2/tokeninfo', params={
-        'access_token': auth_token,
-    })
+    resp = requests.post(
+        'https://www.googleapis.com/oauth2/v2/tokeninfo',
+        params={
+            'access_token': auth_token,
+        })
     if resp.status_code != 200:
         raise Unauthorized('failed to validate auth token')
     current_app.logger.info('user "%s" signed in', resp.json().get('email'))
