@@ -1,6 +1,7 @@
-from jobs.controllers.utils.providers import ProviderType
 from jobs.models.authentication_capability import AuthenticationCapability
 from jobs.models.capabilities_response import CapabilitiesResponse
+from jobs.models.display_field import DisplayField
+from jobs.controllers.utils.providers import ProviderType
 
 
 def get_capabilities():
@@ -10,15 +11,16 @@ def get_capabilities():
         CapabilitiesResponse: Response containing this backend's capabilities
     """
     capabilities = CapabilitiesResponse(
-        display_fields={
-            'name': 'Job',
-            'status': 'Status',
-            'submission': 'Submitted',
-            'labels.job-id': 'Job ID',
-            'labels.task-id': 'Task ID',
-            'extensions.userId': 'User ID',
-            'extensions.statusDetail': 'Status Detail'
-        },
+        display_fields=[
+            DisplayField(field='name', display='Job'),
+            DisplayField(field='status', display='Status'),
+            DisplayField(field='submission', display='Submitted'),
+            DisplayField(field='labels.job-id', display='Job ID'),
+            DisplayField(field='labels.task-id', display='Task ID'),
+            DisplayField(field='extensions.userId', display='User ID'),
+            DisplayField(
+                field='extensions.statusDetail', display='Status Detail')
+        ],
         common_labels=['job-id', 'task-id'],
         query_extensions=['projectId', 'userId', 'submission'])
 
