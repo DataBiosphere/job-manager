@@ -3,6 +3,7 @@ from dsub.lib import resources
 from flask import current_app
 from werkzeug.exceptions import BadRequest, Unauthorized, NotImplemented
 from oauth2client.client import AccessTokenCredentials, AccessTokenCredentialsError
+import requests
 
 from jobs.common import enum
 
@@ -43,6 +44,13 @@ def _get_google_provider(parent_id, auth_token):
         if _requires_auth():
             raise BadRequest('Missing required field `authToken`.')
         return google.GoogleJobProvider(False, False, parent_id)
+
+    resp = requests.post('https://www.googleapis.com/oauth2/v2/tokeninfo', params={
+        'access_token': auth_token,
+    })
+    if resp.status_code != 200:
+        raise Unauthorized('failed to validate auth token')
+    current_app.logger.info('user "%s" signed in', resp.json().get('email'))
 
     try:
         credentials = AccessTokenCredentials(auth_token, 'user-agent')
