@@ -12,11 +12,18 @@
     </mat-header-cell>
     <mat-cell *matCellDef="let j">
       <mat-checkbox class = "checkbox"
+                    (click)="$event.stopPropagation()"
                     (change)="$event ? selection.toggle(j) : null"
                     [checked]="selection.isSelected(j)">
       </mat-checkbox>
-      <a mat-button class="job-details-button" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
+      <div class="job-details-button mat-body-1" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</div>
+    </mat-cell>
+  </ng-container>
 
+  <!-- Job details dropdown column -->
+  <ng-container matColumnDef="Details">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let j">
       <button mat-icon-button class="jobs-dropdown-arrow"
               [class.visible]="showDropdownArrow(j)"
               [matMenuTriggerFor]="menu">
@@ -28,7 +35,6 @@
           <p>{{ j.status }}</p>
           <p>Submitted: {{ j.submission | jmShortDateTime }}</p>
         </mat-card>
-
         <a mat-menu-item [routerLink]="[j.id]" [queryParams]="getQueryParams()">
           <button mat-icon-button>
             <img src="https://www.gstatic.com/images/icons/material/system/1x/arrow_forward_grey600_24dp.png">
@@ -43,7 +49,6 @@
           <span>Abort job</span>
         </button>
       </mat-menu>
-
     </mat-cell>
   </ng-container>
 
@@ -52,8 +57,7 @@
     <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
     <mat-cell *matCellDef="let j">
       <button mat-icon-button disabled>
-        <img matTooltip="{{ j.status }}" matTooltipPosition="before"
-             src="{{ getStatusUrl(j.status) }}">
+        <img matTooltip="{{ j.status }}" src="{{ getStatusUrl(j.status) }}">
       </button>
     </mat-cell>
   </ng-container>
