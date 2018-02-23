@@ -49,7 +49,7 @@ describe('JobListComponent', () => {
   let fixture: ComponentFixture<TestJobListComponent>;
   let fakeJobService: FakeJobManagerService;
 
-  beforeEach(async(() => {
+  beforeEach(fakeAsync(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
 
     TestBed.configureTestingModule({
@@ -92,6 +92,9 @@ describe('JobListComponent', () => {
     router.navigate(['']);
     tick();
 
+    fixture.detectChanges();
+    tick();
+
     testComponent = fixture.debugElement.query(By.css('jm-job-list')).componentInstance;
   }));
 
@@ -112,14 +115,18 @@ describe('JobListComponent', () => {
     };
     testComponent.handleError(error);
     fixture.detectChanges();
+
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.mat-simple-snackbar')).nativeElement.textContent)
       .toEqual("Bad Request (400): Missing required field `parentId` Dismiss");
   }));
 
+  // Note: Unfortunately many of the following fakeAsync() usages require
+  // gratuitous use of tick(). This is because a subcomponent of the paginator
+  // is setting a timeout on render.
   it('renders job rows', fakeAsync(() => {
-    tick();
     fixture.detectChanges();
+    tick();
 
     expectJobsRendered(fakeJobService.jobs.slice(0, 3));
   }));
@@ -128,9 +135,11 @@ describe('JobListComponent', () => {
     fakeJobService.jobs = testJobs(5);
     tick();
     fixture.detectChanges();
+    tick();
     const de: DebugElement = fixture.debugElement;
     de.query(By.css('.mat-paginator-increment')).nativeElement.click();
     fixture.detectChanges();
+    tick();
 
     // Page 2.
     expectJobsRendered(fakeJobService.jobs.slice(3, 5));
@@ -147,6 +156,7 @@ describe('JobListComponent', () => {
     // Back to page 1, which should have the first 3 jobs.
     de.query(By.css('.mat-paginator-decrement')).nativeElement.click();
     fixture.detectChanges();
+    tick();
     expectJobsRendered(fakeJobService.jobs.slice(0, 3));
   }));
 
@@ -162,6 +172,7 @@ describe('JobListComponent', () => {
     de.query(By.css('.completed-button')).nativeElement.click();
     tick();
     fixture.detectChanges();
+    tick();
     expectJobsRendered([jobs[1], jobs[3]]);
   }));
 
@@ -183,6 +194,7 @@ describe('JobListComponent', () => {
     de.query(By.css('.group-abort')).nativeElement.click();
     tick();
     fixture.detectChanges();
+    tick();
 
     // Jobs 3 and 4 should be the only jobs displayed, as they are the only
     // remaining active jobs.
@@ -203,6 +215,7 @@ describe('JobListComponent', () => {
     de.query(By.css('.failed-button')).nativeElement.click();
     tick();
     fixture.detectChanges();
+    tick();
     expectJobsRendered([jobs[3]]);
   }));
 

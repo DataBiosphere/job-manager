@@ -85,14 +85,20 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     // The @ViewChild property may not be initialized until after view init.
     if (this.paginator) {
-      // Our paginator details depend on the state of backend pagination,
-      // therefore we cannot simply inject an alternate MatPaginatorIntl, as
-      // recommended by the paginator documentation. _intl is public, and
-      // overwriting it seems preferable to providing our own version of
-      // MatPaginator.
-      this.paginator._intl = new JobsPaginatorIntl(
-          this.jobs, this.paginator._intl.changes);
       this.pageSubscription = this.paginator.page.subscribe(this.pageSubject);
+      // Template-bound properties should not be modified during this lifecycle
+      // hook, so we set a timeout to make that change asynchronous.
+      // https://angular.io/guide/lifecycle-hooks#abide-by-the-unidirectional-data-flow-rule
+      setTimeout(() => {
+        // Our paginator details depend on the state of backend pagination,
+        // therefore we cannot simply inject an alternate MatPaginatorIntl, as
+        // recommended by the paginator documentation. _intl is public, and
+        // overwriting it seems preferable to providing our own version of
+        // MatPaginator.
+        this.paginator._intl = new JobsPaginatorIntl(
+          this.jobs, this.paginator._intl.changes);
+        this.paginator._intl.changes.next();
+      }, 0);
     }
   }
 
@@ -278,7 +284,9 @@ export class JobsPaginatorIntl extends MatPaginatorIntl {
     backendJobs.subscribe((jobList: JobListView) => {
       // Ensure that the paginator component is redrawn on initialization and
       // when the data changes, e.g. to catch the transition to exhaustive.
-      changes.next();
+      if (jobList.exhaustive) {
+        changes.next();
+      }
     });
   }
 
