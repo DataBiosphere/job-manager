@@ -18,19 +18,24 @@ export class CapabilitiesActivator implements CanActivate {
     private readonly router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    return this.capabilitiesService.getCapabilities()
-      .then(capabilities =>
-        this.handleAuthCapabilities(
-          capabilities, route.routeConfig.path, state.url))
-      .then(result => result[0] == false
-        ? result : this.handleProjectCapabilities(result[1], route))
-      .then(result => result[0] as boolean);
+    return this.capabilitiesService.getCapabilities().then(cap => {
+      return this.handleAuthCapabilities(cap, route.routeConfig.path, state.url)
+        .then(() => this.handleProjectCapabilities(cap, route))
+        .catch(error => {
+          // Handle all not-activated errors by just returning false for
+          // this promise. All others, re-throw them.
+          if (error == 'not-activated') {
+            return false;
+          }
+          Promise.reject(error);
+        });
+    });
   }
 
-  private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): [boolean, CapabilitiesResponse]|Promise<[boolean, CapabilitiesResponse]> {
+  private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): Promise<void> {
     if (capabilities.authentication && capabilities.authentication.isRequired) {
       if (this.authService.authenticated.getValue() || path == 'sign_in') {
-        return [true, capabilities];
+        return Promise.resolve();
       }
 
       return this.authService.isAuthenticated().then( (authenticated) => {
@@ -38,18 +43,19 @@ export class CapabilitiesActivator implements CanActivate {
           this.router.navigate(['sign_in'], {
             queryParams: { returnUrl: url }
           });
+          return Promise.reject('not-activated')
         }
-        return [authenticated, capabilities] as [boolean, CapabilitiesResponse];
+        return Promise.resolve();
       })
     } else if (path == 'sign_in') {
       // Do not allow navigation to the sign in page when authentication is
       // not required.
       this.router.navigate(['']);
-      return [false, capabilities];
+      return Promise.reject('not-activated')
     }
   }
 
-  private handleProjectCapabilities(capabilities: CapabilitiesResponse, route: ActivatedRouteSnapshot): [boolean, CapabilitiesResponse]|Promise<[boolean, CapabilitiesResponse]> {
+  private handleProjectCapabilities(capabilities: CapabilitiesResponse, route: ActivatedRouteSnapshot): Promise<boolean> {
     // Use presence of `projectId` queryExtension as an indicator that a
     // project must be selected.
     if (capabilities.queryExtensions.includes('projectId')) {
@@ -58,14 +64,14 @@ export class CapabilitiesActivator implements CanActivate {
       let queryRequest = URLSearchParamsUtils.unpackURLSearchParams(route.queryParams['q']);
       if (!queryRequest.extensions.projectId && !['projects', 'sign_in'].includes(route.routeConfig.path)) {
         this.router.navigate(['projects']);
-        return [false, capabilities];
+        return Promise.reject('not-activated')
       }
     } else if (route.routeConfig.path == 'projects') {
       // Do not allow navigation to the projects page when projectId is not
       // specified as a query extension.
       this.router.navigate(['']);
-      return [false, capabilities]
+      return Promise.reject('not-activated')
     }
-    return [true, capabilities];
+    return Promise.resolve(true);
   }
 }
