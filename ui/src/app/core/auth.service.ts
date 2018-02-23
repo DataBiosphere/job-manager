@@ -33,27 +33,28 @@ export class AuthService {
 
   constructor(private zone: NgZone, capabilitiesService: CapabilitiesService) {
     capabilitiesService.getCapabilities().then(capabilities => {
-      if (capabilities.authentication && capabilities.authentication.isRequired) {
-        this.initAuthPromise = new Promise<void>( (resolve, reject) => {
-          gapi.load('client:auth2', {
-            callback: () => this.initAuth(capabilities.authentication.scopes).then(() => resolve()),
-            onerror: () => reject(),
-          });
-        });
-
-        this.initAuthPromise.then( () => {
-          // Update the current user to any subscribers and resolve the promise
-          this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
-          // Start listening for updates to the current user
-          gapi.auth2.getAuthInstance().currentUser.listen( (user) => {
-            // gapi executes callbacks outside of the Angular zone. To ensure that
-            // UI changes occur correctly, explicitly run all subscriptions to
-            // authentication state within the Angular zone for component change
-            // detection to work.
-            this.zone.run(() => this.updateUser(user));
-          });
-        })
+      if (!capabilities.authentication || !capabilities.authentication.isRequired) {
+        return;
       }
+      this.initAuthPromise = new Promise<void>( (resolve, reject) => {
+        gapi.load('client:auth2', {
+          callback: () => this.initAuth(capabilities.authentication.scopes).then(() => resolve()),
+          onerror: () => reject(),
+        });
+      });
+
+      this.initAuthPromise.then( () => {
+        // Update the current user to any subscribers and resolve the promise
+        this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
+        // Start listening for updates to the current user
+        gapi.auth2.getAuthInstance().currentUser.listen( (user) => {
+          // gapi executes callbacks outside of the Angular zone. To ensure that
+          // UI changes occur correctly, explicitly run all subscriptions to
+          // authentication state within the Angular zone for component change
+          // detection to work.
+          this.zone.run(() => this.updateUser(user));
+        });
+      })
     });
   }
 

@@ -92,15 +92,6 @@ export class JobsTableComponent implements OnInit {
       .catch((error) => this.handleError(error));
   }
 
-  displayStatusColumn(): boolean {
-    for (let field of this.displayFields) {
-      if (field == 'status') {
-        return true;
-      }
-    }
-    return false;
-  }
-
   canAbort(job: QueryJobsResult): boolean {
     return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
   }
@@ -128,6 +119,9 @@ export class JobsTableComponent implements OnInit {
     let value = job;
     for (let field of fields) {
       value = value[field];
+      if (!value) {
+        return "";
+      }
     }
 
     if (value instanceof Date) {

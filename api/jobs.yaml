@@ -174,11 +174,6 @@ definitions:
         description: Fields on ExtendedQueryFields which are queryable
         items:
           type: string
-  DisplayField:
-    description: Map of field name to display name
-    properties:
-      field: string
-      display: string
   JobMetadataResponse:
     description: Job and task level metadata
     required:

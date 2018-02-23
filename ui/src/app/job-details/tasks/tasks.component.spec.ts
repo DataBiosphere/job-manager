@@ -21,19 +21,20 @@ describe('TaskDetailsComponent', () => {
   let fixture: ComponentFixture<TestTasksComponent>;
 
   let task: TaskMetadata = {
-            name: 'task1',
-        executionId: '',
-        executionStatus: 'Failed',
-        start: new Date("2017-11-14T13:00:00"),
-        end: new Date("2017-11-14T13:15:00"),
-        attempts: 1,
-        failures: [],
-        returnCode: 0,
-        stderr: 'gs://test-bucket/stderr.txt',
-        stdout: 'gs://test-bucket/stdout.txt',
-        inputs: {},
-        jobId: 'subworkflow123'
+    name: 'task1',
+    executionId: '',
+    executionStatus: 'Failed',
+    start: new Date("2017-11-14T13:00:00"),
+    end: new Date("2017-11-14T13:15:00"),
+    attempts: 1,
+    failures: [],
+    returnCode: 0,
+    stderr: 'gs://test-bucket/stderr.txt',
+    stdout: 'gs://test-bucket/stdout.txt',
+    inputs: {},
+    jobId: 'subworkflow123'
   }
+
   let job: JobMetadataResponse = {
     id: 'test-id',
     name: 'test-name',

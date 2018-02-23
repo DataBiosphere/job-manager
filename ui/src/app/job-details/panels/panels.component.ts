@@ -52,7 +52,9 @@ export class JobPanelsComponent implements OnChanges {
   }
 
   getLogResourceURL(key: string): string {
-    return ResourceUtils.getResourceURL(this.job.extensions.logs[key]);
+    if (this.job.extensions) {
+      return ResourceUtils.getResourceURL(this.job.extensions.logs[key]);
+    }
   }
 
   getOutputResourceURL(key: string): string {

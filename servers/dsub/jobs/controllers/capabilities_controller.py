@@ -24,7 +24,7 @@ def get_capabilities():
                 field='extensions.statusDetail', display='Status Detail')
         ],
         common_labels=['job-id', 'task-id'],
-        query_extensions=['projectId', 'userId', 'submission'])
+        query_extensions=['projectId', 'userId'])
 
     if _provider_type() == ProviderType.GOOGLE:
         capabilities.authentication = AuthenticationCapability(

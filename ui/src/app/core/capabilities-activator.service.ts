@@ -23,8 +23,7 @@ export class CapabilitiesActivator implements CanActivate {
         this.handleAuthCapabilities(
           capabilities, route.routeConfig.path, state.url))
       .then(result => result[0] == false
-          ? Promise.resolve([false, result[1]])
-          : this.handleProjectCapabilities(result[1], route))
+        ? result : this.handleProjectCapabilities(result[1], route))
       .then(result => result[0] as boolean);
   }
 
