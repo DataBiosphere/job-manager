@@ -18,24 +18,23 @@ export class CapabilitiesActivator implements CanActivate {
     private readonly router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    return this.capabilitiesService.getCapabilities().then(cap => {
-      return this.handleAuthCapabilities(cap, route.routeConfig.path, state.url)
-        .then(() => this.handleProjectCapabilities(cap, route))
-        .catch(error => {
+    return this.capabilitiesService.getCapabilities()
+      .then(cap => this.handleAuthCapabilities(cap, route.routeConfig.path, state.url))
+      .then(cap => this.handleProjectCapabilities(cap, route))
+      .catch(reason => {
           // Handle all not-activated errors by just returning false for
           // this promise. All others, re-throw them.
-          if (error == 'not-activated') {
+          if (reason == 'not-activated') {
             return false;
           }
-          Promise.reject(error);
+          throw reason;
         });
-    });
   }
 
-  private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): Promise<void> {
+  private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): Promise<CapabilitiesResponse> {
     if (capabilities.authentication && capabilities.authentication.isRequired) {
       if (this.authService.authenticated.getValue() || path == 'sign_in') {
-        return Promise.resolve();
+        return Promise.resolve(capabilities);
       }
 
       return this.authService.isAuthenticated().then( (authenticated) => {
@@ -45,7 +44,7 @@ export class CapabilitiesActivator implements CanActivate {
           });
           return Promise.reject('not-activated')
         }
-        return Promise.resolve();
+        return Promise.resolve(capabilities);
       })
     } else if (path == 'sign_in') {
       // Do not allow navigation to the sign in page when authentication is
