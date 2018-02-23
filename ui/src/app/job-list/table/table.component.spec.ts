@@ -38,9 +38,9 @@ describe('JobsTableComponent', () => {
 
   let testComponent: TestTableComponent;
   let fixture: ComponentFixture<TestTableComponent>;
- 
+
   let jobs: QueryJobsResult[];
-  let capabilities: CapabilitiesResponse = 
+  let capabilities: CapabilitiesResponse =
     {
       displayFields: [
         {field: 'status', display: 'Status'},
@@ -160,7 +160,7 @@ describe('JobsTableComponent', () => {
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.job-details-button')).nativeElement.textContent)
       .toEqual(jobs[0].name);
-    
+
 
     // Another tick and detectChanges is required because of the CapabilitiesResponse
     // promise.
@@ -171,7 +171,7 @@ describe('JobsTableComponent', () => {
     expect(dsubColumns.length).toEqual(4);
     // Unwrap image tag to verify the reflect message
     expect(dsubColumns[0].children[0].children[0].children[0].attributes["ng-reflect-message"])
-      .toEqual(jobs[0].status);
+      .toEqual(JobStatus[jobs[0].status]);
     expect(dsubColumns[1].nativeElement.textContent.trim())
       .toEqual((new ShortDateTimePipe("en-US")).transform(jobs[0].submission));
     expect(dsubColumns[2].nativeElement.textContent.trim())
