@@ -55,13 +55,10 @@ export class JobsTableComponent implements OnInit {
     private errorBar: MatSnackBar) { }
 
   ngOnInit() {
-    this.capabilitiesService.getCapabilities().then(capabilities => {
-      this.displayFields = capabilities.displayFields;
-
-      for (let displayField of this.displayFields) {
-        this.displayedColumns.push(displayField.field);
-      }
-    });
+    this.displayFields = this.capabilitiesService.getCapabilitiesSynchronous().displayFields;
+    for (let displayField of this.displayFields) {
+      this.displayedColumns.push(displayField.field);
+    }
 
     this.dataSource.connect(null).subscribe((jobs: QueryJobsResult[]) => {
       this.jobs = jobs;

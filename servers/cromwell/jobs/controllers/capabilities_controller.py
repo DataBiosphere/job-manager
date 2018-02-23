@@ -22,4 +22,4 @@ def get_capabilities():
         common_labels=[
             'cromwell-workflow-name', 'cromwell-workflow-id', 'comment'
         ],
-        extended_query_fields=[])
+        query_extensions=[])

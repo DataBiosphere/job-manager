@@ -79,10 +79,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
       this.selectedStatuses = this.chips.get("statuses").split(',').map(k => JobStatus[k]);
     }
 
-    this.capabilitiesService.getCapabilities().then(capabilities => {
-      this.options = URLSearchParamsUtils.getQueryFields(capabilities);
-      this.filterOptions();
-    });
+    this.options = URLSearchParamsUtils.getQueryFields(
+      this.capabilitiesService.getCapabilitiesSynchronous());
+    this.filterOptions();
   }
 
   ngAfterViewInit(): void {

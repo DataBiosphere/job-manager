@@ -9,17 +9,28 @@ import {environment} from '../../environments/environment';
 @Injectable()
 export class CapabilitiesService {
 
-  private capabilitiesResponse: Promise<CapabilitiesResponse>;
+  private capabilitiesResponse: CapabilitiesResponse;
 
   constructor(private http: Http) {}
 
-  getCapabilities(): Promise<CapabilitiesResponse> {
-    if (!this.capabilitiesResponse) {
-      this.capabilitiesResponse = this.http.get(`${environment.apiUrl}/capabilities`,
-        new RequestOptions({headers: new Headers({'Content-Type': 'application/json'})}))
-        .toPromise()
-        .then(response => response.json() as CapabilitiesResponse);
+  getCapabilitiesSynchronous(): CapabilitiesResponse {
+    if (this.capabilitiesResponse) {
+      return this.capabilitiesResponse;
     }
-    return this.capabilitiesResponse;
+    throw new Error("CapabilitiesResponse has not been retrieved yet.")
+  }
+
+  getCapabilities(): Promise<CapabilitiesResponse> {
+    if (this.capabilitiesResponse) {
+      return Promise.resolve(this.capabilitiesResponse);
+    }
+
+    return this.http.get(`${environment.apiUrl}/capabilities`,
+      new RequestOptions({headers: new Headers({'Content-Type': 'application/json'})}))
+      .toPromise()
+      .then(response => {
+        this.capabilitiesResponse = response.json() as CapabilitiesResponse;
+        return this.capabilitiesResponse;
+      });
   }
 }
