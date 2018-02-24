@@ -52,6 +52,7 @@ export class CapabilitiesActivator implements CanActivate {
       this.router.navigate(['']);
       return Promise.reject('not-activated')
     }
+    return Promise.resolve(capabilities);
   }
 
   private handleProjectCapabilities(capabilities: CapabilitiesResponse, route: ActivatedRouteSnapshot): Promise<boolean> {
