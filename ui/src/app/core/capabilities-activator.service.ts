@@ -57,7 +57,7 @@ export class CapabilitiesActivator implements CanActivate {
   private handleProjectCapabilities(capabilities: CapabilitiesResponse, route: ActivatedRouteSnapshot): Promise<boolean> {
     // Use presence of `projectId` queryExtension as an indicator that a
     // project must be selected.
-    if (capabilities.queryExtensions.includes('projectId')) {
+    if (capabilities.queryExtensions && capabilities.queryExtensions.includes('projectId')) {
       // If we do not already have a project specified in the URL query
       // params, navigate to the projects page.
       let queryRequest = URLSearchParamsUtils.unpackURLSearchParams(route.queryParams['q']);
