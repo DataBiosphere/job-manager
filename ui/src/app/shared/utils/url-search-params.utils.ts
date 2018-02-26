@@ -130,7 +130,7 @@ export class URLSearchParamsUtils {
     var labelFields = new Map<string, FieldDataType>();
     if (capabilities.commonLabels) {
       labelFields = new Map<string, FieldDataType>(
-        capabilities.commonLabels.map(l => [l, FieldDataType.Text] as [string, FieldDataType]));
+        capabilities.commonLabels.map(label => [label, FieldDataType.Text] as [string, FieldDataType]));
     }
     return new Map<string, FieldDataType>([
       ...Array.from(queryDataTypes),

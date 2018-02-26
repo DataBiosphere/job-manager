@@ -13,9 +13,9 @@ import {
   ViewChild
 } from '@angular/core';
 import {ENTER} from '@angular/cdk/keycodes';
-import {FormControl} from "@angular/forms";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Observable} from "rxjs/Observable";
+import {FormControl} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {
   MatPaginator,
@@ -24,13 +24,13 @@ import {
   PageEvent
 } from '@angular/material';
 
-import {CapabilitiesService} from "../../core/capabilities.service";
-import {URLSearchParamsUtils} from "../utils/url-search-params.utils";
-import {JobStatus} from "../model/JobStatus";
-import {QueryJobsRequest} from "../model/QueryJobsRequest";
-import {environment} from "../../../environments/environment";
-import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from "../common";
-import {MatMenuTrigger} from "@angular/material";
+import {CapabilitiesService} from '../../core/capabilities.service';
+import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
+import {JobStatus} from '../model/JobStatus';
+import {QueryJobsRequest} from '../model/QueryJobsRequest';
+import {environment} from '../../../environments/environment';
+import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from '../common';
+import {MatMenuTrigger} from '@angular/material';
 import {JobListView} from '../job-stream';
 
 @Component({
@@ -54,9 +54,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   control: FormControl = new FormControl();
   options: Map<string, FieldDataType>;
   chips: Map<string, string>;
-  currentChipKey: string = "";
-  currentChipValue: string = "";
-  inputValue: string = "";
+  currentChipKey: string = '';
+  currentChipValue: string = '';
+  inputValue: string = '';
   jobStatuses: JobStatus[] = Object.keys(JobStatus).map(k => JobStatus[k]);
   selectedStatuses: JobStatus[] = [];
 
@@ -75,8 +75,8 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.route.snapshot.queryParams['q']) {
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
     }
-    if (this.chips.get("statuses")) {
-      this.selectedStatuses = this.chips.get("statuses").split(',').map(k => JobStatus[k]);
+    if (this.chips.get('statuses')) {
+      this.selectedStatuses = this.chips.get('statuses').split(',').map(k => JobStatus[k]);
     }
 
     this.options = URLSearchParamsUtils.getQueryFields(
@@ -124,7 +124,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
         this.deleteChipIfExists(value);
         this.chips.set(value.trim(), '');
       }
-      this.inputValue = "";
+      this.inputValue = '';
     }
   }
 
@@ -182,11 +182,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getDatePlaceholder(): string {
     if (this.currentChipKey == 'start') {
-      return "Jobs started on or after...";
+      return 'Jobs started on or after...';
     } else if (this.currentChipKey == 'end') {
-      return "Jobs ended on or before...";
+      return 'Jobs ended on or before...';
     } else if (this.currentChipKey == 'submission') {
-      return "Jobs submitted on or before...";
+      return 'Jobs submitted on or before...';
     }
   }
 
@@ -211,7 +211,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   removeChip(chipKey: string): void {
     this.chips.delete(chipKey);
-    if (chipKey == "statuses") {
+    if (chipKey == 'statuses') {
       this.selectedStatuses = [];
     }
     this.search();

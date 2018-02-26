@@ -20,7 +20,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {CapabilitiesService} from "../../core/capabilities.service"
-import {MockCapabilitiesService} from "../../testing/mock-capabilities.service"
+import {FakeCapabilitiesService} from "../../testing/fake-capabilities.service"
 import {JobListView} from "../job-stream";
 import {HeaderComponent} from "./header.component";
 import {CapabilitiesResponse} from '../model/CapabilitiesResponse';
@@ -80,7 +80,7 @@ describe('HeaderComponent', () => {
         ]),
       ],
       providers: [
-        {provide: CapabilitiesService, useValue: new MockCapabilitiesService(capabilities)}
+        {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)}
       ]
     }).compileComponents();
   }));

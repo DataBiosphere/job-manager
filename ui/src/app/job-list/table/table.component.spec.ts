@@ -29,7 +29,7 @@ import {JobsTableComponent} from './table.component';
 import {CapabilitiesResponse} from '../../shared/model/CapabilitiesResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {FakeJobManagerService} from '../../testing/fake-job-manager.service';
-import {MockCapabilitiesService} from '../../testing/mock-capabilities.service';
+import {FakeCapabilitiesService} from '../../testing/fake-capabilities.service';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {SharedModule} from '../../shared/shared.module';
 import {environment} from '../../../environments/environment';
@@ -122,7 +122,7 @@ describe('JobsTableComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: new FakeJobManagerService([])},
-        {provide: CapabilitiesService, useValue: new MockCapabilitiesService(capabilities)}
+        {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)}
       ],
     }).compileComponents();
   }));

@@ -22,7 +22,7 @@ import {JobsTableComponent} from "./table/table.component"
 import {JobManagerService} from '../core/job-manager.service';
 import {JobListResolver} from './job-list-resolver.service';
 import {FakeJobManagerService} from '../testing/fake-job-manager.service';
-import {MockCapabilitiesService} from '../testing/mock-capabilities.service';
+import {FakeCapabilitiesService} from '../testing/fake-capabilities.service';
 import {SharedModule} from '../shared/shared.module';
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
@@ -92,7 +92,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: CapabilitiesService, useValue: new MockCapabilitiesService(capabilities)},
+        {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
         JobListResolver
       ],
     }).compileComponents();
