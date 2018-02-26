@@ -8,7 +8,13 @@ For cromwell setup see the Cromwell README:
 ```
 export CROMWELL_URL=https://cromwell.test-cromwell.broadinstitute.org/api/workflows/v1
 ```
-2. Add a file named `config.json` to `job-manager/servers/cromwell/jobs` that contains the username and password for the specified cromwell instance:
+
+**Note:** If you want to setup this API Server against a locally hosted Cromwell instance, you need to explicitly provide the ip address (inet if the Cromwell is hosted on the same machine) to the Cromwell with port numbers, for example:
+```
+export CROMWELL_URL=http://192.168.0.106:8000/api/workflows/v1
+```
+
+2. You may want to skip this step if the Cromwell instance does not have HTTP Basic Authentication. Add a file named `config.json` to `job-manager/servers/cromwell/jobs` that contains the username and password for the specified cromwell instance:
 ```
 {
   "cromwell_user" : "USERNAME",
