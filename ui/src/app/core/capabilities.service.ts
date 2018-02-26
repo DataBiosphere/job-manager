@@ -10,6 +10,7 @@ import {environment} from '../../environments/environment';
 export class CapabilitiesService {
 
   private capabilitiesResponse: CapabilitiesResponse;
+  private capabilitiesResponsePromise: Promise<CapabilitiesResponse>;
 
   constructor(private http: Http) {}
 
@@ -21,16 +22,17 @@ export class CapabilitiesService {
   }
 
   getCapabilities(): Promise<CapabilitiesResponse> {
-    if (this.capabilitiesResponse) {
-      return Promise.resolve(this.capabilitiesResponse);
+    if (!this.capabilitiesResponsePromise) {
+      this.capabilitiesResponsePromise =
+        this.http.get(`${environment.apiUrl}/capabilities`,
+          new RequestOptions({headers: new Headers({'Content-Type': 'application/json'})}))
+          .toPromise()
+          .then(response => {
+            this.capabilitiesResponse = response.json() as CapabilitiesResponse;
+            return this.capabilitiesResponse;
+          });
     }
 
-    return this.http.get(`${environment.apiUrl}/capabilities`,
-      new RequestOptions({headers: new Headers({'Content-Type': 'application/json'})}))
-      .toPromise()
-      .then(response => {
-        this.capabilitiesResponse = response.json() as CapabilitiesResponse;
-        return this.capabilitiesResponse;
-      });
+    return this.capabilitiesResponsePromise;
   }
 }

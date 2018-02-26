@@ -21,8 +21,6 @@ def get_capabilities():
             DisplayField(field='labels.task-id', display='Task ID'),
             DisplayField(field='extensions.userId', display='User ID'),
             DisplayField(
-                field='labels.test_token', display='Test Token'),
-            DisplayField(
                 field='extensions.statusDetail', display='Status Detail'),
         ],
         common_labels=['job-id', 'task-id'],
