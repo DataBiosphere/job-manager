@@ -34,7 +34,8 @@ else:
 
 app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=False)
 DEFAULT_CROMWELL_CREDENTIALS = {"cromwell_user": "", "cromwell_password": ""}
-LOADER_ERR_MSG = "Failed to load config.json, using the default config: {0}".format(DEFAULT_CROMWELL_CREDENTIALS)
+LOADER_ERR_MSG = "Failed to load config.json, using the default config: {0}".format(
+    DEFAULT_CROMWELL_CREDENTIALS)
 
 # Load credentials for cromwell
 config_path = os.environ.get('CROMWELL_CREDENTIALS')
@@ -57,10 +58,15 @@ app.add_api('swagger.yaml', base_path=args.path_prefix)
 def run():
     # Check the connections with cromwell
     try:
-        response = requests.head(args.cromwell_url, auth=HTTPBasicAuth(app.app.config["cromwell_user"],
-                                                                       app.app.config["cromwell_password"]), timeout=5)
+        response = requests.head(
+            args.cromwell_url,
+            auth=HTTPBasicAuth(app.app.config["cromwell_user"],
+                               app.app.config["cromwell_password"]),
+            timeout=5)
         if response.status_code == 401:
-            raise requests.exceptions.HTTPError("Invalid credentials for the Cromwell: {0}".format(args.cromwell_url))
+            raise requests.exceptions.HTTPError(
+                "Invalid credentials for the Cromwell: {0}".format(
+                    args.cromwell_url))
         else:
             return app.app
     except requests.exceptions.RequestException as err:

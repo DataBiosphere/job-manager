@@ -14,7 +14,7 @@ export CROMWELL_URL=https://cromwell.test-cromwell.broadinstitute.org/api/workfl
 export CROMWELL_URL=http://192.168.0.106:8000/api/workflows/v1
 ```
 
-2. You may want to skip this step if the Cromwell instance does not have HTTP Basic Authentication. Add a file named `config.json` to `job-manager/servers/cromwell/jobs` that contains the username and password for the specified cromwell instance:
+2. Add a file named `config.json` to `job-manager/servers/cromwell/jobs` that contains the username and password for the specified cromwell instance (You may want to skip this step if the Cromwell instance does not have HTTP Basic Authentication):
 ```
 {
   "cromwell_user" : "USERNAME",
