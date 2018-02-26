@@ -27,16 +27,18 @@ export class JobManagerService {
     if (metadata.end) {
       metadata.end = new Date(metadata.end);
     }
-    if (metadata.tasks) {
-      metadata.tasks.forEach((t) => {
-        if (t.start) {
-          t.start = new Date(t.start);
-        }
-        if (t.end) {
-          t.end = new Date(t.end);
-        }
-        return t;
-      });
+    if (metadata.extensions) {
+      if (metadata.extensions.tasks) {
+        metadata.extensions.tasks.forEach((t) => {
+          if (t.start) {
+            t.start = new Date(t.start);
+          }
+          if (t.end) {
+            t.end = new Date(t.end);
+          }
+          return t;
+        });
+      }
     }
     return metadata;
   }
@@ -70,7 +72,7 @@ export class JobManagerService {
 
   private getHttpHeaders(): Headers {
     var headers = new Headers({'Content-Type': 'application/json'});
-    if (environment.requiresAuth && this.authService.authToken) {
+    if (this.authService.authToken) {
       headers.set('Authentication', `Bearer ${this.authService.authToken}`);
     }
     return headers;

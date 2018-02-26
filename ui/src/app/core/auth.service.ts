@@ -1,6 +1,7 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Injectable, NgZone} from '@angular/core';
 
+import {CapabilitiesService} from './capabilities.service';
 import {environment} from '../../environments/environment';
 
 declare const gapi: any;
@@ -12,11 +13,11 @@ export class AuthService {
   public authenticated = new BehaviorSubject<boolean>(false);
   public authToken: string;
 
-  private initAuth(): Promise<void> {
+  private initAuth(scopes: string[]): Promise<void> {
     return gapi.auth2.init({
       client_id: environment.clientId,
       cookiepolicy: 'single_host_origin',
-      scope: environment.scope
+      scope: scopes.join(" ")
     });
   }
 
@@ -30,11 +31,14 @@ export class AuthService {
     }
   }
 
-  constructor(private zone: NgZone) {
-    if (environment.requiresAuth) {
+  constructor(private zone: NgZone, capabilitiesService: CapabilitiesService) {
+    capabilitiesService.getCapabilities().then(capabilities => {
+      if (!capabilities.authentication || !capabilities.authentication.isRequired) {
+        return;
+      }
       this.initAuthPromise = new Promise<void>( (resolve, reject) => {
         gapi.load('client:auth2', {
-          callback: () => this.initAuth().then(() => resolve()),
+          callback: () => this.initAuth(capabilities.authentication.scopes).then(() => resolve()),
           onerror: () => reject(),
         });
       });
@@ -46,12 +50,12 @@ export class AuthService {
         gapi.auth2.getAuthInstance().currentUser.listen( (user) => {
           // gapi executes callbacks outside of the Angular zone. To ensure that
           // UI changes occur correctly, explicitly run all subscriptions to
-          // authentication state within the Angular zone so that components
-          // keep change detection and do not break.
+          // authentication state within the Angular zone for component change
+          // detection to work.
           this.zone.run(() => this.updateUser(user));
         });
       })
-    }
+    });
   }
 
   public isAuthenticated(): Promise<boolean> {
