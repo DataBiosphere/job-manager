@@ -28,7 +28,7 @@ export class JobListResolver implements Resolve<JobStream> {
         .loadAtLeast(initialBackendPageSize)
         .then(resp => jobStream)
         .catch(error => {
-          this.router.navigate([environment.entryPoint]);
+          this.router.navigate(['']);
           return Promise.reject(error);
         });
   }

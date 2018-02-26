@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Observable} from 'rxjs/Observable';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -22,10 +22,14 @@ import {DataSource} from '@angular/cdk/collections';
 import {RouterTestingModule} from '@angular/router/testing';
 
 import {JobListView} from "../../shared/job-stream";
+import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
+import {CapabilitiesService} from '../../core/capabilities.service';
 import {JobManagerService} from '../../core/job-manager.service';
 import {JobsTableComponent} from './table.component';
+import {CapabilitiesResponse} from '../../shared/model/CapabilitiesResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {FakeJobManagerService} from '../../testing/fake-job-manager.service';
+import {FakeCapabilitiesService} from '../../testing/fake-capabilities.service';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {SharedModule} from '../../shared/shared.module';
 import {environment} from '../../../environments/environment';
@@ -34,7 +38,17 @@ describe('JobsTableComponent', () => {
 
   let testComponent: TestTableComponent;
   let fixture: ComponentFixture<TestTableComponent>;
+
   let jobs: QueryJobsResult[];
+  let capabilities: CapabilitiesResponse =
+    {
+      displayFields: [
+        {field: 'status', display: 'Status'},
+        {field: 'submission', display: 'Submitted'},
+        {field: 'extensions.userId', display: 'User ID'},
+        {field: 'labels.status-detail', display: 'Status Detail'}
+      ]
+    };
 
   function testJobs(count: number): QueryJobsResult[] {
     return [{
@@ -43,13 +57,15 @@ describe('JobsTableComponent', () => {
       status: JobStatus.Running,
       submission: new Date('2015-04-20T20:00:00'),
       start: new Date('1994-03-29T21:00:00'),
-      labels: {'user-id': 'user-1', 'status-detail': 'status-detail-1'}
+      labels: {'status-detail': 'status-detail-1'},
+      extensions: {userId: 'user-1'}
     }, {
       id: 'JOB2',
       name: 'AML-G4-CHEN',
       status: JobStatus.Submitted,
       submission: new Date('2015-04-20T20:00:00'),
-      labels: {'user-id': 'user-2', 'status-detail': 'status-detail-2'}
+      labels: {'status-detail': 'status-detail-2'},
+      extensions: {userId: 'user-2'}
     }, {
       id: 'JOB3',
       name: 'TCG-NBL-B887',
@@ -57,7 +73,8 @@ describe('JobsTableComponent', () => {
       submission: new Date('2015-04-20T20:00:00'),
       start: new Date('2015-04-20T21:00:00'),
       end: new Date('2015-04-20T22:00:00'),
-      labels: {'user-id': 'user-3', 'status-detail': 'status-detail-3'}
+      labels: {'status-detail': 'status-detail-3'},
+      extensions: {userId: 'user-3'}
     }, {
       id: 'JOB4',
       name: 'TARGET-CCSK',
@@ -65,7 +82,8 @@ describe('JobsTableComponent', () => {
       submission: new Date('2015-04-20T20:00:00'),
       start: new Date('2015-04-20T21:00:00'),
       end: new Date('2015-04-20T22:00:00'),
-      labels: {'user-id': 'user-4', 'status-detail': 'status-detail-4'}
+      labels: {'status-detail': 'status-detail-4'},
+      extensions: {userId: 'user-4'}
     }, {
       id: 'JOB5',
       name: '1543LKF678',
@@ -103,7 +121,8 @@ describe('JobsTableComponent', () => {
         SharedModule
       ],
       providers: [
-        {provide: JobManagerService, userValue: new FakeJobManagerService([])}
+        {provide: JobManagerService, useValue: new FakeJobManagerService([])},
+        {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)}
       ],
     }).compileComponents();
   }));
@@ -131,23 +150,33 @@ describe('JobsTableComponent', () => {
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.job-details-button')).nativeElement.textContent)
       .toEqual(jobs[0].name);
-    expect(de.query(By.css('#submitted-column')).nativeElement.textContent)
-      .toContain('8:00 PM');
-    expect(de.queryAll(By.css('.additional-column')).length).toEqual(0);
   }));
 
-  it('should display dsub-specific job data in row', async(() => {
-    environment.additionalColumns = ['user-id', 'status-detail'];
+  it('should display extended field and label job data in row', fakeAsync(() => {
     testComponent.jobs.next([jobs[0]]);
+    tick();
     fixture.detectChanges();
+
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.job-details-button')).nativeElement.textContent)
       .toEqual(jobs[0].name);
+
+
+    // Another tick and detectChanges is required because of the CapabilitiesResponse
+    // promise.
+    tick();
+    fixture.detectChanges();
+
     let dsubColumns = de.queryAll(By.css('.additional-column'));
-    expect(dsubColumns.length).toEqual(2);
-    expect(dsubColumns[0].nativeElement.textContent)
-      .toEqual(jobs[0].labels['user-id']);
-    expect(dsubColumns[1].nativeElement.textContent)
+    expect(dsubColumns.length).toEqual(4);
+    // Unwrap image tag to verify the reflect message
+    expect(dsubColumns[0].children[0].children[0].children[0].attributes["ng-reflect-message"])
+      .toEqual(JobStatus[jobs[0].status]);
+    expect(dsubColumns[1].nativeElement.textContent.trim())
+      .toEqual((new ShortDateTimePipe("en-US")).transform(jobs[0].submission));
+    expect(dsubColumns[2].nativeElement.textContent.trim())
+      .toEqual(jobs[0].extensions.userId);
+    expect(dsubColumns[3].nativeElement.textContent.trim())
       .toEqual(jobs[0].labels['status-detail']);
   }));
 

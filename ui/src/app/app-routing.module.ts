@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CanActivate, RouterModule, Routes} from '@angular/router';
 
-import {AuthActivator} from './core/auth-activator.service';
+import {CapabilitiesActivator} from './core/capabilities-activator.service';
 import {JobDetailsComponent} from './job-details/job-details.component';
 import {JobDetailsResolver} from './job-details/job-details-resolver.service';
 import {JobListResolver} from './job-list/job-list-resolver.service';
@@ -15,23 +15,24 @@ import {environment} from '../environments/environment';
 // UI Components to the <router-outlet> element in the main AppComponent.
 const routes: Routes = [
   {
-    path: 'sign_in',
-    component: SignInComponent
+    path: '',
+    redirectTo: 'jobs',
+    pathMatch: 'full'
   },
   {
-    path: '',
-    redirectTo: environment.entryPoint,
-    pathMatch: 'full'
+    path: 'sign_in',
+    component: SignInComponent,
+    canActivate: [CapabilitiesActivator]
   },
   {
     path: 'projects',
     component: ProjectsComponent,
-    canActivate: [AuthActivator]
+    canActivate: [CapabilitiesActivator]
   },
   {
     path: 'jobs',
     component: JobListComponent,
-    canActivate: [AuthActivator],
+    canActivate: [CapabilitiesActivator],
     resolve: {
       stream: JobListResolver
     }
@@ -39,7 +40,7 @@ const routes: Routes = [
   {
     path: 'jobs/:id',
     component: JobDetailsComponent,
-    canActivate: [AuthActivator],
+    canActivate: [CapabilitiesActivator],
     resolve: {
       job: JobDetailsResolver
     }

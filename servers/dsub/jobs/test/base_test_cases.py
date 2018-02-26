@@ -306,7 +306,9 @@ class BaseTestCases:
         def test_query_jobs_by_label_user_id(self):
             job = self.start_job('echo BY_USER_ID', name='by_user_id')
             self.assert_query_matches(
-                QueryJobsRequest(labels={'user-id': job['user-id']}), [job])
+                QueryJobsRequest(
+                    extensions=ExtendedQueryFields(user_id=job['user-id'])),
+                [job])
 
         def test_query_jobs_by_label(self):
             labels = {

@@ -4,6 +4,7 @@ import {
   AfterViewInit,
   Component,
   EventEmitter,
+  Injectable,
   Input,
   NgZone,
   OnDestroy,
@@ -12,8 +13,9 @@ import {
   ViewChild
 } from '@angular/core';
 import {ENTER} from '@angular/cdk/keycodes';
-import {FormControl} from "@angular/forms";
-import {Observable} from "rxjs/Observable";
+import {FormControl} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {
   MatPaginator,
@@ -22,13 +24,13 @@ import {
   PageEvent
 } from '@angular/material';
 
-import {URLSearchParamsUtils} from "../utils/url-search-params.utils";
-import {ActivatedRoute, Router} from "@angular/router";
-import {JobStatus} from "../model/JobStatus";
-import {QueryJobsRequest} from "../model/QueryJobsRequest";
-import {environment} from "../../../environments/environment";
-import {dateColumns, endCol, queryFields, startCol, statusesCol} from "../common";
-import {MatMenuTrigger} from "@angular/material";
+import {CapabilitiesService} from '../../core/capabilities.service';
+import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
+import {JobStatus} from '../model/JobStatus';
+import {QueryJobsRequest} from '../model/QueryJobsRequest';
+import {environment} from '../../../environments/environment';
+import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from '../common';
+import {MatMenuTrigger} from '@angular/material';
 import {JobListView} from '../job-stream';
 
 @Component({
@@ -50,11 +52,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   separatorKeysCodes = [ENTER];
   control: FormControl = new FormControl();
-  options: string[] = [];
+  options: Map<string, FieldDataType>;
   chips: Map<string, string>;
-  currentChipKey: string = "";
-  currentChipValue: string = "";
-  inputValue: string = "";
+  currentChipKey: string = '';
+  currentChipValue: string = '';
+  inputValue: string = '';
   jobStatuses: JobStatus[] = Object.keys(JobStatus).map(k => JobStatus[k]);
   selectedStatuses: JobStatus[] = [];
 
@@ -63,6 +65,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
+    private readonly capabilitiesService: CapabilitiesService,
     private zone: NgZone,
   ) {
     route.queryParams.subscribe(params => this.refreshChips(params['q']));
@@ -72,13 +75,12 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.route.snapshot.queryParams['q']) {
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
     }
-    if (this.chips.get(statusesCol)) {
-      this.selectedStatuses = this.chips.get(statusesCol).split(',').map(k => JobStatus[k]);
+    if (this.chips.get('statuses')) {
+      this.selectedStatuses = this.chips.get('statuses').split(',').map(k => JobStatus[k]);
     }
-    this.options = URLSearchParamsUtils.getQueryFields();
-    if (environment.additionalColumns) {
-      this.options = this.options.concat(environment.additionalColumns);
-    }
+
+    this.options = URLSearchParamsUtils.getQueryFields(
+      this.capabilitiesService.getCapabilitiesSynchronous());
     this.filterOptions();
   }
 
@@ -128,7 +130,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
         this.deleteChipIfExists(value);
         this.chips.set(value.trim(), '');
       }
-      this.inputValue = "";
+      this.inputValue = '';
     }
   }
 
@@ -156,18 +158,18 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     } else if (this.selectedStatuses.indexOf(status) > -1) {
       this.selectedStatuses.splice(this.selectedStatuses.indexOf(status), 1);
     }
-    this.chips.set(statusesCol, this.selectedStatuses.join(','));
+    this.chips.set('statuses', this.selectedStatuses.join(','));
     this.search();
   }
 
   filter(val: string): string[] {
-    return this.options.filter(option =>
+    return Array.from(this.options.keys()).filter(option =>
       option.toLowerCase().indexOf(val.toLowerCase()) === 0);
   }
 
   filterOptions(): void {
     this.filteredOptions = Observable.create((s) => {
-      s.next(this.options.slice());
+      s.next(Array.from(this.options.keys()));
       this.control.valueChanges.subscribe(v => s.next(this.filter(v)));
     });
   }
@@ -177,20 +179,20 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getCurrentChipType(): string {
-    if (dateColumns.indexOf(this.currentChipKey) > -1) {
-      return "date";
+    if (this.currentChipKey && this.options.has(this.currentChipKey)) {
+      return FieldDataType[this.options.get(this.currentChipKey)];
     }
-    else if (this.currentChipKey == statusesCol) {
-      return "statuses";
-    }
-    return "free text";
+    // Default to text for all labels
+    return FieldDataType[FieldDataType.Text];
   }
 
   getDatePlaceholder(): string {
-    if (this.currentChipKey == startCol) {
-      return "Jobs on or after...";
-    } else if (this.currentChipKey == endCol) {
-      return "Jobs on or before..."
+    if (this.currentChipKey == 'start') {
+      return 'Jobs started on or after...';
+    } else if (this.currentChipKey == 'end') {
+      return 'Jobs ended on or before...';
+    } else if (this.currentChipKey == 'submission') {
+      return 'Jobs submitted on or before...';
     }
   }
 
@@ -215,7 +217,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   removeChip(chipKey: string): void {
     this.chips.delete(chipKey);
-    if (chipKey == statusesCol) {
+    if (chipKey == 'statuses') {
       this.selectedStatuses = [];
     }
     this.search();
@@ -243,7 +245,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   shouldDisplayStatusButtons(): boolean {
     return !URLSearchParamsUtils.unpackURLSearchParams(
-      this.route.snapshot.queryParams['q'])[queryFields.statuses];
+      this.route.snapshot.queryParams['q'])['statuses'];
   }
 
   showActiveJobs(): void {
@@ -275,6 +277,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
  * this rather than showing a misleading count for the number of jobs that have
  * been loaded onto the client so far.
  */
+@Injectable()
 export class JobsPaginatorIntl extends MatPaginatorIntl {
   private defaultIntl = new MatPaginatorIntl()
 

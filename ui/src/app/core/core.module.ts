@@ -1,6 +1,7 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
 
-import {AuthActivator} from "./auth-activator.service";
+import {CapabilitiesActivator} from "./capabilities-activator.service";
+import {CapabilitiesService} from "./capabilities.service";
 import {AuthService} from "./auth.service";
 import {JobManagerService} from './job-manager.service';
 
@@ -10,7 +11,7 @@ import {JobManagerService} from './job-manager.service';
   imports: [],
   declarations: [],
   exports: [],
-  providers: [AuthActivator, AuthService, JobManagerService]
+  providers: [AuthService, CapabilitiesActivator, CapabilitiesService, JobManagerService]
 })
 export class CoreModule {
   constructor( @Optional() @SkipSelf() parentModule: CoreModule) {
