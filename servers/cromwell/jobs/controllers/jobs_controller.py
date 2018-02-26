@@ -182,7 +182,7 @@ def query_jobs(body):
 
     while len(results) < query_page_size and page <= last_page:
         page_from_end = last_page - page + 1
-        print(page_from_end)
+
         response = requests.post(
             _get_base_url() + '/query',
             json=cromwell_query_params(query, page_from_end, page_size),
