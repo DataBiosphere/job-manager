@@ -121,21 +121,29 @@ def query_jobs(body):
         query.page_token) or (None, None)
     query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE,
                           _MAX_PAGE_SIZE)
+
+    query.start = query.start.replace(tzinfo=tzlocal()).replace(
+        microsecond=0) if query.start else None
+    query.end = query.end.replace(tzinfo=tzlocal()).replace(
+        microsecond=0) if query.end else None
+    if query.extensions and query.extensions.submission:
+        query.extensions.submission = query.extensions.submission.replace(
+            tzinfo=tzlocal()).replace(microsecond=0)
+
     if query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
-    # TODO(bryancrampton): Fix this to support querying by submission and so
-    # that query.start actually filters by start-time.
-    if query.start:
-        query.start = query.start.replace(tzinfo=tzlocal()).replace(
-            microsecond=0)
-        if create_time_max and query.start > create_time_max:
+    if query.start and query.end and query.start >= query.end:
+        raise BadRequest("Invalid query: start date must precede end date.")
+    if query.start and create_time_max and query.start > create_time_max:
+        raise BadRequest(
+            "Invalid query: start date is invalid with pagination token.")
+    if query.extensions and query.extensions.submission:
+        if query.start and query.extensions.submission > query.start:
             raise BadRequest(
-                "Invalid query: start date is invalid with pagination token.")
-    if query.end:
-        query.end = query.end.replace(tzinfo=tzlocal()).replace(microsecond=0)
-        if query.start and query.start >= query.end:
+                "Invalid query: submission date must be <= start date.")
+        if query.end and query.extensions.submission >= query.end:
             raise BadRequest(
-                "Invalid query: start date must precede end date.")
+                "Invalid query: submission date must precede end date.")
 
     job_generator = _generate_jobs(provider, query, create_time_max, offset_id)
     jobs = []
@@ -191,12 +199,13 @@ def _generate_jobs(provider, query, create_time_max=None, offset_id=None):
     job_buffer = []
     for j in jobs:
         job = _query_jobs_result(j, proj_id)
-        if query.end and (not job.end or job.end > query.end):
-            continue
-
         # Filter pending vs. running jobs since dstat does not have
         # a corresponding status (both RUNNING)
         if query.statuses and job.status not in query.statuses:
+            continue
+        if query.start and (not job.start or job.start < query.start):
+            continue
+        if query.end and (not job.end or job.end > query.end):
             continue
 
         # If this job is from the last page, skip it and continue generating
