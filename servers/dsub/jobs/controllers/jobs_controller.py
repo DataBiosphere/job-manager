@@ -138,9 +138,9 @@ def query_jobs(body):
         raise BadRequest(
             "Invalid query: start date is invalid with pagination token.")
     if query.extensions and query.extensions.submission:
-        if query.start and query.extensions.submission >= query.start:
+        if query.start and query.extensions.submission > query.start:
             raise BadRequest(
-                "Invalid query: submission date must precede start date.")
+                "Invalid query: submission date must be <= start date.")
         if query.end and query.extensions.submission >= query.end:
             raise BadRequest(
                 "Invalid query: submission date must precede end date.")
