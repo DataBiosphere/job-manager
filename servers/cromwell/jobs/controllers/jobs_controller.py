@@ -5,6 +5,7 @@ from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
 from datetime import datetime
 
 from jm_utils import page_tokens
+from jobs.models.extended_fields import ExtendedFields
 from jobs.models.query_jobs_result import QueryJobsResult
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_response import QueryJobsResponse
@@ -120,7 +121,7 @@ def get_job(id):
         outputs=update_key_names(job.get('outputs', {})),
         labels=job.get('labels'),
         failures=failures,
-        tasks=sorted_tasks)
+        extensions=ExtendedFields(tasks=sorted_tasks))
 
 
 def format_task(task_name, task_metadata):
@@ -275,8 +276,8 @@ def format_job(job, now):
         submission=submission,
         start=start,
         end=end,
-        parent_job_id=job.get('parentWorkflowId'),
-        labels=job.get('labels'))
+        labels=job.get('labels'),
+        extensions=ExtendedFields(parent_job_id=job.get('parentWorkflowId')))
 
 
 def _parse_datetime(date_string):

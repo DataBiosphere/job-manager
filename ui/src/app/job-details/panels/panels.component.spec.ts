@@ -30,8 +30,10 @@ describe('JobPanelsComponent', () => {
       end: new Date('1994-03-29T22:00:00'),
       inputs: {'input': 'gs://input/url/', 'input_file': 'gs://input/url/inputs.txt'},
       outputs: {'output': 'gs://output/url/', 'output_file': 'gs://output/url/outputs.txt'},
-      logs: {'log' : 'gs://logs/url'},
       labels: {'user-id': 'user-1', 'project': 'test-pipeline'},
+      extensions: {
+        logs: {'log' : 'gs://logs/url'}
+      }
     };
 
   beforeEach(async(() => {

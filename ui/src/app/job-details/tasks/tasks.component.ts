@@ -9,6 +9,7 @@ import {
 import {DataSource} from '@angular/cdk/collections';
 import {Observable} from 'rxjs/Observable';
 
+import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusImage} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
@@ -22,8 +23,7 @@ import {environment} from "../../../environments/environment";
 })
 export class TaskDetailsComponent implements OnInit, OnChanges {
   @Input() tasks: TaskMetadata[] = [];
-  @Input() jobId: string = '';
-  serverUrl = '';
+  @Input() job: JobMetadataResponse;
 
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
@@ -39,9 +39,6 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
-    if (environment.serverUrl) {
-      this.serverUrl = environment.serverUrl;
-    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -61,13 +58,13 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     return ResourceUtils.getResourceFileName(url);
   }
 
-  getTimingUrl(serverUrl: string, jobId: string): string {
-    if (serverUrl) {
-      return serverUrl + jobId + '/timing';
-    } else {
-      return '/jobs/' + jobId;
-    }
-  }
+  getTimingUrl(): string {  
+    if (this.job.extensions && this.job.extensions.timingUrl) {
+       return this.job.extensions.timingUrl;
+     } else {
+       return '/jobs/' + this.job.id;
+     }
+   }  
 }
 
 /** Simple database with an observable list of jobs to be subscribed to by the

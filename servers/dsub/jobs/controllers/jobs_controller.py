@@ -13,7 +13,7 @@ from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotF
 
 from jm_utils import page_tokens
 from jobs.common import execute_redirect_stdout
-from jobs.controllers.utils import failures, job_ids, job_statuses, labels, logs, providers, query_parameters
+from jobs.controllers.utils import extensions, failures, job_ids, job_statuses, labels, providers, query_parameters
 from jobs.models.failure_message import FailureMessage
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
@@ -115,14 +115,16 @@ def query_jobs(body):
         QueryJobsResponse: Response containing results from query
     """
     query = QueryJobsRequest.from_dict(body)
-    provider = providers.get_provider(_provider_type(), query.parent_id,
-                                      _auth_token())
+    proj_id = query.extensions.project_id if query.extensions else None
+    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
     create_time_max, offset_id = page_tokens.decode_create_time_max(
         query.page_token) or (None, None)
     query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE,
                           _MAX_PAGE_SIZE)
     if query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
+    # TODO(bryancrampton): Fix this to support querying by submission and so
+    # that query.start actually filters by start-time.
     if query.start:
         query.start = query.start.replace(tzinfo=tzlocal()).replace(
             microsecond=0)
@@ -143,7 +145,7 @@ def query_jobs(body):
             if len(jobs) == query.page_size:
                 break
     except apiclient.errors.HttpError as error:
-        _handle_http_error(error, query.parent_id)
+        _handle_http_error(error, proj_id)
 
     try:
         next_job = job_generator.next()
@@ -156,21 +158,6 @@ def query_jobs(body):
         return QueryJobsResponse(results=jobs)
 
 
-def _api_job(job, project_id=None):
-    return QueryJobsResult(
-        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get(
-            'task-id', '')),
-        name=job['job-name'],
-        status=job_statuses.dsub_to_api(job),
-        # The LocalJobProvider returns create-time with milliescond granularity.
-        # For consistency with the GoogleJobProvider, truncate to second
-        # granularity.
-        submission=job['create-time'].replace(microsecond=0),
-        start=job.get('start-time'),
-        end=job['end-time'],
-        labels=labels.dsub_to_api(job))
-
-
 def _auth_token():
     auth_header = request.headers.get('Authentication')
     if auth_header:
@@ -181,6 +168,7 @@ def _auth_token():
 
 
 def _generate_jobs(provider, query, create_time_max=None, offset_id=None):
+    proj_id = query.extensions.project_id if query.extensions else None
     # If create_time_max is not set, but we have to client-side filter by
     # end-time, set create_time_max = query.end because all the jobs with
     # create_time >= query.end cannot possibly match the query.
@@ -202,7 +190,7 @@ def _generate_jobs(provider, query, create_time_max=None, offset_id=None):
     last_create_time = None
     job_buffer = []
     for j in jobs:
-        job = _api_job(j, query.parent_id)
+        job = _query_jobs_result(j, proj_id)
         if query.end and (not job.end or job.end > query.end):
             continue
 
@@ -245,17 +233,32 @@ def _handle_http_error(error, proj_id):
 def _metadata_response(id, job):
     return JobMetadataResponse(
         id=id,
-        name=job['job-name'],
         status=job_statuses.dsub_to_api(job),
         submission=job['create-time'],
+        name=job['job-name'],
         start=job.get('start-time'),
         end=job['end-time'],
         inputs=job['inputs'],
         outputs=job['outputs'],
         labels=labels.dsub_to_api(job),
-        logs=logs.dsub_to_api(job),
-        failures=failures.get_failures(job))
+        failures=failures.get_failures(job),
+        extensions=extensions.get_extensions(job))
 
 
 def _provider_type():
     return current_app.config['PROVIDER_TYPE']
+
+
+def _query_jobs_result(job, project_id=None):
+    return QueryJobsResult(
+        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
+        name=job['job-name'],
+        status=job_statuses.dsub_to_api(job),
+        # The LocalJobProvider returns create-time with milliescond granularity.
+        # For consistency with the GoogleJobProvider, truncate to second
+        # granularity.
+        submission=job['create-time'].replace(microsecond=0),
+        start=job.get('start-time'),
+        end=job['end-time'],
+        labels=labels.dsub_to_api(job),
+        extensions=extensions.get_extensions(job))

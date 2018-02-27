@@ -4,19 +4,22 @@ import {JobStatus} from "../model/JobStatus";
 import {QueryJobsRequest} from "../model/QueryJobsRequest";
 
 const queryRequest: QueryJobsRequest = {
-  parentId: 'parent-id',
-  name: 'name',
+  name: 'job-name',
   statuses: [JobStatus.Running, JobStatus.Aborted],
-  labels: {'key': 'value'}
+  labels: {'key': 'value'},
+  extensions: {
+    projectId: 'project-id'
+  }
 };
+const queryRequestString: string = 'statuses=Running&statuses=Aborted&name=job-name&projectId=project-id&key=value';
 
 const queryMap:  Map<String, String[]> = new Map()
-  .set('parent-id', ['parent-id'])
-  .set('job-name', ['name'])
+  .set('name', ['job-name'])
   .set('statuses', ['Running', 'Aborted'])
-  .set('key', ['value']);
+  .set('key', ['value'])
+  .set('projectId', ['project-id']);
 
-const queryString: string = 'parent-id=parent-id&job-name=name&statuses=Running&statuses=Aborted&key=value';
+const queryMapString: string = 'name=job-name&statuses=Running&statuses=Aborted&key=value&projectId=project-id';
 
 describe('URLSearchParamsUtils', () => {
   beforeEach(async(() => {
@@ -31,23 +34,23 @@ describe('URLSearchParamsUtils', () => {
   }));
 
   it('should encode query string from request', () => {
-      expect(URLSearchParamsUtils.encodeURLSearchParams(queryRequest)).toBe(queryString);
+      expect(URLSearchParamsUtils.encodeURLSearchParams(queryRequest)).toBe(queryRequestString);
     });
 
   it('should encode query string from map', () => {
-    expect(URLSearchParamsUtils.encodeURLSearchParamsFromMap(queryMap)).toBe(queryString);
+    expect(URLSearchParamsUtils.encodeURLSearchParamsFromMap(queryMap)).toBe(queryMapString);
   });
 
   it('should decode request from query string', () => {
-    let actualRequest: QueryJobsRequest = URLSearchParamsUtils.unpackURLSearchParams(queryString);
-    expect(actualRequest.parentId).toBe(queryRequest.parentId);
+    let actualRequest: QueryJobsRequest = URLSearchParamsUtils.unpackURLSearchParams(queryRequestString);
+    expect(actualRequest.extensions.projectId).toBe(queryRequest.extensions.projectId);
     expect(actualRequest.name).toBe(queryRequest.name);
     expect(actualRequest.statuses.toString()).toBe(queryRequest.statuses.toString());
     expect(actualRequest.labels['key']).toBe(queryRequest.labels['key']);
   });
 
   it('should get list of chips', () => {
-    let chips: Map<string, string> = URLSearchParamsUtils.getChips(queryString);
+    let chips: Map<string, string> = URLSearchParamsUtils.getChips(queryMapString);
     chips.forEach((value: string, key: string) => {
       expect(value).toBe(queryMap.get(key).toString());
     });

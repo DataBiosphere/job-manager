@@ -27,20 +27,24 @@ export class JobPanelsComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.job = changes.job.currentValue;
-    if (this.job.tasks) {
-      this.tasks = this.job.tasks;
-      this.numTasks = this.tasks.length;
-      for (let task of this.tasks) {
-        if (task.executionStatus == JobStatus[JobStatus.Succeeded]) {
-          this.numCompletedTasks++;
+    if (this.job.extensions) {
+      if (this.job.extensions.tasks) {
+        this.tasks = this.job.extensions.tasks;
+        this.numTasks = this.tasks.length;
+        for (let task of this.tasks) {
+          if (task.executionStatus == JobStatus[JobStatus.Succeeded]) {
+            this.numCompletedTasks++;
+          }
         }
+      }
+
+      if (this.job.extensions.logs) {
+        this.logs = Object.keys(this.job.extensions.logs || {}).sort();
       }
     }
     this.inputs = Object.keys(this.job.inputs || {}).sort();
-    this.logs = Object.keys(this.job.logs || {}).sort();
     this.outputs = Object.keys(this.job.outputs || {}).sort();
     this.labels = Object.keys(this.job.labels || {}).sort();
-
   }
 
   getInputResourceURL(key: string): string {
@@ -48,7 +52,9 @@ export class JobPanelsComponent implements OnChanges {
   }
 
   getLogResourceURL(key: string): string {
-    return ResourceUtils.getResourceURL(this.job.logs[key]);
+    if (this.job.extensions) {
+      return ResourceUtils.getResourceURL(this.job.extensions.logs[key]);
+    }
   }
 
   getOutputResourceURL(key: string): string {

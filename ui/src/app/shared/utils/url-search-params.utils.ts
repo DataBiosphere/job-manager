@@ -1,8 +1,9 @@
 import {URLSearchParams} from '@angular/http';
 
+import {CapabilitiesResponse} from "../model/CapabilitiesResponse";
 import {QueryJobsRequest} from "../model/QueryJobsRequest";
 import {JobStatus} from "../model/JobStatus";
-import {queryFields} from "../common";
+import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from "../common";
 
 /** Utilities for working with URLSearchParams*/
 export class URLSearchParamsUtils {
@@ -11,16 +12,30 @@ export class URLSearchParamsUtils {
    *  that can be passed as a QueryParam. */
   public static encodeURLSearchParams(request: QueryJobsRequest): string {
     let urlSearchParams = new URLSearchParams();
-    urlSearchParams.set(queryFields.parentId, request.parentId);
-    urlSearchParams.set(queryFields.jobName, request.name);
+
     for (let s in request.statuses) {
       urlSearchParams.append('statuses', JobStatus[request.statuses[s]]);
     }
+    if (request.name) {
+      urlSearchParams.set('name', request.name);
+    }
     if (request.start) {
-      urlSearchParams.set(queryFields.start, request.start.toISOString());
+      urlSearchParams.set('start', request.start.toISOString());
     }
     if (request.end) {
-      urlSearchParams.set(queryFields.end, request.end.toISOString());
+      urlSearchParams.set('end', request.end.toISOString());
+    }
+
+    if (request.extensions) {
+      if (request.extensions.projectId) {
+        urlSearchParams.set('projectId', request.extensions.projectId);
+      }
+      if (request.extensions.userId) {
+        urlSearchParams.set('userId', request.extensions.userId);
+      }
+      if (request.extensions.submission) {
+        urlSearchParams.set('submission', request.extensions.submission.toISOString());
+      }
     }
 
     if (request.labels) {
@@ -28,6 +43,7 @@ export class URLSearchParamsUtils {
         urlSearchParams.set(key, request.labels[key]);
       });
     }
+
     return urlSearchParams.toString();
   }
 
@@ -51,30 +67,43 @@ export class URLSearchParamsUtils {
     let urlSearchParams = new URLSearchParams(query);
     let queryRequest = {
       labels: {},
+      extensions: {}
     };
 
     urlSearchParams.paramsMap.forEach((values: string[], key: string) => {
-      if (key == queryFields.parentId) {
-        queryRequest['parentId'] = urlSearchParams.get(queryFields.parentId);
-      }
-      else if (key == queryFields.jobName) {
-        queryRequest['name'] = urlSearchParams.get(queryFields.jobName);
-      }
-      else if (key == queryFields.statuses) {
-        let statuses: JobStatus[] = [];
-        for (let status of urlSearchParams.getAll(queryFields.statuses)) {
-          statuses.push(JobStatus[status]);
+      if (queryDataTypes.has(key) || queryExtensionsDataTypes.has(key)) {
+        // If this is a known field, handle the data type explicitly
+        var value: any;
+        let dataType = queryDataTypes.has(key) ? queryDataTypes.get(key) : queryExtensionsDataTypes.get(key);
+        switch (dataType) {
+          case FieldDataType.Text: {
+            value = urlSearchParams.get(key);
+            break;
+          }
+          case FieldDataType.Date: {
+            value = new Date(urlSearchParams.get(key));
+            break;
+          }
+          case FieldDataType.Enum: {
+            // Handle enum data types. Currently this is only statuses, if we
+            // add additional ones this has to be updated.
+            let statuses: JobStatus[] = [];
+            for (let status of urlSearchParams.getAll(key)) {
+              statuses.push(JobStatus[status]);
+            }
+            value = statuses;
+          }
         }
-        queryRequest['statuses'] = statuses;
+
+        if (queryDataTypes.has(key)) {
+          queryRequest[key] = value;
+        } else {
+          queryRequest.extensions[key] = value;
+        }
       }
-      else if (key == queryFields.start) {
-        queryRequest['start'] = new Date(urlSearchParams.get(queryFields.start));
-      }
-      else if (key == queryFields.end) {
-        queryRequest['end'] = new Date(urlSearchParams.get(queryFields.end));
-      }
-      // Assume that any filters not matching a primary field should be interpreted as a label
       else {
+        // Assume that any filters not matching a primary field should be
+        // interpreted as a text label.
         queryRequest.labels[key] = urlSearchParams.get(key);
       }
     });
@@ -95,11 +124,22 @@ export class URLSearchParamsUtils {
   }
 
   /** Returns the list of queryable non-label fields. */
-  public static getQueryFields(): string[] {
-    let fields: string[] = [];
-    for (let field in queryFields) {
-      fields.push(queryFields[field]);
+  public static getQueryFields(capabilities: CapabilitiesResponse): Map<string, FieldDataType>  {
+    let queryFields = new Map<string, FieldDataType>(queryDataTypes);
+
+    if (capabilities.commonLabels) {
+      capabilities.commonLabels.map(label => queryFields.set(label, FieldDataType.Text));
     }
-    return fields;
+
+    if (capabilities.queryExtensions) {
+      capabilities.queryExtensions.forEach(field => {
+        if (!queryExtensionsDataTypes.has(field)) {
+          throw new Error("Unsupported queryExtension field.")
+        }
+        queryFields.set(field, queryExtensionsDataTypes.get(field));
+      });
+    }
+
+    return queryFields;
   }
 }

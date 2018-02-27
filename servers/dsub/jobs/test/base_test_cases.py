@@ -14,6 +14,7 @@ from jobs.common import execute_redirect_stdout
 from jobs.controllers.utils import job_ids
 from jobs.controllers.utils.job_statuses import ApiStatus
 from jobs.encoder import JSONEncoder
+from jobs.models.extended_query_fields import ExtendedQueryFields
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
@@ -55,7 +56,7 @@ class BaseTestCases:
             sorted_job_list = sorted(job_list, key=self.api_job_id)
             for result, job in zip(sorted_results, sorted_job_list):
                 self.assertEqual(result.id, self.api_job_id(job))
-                self.assertEqual(result.labels['user-id'], job['user-id'])
+                self.assertEqual(result.extensions.user_id, job['user-id'])
             return response
 
         def create_app(self):
@@ -87,7 +88,11 @@ class BaseTestCases:
 
         def must_query_jobs(self, parameters):
             if self.testing_project:
-                parameters.parent_id = self.testing_project
+                if parameters.extensions:
+                    parameters.extensions.project_id = self.testing_project
+                else:
+                    parameters.extensions = ExtendedQueryFields(
+                        project_id=self.testing_project)
             resp = self.client.open(
                 '/jobs/query',
                 method='POST',
@@ -230,7 +235,7 @@ class BaseTestCases:
             # Get job and validate that the metadata is accurate
             job = self.must_get_job(api_job_id)
             self.assertEqual(job.id, api_job_id)
-            self.assertEqual(job.labels['user-id'], started['user-id'])
+            self.assertEqual(job.extensions.user_id, started['user-id'])
             self.assertEqual(job.inputs, inputs)
             self.assertEqual(job.labels['label'], 'the_label_value')
             self.assertEqual(job.outputs, outputs)
@@ -301,7 +306,9 @@ class BaseTestCases:
         def test_query_jobs_by_label_user_id(self):
             job = self.start_job('echo BY_USER_ID', name='by_user_id')
             self.assert_query_matches(
-                QueryJobsRequest(labels={'user-id': job['user-id']}), [job])
+                QueryJobsRequest(
+                    extensions=ExtendedQueryFields(user_id=job['user-id'])),
+                [job])
 
         def test_query_jobs_by_label(self):
             labels = {
