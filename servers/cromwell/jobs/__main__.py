@@ -47,8 +47,9 @@ try:
     with open(config_path) as f:
         config = json.load(f)
 except (IOError, TypeError):
-    logger.warning('Failed to load config.json, using the default config: {}'.format(
-        DEFAULT_CROMWELL_CREDENTIALS))
+    logger.warning(
+        'Failed to load config.json, using the default config: {}'.format(
+            DEFAULT_CROMWELL_CREDENTIALS))
     config = DEFAULT_CROMWELL_CREDENTIALS
 finally:
     app.app.config.update(config)
@@ -75,4 +76,5 @@ def run():
         logger.error('Invalid config.json file provided.')
     except requests.exceptions.RequestException as err:
         logger.critical(err)
-        logger.critical('Failed to connect to Cromwell: {}'.format(args.cromwell_url))
+        logger.critical('Failed to connect to Cromwell: {}'.format(
+            args.cromwell_url))
