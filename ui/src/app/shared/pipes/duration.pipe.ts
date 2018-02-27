@@ -12,7 +12,7 @@ export class DurationPipe implements PipeTransform {
     } else {
       duration = new Date().getTime() - start.getTime();
     }
-    return Math.round(duration/3600000) + "h " +
-      Math.round(duration/60000)%60 + "m";
+    return Math.floor(duration/3600000) + "h " +
+      Math.floor(duration/60000)%60 + "m";
   }
 }
