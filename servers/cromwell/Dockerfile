@@ -11,4 +11,4 @@ RUN rm -rf jm_utils
 
 # Missing required arguments -b PORT, -e ... which must be provided by the
 # docker image user.
-ENTRYPOINT ["gunicorn", "jobs.__main__:app"]
+ENTRYPOINT ["gunicorn", "jobs:run()"]
