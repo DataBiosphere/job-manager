@@ -4,49 +4,69 @@
 #
 version: 2
 jobs:
-  build:
+  ui:
+    machine:
+      image: circleci/classic:latest
+    steps:
+      - checkout
+      - restore_cache:
+          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+      - run:
+          name: nvm install node and UI dependencies
+          command: |
+            /opt/circleci/.nvm/nvm.sh install 8.5.0
+            cd ui
+            npm install
+            npm install -g @angular/cli
+      - save_cache:
+          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+          paths:
+            - "ui/node_modules"
+      - run:
+          name: Lint angular code with ng lint
+          command: |
+            /opt/circleci/.nvm/nvm.sh use 8.5.0
+            cd ui
+            ng lint --type-check
+      - run:
+          name: Run UI unit tests
+          command: |
+            /opt/circleci/.nvm/nvm.sh use 8.5.0
+            cd ui
+            ng test --watch=false -sm=false
+      - run:
+          name: Ensure the UI builds for prod
+          # Target production to emulate deployment, but a dev environment
+          # because we do not have a prod environment file.
+          # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
+          command: |
+            /opt/circleci/.nvm/nvm.sh use 8.5.0
+            cd ui
+            ng build --target=production --environment=dev
+
+  backends:
     environment:
-      - NVM_DIR: /opt/circleci/.nvm
       - KEEP_TEST_DSUB_FILES: true
       - GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
     machine:
       image: circleci/classic:latest
-
     working_directory: ~/job-manager
     steps:
       - checkout
+      - restore_cache:
+          key: node-modules-{{ .Branch }}--{{ checksum "servers/dsub/requirements.txt" }}
+      - restore_cache:
+          key: node-modules-{{ .Branch }}--{{ checksum "servers/cromwell/requirements.txt" }}
+      - restore_cache:
+          key: node-modules-{{ .Branch }}--{{ checksum "servers/jm_utils/requirements.txt" }}
       - run:
           name: Install detox and yapf
           command: |
             pip install detox yapf
       - run:
-          name: Add nvm to bash environment
-          # Adding this line to the BASH_ENV file enables use of nvm in all shells
-          command: |
-            NVM_ACTIVATE="\n[ -s \"\$NVM_DIR/nvm.sh\" ] && \\. \"\$NVM_DIR/nvm.sh\""
-            command printf "${NVM_ACTIVATE}" >> "$BASH_ENV"
-      # TODO(bryancrampton): Cache node_modules directory and potentially node
-      # 8.5.0 install
-      - run:
-          name: nvm install node and UI dependencies
-          command: |
-            nvm install 8.5.0
-            cd ui
-            npm install
-            npm install -g @angular/cli
-      # Linting
-      - run:
           name: Lint python code with yapf
           command: |
             sh ./scripts/yapf_lint.sh
-      - run:
-          name: Lint angular code with ng lint
-          command: |
-            nvm use 8.5.0
-            cd ui
-            ng lint --type-check
-      # Unit and Integration Tests
-      # TODO(calbach): Cache the tox venvs per https://discuss.circleci.com/t/cached-venv-in-tox/1499.
       - run:
           name: Run dsub server tests
           command: |
@@ -66,21 +86,21 @@ jobs:
           name: Run jm_utils server tests
           command: |
             detox -c ./servers/jm_utils
-      - run:
-          name: Run UI unit tests
-          command: |
-            nvm use 8.5.0
-            cd ui
-            ng test --watch=false
-      - run:
-          name: Ensure the UI builds for prod
-          # Target production to emulate deployment, but a dev environment
-          # because we do not have a prod environment file.
-          # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
-          command: |
-            nvm use 8.5.0
-            cd ui
-            ng build --target=production --environment=dev
-      - store_artifacts:
-          path: /tmp
-          destination: test-temp
+      - save_cache:
+          key: node-modules-{{ .Branch }}--{{ checksum "servers/dsub/requirements.txt" }}
+          paths:
+            - "servers/dsub/.tox"
+      - save_cache:
+          key: node-modules-{{ .Branch }}--{{ checksum "servers/cromwell/requirements.txt" }}
+          paths:
+            - "servers/cromwell/.tox"
+      - save_cache:
+          key: node-modules-{{ .Branch }}--{{ checksum "servers/jm_utils/requirements.txt" }}
+          paths:
+            - "servers/jm_utils/.tox"
+workflows:
+  version: 2
+  ui_and_backends:
+    jobs:
+      - ui
+      - backends
