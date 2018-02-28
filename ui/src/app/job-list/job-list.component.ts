@@ -49,7 +49,7 @@ export class JobListComponent implements OnInit {
 
   ngOnInit(): void {
     this.jobStream = this.route.snapshot.data['stream'];
-    this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
+    this.streamSubscription = this.jobStream.subscribe(this.jobs);
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
@@ -68,12 +68,18 @@ export class JobListComponent implements OnInit {
     if (this.streamSubscription) {
       this.loading = true;
       this.streamSubscription.unsubscribe();
-      this.jobStream = new JobStream(this.jobManagerService,
+      const nextStream = new JobStream(this.jobManagerService,
           URLSearchParamsUtils.unpackURLSearchParams(query));
-      this.jobStream.loadAtLeast(initialBackendPageSize)
+      nextStream.loadAtLeast(initialBackendPageSize)
         .then(() => {
+          if (query !== this.route.snapshot.queryParams['q']) {
+            // We initiated another query since the original request; ignore
+            // the results of this old load.
+            return;
+          }
           // Only subscribe after the initial page load finishes, to avoid
           // briefly loading an empty list of jobs.
+          this.jobStream = nextStream;
           this.header.resetPagination();
           this.streamSubscription = this.jobStream.subscribe(this.jobs);
           this.loading = false;
