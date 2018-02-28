@@ -75,6 +75,7 @@ export class JobListComponent implements OnInit {
           if (query !== this.route.snapshot.queryParams['q']) {
             // We initiated another query since the original request; ignore
             // the results of this old load.
+            // TODO(calbach): Track/cancel any ongoing requests.
             return;
           }
           // Only subscribe after the initial page load finishes, to avoid
