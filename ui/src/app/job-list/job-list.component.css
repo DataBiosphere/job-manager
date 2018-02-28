@@ -1,0 +1,19 @@
+.table-container {
+  position: relative;
+}
+
+.spinner-overlay {
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+/* The pagination controls are near the top, so position relatively high. */
+.mat-spinner {
+  top: 15%;
+}

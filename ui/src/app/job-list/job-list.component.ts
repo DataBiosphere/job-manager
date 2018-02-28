@@ -33,6 +33,7 @@ export class JobListComponent implements OnInit {
     results: [],
     exhaustive: false
   });
+  loading = false;
   private jobStream: JobStream;
   private streamSubscription: Subscription;
 
@@ -65,6 +66,7 @@ export class JobListComponent implements OnInit {
 
   reloadJobs(query: string) {
     if (this.streamSubscription) {
+      this.loading = true;
       this.streamSubscription.unsubscribe();
       this.jobStream = new JobStream(this.jobManagerService,
           URLSearchParamsUtils.unpackURLSearchParams(query));
@@ -74,6 +76,7 @@ export class JobListComponent implements OnInit {
           // briefly loading an empty list of jobs.
           this.header.resetPagination();
           this.streamSubscription = this.jobStream.subscribe(this.jobs);
+          this.loading = false;
         })
         .catch(error => this.handleError(error));
     }

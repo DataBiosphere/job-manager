@@ -2,7 +2,12 @@
   [showControls]="true"
   [jobs]="jobs"
   [pageSize]="pageSize"></jm-header>
-<jm-job-list-table
-  [dataSource]="dataSource"
-  (onJobsChanged)="handleJobsChanged()">
-</jm-job-list-table>
+<div class="table-container">
+  <jm-job-list-table
+    [dataSource]="dataSource"
+    (onJobsChanged)="handleJobsChanged()">
+  </jm-job-list-table>
+  <div *ngIf="loading" class="spinner-overlay">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>
