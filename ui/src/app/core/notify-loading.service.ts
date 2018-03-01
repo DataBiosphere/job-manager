@@ -1,10 +1,6 @@
 import {
-  Component,
-  ElementRef,
   Injectable,
   NgZone,
-  OnInit,
-  ViewChild,
 } from '@angular/core';
 import {
   Event as RouterEvent,
@@ -15,7 +11,6 @@ import {
   Router,
 } from '@angular/router';
 import {MatSnackBar, MatSnackBarRef, SimpleSnackBar} from '@angular/material';
-import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class NotifyLoadingService {

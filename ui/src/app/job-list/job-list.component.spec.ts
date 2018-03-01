@@ -155,7 +155,11 @@ describe('JobListComponent', () => {
     testComponent.reloadJobs('');
     fixture.detectChanges();
     expect(de.queryAll(By.css('.spinner-overlay')).length).toEqual(1);
+    tick();
 
+    // We don't finish loading until we complete a query that matches the
+    // the ActiveRoute; so trigger a real navigate to clear the loading state.
+    de.query(By.css('.active-button')).nativeElement.click();
     tick();
     fixture.detectChanges();
     expect(de.queryAll(By.css('.spinner-overlay')).length).toEqual(0);
