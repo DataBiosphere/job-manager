@@ -24,4 +24,13 @@ describe('DurationPipe', () => {
       .toBe('2h 15m');
   });
 
+  it('should truncate duration correctly ', () => {
+    let pipe = new DurationPipe();
+    let start: Date = new Date("2017-11-22T22:00:25");
+    let end: Date = new Date("2017-11-22T22:45:25");
+
+    expect(pipe.transform(start, end))
+      .toBe('0h 45m');
+  });
+
 });
