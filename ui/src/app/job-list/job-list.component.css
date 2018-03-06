@@ -2,8 +2,7 @@
   position: relative;
 }
 
-.spinner-overlay {
-  background: rgba(255, 255, 255, 0.7);
+.spinner-container {
   display: flex;
   justify-content: center;
   position: absolute;
@@ -11,6 +10,10 @@
   left: 0;
   height: 100%;
   width: 100%;
+}
+
+.job-list-table {
+  display: block;
 }
 
 /* The pagination controls are near the top, so position relatively high. */

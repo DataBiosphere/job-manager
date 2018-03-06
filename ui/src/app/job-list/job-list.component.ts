@@ -89,6 +89,13 @@ export class JobListComponent implements OnInit {
     }
   }
 
+  get tableOpacity() {
+    if (this.loading) {
+      return .4;
+    }
+    return 1.0;
+  }
+
   handleError(error: any) {
     this.errorBar.open(
       new ErrorMessageFormatterPipe().transform(error),

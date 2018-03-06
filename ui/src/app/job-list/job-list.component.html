@@ -4,10 +4,12 @@
   [pageSize]="pageSize"></jm-header>
 <div class="table-container">
   <jm-job-list-table
+    class="job-list-table"
+    [ngStyle]="{'opacity': tableOpacity}"
     [dataSource]="dataSource"
     (onJobsChanged)="handleJobsChanged()">
   </jm-job-list-table>
-  <div *ngIf="loading" class="spinner-overlay">
+  <div *ngIf="loading" class="spinner-container">
     <mat-spinner></mat-spinner>
   </div>
 </div>
