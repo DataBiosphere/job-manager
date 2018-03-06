@@ -147,14 +147,14 @@ describe('JobListComponent', () => {
 
   it('renders the loading spinner only during load', fakeAsync(() => {
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('.spinner-overlay')).length).toEqual(0);
+    expect(de.queryAll(By.css('.spinner-container')).length).toEqual(0);
 
     // Ideally we'd click a nav element here instead, but unfortunately the
     // navigate and job load would be evaluated within a single tick(), so we'd
     // never see the loading spinner.
     testComponent.reloadJobs('');
     fixture.detectChanges();
-    expect(de.queryAll(By.css('.spinner-overlay')).length).toEqual(1);
+    expect(de.queryAll(By.css('.spinner-container')).length).toEqual(1);
     tick();
 
     // We don't finish loading until we complete a query that matches the
@@ -162,7 +162,7 @@ describe('JobListComponent', () => {
     de.query(By.css('.active-button')).nativeElement.click();
     tick();
     fixture.detectChanges();
-    expect(de.queryAll(By.css('.spinner-overlay')).length).toEqual(0);
+    expect(de.queryAll(By.css('.spinner-container')).length).toEqual(0);
   }));
 
   it('paginates forward', fakeAsync(() => {
