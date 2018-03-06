@@ -1,0 +1,22 @@
+.table-container {
+  position: relative;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.job-list-table {
+  display: block;
+}
+
+/* The pagination controls are near the top, so position relatively high. */
+.mat-spinner {
+  top: 15%;
+}

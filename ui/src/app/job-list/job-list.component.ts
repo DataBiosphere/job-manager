@@ -33,6 +33,7 @@ export class JobListComponent implements OnInit {
     results: [],
     exhaustive: false
   });
+  loading = false;
   private jobStream: JobStream;
   private streamSubscription: Subscription;
 
@@ -48,7 +49,7 @@ export class JobListComponent implements OnInit {
 
   ngOnInit(): void {
     this.jobStream = this.route.snapshot.data['stream'];
-    this.streamSubscription = this.jobStream.subscribe(resp => this.jobs.next(resp));
+    this.streamSubscription = this.jobStream.subscribe(this.jobs);
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
@@ -65,18 +66,34 @@ export class JobListComponent implements OnInit {
 
   reloadJobs(query: string) {
     if (this.streamSubscription) {
+      this.loading = true;
       this.streamSubscription.unsubscribe();
-      this.jobStream = new JobStream(this.jobManagerService,
+      const nextStream = new JobStream(this.jobManagerService,
           URLSearchParamsUtils.unpackURLSearchParams(query));
-      this.jobStream.loadAtLeast(initialBackendPageSize)
+      nextStream.loadAtLeast(initialBackendPageSize)
         .then(() => {
+          if (query !== this.route.snapshot.queryParams['q']) {
+            // We initiated another query since the original request; ignore
+            // the results of this old load.
+            // TODO(calbach): Track/cancel any ongoing requests.
+            return;
+          }
           // Only subscribe after the initial page load finishes, to avoid
           // briefly loading an empty list of jobs.
+          this.jobStream = nextStream;
           this.header.resetPagination();
           this.streamSubscription = this.jobStream.subscribe(this.jobs);
+          this.loading = false;
         })
         .catch(error => this.handleError(error));
     }
+  }
+
+  get tableOpacity() {
+    if (this.loading) {
+      return .4;
+    }
+    return 1.0;
   }
 
   handleError(error: any) {

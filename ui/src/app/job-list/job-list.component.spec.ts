@@ -14,6 +14,7 @@ import {
   MatTooltipModule,
   MatCheckboxModule
 } from '@angular/material';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {RouterTestingModule} from '@angular/router/testing';
 
 import {CapabilitiesService} from '../core/capabilities.service';
@@ -79,12 +80,12 @@ describe('JobListComponent', () => {
         MatCheckboxModule,
         MatMenuModule,
         MatPaginatorModule,
+        MatProgressSpinnerModule,
         MatSnackBarModule,
         MatSortModule,
         MatTableModule,
         MatTooltipModule,
         RouterTestingModule.withRoutes([
-          {path: '', component: TestJobListComponent, resolve: {stream: JobListResolver}},
           {path: 'jobs', component: TestJobListComponent, resolve: {stream: JobListResolver}}
         ]),
         SharedModule
@@ -102,7 +103,7 @@ describe('JobListComponent', () => {
 
     const router: Router = TestBed.get(Router);
     router.initialNavigation();
-    router.navigate(['']);
+    router.navigate(['jobs']);
     tick();
 
     fixture.detectChanges();
@@ -142,6 +143,26 @@ describe('JobListComponent', () => {
     tick();
 
     expectJobsRendered(fakeJobService.jobs.slice(0, 3));
+  }));
+
+  it('renders the loading spinner only during load', fakeAsync(() => {
+    let de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('.spinner-container')).length).toEqual(0);
+
+    // Ideally we'd click a nav element here instead, but unfortunately the
+    // navigate and job load would be evaluated within a single tick(), so we'd
+    // never see the loading spinner.
+    testComponent.reloadJobs('');
+    fixture.detectChanges();
+    expect(de.queryAll(By.css('.spinner-container')).length).toEqual(1);
+    tick();
+
+    // We don't finish loading until we complete a query that matches the
+    // the ActiveRoute; so trigger a real navigate to clear the loading state.
+    de.query(By.css('.active-button')).nativeElement.click();
+    tick();
+    fixture.detectChanges();
+    expect(de.queryAll(By.css('.spinner-container')).length).toEqual(0);
   }));
 
   it('paginates forward', fakeAsync(() => {
