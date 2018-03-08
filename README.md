@@ -3,9 +3,9 @@ _This product is in Alpha and not yet ready for production use. We welcome all f
 
 See the [development guide](#development) below.
 
-The Job Manager is an API and UI for monitoring and managing jobs in a backend execution engine. 
+The Job Manager is an API and UI for monitoring and managing jobs in a backend execution engine.
 
-The Broad, Verily, and many other organizations in the life sciences execute enormous numbers of scientific workflows and need to manage those operations. Job Manager was born out of the experiences of producing data for some of the world’s largest sequencing projects such as The Cancer Genome Atlas, Baseline, and the Thousand Genomes Project. 
+The Broad, Verily, and many other organizations in the life sciences execute enormous numbers of scientific workflows and need to manage those operations. Job Manager was born out of the experiences of producing data for some of the world’s largest sequencing projects such as The Cancer Genome Atlas, Baseline, and the Thousand Genomes Project.
 
 The Job Manager aspires to bring ease and efficiency to developing and debugging workflows while seamlessly scaling to production operations management.
 
@@ -42,7 +42,7 @@ Monitors jobs launched by the [Cromwell workflow engine](https://github.com/broa
 
 Monitors jobs that were launched via the [dsub](https://github.com/googlegenomics/dsub) CLI. Thin stateless wrapper around the dsub Python library. Authorization is required for deploying the UI, which is used to communicate with the [Google Genomics Pipelines API](https://cloud.google.com/genomics/pipelines). The wrapper itself is implemented in Python Flask using Swagger codegen models. A Dockerfile is provided which serves for production deployment using gunicorn.
 
-Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s “job”. 
+Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s “job”.
 
 ## Development
 
@@ -93,13 +93,13 @@ update the server implementations:
   # macOS
   brew install swagger-codegen
   ```
-1. Clear out existing generated models:
+2. Clear out existing generated models:
   ```
   rm ui/src/app/shared/model/*
   rm servers/dsub/jobs/models/*
   rm servers/cromwell/jobs/models/*
   ```
-1. Regenerate both the python and angular definitions.
+3. Regenerate both the python and angular definitions.
   ```
   java -jar swagger-codegen-cli.jar generate \
     -i api/jobs.yaml \
@@ -116,7 +116,7 @@ update the server implementations:
     -o servers/cromwell \
     -DsupportPython2=true,packageName=jobs
   ```
-1. Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
+4. Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
 ## Job Manager UI Server
 For UI server documentation, see [ui](ui/).
