@@ -87,36 +87,36 @@ servers and the UI. Whenever the API is updated, follow these steps to
 update the server implementations:
 
 1. If you do not already have the jar, you can download it here:
-  ```
-  # Linux
-  wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
-  # macOS
-  brew install swagger-codegen
-  ```
-2. Clear out existing generated models:
-  ```
-  rm ui/src/app/shared/model/*
-  rm servers/dsub/jobs/models/*
-  rm servers/cromwell/jobs/models/*
-  ```
-3. Regenerate both the python and angular definitions.
-  ```
-  java -jar swagger-codegen-cli.jar generate \
-    -i api/jobs.yaml \
-    -l typescript-angular2 \
-    -o ui/src/app/shared
-  java -jar swagger-codegen-cli.jar generate \
-    -i api/jobs.yaml \
-    -l python-flask \
-    -o servers/dsub \
-    -DsupportPython2=true,packageName=jobs
-  java -jar swagger-codegen-cli.jar generate \
-    -i api/jobs.yaml \
-    -l python-flask \
-    -o servers/cromwell \
-    -DsupportPython2=true,packageName=jobs
-  ```
-4. Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
+    ```
+    # Linux
+    wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+    # macOS
+    brew install swagger-codegen
+    ```
+1. Clear out existing generated models:
+    ```
+    rm ui/src/app/shared/model/*
+    rm servers/dsub/jobs/models/*
+    rm servers/cromwell/jobs/models/*
+    ```
+1. Regenerate both the python and angular definitions.
+    ```
+    java -jar swagger-codegen-cli.jar generate \
+      -i api/jobs.yaml \
+      -l typescript-angular2 \
+      -o ui/src/app/shared
+      java -jar swagger-codegen-cli.jar generate \
+      -i api/jobs.yaml \
+      -l python-flask \
+      -o servers/dsub \
+      -DsupportPython2=true,packageName=jobs
+      java -jar swagger-codegen-cli.jar generate \
+      -i api/jobs.yaml \
+      -l python-flask \
+      -o servers/cromwell \
+      -DsupportPython2=true,packageName=jobs
+      ```
+1. Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
 ## Job Manager UI Server
 For UI server documentation, see [ui](ui/).
