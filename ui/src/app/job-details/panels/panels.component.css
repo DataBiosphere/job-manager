@@ -26,10 +26,21 @@ p {
   margin-right: 3rem;
 }
 
-.mat-card {
-  width: 25%;
+.card {
   margin-right: 1rem;
   margin-top: 2rem;
   float: left;
   min-height: 8.7rem;
+}
+
+.card.status {
+  width: 20%;
+}
+
+.card.input-output {
+  width: 30;
+}
+
+.input-output-table {
+  overflow: hidden;
 }

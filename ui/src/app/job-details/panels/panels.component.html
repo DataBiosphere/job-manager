@@ -10,7 +10,7 @@
       </span>
   </div>
 
-  <mat-card>
+  <mat-card class="card status">
     <mat-card-title>Status</mat-card-title>
     <mat-card-content>
       <p><b>
@@ -28,44 +28,23 @@
     </mat-card-content>
   </mat-card>
 
-  <mat-card>
-    <mat-card-title>Inputs and Outputs</mat-card-title>
-      <p *ngIf="showInputsButton()">
-        Input files
-        <button mat-button class="view-resources-button" [matMenuTriggerFor]="inputsMenu">
-          View
-        </button>
-      </p>
-      <mat-menu #inputsMenu="matMenu" class="wide-menu">
-        <a mat-menu-item *ngFor="let i of inputs" href="{{ getInputResourceURL(i) }}">
-          <span> {{ getInputResourceFileName(i) }}</span>
-        </a>
-      </mat-menu>
+  <mat-card class="card input-output" *ngIf="hasInputs() || hasOutputs()">
+    <mat-card-title>
+      <mat-tab-group>
 
-      <p *ngIf="showOutputsButton()">
-        Output files
-        <button mat-button class="view-resources-button" [matMenuTriggerFor]="outputsMenu">
-          View
-        </button>
-      </p>
-      <mat-menu #outputsMenu="matMenu" class="wide-menu">
-        <a mat-menu-item *ngFor="let o of outputs" href="{{ getOutputResourceURL(o) }}">
-          <span>{{ getOutputResourceFileName(o) }}</span>
-        </a>
-      </mat-menu>
+        <mat-tab md-center-tabs="true" *ngIf="hasInputs()" label="Inputs">
+          <mat-card-content>
+            <jm-resources-table [entries]="job.inputs"></jm-resources-table>
+          </mat-card-content>
+        </mat-tab>
 
-      <p *ngIf="showLogsButton()">
-        Log files
-        <button mat-button class="view-resources-button" [matMenuTriggerFor]="logsMenu">
-          View
-        </button>
-      </p>
-      <mat-menu #logsMenu="matMenu">
-        <a mat-menu-item *ngFor="let o of logs" href="{{ getLogResourceURL(o) }}">
-          <span>{{ o }}</span>
-        </a>
-      </mat-menu>
-    <mat-card-content>
-    </mat-card-content>
+        <mat-tab md-center-tabs="true" *ngIf="hasOutputs()" label="Outputs">
+          <mat-card-content>
+            <jm-resources-table [entries]="job.outputs"></jm-resources-table>
+          </mat-card-content>
+        </mat-tab>
+
+      </mat-tab-group>
+    </mat-card-title>
   </mat-card>
 </div>

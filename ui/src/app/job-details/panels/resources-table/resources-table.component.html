@@ -1,0 +1,18 @@
+<mat-table class="resources-table" #table [dataSource]="entryKeys">
+  <ng-container matColumnDef="key">
+    <mat-cell *matCellDef="let key"> {{key}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="value">
+    <mat-cell *matCellDef="let key">
+      <a *ngIf="isResourceURL(key)" href="{{ getResourceURL(key) }}">
+        {{ getResourceFileName(key) }}
+      </a>
+      <span *ngIf="!isResourceURL(key)">
+        {{ entries[key] }}
+      </span>
+    </mat-cell>
+  </ng-container>
+
+  <mat-row *matRowDef="let row; columns: resourcesColumns;"></mat-row>
+</mat-table>
