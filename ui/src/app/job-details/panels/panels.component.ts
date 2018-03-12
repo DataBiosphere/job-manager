@@ -16,6 +16,10 @@ import {ResourceUtils} from '../../shared/utils/resource-utils';
   styleUrls: ['./panels.component.css'],
 })
 export class JobPanelsComponent implements OnChanges {
+  // Filter out 'envs' and 'logs' from extendedFields since these are maps and
+  // require special treatment for display.
+  private readonly filterExtensions: string[] = ["envs", "logs"]
+
   @Input() job: JobMetadataResponse;
   inputs: Array<String>;
   logs: Array<String>;
@@ -23,6 +27,7 @@ export class JobPanelsComponent implements OnChanges {
   numTasks: number = 0;
   outputs: Array<String>;
   labels: Array<String>;
+  extensions: Array<String>;
   tasks: TaskMetadata[];
 
   ngOnChanges(changes: SimpleChanges) {
@@ -45,6 +50,8 @@ export class JobPanelsComponent implements OnChanges {
     this.inputs = Object.keys(this.job.inputs || {}).sort();
     this.outputs = Object.keys(this.job.outputs || {}).sort();
     this.labels = Object.keys(this.job.labels || {}).sort();
+    this.extensions = Object.keys(this.job.extensions || {}).sort();
+    this.extensions = this.extensions.filter(f => !this.filterExtensions.includes(f))
   }
 
   getInputResourceURL(key: string): string {
