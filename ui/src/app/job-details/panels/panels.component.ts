@@ -21,13 +21,13 @@ export class JobPanelsComponent implements OnChanges {
   private readonly filterExtensions: string[] = ["envs", "logs"]
 
   @Input() job: JobMetadataResponse;
-  inputs: Array<String>;
-  logs: Array<String>;
+  inputs: Array<string>;
+  logs: Array<string>;
   numCompletedTasks: number = 0;
   numTasks: number = 0;
-  outputs: Array<String>;
-  labels: Array<String>;
-  extensions: Array<String>;
+  outputs: Array<string>;
+  labels: Array<string>;
+  extensions: Array<string>;
   tasks: TaskMetadata[];
 
   ngOnChanges(changes: SimpleChanges) {
