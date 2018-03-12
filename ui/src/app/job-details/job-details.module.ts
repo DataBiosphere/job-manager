@@ -3,6 +3,9 @@ import {NgModule} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
+  MatDividerModule,
+  MatExpansionModule,
+  MatGridListModule,
   MatMenuModule,
   MatTableModule,
   MatTabsModule,
@@ -11,8 +14,11 @@ import {
 
 import {JobDetailsComponent} from './job-details.component';
 import {JobPanelsComponent} from './panels/panels.component';
+import {JobResourcesComponent} from './resources/resources.component';
+import {JobResourcesTableComponent} from './resources/resources-table/resources-table.component';
 import {SharedModule} from '../shared/shared.module';
 import {TaskDetailsComponent} from './tasks/tasks.component';
+import {GcsService} from '../core/gcs.service';
 
 
 @NgModule({
@@ -20,6 +26,9 @@ import {TaskDetailsComponent} from './tasks/tasks.component';
     CommonModule,
     MatButtonModule,
     MatCardModule,
+    MatDividerModule,
+    MatExpansionModule,
+    MatGridListModule,
     MatMenuModule,
     MatTableModule,
     MatTabsModule,
@@ -29,9 +38,13 @@ import {TaskDetailsComponent} from './tasks/tasks.component';
   declarations: [
     JobDetailsComponent,
     JobPanelsComponent,
+    JobResourcesComponent,
+    JobResourcesTableComponent,
     TaskDetailsComponent,
   ],
-  providers: [],
+  providers: [
+    GcsService
+  ],
   exports: []
 })
 export class JobDetailsModule {}

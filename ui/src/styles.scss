@@ -11,3 +11,10 @@
 .wide-menu {
   max-width: 500px !important;
 }
+
+/*
+  Overrides the angular material tab header to have no bottom border
+ */
+.mat-tab-header {
+  border-bottom: none;
+}

@@ -11,8 +11,8 @@ def dsub_to_api(job):
     if job['logging'] and job['logging'].endswith('.log'):
         base_log_path = job['logging'][:-4]
         return {
-            'controller-log': '{}.log'.format(base_log_path),
-            'stderr': '{}-stderr.log'.format(base_log_path),
-            'stdout': '{}-stdout.log'.format(base_log_path),
+            'Controller Log': '{}.log'.format(base_log_path),
+            'Output Log': '{}-stderr.log'.format(base_log_path),
+            'Error Log': '{}-stdout.log'.format(base_log_path),
         }
     return None

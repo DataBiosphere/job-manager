@@ -29,14 +29,28 @@ p {
   margin-bottom: 1.2rem !important;
 }
 
-.text-info {
-  margin-right: 3rem;
+.mat-card-title {
+  font-size: 1.2rem;
+  color: gray
 }
 
-.mat-card {
-  width: 25%;
-  margin-right: 1rem;
-  margin-top: 2rem;
+.card {
   float: left;
-  min-height: 8.7rem;
+  width: 25%;
+  height: 10rem;
+  margin: 1rem;
 }
+
+/* TODO(bryancrampton): Add hover-over to display full detail field, if truncated */
+.detail-field {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.label {
+  padding-right: 1rem;
+  white-space: nowrap;
+  display: inline-block;
+}
+

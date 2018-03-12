@@ -1,3 +1,5 @@
+<jm-header [showControls]="false"></jm-header>
 <jm-panels [job]="job" (close)="handleClose()"></jm-panels>
+<jm-resources *ngIf="hasResources()" [job]="job"></jm-resources>
 <!-- Only show the tasks table if there is at least 1 task. -->
 <jm-tasks *ngIf="hasTasks()" [tasks]="job.extensions.tasks" [job]="job"></jm-tasks>

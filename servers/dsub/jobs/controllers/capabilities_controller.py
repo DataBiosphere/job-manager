@@ -31,7 +31,8 @@ def get_capabilities():
             is_required=True,
             scopes=[
                 'https://www.googleapis.com/auth/genomics',
-                'https://www.googleapis.com/auth/cloudplatformprojects.readonly'
+                'https://www.googleapis.com/auth/cloudplatformprojects.readonly',
+                'https://www.googleapis.com/auth/devstorage.read_only',
             ])
 
     return capabilities

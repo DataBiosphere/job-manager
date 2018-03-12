@@ -1,4 +1,3 @@
-import {Headers, Http, RequestOptions} from '@angular/http';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Injectable} from '@angular/core';
 
@@ -21,7 +20,7 @@ export class ProjectsService {
   private static readonly apiUrl = "https://cloudresourcemanager.googleapis.com/v1beta1/projects"
   private static readonly defaultPageSize = 10;
 
-  constructor(private readonly authService: AuthService, private http: Http) {}
+  constructor(private readonly authService: AuthService) {}
 
   private handleError(response: any): Promise<any> {
     return Promise.reject({
