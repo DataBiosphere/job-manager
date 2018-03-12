@@ -17,15 +17,14 @@ ng generate directive|pipe|service|class|guard|interface|enum|module
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
 ## Running Tests
-Unit tests are run via [Karma](https://karma-runner.github.io) and end-to-end
-tests are run via [Protractor](http://www.protractortest.org/).
+Unit tests are run via [Karma](https://karma-runner.github.io).
 ```
-cd ui
-# Run unit tests
 ng test
-# Run end-to-end tests
-ng serve
-ng e2e
+```
+
+By default, this opens a browser. Alternatively run headless:
+```
+ng test --browsers=ChromeHeadless
 ```
 
 ## Further help

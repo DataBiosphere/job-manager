@@ -33,7 +33,7 @@ jobs:
           command: |
             /opt/circleci/.nvm/nvm.sh use 8.5.0
             cd ui
-            ng test --watch=false -sm=false
+            ng test --watch=false -sm=false --browsers=ChromeHeadless
       - run:
           name: Ensure the UI builds for prod
           # Target production to emulate deployment, but a dev environment
