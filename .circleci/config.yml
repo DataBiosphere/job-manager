@@ -70,7 +70,7 @@ jobs:
       - run:
           name: Run dsub server tests
           command: |
-            if [ -z "$GCLOUD_SERVICE_KEY" || "${CIRCLE_BRANCH}" != "master" ]; then
+            if [[ -z "$GCLOUD_SERVICE_KEY" || "${CIRCLE_BRANCH}" != "master" ]]; then
               detox -n 8 -c ./servers/dsub -- \
                 --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle
             else
