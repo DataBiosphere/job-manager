@@ -1,12 +1,13 @@
-import {TestBed, async, ComponentFixture} from '@angular/core/testing';
+import {TestBed, async, ComponentFixture, fakeAsync, tick} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {Component, DebugElement, ViewChild} from '@angular/core';
-import {MatButtonModule, MatCardModule, MatMenuModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatMenuModule, MatTabsModule, MatTableModule} from '@angular/material';
 import {SharedModule} from '../../shared/shared.module';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobPanelsComponent} from './panels.component';
+import {ResourcesTableComponent} from './resources-table/resources-table.component';
 
 
 describe('JobPanelsComponent', () => {
@@ -40,6 +41,7 @@ describe('JobPanelsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         JobPanelsComponent,
+        ResourcesTableComponent,
         TestPanelsComponent
       ],
       imports: [
@@ -47,6 +49,8 @@ describe('JobPanelsComponent', () => {
         MatButtonModule,
         MatCardModule,
         MatMenuModule,
+        MatTabsModule,
+        MatTableModule,
         SharedModule
       ]
     }).compileComponents();
@@ -69,9 +73,9 @@ describe('JobPanelsComponent', () => {
   it('should hide input buttons with minimal job', async(() => {
     testComponent.job = minimalJob;
     fixture.detectChanges();
-    expect(testComponent.jobPanelsComponent.showInputsButton()).toBeFalsy();
-    expect(testComponent.jobPanelsComponent.showOutputsButton()).toBeFalsy();
-    expect(testComponent.jobPanelsComponent.showLogsButton()).toBeFalsy();
+    expect(testComponent.jobPanelsComponent.hasInputs()).toBeFalsy();
+    expect(testComponent.jobPanelsComponent.hasOutputs()).toBeFalsy();
+    expect(testComponent.jobPanelsComponent.hasLogs()).toBeFalsy();
     expect(fixture.debugElement.query(By.css('.view-resources-button')))
       .toBeNull();
   }));
@@ -88,43 +92,38 @@ describe('JobPanelsComponent', () => {
       .toContain("10:00 PM");
   }));
 
-  it('should show input buttons with complete job', async(() => {
+  it('should show inputs outputs card for complete job', async(() => {
     testComponent.job = completeJob;
     fixture.detectChanges();
-    expect(testComponent.jobPanelsComponent.showInputsButton()).toBeTruthy();
-    expect(testComponent.jobPanelsComponent.showOutputsButton()).toBeTruthy();
-    expect(testComponent.jobPanelsComponent.showLogsButton()).toBeTruthy();
-    expect(fixture.debugElement.queryAll(By.css('.view-resources-button')).length).toEqual(3);
+    expect(testComponent.jobPanelsComponent.hasInputs()).toBeTruthy();
+    expect(testComponent.jobPanelsComponent.hasOutputs()).toBeTruthy();
+    expect(testComponent.jobPanelsComponent.hasLogs()).toBeTruthy();
   }));
 
-  it('should display correct input file names', async(() => {
+  it('should display correct input file names', fakeAsync(() => {
     testComponent.job = completeJob;
     fixture.detectChanges();
-    let viewInputsButton = fixture.debugElement.queryAll(By.css('.view-resources-button'))[0];
-    viewInputsButton.nativeElement.click();
-    let items = fixture.debugElement.queryAll(By.css('.mat-menu-item'));
-    expect(items[0].nativeElement.textContent).toContain(testComponent.job.inputs['input']);
-    expect(items[1].nativeElement.textContent).toContain('inputs.txt');
+    let tabs = fixture.debugElement.queryAll(By.css('.input-output-tabs'))[0];
+    tabs.componentInstance.selectedIndex = 0;
+    fixture.detectChanges();
+    tick();
+    let inputsTable = fixture.debugElement.queryAll(By.css('.resources-table'))[0];
+    let items = inputsTable.nativeElement.children;
+    expect(items[0].textContent).toContain(testComponent.job.inputs['input']);
+    expect(items[1].textContent).toContain('inputs.txt');
   }));
 
-  it('should display correct output file names', async(() => {
+  it('should display correct output file names', fakeAsync(() => {
     testComponent.job = completeJob;
     fixture.detectChanges();
-    let viewOutputsButton = fixture.debugElement.queryAll(By.css('.view-resources-button'))[1];
-    viewOutputsButton.nativeElement.click();
-    let items = fixture.debugElement.queryAll(By.css('.mat-menu-item'));
-    expect(items[0].nativeElement.textContent).toContain(testComponent.job.outputs['output']);
-    expect(items[1].nativeElement.textContent).toContain('outputs.txt');
-  }));
-
-  it('should display correct log file names', async(() => {
-    testComponent.job = completeJob;
+    let tabs = fixture.debugElement.queryAll(By.css('.input-output-tabs'))[0];
+    tabs.componentInstance.selectedIndex = 1;
     fixture.detectChanges();
-    let viewLogsButton = fixture.debugElement.queryAll(By.css('.view-resources-button'))[2];
-    viewLogsButton.nativeElement.click();
-    let items = fixture.debugElement.queryAll(By.css('.mat-menu-item'));
-    let logs = items[0].nativeElement.textContent;
-    expect(logs).toContain('log');
+    tick();
+    let outputsTable = fixture.debugElement.queryAll(By.css('.resources-table'))[1];
+    let items = outputsTable.nativeElement.children;
+    expect(items[0].textContent).toContain(testComponent.job.outputs['output']);
+    expect(items[1].textContent).toContain('outputs.txt');
   }));
 
   @Component({
@@ -141,5 +140,4 @@ describe('JobPanelsComponent', () => {
     @ViewChild(JobPanelsComponent)
     public jobPanelsComponent: JobPanelsComponent;
   }
-
 });

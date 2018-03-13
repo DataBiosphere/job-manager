@@ -6,7 +6,7 @@ describe('ResourceUtils', () => {
 
   it('should get resource browser URL', async(() => {
     expect(ResourceUtils.getResourceBrowserURL('gs://test-bucket/input.txt'))
-      .toEqual('https://console.cloud.google.com/storage/browser/test-bucket');
+      .toEqual('https://console.cloud.google.com/storage/browser/test-bucket?prefix=input.txt');
   }));
 
   it('should return invalid from invalid resource browser url', async(() => {

@@ -30,15 +30,15 @@
 
   <mat-card class="card input-output" *ngIf="hasInputs() || hasOutputs()">
     <mat-card-title>
-      <mat-tab-group>
+      <mat-tab-group class="input-output-tabs">
 
-        <mat-tab md-center-tabs="true" *ngIf="hasInputs()" label="Inputs">
+        <mat-tab *ngIf="hasInputs()" label="Inputs">
           <mat-card-content>
             <jm-resources-table [entries]="job.inputs"></jm-resources-table>
           </mat-card-content>
         </mat-tab>
 
-        <mat-tab md-center-tabs="true" *ngIf="hasOutputs()" label="Outputs">
+        <mat-tab *ngIf="hasOutputs()" label="Outputs">
           <mat-card-content>
             <jm-resources-table [entries]="job.outputs"></jm-resources-table>
           </mat-card-content>

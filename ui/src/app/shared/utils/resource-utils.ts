@@ -14,9 +14,11 @@ export class ResourceUtils {
     // This excludes the object from the link to show the enclosing directory.
     // This is valid with wildcard glob (bucket/path/*) and directories
     // (bucket/path/dir/) as well, the * or empty string will be trimmed.
-    var browserUrl = parts
-      ? ResourceUtils.browserPrefix + parts.slice(2,-1).join("/")
-      : undefined;
+    if (!parts) {
+      return undefined;
+    }
+
+    var browserUrl = ResourceUtils.browserPrefix + parts.slice(2,-1).join("/");
     if (url.indexOf('*') == -1) {
       browserUrl += "?prefix=" + ResourceUtils.getResourceFileName(url);
     }

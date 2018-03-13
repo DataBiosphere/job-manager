@@ -13,7 +13,7 @@ import {ResourceUtils} from '../../../shared/utils/resource-utils';
   styleUrls: ['./resources-table.component.css'],
 })
 export class ResourcesTableComponent implements OnChanges {
-  private readonly resourcesColumns: string[] = ["key", "value"];
+  readonly resourcesColumns: string[] = ["key", "value"];
 
   @Input() entries: Object;
   entryKeys: Array<string>;
