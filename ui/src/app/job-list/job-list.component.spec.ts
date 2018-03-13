@@ -53,21 +53,21 @@ describe('JobListComponent', () => {
   let testComponent: JobListComponent;
   let fixture: ComponentFixture<TestJobListComponent>;
   let fakeJobService: FakeJobManagerService;
+  let capabilities: CapabilitiesResponse;
 
-  let capabilities: CapabilitiesResponse =
-    {
+  beforeEach(async(() => {
+    fakeJobService = new FakeJobManagerService(testJobs(5));
+    capabilities = {
       displayFields: [
         {field: 'status', display: 'Status'},
         {field: 'submission', display: 'Submitted'},
         {field: 'extensions.userId', display: 'User ID'},
       ]
     };
-
-  beforeEach(async(() => {
-    fakeJobService = new FakeJobManagerService(testJobs(5));
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
+        FakeProjectsComponent,
         JobListComponent,
         TestJobListComponent,
         JobsTableComponent
@@ -86,7 +86,8 @@ describe('JobListComponent', () => {
         MatTableModule,
         MatTooltipModule,
         RouterTestingModule.withRoutes([
-          {path: 'jobs', component: TestJobListComponent, resolve: {stream: JobListResolver}}
+          {path: 'jobs', component: TestJobListComponent, resolve: {stream: JobListResolver}},
+          {path: 'projects', component: FakeProjectsComponent}
         ]),
         SharedModule
       ],
@@ -256,6 +257,17 @@ describe('JobListComponent', () => {
     expectJobsRendered([jobs[3]]);
   }));
 
+  it('navigates on missing project when projects supported', fakeAsync(() => {
+    capabilities.queryExtensions = ['projectId'];
+    testComponent.reloadJobs('');
+
+    fixture.detectChanges();
+    tick();
+
+    const de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('.fake-projects')).length).toEqual(1);
+  }));
+
   @Component({
     selector: 'jm-test-app',
     template: '<router-outlet></router-outlet>'
@@ -267,4 +279,10 @@ describe('JobListComponent', () => {
     template: '<jm-job-list [pageSize]="3"></jm-job-list>'
   })
   class TestJobListComponent {}
+
+  @Component({
+    selector: 'jm-fake-projects-component',
+    template: '<div class="fake-projects"></div>'
+  })
+  class FakeProjectsComponent {}
 });

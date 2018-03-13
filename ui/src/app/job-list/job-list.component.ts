@@ -15,6 +15,8 @@ import {HeaderComponent} from '../shared/header/header.component';
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 import {initialBackendPageSize} from "../shared/common";
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
+import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
+import {CapabilitiesService} from '../core/capabilities.service';
 
 @Component({
   selector: 'jm-job-list',
@@ -36,6 +38,7 @@ export class JobListComponent implements OnInit {
   loading = false;
   private jobStream: JobStream;
   private streamSubscription: Subscription;
+  private readonly capabilities: CapabilitiesResponse;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -43,7 +46,9 @@ export class JobListComponent implements OnInit {
     private readonly jobManagerService: JobManagerService,
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MatSnackBar,
+    readonly capabilitiesService: CapabilitiesService,
   ) {
+    this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
     route.queryParams.subscribe(params => this.reloadJobs(params['q']));
   }
 
@@ -65,28 +70,39 @@ export class JobListComponent implements OnInit {
   }
 
   reloadJobs(query: string) {
-    if (this.streamSubscription) {
-      this.loading = true;
-      this.streamSubscription.unsubscribe();
-      const nextStream = new JobStream(this.jobManagerService,
-          URLSearchParamsUtils.unpackURLSearchParams(query));
-      nextStream.loadAtLeast(initialBackendPageSize)
-        .then(() => {
-          if (query !== this.route.snapshot.queryParams['q']) {
-            // We initiated another query since the original request; ignore
-            // the results of this old load.
-            // TODO(calbach): Track/cancel any ongoing requests.
-            return;
-          }
-          // Only subscribe after the initial page load finishes, to avoid
-          // briefly loading an empty list of jobs.
-          this.jobStream = nextStream;
-          this.header.resetPagination();
-          this.streamSubscription = this.jobStream.subscribe(this.jobs);
-          this.loading = false;
-        })
-        .catch(error => this.handleError(error));
+    if (!this.streamSubscription) {
+      // ngOnInit hasn't happened yet, this shouldn't occur.
+      return;
     }
+    this.loading = true;
+    const req = URLSearchParamsUtils.unpackURLSearchParams(query);
+    if (!req.extensions.projectId &&
+        this.capabilities.queryExtensions &&
+        this.capabilities.queryExtensions.includes('projectId')) {
+      // If the user manages to clear the projectId chip and the UI requires a
+      // project, send them back to the project selection page.
+      this.router.navigate(['projects']);
+      return;
+    }
+
+    this.streamSubscription.unsubscribe();
+    const nextStream = new JobStream(this.jobManagerService, req);
+    nextStream.loadAtLeast(initialBackendPageSize)
+      .then(() => {
+        if (query !== this.route.snapshot.queryParams['q']) {
+          // We initiated another query since the original request; ignore
+          // the results of this old load.
+          // TODO(calbach): Track/cancel any ongoing requests.
+          return;
+        }
+        // Only subscribe after the initial page load finishes, to avoid
+        // briefly loading an empty list of jobs.
+        this.jobStream = nextStream;
+        this.header.resetPagination();
+        this.streamSubscription = this.jobStream.subscribe(this.jobs);
+        this.loading = false;
+      })
+      .catch(error => this.handleError(error));
   }
 
   get tableOpacity() {
