@@ -18,7 +18,7 @@ import {ResourceUtils} from '../../shared/utils/resource-utils';
 export class JobPanelsComponent implements OnChanges {
   // Filter out 'envs' and 'logs' from extendedFields since these are maps and
   // require special treatment for display.
-  private readonly filterExtensions: string[] = ["envs", "logs"]
+  private readonly extensionsWhiteList: string[] = ['userId', 'statusDetail', 'lastUpdate', 'parentJobId'];
 
   @Input() job: JobMetadataResponse;
   inputs: Array<string>;
@@ -51,7 +51,7 @@ export class JobPanelsComponent implements OnChanges {
     this.outputs = Object.keys(this.job.outputs || {}).sort();
     this.labels = Object.keys(this.job.labels || {}).sort();
     this.extensions = Object.keys(this.job.extensions || {}).sort();
-    this.extensions = this.extensions.filter(f => !this.filterExtensions.includes(f))
+    this.extensions = this.extensions.filter(f => this.extensionsWhiteList.includes(f))
   }
 
   getInputResourceURL(key: string): string {
