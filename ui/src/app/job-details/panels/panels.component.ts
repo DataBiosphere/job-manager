@@ -16,22 +16,24 @@ import {ResourceUtils} from '../../shared/utils/resource-utils';
   styleUrls: ['./panels.component.css'],
 })
 export class JobPanelsComponent implements OnChanges {
+  // Whitelist of extended fields to display in the UI, in order.
+  private static readonly extensionsWhiteList: string[] = ['userId', 'statusDetail', 'lastUpdate', 'parentJobId'];
+
   @Input() job: JobMetadataResponse;
-  inputs: Array<String>;
-  logs: Array<String>;
+  inputs: Array<string> = [];
+  logs: Array<string> = [];
+  outputs: Array<string> = []
+  labels: Array<string> = []
+  displayedExtensions: Array<string> = [];
   numCompletedTasks: number = 0;
   numTasks: number = 0;
-  outputs: Array<String>;
-  labels: Array<String>;
-  tasks: TaskMetadata[];
 
   ngOnChanges(changes: SimpleChanges) {
     this.job = changes.job.currentValue;
     if (this.job.extensions) {
       if (this.job.extensions.tasks) {
-        this.tasks = this.job.extensions.tasks;
-        this.numTasks = this.tasks.length;
-        for (let task of this.tasks) {
+        this.numTasks = this.job.extensions.tasks.length;
+        for (let task of this.job.extensions.tasks) {
           if (task.executionStatus == JobStatus[JobStatus.Succeeded]) {
             this.numCompletedTasks++;
           }
@@ -39,12 +41,25 @@ export class JobPanelsComponent implements OnChanges {
       }
 
       if (this.job.extensions.logs) {
-        this.logs = Object.keys(this.job.extensions.logs || {}).sort();
+        this.logs = Object.keys(this.job.extensions.logs).sort();
+      }
+
+      for (let displayedExtension of JobPanelsComponent.extensionsWhiteList) {
+        if (this.job.extensions[displayedExtension]) {
+          this.displayedExtensions.push(displayedExtension);
+        }
       }
     }
-    this.inputs = Object.keys(this.job.inputs || {}).sort();
-    this.outputs = Object.keys(this.job.outputs || {}).sort();
-    this.labels = Object.keys(this.job.labels || {}).sort();
+
+    if (this.job.inputs) {
+      this.inputs = Object.keys(this.job.inputs).sort();
+    }
+    if (this.job.outputs) {
+      this.outputs = Object.keys(this.job.outputs).sort();
+    }
+    if (this.job.labels) {
+      this.labels = Object.keys(this.job.labels).sort();
+    }
   }
 
   getInputResourceURL(key: string): string {
@@ -70,14 +85,14 @@ export class JobPanelsComponent implements OnChanges {
   }
 
   showInputsButton(): boolean {
-    return this.inputs && this.inputs.length > 0;
+    return this.inputs.length > 0;
   }
 
   showLogsButton(): boolean {
-    return this.logs && this.logs.length > 0;
+    return this.logs.length > 0;
   }
 
   showOutputsButton(): boolean {
-    return this.outputs && this.outputs.length > 0;
+    return this.outputs.length > 0;
   }
 }
