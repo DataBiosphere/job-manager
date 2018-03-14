@@ -2,7 +2,8 @@ import {
   Component,
   Input,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ViewEncapsulation
 } from '@angular/core';
 
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
@@ -14,6 +15,7 @@ import {ResourceUtils} from '../../shared/utils/resource-utils';
   selector: 'jm-panels',
   templateUrl: './panels.component.html',
   styleUrls: ['./panels.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class JobPanelsComponent implements OnChanges {
   // Whitelist of extended fields to display in the UI, in order.

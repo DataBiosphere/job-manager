@@ -38,7 +38,11 @@ p {
 }
 
 .card.input-output {
-  width: 30;
+  width: 30%;
+}
+
+.mat-tab-labels{
+  justify-content: center;
 }
 
 .input-output-table {

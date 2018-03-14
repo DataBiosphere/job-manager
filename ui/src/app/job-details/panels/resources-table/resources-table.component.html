@@ -14,5 +14,5 @@
     </mat-cell>
   </ng-container>
 
-  <mat-row *matRowDef="let row; columns: resourcesColumns;"></mat-row>
+  <mat-row *matRowDef="let row; columns: ['key', 'value'];"></mat-row>
 </mat-table>
