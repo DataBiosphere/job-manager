@@ -5,7 +5,7 @@
       <span *ngFor="let l of labels">
         <p class="text-info">{{ l + ': ' + job.labels[l] }}</p>
       </span>
-      <span *ngFor="let f of extensions">
+      <span *ngFor="let f of displayedExtensions">
         <p class="text-info">{{ f + ': ' + job.extensions[f] }}</p>
       </span>
   </div>
