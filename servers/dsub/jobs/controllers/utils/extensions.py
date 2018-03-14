@@ -11,9 +11,16 @@ def get_extensions(job):
         Returns:
             ExtendedFields: Populated extensions on the job
     """
+    envs = job['envs']
+    script = None
+    if envs and envs['_SCRIPT']:
+        script = envs['_SCRIPT']
+        del envs['_SCRIPT']
+
     return ExtendedFields(
         user_id=job['user-id'],
         status_detail=job.get('status-detail'),
         logs=logs.dsub_to_api(job),
         last_update=job.get('last-update'),
-        envs=job['envs'])
+        envs=job['envs'],
+        script=script)

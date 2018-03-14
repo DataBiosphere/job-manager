@@ -17,7 +17,7 @@ import * as models from './models';
  */
 export interface ExtendedFields {
     /**
-     * The user associated with the job
+     * The user associated with the job.
      */
     userId?: string;
 
@@ -27,22 +27,27 @@ export interface ExtendedFields {
     statusDetail?: string;
 
     /**
-     * Map of type of log file to its file location
+     * Map of type of log file to its file location.
      */
     logs?: any;
 
     /**
-     * Job last update datetime in ISO8601 format
+     * Job last update datetime in ISO8601 format.
      */
     lastUpdate?: Date;
 
     /**
-     * Map of ENV variables associated with the job
+     * Map of ENV variables key values associated with the job.
      */
     envs?: any;
 
     /**
-     * The parent job ID for the job
+     * The text of the script executed by this job.
+     */
+    script?: string;
+
+    /**
+     * The parent job ID for the job.
      */
     parentJobId?: string;
 
