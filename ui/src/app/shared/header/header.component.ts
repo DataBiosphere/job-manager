@@ -62,6 +62,10 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   filteredOptions: Observable<string[]>;
 
+  private readonly activeStatuses = [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
+  private readonly completedStatuses = [JobStatus.Succeeded, JobStatus.Aborted];
+  private readonly failedStatuses = [JobStatus.Failed];
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -248,16 +252,36 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
       this.route.snapshot.queryParams['q'])['statuses'];
   }
 
+  shouldDisplayStatusCounts(): boolean {
+    // Only show status counts if all jobs are loaded client-side.
+    return this.jobs.value.exhaustive;
+  }
+
   showActiveJobs(): void {
-    this.navigateWithStatus([JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting])
+    this.navigateWithStatus(this.activeStatuses.slice())
   }
 
   showCompletedJobs(): void {
-    this.navigateWithStatus([JobStatus.Succeeded, JobStatus.Aborted]);
+    this.navigateWithStatus(this.completedStatuses.slice())
   }
 
   showFailedJobs(): void {
-    this.navigateWithStatus([JobStatus.Failed]);
+    this.navigateWithStatus(this.failedStatuses.slice());
+  }
+
+  getActiveCount(): number {
+    return this.jobs.value.results.filter(
+      j => this.activeStatuses.includes(j.status)).length;
+  }
+
+  getFailedCount(): number {
+    return this.jobs.value.results.filter(
+      j => this.failedStatuses.includes(j.status)).length;
+  }
+
+  getCompletedCount(): number {
+    return this.jobs.value.results.filter(
+      j => this.completedStatuses.includes(j.status)).length;
   }
 
   private refreshChips(query: string): void {

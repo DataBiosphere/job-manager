@@ -71,9 +71,15 @@
     <!-- Always include child divs, to support flex box style placement. -->
     <div>
       <ng-container *ngIf="shouldDisplayStatusButtons()">
-        <button mat-raised-button class="status-button active-button" (click)="showActiveJobs()">ACTIVE</button>
-        <button mat-raised-button class="status-button failed-button" (click)="showFailedJobs()">FAILED</button>
-        <button mat-raised-button class="status-button completed-button" (click)="showCompletedJobs()">COMPLETED</button>
+        <button mat-raised-button class="status-button active-button" (click)="showActiveJobs()">
+          Active <span *ngIf="shouldDisplayStatusCounts()">({{ getActiveCount() }})</span>
+        </button>
+        <button mat-raised-button class="status-button failed-button" (click)="showFailedJobs()">
+          Failed <span *ngIf="shouldDisplayStatusCounts()">({{ getFailedCount() }})</span>
+        </button>
+        <button mat-raised-button class="status-button completed-button" (click)="showCompletedJobs()">
+          Completed <span *ngIf="shouldDisplayStatusCounts()">({{ getCompletedCount() }})</span>
+        </button>
       </ng-container>
    </div>
 
