@@ -44,16 +44,15 @@ describe('HeaderComponent', () => {
 
   let testComponent: HeaderComponent;
   let fixture: ComponentFixture<TestHeaderComponent>;
-  let capabilities: CapabilitiesResponse = 
-    {
-      displayFields: [
-        {field: 'status', display: 'Status'},
-        {field: 'submission', display: 'Submitted'},
-        {field: 'extensions.userId', display: 'User ID'},
-        {field: 'labels.job-id', display: 'Job ID'}
-      ],
-      queryExtensions: ['projectId']
-    };
+  let capabilities: CapabilitiesResponse = {
+    displayFields: [
+      {field: 'status', display: 'Status'},
+      {field: 'submission', display: 'Submitted'},
+      {field: 'extensions.userId', display: 'User ID'},
+      {field: 'labels.job-id', display: 'Job ID'}
+    ],
+    queryExtensions: ['projectId']
+  };
 
   beforeEach(async(() => {
 
@@ -154,6 +153,36 @@ describe('HeaderComponent', () => {
     fixture.whenStable().then(() => {
       fixture.detectChanges();
       expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(3);
+    });
+  }));
+
+  it('should show status counts', async(() => {
+    testComponent.chips.delete('statuses');
+    testComponent.jobs.next({
+      results: [testJob1, testJob2],
+      exhaustive: true
+    });
+    testComponent.search();
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(
+        By.css('.active-button')).nativeElement.textContent).toContain('(2)');
+    });
+  }));
+
+  it('should show hide status counts on non-exhaustive', async(() => {
+    testComponent.chips.delete('statuses');
+    testComponent.jobs.next({
+      results: [testJob1, testJob2],
+      exhaustive: false
+    });
+    testComponent.search();
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expect(fixture.debugElement.query(
+        By.css('.active-button')).nativeElement.textContent).not.toContain('(2)');
     });
   }));
 
