@@ -38,7 +38,7 @@ DSUB_STATUS_MAP = {
 
 
 def dsub_to_api(job):
-    """Map an API status to a dsub status
+    """Map a dsub status to an API status
 
         Args:
             dsub_status (str): 'RUNNING', 'CANCELED', 'SUCCESS', or 'FAILURE'
@@ -58,7 +58,7 @@ def dsub_to_api(job):
 
 
 def api_to_dsub(api_status):
-    """Map a dsub status to an API status
+    """Map an API status to a dsub status
 
         Args:
             api_status (str): 'Submitted', 'Running', 'Aborting', 'Aborted',
