@@ -14,9 +14,8 @@ from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
+from jobs.controllers.utils import task_statuses
 
-CROMWELL_DONE_STATUS = 'Done'
-API_SUCCESS_STATUS = 'Succeeded'
 _DEFAULT_PAGE_SIZE = 64
 
 
@@ -128,7 +127,7 @@ def format_task(task_name, task_metadata):
     return TaskMetadata(
         name=remove_workflow_name(task_name),
         execution_id=task_metadata.get('jobId'),
-        execution_status=cromwell_to_api_status(
+        execution_status=task_statuses.cromwell_execution_to_api(
             task_metadata.get('executionStatus')),
         start=_parse_datetime(task_metadata.get('start')),
         end=_parse_datetime(task_metadata.get('end')),
@@ -138,13 +137,6 @@ def format_task(task_name, task_metadata):
         return_code=task_metadata.get('returnCode'),
         attempts=task_metadata.get('attempt'),
         job_id=task_metadata.get('subWorkflowId'))
-
-
-def cromwell_to_api_status(status):
-    """ Use the API status 'Succeeded' instead of 'Done' for completed cromwell tasks. """
-    if status == CROMWELL_DONE_STATUS:
-        return API_SUCCESS_STATUS
-    return status
 
 
 def remove_workflow_name(name):
