@@ -17,7 +17,7 @@
 }
 
 .status-button {
-  width: 7rem;
+  min-width: 7rem;
   margin-right: .5rem;
 }
 
