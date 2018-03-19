@@ -1,6 +1,6 @@
 import requests
 from requests.auth import HTTPBasicAuth
-from flask import current_app
+from flask import current_app, request
 from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
 from datetime import datetime
 
@@ -28,9 +28,13 @@ def abort_job(id):
 
     :rtype: None
     """
+    auth_token = request.headers.get('Authentication')
+    auth = _get_user_auth() if not auth_token else None
+
     url = '{cromwell_url}/{id}/abort'.format(
         cromwell_url=_get_base_url(), id=id)
-    response = requests.post(url, auth=_get_user_auth())
+    response = requests.post(
+        url, auth=auth, headers=_get_auth_header(auth_token))
     if response.status_code == NotFound.code:
         raise NotFound(response.json()['message'])
 
@@ -46,10 +50,14 @@ def update_job_labels(id, body):
 
     :rtype: UpdateJobLabelsResponse
     """
+    auth_token = request.headers.get('Authentication')
+    auth = _get_user_auth() if not auth_token else None
+
     payload = UpdateJobLabelsRequest.from_dict(body).labels
     url = '{cromwell_url}/{id}/labels'.format(
         cromwell_url=_get_base_url(), id=id)
-    response = requests.patch(url, json=payload, auth=_get_user_auth())
+    response = requests.patch(
+        url, json=payload, auth=auth, headers=_get_auth_header(auth_token))
 
     if response.status_code == InternalServerError.code:
         raise InternalServerError(response.json().get('message'))
@@ -79,9 +87,13 @@ def get_job(id):
 
     :rtype: JobMetadataResponse
     """
+    auth_token = request.headers.get('Authentication')
+    auth = _get_user_auth() if not auth_token else None
+
     url = '{cromwell_url}/{id}/metadata'.format(
         cromwell_url=_get_base_url(), id=id)
-    response = requests.get(url, auth=_get_user_auth())
+    response = requests.get(
+        url, auth=auth, headers=_get_auth_header(auth_token))
     job = response.json()
     if response.status_code == BadRequest.code:
         raise BadRequest(job.get('message'))
@@ -162,11 +174,14 @@ def query_jobs(body):
 
     :rtype: QueryJobsResponse
     """
+    auth_token = request.headers.get('Authentication')
+    auth = _get_user_auth() if not auth_token else None
+
     query = QueryJobsRequest.from_dict(body)
     query_page_size = query.page_size or _DEFAULT_PAGE_SIZE
     # Request more than query.page_size from cromwell since subworkflows will get filtered out
     page_size = query_page_size * 2
-    total_results = get_total_results(query)
+    total_results = get_total_results(query, auth_token)
 
     results = []
     offset = page_tokens.decode_offset(query.page_token) or 0
@@ -179,7 +194,8 @@ def query_jobs(body):
         response = requests.post(
             _get_base_url() + '/query',
             json=cromwell_query_params(query, page_from_end, page_size),
-            auth=_get_user_auth())
+            auth=auth,
+            headers=_get_auth_header(auth_token))
 
         if response.status_code == BadRequest.code:
             raise BadRequest(response.json().get('message'))
@@ -202,13 +218,14 @@ def query_jobs(body):
     return QueryJobsResponse(results=results, next_page_token=next_page_token)
 
 
-def get_total_results(query):
+def get_total_results(query, auth_token=None):
+    auth = _get_user_auth() if not auth_token else None
     params_for_cromwell = cromwell_query_params(query, page=1, page_size=1)
     response = requests.post(
         _get_base_url() + '/query',
         json=params_for_cromwell,
-        auth=_get_user_auth())
-
+        auth=auth,
+        headers=_get_auth_header(auth_token))
     if response.status_code == BadRequest.code:
         raise BadRequest(response.json().get('message'))
     elif response.status_code == InternalServerError.code:
@@ -296,6 +313,12 @@ def _get_base_url():
 def _get_user_auth():
     return HTTPBasicAuth(current_app.config['cromwell_user'],
                          current_app.config['cromwell_password'])
+
+
+def _get_auth_header(auth_token):
+    return {
+        "Authorization": str(auth_token)
+    } if current_app.config['use_caas'] and auth_token else None
 
 
 def _is_parent_workflow(job):
