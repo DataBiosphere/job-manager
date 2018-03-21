@@ -1,20 +1,13 @@
 import {
   Component,
   ElementRef,
-  Input,
   ViewChild,
   OnInit,
   ViewContainerRef
 } from '@angular/core';
 import {FormControl} from '@angular/forms';
 import {
-  MatAutocomplete,
-  MatButton,
-  MatCard,
-  MatFormField,
-  MatOption,
   MatSnackBar,
-  MatSnackBarConfig
 } from '@angular/material'
 import {Router, NavigationError} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
