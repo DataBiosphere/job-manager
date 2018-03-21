@@ -39,9 +39,6 @@ import {JobListView} from '../job-stream';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
-  // Whether the status tabs and pagination controls are displayed. If true,
-  // jobs and pageSize must also be provided.
-  @Input() showControls: boolean = false;
   @Input() jobs: BehaviorSubject<JobListView>;
   @Input() pageSize: number;
   @ViewChild(MatPaginator) paginator: MatPaginator;
