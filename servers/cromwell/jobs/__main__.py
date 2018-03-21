@@ -60,7 +60,7 @@ finally:
     app.app.config.update(config)
 
 app.app.config['cromwell_url'] = args.cromwell_url
-app.app.config['use_caas'] = args.use_caas.lower() == 'true'
+app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'
 app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)
 
