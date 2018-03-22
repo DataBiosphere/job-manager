@@ -1,7 +1,9 @@
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
+  Output,
   SimpleChanges
 } from '@angular/core';
 
@@ -20,6 +22,7 @@ export class JobPanelsComponent implements OnChanges {
   private static readonly extensionsWhiteList: string[] = ['userId', 'statusDetail', 'lastUpdate', 'parentJobId'];
 
   @Input() job: JobMetadataResponse;
+  @Output() close: EventEmitter<any> = new EventEmitter();
   inputs: Array<string> = [];
   logs: Array<string> = [];
   outputs: Array<string> = []
@@ -94,5 +97,9 @@ export class JobPanelsComponent implements OnChanges {
 
   showOutputsButton(): boolean {
     return this.outputs.length > 0;
+  }
+
+  handleClose(): void {
+    this.close.emit();
   }
 }

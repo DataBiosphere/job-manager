@@ -9,13 +9,20 @@ p {
 
 .content {
   margin: 1rem;
+  padding-top: 2rem;
 }
 
 .header {
+  display: inline-block;
   font-weight: normal;
   font-size: 2rem;
-  padding-top: 2rem;
   margin: 0;
+}
+
+.close {
+  color: gray;
+  float: right;
+  font-size: 2.5rem;
 }
 
 .job-id {
