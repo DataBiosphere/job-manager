@@ -2,7 +2,8 @@ import {
   Component,
   Input,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  ViewEncapsulation
 } from '@angular/core';
 
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
@@ -14,6 +15,7 @@ import {ResourceUtils} from '../../shared/utils/resource-utils';
   selector: 'jm-panels',
   templateUrl: './panels.component.html',
   styleUrls: ['./panels.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class JobPanelsComponent implements OnChanges {
   // Whitelist of extended fields to display in the UI, in order.
@@ -62,37 +64,21 @@ export class JobPanelsComponent implements OnChanges {
     }
   }
 
-  getInputResourceURL(key: string): string {
-    return ResourceUtils.getResourceBrowserURL(this.job.inputs[key]);
-  }
-
   getLogResourceURL(key: string): string {
     if (this.job.extensions) {
       return ResourceUtils.getResourceURL(this.job.extensions.logs[key]);
     }
   }
 
-  getOutputResourceURL(key: string): string {
-    return ResourceUtils.getResourceBrowserURL(this.job.outputs[key]);
+  hasInputs(): boolean {
+    return this.inputs && this.inputs.length > 0;
   }
 
-  getInputResourceFileName(key: string): string {
-    return key + ': ' + ResourceUtils.getResourceFileName(this.job.inputs[key]);
+  hasOutputs(): boolean {
+    return this.outputs && this.outputs.length > 0;
   }
 
-  getOutputResourceFileName(key: string): string {
-    return key + ': ' + ResourceUtils.getResourceFileName(this.job.outputs[key]);
-  }
-
-  showInputsButton(): boolean {
-    return this.inputs.length > 0;
-  }
-
-  showLogsButton(): boolean {
-    return this.logs.length > 0;
-  }
-
-  showOutputsButton(): boolean {
-    return this.outputs.length > 0;
+  hasLogs(): boolean {
+    return this.logs && this.logs.length > 0;
   }
 }

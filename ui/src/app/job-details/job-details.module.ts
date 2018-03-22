@@ -11,6 +11,7 @@ import {
 
 import {JobDetailsComponent} from './job-details.component';
 import {JobPanelsComponent} from './panels/panels.component';
+import {ResourcesTableComponent} from './panels/resources-table/resources-table.component';
 import {SharedModule} from '../shared/shared.module';
 import {TaskDetailsComponent} from './tasks/tasks.component';
 
@@ -29,6 +30,7 @@ import {TaskDetailsComponent} from './tasks/tasks.component';
   declarations: [
     JobDetailsComponent,
     JobPanelsComponent,
+    ResourcesTableComponent,
     TaskDetailsComponent,
   ],
   providers: [],
