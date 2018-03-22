@@ -1,8 +1,7 @@
 import {
   Component,
   Input,
-  OnChanges,
-  SimpleChanges
+  OnInit,
 } from '@angular/core';
 import {ResourceUtils} from '../../../shared/utils/resource-utils';
 
@@ -12,11 +11,11 @@ import {ResourceUtils} from '../../../shared/utils/resource-utils';
   templateUrl: './resources-table.component.html',
   styleUrls: ['./resources-table.component.css'],
 })
-export class JobResourcesTableComponent implements OnChanges {
+export class JobResourcesTableComponent implements OnInit {
   @Input() entries: Object;
   entryKeys: Array<string>;
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnInit() {
     this.entryKeys = Object.keys(this.entries || {}).sort();
   }
 

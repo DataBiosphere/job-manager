@@ -23,4 +23,4 @@ def get_extensions(job):
         logs=logs.dsub_to_api(job),
         last_update=job.get('last-update'),
         envs=job['envs'],
-        script=script)
+        source_file=script)

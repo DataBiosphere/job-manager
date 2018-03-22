@@ -3,7 +3,7 @@ import {AuthService} from '../core/auth.service';
 
 declare const gapi: any;
 
-/** Thin wrapper around the Google cloudresourcemanager API project.list(). */
+/** Thin wrapper around the Google Storage JSON API. */
 @Injectable()
 export class GcsService {
 

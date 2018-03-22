@@ -387,7 +387,7 @@ definitions:
         type: "object"
         description: "Map of ENV variables key values associated with the job."
         properties: {}
-      script:
+      sourceFile:
         type: "string"
         description: "The text of the script executed by this job."
       parentJobId:

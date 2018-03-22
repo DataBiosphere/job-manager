@@ -1,8 +1,7 @@
 import {
   Component,
   Input,
-  OnChanges,
-  SimpleChanges,
+  OnInit,
 } from '@angular/core';
 import {
   MatExpansionPanel,
@@ -18,78 +17,64 @@ import {GcsService} from '../../core/gcs.service';
   templateUrl: './resources.component.html',
   styleUrls: ['./resources.component.css'],
 })
-export class JobResourcesComponent implements OnChanges {
+export class JobResourcesComponent implements OnInit {
   @Input() job: JobMetadataResponse;
 
-  script: string = '';
+  sourceFile: string = '';
   inputs: Array<string> = [];
-  logFileData: Map<string, string> = new Map();
-  logFiles: Array<string> = [];
   outputs: Array<string> = [];
-  currentResourcesTab: string = '';
+  logFileData: Map<string, string> = new Map();
+
+  // Map of tab "id" to tab title. This prevents collisions if there was, for
+  // example, a log file named "inputs".
+  tabTitles: Map<string, string> = new Map();
+  currentTab: string = '';
 
   constructor(private readonly gcsService: GcsService) {}
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.job = changes.job.currentValue;
-    if (this.job.extensions) {
-      if (this.job.extensions.logs) {
-        this.logFiles = Object.keys(this.job.extensions.logs).sort();
-        for (let file of Object.keys(this.job.extensions.logs)) {
-          let bucket = ResourceUtils.getResourceBucket(this.job.extensions.logs[file]);
-          let object = ResourceUtils.getResourceObject(this.job.extensions.logs[file]);
-          this.gcsService.readObject(bucket, object).then(data => {
-            if (data.length > 0) {
-              this.logFileData.set(file, data);
-            } else {
-              // Remove any files from the tab which are completely empty
-              this.logFiles.splice(this.logFiles.indexOf(file), 1);
-            }
-          })
-        }
-      }
-
-      if (this.job.extensions.script) {
-        this.script = this.job.extensions.script;
-      }
-    }
-
+  ngOnInit() {
     if (this.job.inputs) {
       this.inputs = Object.keys(this.job.inputs).sort();
+      this.tabTitles.set('Inputs', 'inputs');
     }
     if (this.job.outputs) {
       this.outputs = Object.keys(this.job.outputs).sort();
+      this.tabTitles.set('Outputs', 'outputs');
     }
 
-    if (this.hasInputs()) {
-      this.currentResourcesTab = 'Inputs';
-    } else if (this.hasOutputs()) {
-      this.currentResourcesTab = 'Outputs';
-    } else if (this.hasScript()) {
-      this.currentResourcesTab = 'Script';
-    } else if (this.logFiles.length > 0) {
-      this.currentResourcesTab = this.logFiles[0];
+    if (this.job.extensions) {
+      if (this.job.extensions.sourceFile) {
+        this.sourceFile = this.job.extensions.sourceFile;
+        this.tabTitles.set('Source File', 'source-file');
+      }
+
+      if (this.job.extensions.logs) {
+        for (let file of Object.keys(this.job.extensions.logs)) {
+          this.readResourceFile(file);
+          this.tabTitles.set(file, 'log-' + file);
+        }
+      }
+    }
+
+    if (this.tabTitles.size > 0) {
+      this.currentTab = this.tabTitles.values().next().value;
     }
   }
 
-  hasInputs(): boolean {
-    return this.inputs.length > 0;
-  }
-
-  hasOutputs(): boolean {
-    return this.outputs.length > 0;
-  }
-
-  hasScript(): boolean {
-    return this.job.extensions && !!this.job.extensions.script;
-  }
-
-  keepExpanded(): boolean {
+  alwaysExpanded(): boolean {
     return !this.job.extensions || !this.job.extensions.tasks;
   }
 
+  tabs(): string[] {
+    return Array.from(this.tabTitles.keys());
+  }
+
+  logFiles(): string[] {
+    return Array.from(this.logFileData.keys());
+  }
+
   tabChanged(event: MatTabChangeEvent) {
-    this.currentResourcesTab = event.tab.textLabel;
+    this.currentTab = this.tabTitles.get(event.tab.textLabel);
   }
 
   expandPanel(matExpansionPanel: MatExpansionPanel, event: Event): void {
@@ -102,5 +87,20 @@ export class JobResourcesComponent implements OnChanges {
     if (event.target['className'].includes('tab') && !matExpansionPanel.expanded) {
       matExpansionPanel.toggle();
     }
+  }
+
+  private readResourceFile(file: string) {
+    let bucket = ResourceUtils.getResourceBucket(this.job.extensions.logs[file]);
+    let object = ResourceUtils.getResourceObject(this.job.extensions.logs[file]);
+    this.gcsService.readObject(bucket, object).then(data => {
+      if (data.length > 0) {
+        this.logFileData.set(file, data);
+      } else {
+        // Remove any tab for files which are completely empty or do not
+        // exist.
+        this.tabTitles.delete(file);
+        this.logFileData.delete(file);
+      }
+    });
   }
 }

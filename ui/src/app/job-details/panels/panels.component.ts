@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
   SimpleChanges,
   ViewContainerRef
@@ -24,9 +25,11 @@ import {GcsService} from '../../core/gcs.service';
   templateUrl: './panels.component.html',
   styleUrls: ['./panels.component.css'],
 })
-export class JobPanelsComponent implements OnChanges {
+export class JobPanelsComponent implements OnInit {
   // Whitelist of extended fields to display in the UI, in order.
-  private static readonly extensionsWhiteList: string[] = ['userId', 'lastUpdate', 'parentJobId', 'statusDetail'];
+  private static readonly extensionsWhiteList: string[] = [
+    'userId', 'lastUpdate', 'parentJobId', 'statusDetail'
+  ];
 
   @Input() job: JobMetadataResponse;
   @Output() close: EventEmitter<any> = new EventEmitter();
@@ -35,8 +38,7 @@ export class JobPanelsComponent implements OnChanges {
   numCompletedTasks: number = 0;
   numTasks: number = 0;
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.job = changes.job.currentValue;
+  ngOnInit() {
     if (this.job.extensions) {
       if (this.job.extensions.tasks) {
         this.numTasks = this.job.extensions.tasks.length;

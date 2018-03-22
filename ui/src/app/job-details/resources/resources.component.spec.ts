@@ -28,7 +28,7 @@ describe('JobResourcesComponent', () => {
       start: new Date('1994-03-29T21:00:00')
     };
 
-  let inputOutputScriptJob: JobMetadataResponse =
+  let inputOutputSourceFileJob: JobMetadataResponse =
     {
       id: 'JOB1',
       status: JobStatus.Aborted,
@@ -40,7 +40,7 @@ describe('JobResourcesComponent', () => {
       outputs: {'output': 'gs://output/url/', 'output_file': 'gs://output/url/outputs.txt'},
       labels: {'user-id': 'user-1', 'project': 'test-pipeline'},
       extensions: {
-        script: 'TEST_SCRIPT'
+        sourceFile: 'TEST_SCRIPT'
       }
     };
 
@@ -96,45 +96,36 @@ describe('JobResourcesComponent', () => {
   it('should hide resources tabs for minimal job', async(() => {
     testComponent.job = minimalJob;
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.hasInputs()).toBeFalsy();
-    expect(testComponent.jobResourcesComponent.hasOutputs()).toBeFalsy();
-    expect(testComponent.jobResourcesComponent.hasScript()).toBeFalsy();
     let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(0);
   }));
 
-  it('should show inputs, outputs, script tabs', async(() => {
-    testComponent.job = inputOutputScriptJob;
+  it('should show inputs, outputs, source file tabs', async(() => {
+    testComponent.job = inputOutputSourceFileJob;
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.hasInputs()).toBeTruthy();
-    expect(testComponent.jobResourcesComponent.hasOutputs()).toBeTruthy();
-    expect(testComponent.jobResourcesComponent.hasScript()).toBeTruthy();
     let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(3);
   }));
 
   it('should switch content when tabs switch', fakeAsync(() => {
-    testComponent.job = inputOutputScriptJob;
+    testComponent.job = inputOutputSourceFileJob;
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.hasInputs()).toBeTruthy();
-    expect(testComponent.jobResourcesComponent.hasOutputs()).toBeTruthy();
-    expect(testComponent.jobResourcesComponent.hasScript()).toBeTruthy();
     let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
 
     tabGroup.componentInstance.selectedIndex = 1;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentResourcesTab).toBe("Inputs");
+    expect(testComponent.jobResourcesComponent.currentTab).toBe("inputs");
 
     tabGroup.componentInstance.selectedIndex = 2;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentResourcesTab).toBe("Outputs");
+    expect(testComponent.jobResourcesComponent.currentTab).toBe("outputs");
 
     tabGroup.componentInstance.selectedIndex = 3;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentResourcesTab).toBe("Script");
+    expect(testComponent.jobResourcesComponent.currentTab).toBe("source-file");
   }));
 
   it('should retrieve log files from GCS service', fakeAsync(() => {
@@ -146,24 +137,24 @@ describe('JobResourcesComponent', () => {
     tabGroup.componentInstance.selectedIndex = 1;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentResourcesTab).toBe("Controller Log");
+    expect(testComponent.jobResourcesComponent.currentTab).toBe("log-Controller Log");
     let resourceContent = fixture.debugElement.queryAll(By.css('.inline-text'))[0];
     expect(resourceContent.nativeElement.innerText).toContain("CONTROLLER LOG TEXT");
 
     tabGroup.componentInstance.selectedIndex = 2;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentResourcesTab).toBe("Error Log");
+    expect(testComponent.jobResourcesComponent.currentTab).toBe("log-Output Log");
     resourceContent = fixture.debugElement.queryAll(By.css('.inline-text'))[0];
-    expect(resourceContent.nativeElement.innerText).toContain("ERROR LOG TEXT");
+    expect(resourceContent.nativeElement.innerText).toContain("OUTPUT LOG TEXT");
 
     tabGroup.componentInstance.selectedIndex = 3;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentResourcesTab).toBe("Output Log");
+    expect(testComponent.jobResourcesComponent.currentTab).toBe("log-Error Log");
     expect(fixture.debugElement.queryAll(By.css('.inline-text'))[0].nativeElement.toString())
     resourceContent = fixture.debugElement.queryAll(By.css('.inline-text'))[0];
-    expect(resourceContent.nativeElement.innerText).toContain("OUTPUT LOG TEXT");
+    expect(resourceContent.nativeElement.innerText).toContain("ERROR LOG TEXT");
   }));
 
   @Component({

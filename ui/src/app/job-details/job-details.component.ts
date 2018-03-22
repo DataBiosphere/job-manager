@@ -40,6 +40,6 @@ export class JobDetailsComponent implements OnInit {
     return this.job.inputs
       || this.job.outputs
       || (this.job.extensions
-        && (this.job.extensions.script || this.job.extensions.logs));
+        && (this.job.extensions.sourceFile || this.job.extensions.logs));
   }
 }

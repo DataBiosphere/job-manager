@@ -1,25 +1,22 @@
 <div class="content">
-  <mat-expansion-panel [expanded]=keepExpanded() [disabled]=keepExpanded() [hideToggle]=keepExpanded() #matExpansionPanel>
+  <mat-expansion-panel [expanded]=alwaysExpanded() [disabled]=alwaysExpanded() [hideToggle]=alwaysExpanded() #matExpansionPanel>
 
     <mat-expansion-panel-header (click)="expandPanel(matExpansionPanel, $event)">
       <mat-panel-title><p class="title">Resources</p></mat-panel-title>
       <mat-tab-group (selectedTabChange)="tabChanged($event)">
-        <mat-tab *ngIf="hasInputs()" label="Inputs"></mat-tab>
-        <mat-tab *ngIf="hasOutputs()" label="Outputs"></mat-tab>
-        <mat-tab *ngIf="hasScript()" label="Script"></mat-tab>
-        <mat-tab *ngFor="let logFile of logFiles" [label]="logFile"></mat-tab>
+        <mat-tab *ngFor="let tab of tabs()" [label]="tab"></mat-tab>
       </mat-tab-group>
     </mat-expansion-panel-header>
 
     <mat-divider></mat-divider>
 
-    <jm-resources-table *ngIf="currentResourcesTab == 'Inputs'" [entries]="job.inputs"></jm-resources-table>
-    <jm-resources-table *ngIf="currentResourcesTab == 'Outputs'" [entries]="job.outputs"></jm-resources-table>
-    <div *ngIf="currentResourcesTab == 'Script'" class="inline-text">
-      {{ job.extensions.script }}
+    <jm-resources-table *ngIf="currentTab == 'inputs'" [entries]="job.inputs"></jm-resources-table>
+    <jm-resources-table *ngIf="currentTab == 'outputs'" [entries]="job.outputs"></jm-resources-table>
+    <div *ngIf="currentTab == 'source-file'" class="inline-text">
+      {{ job.extensions.sourceFile }}
     </div>
-    <div *ngFor="let logFile of logFiles">
-      <div *ngIf="currentResourcesTab == logFile" class="inline-text">
+    <div *ngFor="let logFile of logFiles()">
+      <div *ngIf="currentTab == 'log-' + logFile" class="inline-text">
         {{ logFileData.get(logFile) }}
       </div>
     </div>
