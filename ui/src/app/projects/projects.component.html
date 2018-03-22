@@ -2,13 +2,14 @@
   <mat-card class="projects-card">
     <mat-form-field class="form-field">
       <input matInput
+             autofocus
              class="input-field"
-             placeholder="Project Name"
+             placeholder="Project ID"
              [matAutocomplete]="auto"
              [formControl]="projectsControl">
-      <mat-autocomplete #auto="matAutocomplete">
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="navigateJobs()">
         <mat-option *ngFor="let project of projectsObservable | async" [value]="project">
-          <span><div class="project-name">{{ project }}</div></span>
+          <span><div class="project-id">{{ project }}</div></span>
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
