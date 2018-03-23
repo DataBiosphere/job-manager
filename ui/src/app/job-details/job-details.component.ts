@@ -35,4 +35,11 @@ export class JobDetailsComponent implements OnInit {
       }
     });
   }
+
+  hasResources(): boolean {
+    return this.job.inputs
+      || this.job.outputs
+      || (this.job.extensions
+        && (this.job.extensions.sourceFile || this.job.extensions.logs));
+  }
 }

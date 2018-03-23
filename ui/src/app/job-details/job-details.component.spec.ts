@@ -6,6 +6,8 @@ import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
+  MatDividerModule,
+  MatExpansionModule,
   MatMenuModule,
   MatTableModule,
   MatTabsModule,
@@ -15,6 +17,8 @@ import {RouterTestingModule} from '@angular/router/testing';
 
 import {JobDetailsComponent} from "./job-details.component"
 import {JobPanelsComponent} from './panels/panels.component';
+import {JobResourcesComponent} from './resources/resources.component';
+import {JobResourcesTableComponent} from './resources/resources-table/resources-table.component';
 import {TaskDetailsComponent} from './tasks/tasks.component';
 import {JobManagerService} from '../core/job-manager.service';
 import {JobDetailsResolver} from './job-details-resolver.service';
@@ -53,12 +57,16 @@ describe('JobDetailsComponent', () => {
         TestJobDetailsComponent,
         JobDetailsComponent,
         JobPanelsComponent,
+        JobResourcesComponent,
+        JobResourcesTableComponent,
         TaskDetailsComponent,
       ],
       imports: [
         CommonModule,
         MatButtonModule,
         MatCardModule,
+        MatDividerModule,
+        MatExpansionModule,
         MatMenuModule,
         MatTableModule,
         MatTabsModule,

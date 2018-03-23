@@ -1,72 +1,74 @@
 <div class="content">
-  <div class="header">
-    <p class="title">Tasks</p>
-    <mat-tab-group>
-      <mat-tab label = "List view"></mat-tab>
-      <!--<mat-tab label = "Graph view"></mat-tab>-->
-      <mat-tab>
-        <ng-template mat-tab-label>
-          <a style="all: unset" href="{{ getTimingUrl() }}" target="_blank">
-            <div>Graph view</div>
+  <mat-expansion-panel [expanded]=true [disabled]=true [hideToggle]=true>
+    <mat-expansion-panel-header>
+      <mat-panel-title><p class="title">Tasks</p></mat-panel-title>
+      <mat-tab-group (selectedTabChange)="tabChanged($event)">
+        <mat-tab label="List View"></mat-tab>
+        <!-- Disable the graph view tab so the indicator doesn't switch on click -->
+        <mat-tab *ngIf="hasTimingUrl()" label="Graph View" [disabled]=true>
+          <ng-template mat-tab-label>
+            <a style="all: unset" href="{{ job.extensions.timingUrl }}" target="_blank">
+              <div class="title-link">Graph view</div>
+            </a>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-expansion-panel-header>
+
+    <mat-table #table [dataSource]="dataSource">
+      <!-- Task name column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let t">
+          <a class="title-link" *ngIf="t.jobId" href="{{ '/jobs/' + t.jobId }}">{{ t.name }}</a>
+          <p *ngIf="!t.jobId">{{ t.name }}</p>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Status column -->
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+        <mat-cell *matCellDef="let t">
+          <button mat-icon-button disabled>
+            <img class='task-status-tooltip' matTooltip="{{ t.executionStatus }}" matTooltipPosition="before"
+                 src="{{ getStatusUrl(t.executionStatus) }}">
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Example columns -->
+      <ng-container matColumnDef="startTime">
+        <mat-header-cell *matHeaderCellDef> Start Time </mat-header-cell>
+        <mat-cell *matCellDef="let t" class="column">{{ t.start | jmShortDateTime }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="duration">
+        <mat-header-cell *matHeaderCellDef> Duration </mat-header-cell>
+        <mat-cell *matCellDef="let t" class="column">{{ t.start | jmDuration: t.end }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="attempts">
+        <mat-header-cell *matHeaderCellDef> Attempts </mat-header-cell>
+        <mat-cell *matCellDef="let t" class="column">{{ t.attempts }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="stdout">
+        <mat-header-cell *matHeaderCellDef> Stdout </mat-header-cell>
+        <mat-cell *matCellDef="let t" class="column">
+          <a class="log-item" href="{{ getResourceUrl(t.stdout) }}">
+            {{ getResourceFileName(t.stdout) }}
           </a>
-        </ng-template>
-      </mat-tab>
-    </mat-tab-group>
-  </div>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="stderr">
+        <mat-header-cell *matHeaderCellDef> Stderr </mat-header-cell>
+        <mat-cell *matCellDef="let t" class="column">
+          <a class="log-item" href="{{ getResourceUrl(t.stderr) }}">
+            {{ getResourceFileName(t.stderr) }}
+          </a>
+        </mat-cell>
+      </ng-container>
 
-  <mat-table #table [dataSource]="dataSource">
-    <!-- Task name column -->
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-      <mat-cell *matCellDef="let t">
-        <a class="title-link" *ngIf="t.jobId" href="{{ '/jobs/' + t.jobId }}">{{ t.name }}</a>
-        <p *ngIf="!t.jobId">{{ t.name }}</p>
-      </mat-cell>
-    </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let t; columns: displayedColumns;"></mat-row>
 
-    <!-- Status column -->
-    <ng-container matColumnDef="status">
-      <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
-      <mat-cell *matCellDef="let t">
-        <button mat-icon-button disabled>
-          <img class='task-status-tooltip' matTooltip="{{ t.executionStatus }}" matTooltipPosition="before"
-               src="{{ getStatusUrl(t.executionStatus) }}">
-        </button>
-      </mat-cell>
-    </ng-container>
-
-    <!-- Example columns -->
-    <ng-container matColumnDef="startTime">
-      <mat-header-cell *matHeaderCellDef> Start Time </mat-header-cell>
-      <mat-cell *matCellDef="let t" class="column">{{ t.start | jmShortDateTime }}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="duration">
-      <mat-header-cell *matHeaderCellDef> Duration </mat-header-cell>
-      <mat-cell *matCellDef="let t" class="column">{{ t.start | jmDuration: t.end }}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="attempts">
-      <mat-header-cell *matHeaderCellDef> Attempts </mat-header-cell>
-      <mat-cell *matCellDef="let t" class="column">{{ t.attempts }}</mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="stdout">
-      <mat-header-cell *matHeaderCellDef> Stdout </mat-header-cell>
-      <mat-cell *matCellDef="let t" class="column">
-        <a class="log-item" href="{{ getResourceUrl(t.stdout) }}">
-          {{ getResourceFileName(t.stdout) }}
-        </a>
-      </mat-cell>
-    </ng-container>
-    <ng-container matColumnDef="stderr">
-      <mat-header-cell *matHeaderCellDef> Stderr </mat-header-cell>
-      <mat-cell *matCellDef="let t" class="column">
-        <a class="log-item" href="{{ getResourceUrl(t.stderr) }}">
-          {{ getResourceFileName(t.stderr) }}
-        </a>
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let t; columns: displayedColumns;"></mat-row>
-
-  </mat-table>
+    </mat-table>
+  </mat-expansion-panel>
 </div>

@@ -363,23 +363,26 @@ definitions:
     properties:
       userId:
         type: string
-        description: The user associated with the job
+        description: The user associated with the job.
       statusDetail:
         type: string
         description: Longer text description of the job status.
       logs:
         type: object
-        description: Map of type of log file to its file location
+        description: Map of type of log file to its file location.
       lastUpdate:
         type: string
         format: date-time
-        description: Job last update datetime in ISO8601 format
+        description: Job last update datetime in ISO8601 format.
       envs:
         type: object
-        description: Map of ENV variables associated with the job
+        description: Map of ENV variables key values associated with the job.
+      sourceFile:
+        type: string
+        description: The text of the script executed by this job.
       parentJobId:
         type: string
-        description: The parent job ID for the job
+        description: The parent job ID for the job.
       # TODO: Remove once the diagram is rendered natively.
       timingUrl:
         type: string

@@ -4,6 +4,7 @@ import {CommonModule} from '@angular/common';
 import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
   MatButtonModule,
+  MatExpansionModule,
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
@@ -53,6 +54,7 @@ describe('TaskDetailsComponent', () => {
         BrowserAnimationsModule,
         CommonModule,
         MatButtonModule,
+        MatExpansionModule,
         MatTableModule,
         MatTabsModule,
         MatTooltipModule,

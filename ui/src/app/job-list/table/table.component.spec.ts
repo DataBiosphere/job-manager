@@ -50,7 +50,7 @@ describe('JobsTableComponent', () => {
       ]
     };
 
-  function testJobs(count: number): QueryJobsResult[] {
+  function testJobs(): QueryJobsResult[] {
     return [{
       id: 'JOB1',
       name: 'TCG-NBL-7357',
@@ -130,7 +130,7 @@ describe('JobsTableComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TestTableComponent);
     testComponent = fixture.componentInstance;
-    jobs = testJobs(5);
+    jobs = testJobs();
     testComponent.jobs.next(jobs);
   });
 

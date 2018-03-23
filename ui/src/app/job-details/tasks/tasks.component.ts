@@ -15,6 +15,7 @@ import {JobStatusImage} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {environment} from "../../../environments/environment";
+import {MatTabChangeEvent} from '@angular/material';
 
 @Component({
   selector: 'jm-tasks',
@@ -58,13 +59,13 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     return ResourceUtils.getResourceFileName(url);
   }
 
-  getTimingUrl(): string {  
-    if (this.job.extensions && this.job.extensions.timingUrl) {
-       return this.job.extensions.timingUrl;
-     } else {
-       return '/jobs/' + this.job.id;
-     }
-   }  
+  hasTimingUrl(): boolean {
+    return this.job.extensions && !!this.job.extensions.timingUrl;
+  }
+
+   tabChanged(event: MatTabChangeEvent) {
+    event.tab.isActive = false;
+  }
 }
 
 /** Simple database with an observable list of jobs to be subscribed to by the

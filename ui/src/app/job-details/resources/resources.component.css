@@ -1,0 +1,28 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+.content {
+  margin: 1rem;
+  clear: left;
+}
+
+.header {
+  margin-right: 1rem;
+}
+
+.title {
+  margin-top: .6rem;
+  margin-bottom: .6rem;
+  font-size: 1.2rem;
+  color: gray
+}
+
+.mat-tab-group {
+  padding-right: 1rem;
+}
+
+.inline-text {
+  white-space: pre-line;
+  font-family: 'Consolas', "courier new";
+}

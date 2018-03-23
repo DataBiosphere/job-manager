@@ -3,36 +3,42 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
-  SimpleChanges
+  SimpleChanges,
+  ViewContainerRef
 } from '@angular/core';
+import {
+  MatSnackBar,
+  MatSnackBarConfig
+} from '@angular/material'
 
+import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
+import {GcsService} from '../../core/gcs.service';
 
 @Component({
   selector: 'jm-panels',
   templateUrl: './panels.component.html',
   styleUrls: ['./panels.component.css'],
 })
-export class JobPanelsComponent implements OnChanges {
+export class JobPanelsComponent implements OnInit {
   // Whitelist of extended fields to display in the UI, in order.
-  private static readonly extensionsWhiteList: string[] = ['userId', 'statusDetail', 'lastUpdate', 'parentJobId'];
+  private static readonly extensionsWhiteList: string[] = [
+    'userId', 'lastUpdate', 'parentJobId', 'statusDetail'
+  ];
 
   @Input() job: JobMetadataResponse;
   @Output() close: EventEmitter<any> = new EventEmitter();
-  inputs: Array<string> = [];
-  logs: Array<string> = [];
-  outputs: Array<string> = []
-  labels: Array<string> = []
+  labels: Array<string> = [];
   displayedExtensions: Array<string> = [];
   numCompletedTasks: number = 0;
   numTasks: number = 0;
 
-  ngOnChanges(changes: SimpleChanges) {
-    this.job = changes.job.currentValue;
+  ngOnInit() {
     if (this.job.extensions) {
       if (this.job.extensions.tasks) {
         this.numTasks = this.job.extensions.tasks.length;
@@ -43,10 +49,6 @@ export class JobPanelsComponent implements OnChanges {
         }
       }
 
-      if (this.job.extensions.logs) {
-        this.logs = Object.keys(this.job.extensions.logs).sort();
-      }
-
       for (let displayedExtension of JobPanelsComponent.extensionsWhiteList) {
         if (this.job.extensions[displayedExtension]) {
           this.displayedExtensions.push(displayedExtension);
@@ -54,49 +56,23 @@ export class JobPanelsComponent implements OnChanges {
       }
     }
 
-    if (this.job.inputs) {
-      this.inputs = Object.keys(this.job.inputs).sort();
-    }
-    if (this.job.outputs) {
-      this.outputs = Object.keys(this.job.outputs).sort();
-    }
     if (this.job.labels) {
       this.labels = Object.keys(this.job.labels).sort();
     }
   }
 
-  getInputResourceURL(key: string): string {
-    return ResourceUtils.getResourceBrowserURL(this.job.inputs[key]);
-  }
-
-  getLogResourceURL(key: string): string {
-    if (this.job.extensions) {
-      return ResourceUtils.getResourceURL(this.job.extensions.logs[key]);
+  whiteListedExtensions(): string[] {
+    if (!this.job.extensions) {
+      return [];
     }
-  }
 
-  getOutputResourceURL(key: string): string {
-    return ResourceUtils.getResourceBrowserURL(this.job.outputs[key]);
-  }
-
-  getInputResourceFileName(key: string): string {
-    return key + ': ' + ResourceUtils.getResourceFileName(this.job.inputs[key]);
-  }
-
-  getOutputResourceFileName(key: string): string {
-    return key + ': ' + ResourceUtils.getResourceFileName(this.job.outputs[key]);
-  }
-
-  showInputsButton(): boolean {
-    return this.inputs.length > 0;
-  }
-
-  showLogsButton(): boolean {
-    return this.logs.length > 0;
-  }
-
-  showOutputsButton(): boolean {
-    return this.outputs.length > 0;
+    let extensions: string[] = [];
+    for (let extension of JobPanelsComponent.extensionsWhiteList) {
+      if (this.job.extensions[extension]) {
+        extensions.push(extension);
+      }
+    }
+    return extensions;
   }
 
   handleClose(): void {
