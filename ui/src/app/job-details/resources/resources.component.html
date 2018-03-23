@@ -10,13 +10,13 @@
 
     <mat-divider></mat-divider>
 
-    <jm-resources-table *ngIf="currentTab == 'inputs'" [entries]="job.inputs"></jm-resources-table>
-    <jm-resources-table *ngIf="currentTab == 'outputs'" [entries]="job.outputs"></jm-resources-table>
-    <div *ngIf="currentTab == 'source-file'" class="inline-text">
+    <jm-resources-table *ngIf="currentTabId == 'inputs'" [entries]="job.inputs"></jm-resources-table>
+    <jm-resources-table *ngIf="currentTabId == 'outputs'" [entries]="job.outputs"></jm-resources-table>
+    <div *ngIf="currentTabId == 'source-file'" class="inline-text">
       {{ job.extensions.sourceFile }}
     </div>
     <div *ngFor="let logFile of logFiles()">
-      <div *ngIf="currentTab == 'log-' + logFile" class="inline-text">
+      <div *ngIf="currentTabId == 'log-' + logFile" class="inline-text">
         {{ logFileData.get(logFile) }}
       </div>
     </div>

@@ -19,8 +19,18 @@ export class GcsService {
           params: {alt: 'media'}
         })
         .then(response => response.body)
-         // If an error occurs ignore it, the file may not exist
-        .catch(response => "")
+         // If a file not found error occurs ignore it, the file may not exist
+         // if it was never written to.
+        .catch(response => {
+          if (response.status == 404) {
+            return "";
+          }
+          return Promise.reject({
+            status: response.status,
+            title: "Could not read file",
+            message: response.body,
+          });
+        })
       } else {
         return Promise.reject({
           status: 401,

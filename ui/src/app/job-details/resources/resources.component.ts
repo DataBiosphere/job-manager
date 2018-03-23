@@ -2,12 +2,16 @@ import {
   Component,
   Input,
   OnInit,
+  ViewContainerRef,
 } from '@angular/core';
 import {
   MatExpansionPanel,
+  MatSnackBar,
+  MatSnackBarConfig,
   MatTabChangeEvent
 } from '@angular/material'
 
+import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {GcsService} from '../../core/gcs.service';
@@ -25,39 +29,47 @@ export class JobResourcesComponent implements OnInit {
   outputs: Array<string> = [];
   logFileData: Map<string, string> = new Map();
 
-  // Map of tab "id" to tab title. This prevents collisions if there was, for
-  // example, a log file named "inputs".
-  tabTitles: Map<string, string> = new Map();
-  currentTab: string = '';
+  tabIds: Array<string> = [];
+  tabTitles: Map<string, string> = new Map([
+    ['inputs', 'Inputs'],
+    ['outputs', 'Outputs'],
+    ['source-file', 'Source File']
+  ]);
+  currentTabId: string;
 
-  constructor(private readonly gcsService: GcsService) {}
+  constructor(
+    private readonly gcsService: GcsService,
+    private errorBar: MatSnackBar,
+    private readonly viewContainer: ViewContainerRef) {}
 
   ngOnInit() {
     if (this.job.inputs) {
       this.inputs = Object.keys(this.job.inputs).sort();
-      this.tabTitles.set('Inputs', 'inputs');
+      this.tabIds.push('inputs');
     }
     if (this.job.outputs) {
       this.outputs = Object.keys(this.job.outputs).sort();
-      this.tabTitles.set('Outputs', 'outputs');
+      this.tabIds.push('outputs');
     }
 
     if (this.job.extensions) {
       if (this.job.extensions.sourceFile) {
         this.sourceFile = this.job.extensions.sourceFile;
-        this.tabTitles.set('Source File', 'source-file');
+        this.tabIds.push('source-file');
       }
 
       if (this.job.extensions.logs) {
         for (let file of Object.keys(this.job.extensions.logs)) {
           this.readResourceFile(file);
-          this.tabTitles.set(file, 'log-' + file);
+          let tabId = 'log-' + file;
+          this.tabIds.push(tabId);
+          this.tabTitles.set(tabId, file);
         }
       }
     }
 
-    if (this.tabTitles.size > 0) {
-      this.currentTab = this.tabTitles.values().next().value;
+    if (this.tabIds.length > 0) {
+      this.currentTabId = this.tabIds[0];
     }
   }
 
@@ -66,7 +78,7 @@ export class JobResourcesComponent implements OnInit {
   }
 
   tabs(): string[] {
-    return Array.from(this.tabTitles.keys());
+    return this.tabIds.map(id => this.tabTitles.get(id));
   }
 
   logFiles(): string[] {
@@ -74,7 +86,7 @@ export class JobResourcesComponent implements OnInit {
   }
 
   tabChanged(event: MatTabChangeEvent) {
-    this.currentTab = this.tabTitles.get(event.tab.textLabel);
+    this.currentTabId = this.tabIdForTitle(event.tab.textLabel);
   }
 
   expandPanel(matExpansionPanel: MatExpansionPanel, event: Event): void {
@@ -98,9 +110,29 @@ export class JobResourcesComponent implements OnInit {
       } else {
         // Remove any tab for files which are completely empty or do not
         // exist.
-        this.tabTitles.delete(file);
-        this.logFileData.delete(file);
+        let tabId = this.tabIdForTitle(file);
+        this.tabTitles.delete(tabId);
+        this.logFileData.delete(tabId);
+        this.tabIds.splice(this.tabIds.indexOf(tabId), 1);
       }
-    });
+    }).catch(error => this.handleError(error))
+  }
+
+  private tabIdForTitle(title: string): string {
+    for (let entry of Array.from(this.tabTitles.entries())) {
+      if (entry[1] == title) {
+        return entry[0]
+      }
+    }
+  }
+
+  private handleError(error: any) {
+    this.errorBar.open(
+      new ErrorMessageFormatterPipe().transform(error),
+      'Dismiss',
+      {
+        viewContainerRef: this.viewContainer,
+        duration: 3000,
+      });
   }
 }
