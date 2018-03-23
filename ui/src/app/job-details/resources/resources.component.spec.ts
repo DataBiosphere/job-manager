@@ -5,6 +5,7 @@ import {Component, ViewChild} from '@angular/core';
 import {
   MatDividerModule,
   MatExpansionModule,
+  MatSnackBarModule,
   MatTabsModule,
   MatTableModule
 } from '@angular/material';
@@ -78,6 +79,7 @@ describe('JobResourcesComponent', () => {
         BrowserAnimationsModule,
         MatDividerModule,
         MatExpansionModule,
+        MatSnackBarModule,
         MatTabsModule,
         MatTableModule,
         SharedModule
@@ -115,17 +117,17 @@ describe('JobResourcesComponent', () => {
     tabGroup.componentInstance.selectedIndex = 1;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentTab).toBe("inputs");
+    expect(testComponent.jobResourcesComponent.currentTabId).toBe("inputs");
 
     tabGroup.componentInstance.selectedIndex = 2;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentTab).toBe("outputs");
+    expect(testComponent.jobResourcesComponent.currentTabId).toBe("outputs");
 
     tabGroup.componentInstance.selectedIndex = 3;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentTab).toBe("source-file");
+    expect(testComponent.jobResourcesComponent.currentTabId).toBe("source-file");
   }));
 
   it('should retrieve log files from GCS service', fakeAsync(() => {
@@ -137,21 +139,21 @@ describe('JobResourcesComponent', () => {
     tabGroup.componentInstance.selectedIndex = 1;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentTab).toBe("log-Controller Log");
+    expect(testComponent.jobResourcesComponent.currentTabId).toBe("log-Controller Log");
     let resourceContent = fixture.debugElement.queryAll(By.css('.inline-text'))[0];
     expect(resourceContent.nativeElement.innerText).toContain("CONTROLLER LOG TEXT");
 
     tabGroup.componentInstance.selectedIndex = 2;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentTab).toBe("log-Output Log");
+    expect(testComponent.jobResourcesComponent.currentTabId).toBe("log-Output Log");
     resourceContent = fixture.debugElement.queryAll(By.css('.inline-text'))[0];
     expect(resourceContent.nativeElement.innerText).toContain("OUTPUT LOG TEXT");
 
     tabGroup.componentInstance.selectedIndex = 3;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentTab).toBe("log-Error Log");
+    expect(testComponent.jobResourcesComponent.currentTabId).toBe("log-Error Log");
     expect(fixture.debugElement.queryAll(By.css('.inline-text'))[0].nativeElement.toString())
     resourceContent = fixture.debugElement.queryAll(By.css('.inline-text'))[0];
     expect(resourceContent.nativeElement.innerText).toContain("ERROR LOG TEXT");
