@@ -65,7 +65,6 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
    tabChanged(event: MatTabChangeEvent) {
     event.tab.isActive = false;
-    console.log(event);
   }
 }
 

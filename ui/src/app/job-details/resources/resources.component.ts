@@ -86,7 +86,7 @@ export class JobResourcesComponent implements OnInit {
   }
 
   tabChanged(event: MatTabChangeEvent) {
-    this.currentTabId = this.tabIdForTitle(event.tab.textLabel);
+    this.currentTabId = this.tabIds[event.index];
   }
 
   expandPanel(matExpansionPanel: MatExpansionPanel, event: Event): void {
@@ -110,20 +110,11 @@ export class JobResourcesComponent implements OnInit {
       } else {
         // Remove any tab for files which are completely empty or do not
         // exist.
-        let tabId = this.tabIdForTitle(file);
-        this.tabTitles.delete(tabId);
-        this.logFileData.delete(tabId);
-        this.tabIds.splice(this.tabIds.indexOf(tabId), 1);
+        this.tabTitles.delete('log-' + file);
+        this.logFileData.delete('log-' + file);
+        this.tabIds.splice(this.tabIds.indexOf('log-' + file), 1);
       }
     }).catch(error => this.handleError(error))
-  }
-
-  private tabIdForTitle(title: string): string {
-    for (let entry of Array.from(this.tabTitles.entries())) {
-      if (entry[1] == title) {
-        return entry[0]
-      }
-    }
   }
 
   private handleError(error: any) {
