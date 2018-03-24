@@ -43,28 +43,23 @@ export class JobResourcesComponent implements OnInit {
     private readonly viewContainer: ViewContainerRef) {}
 
   ngOnInit() {
-    if (this.job.inputs) {
+    if (this.job.inputs && Object.keys(this.job.inputs).length > 0) {
       this.inputs = Object.keys(this.job.inputs).sort();
       this.tabIds.push('inputs');
     }
-    if (this.job.outputs) {
+    if (this.job.outputs && Object.keys(this.job.outputs).length > 0) {
       this.outputs = Object.keys(this.job.outputs).sort();
       this.tabIds.push('outputs');
     }
 
     if (this.job.extensions) {
-      if (this.job.extensions.sourceFile) {
+      if (this.job.extensions.sourceFile && this.job.extensions.sourceFile.length > 0) {
         this.sourceFile = this.job.extensions.sourceFile;
         this.tabIds.push('source-file');
       }
 
       if (this.job.extensions.logs) {
-        for (let file of Object.keys(this.job.extensions.logs)) {
-          this.readResourceFile(file);
-          let tabId = 'log-' + file;
-          this.tabIds.push(tabId);
-          this.tabTitles.set(tabId, file);
-        }
+        Object.keys(this.job.extensions.logs).forEach(file => this.readResourceFile(file))
       }
     }
 
@@ -107,12 +102,8 @@ export class JobResourcesComponent implements OnInit {
     this.gcsService.readObject(bucket, object).then(data => {
       if (data.length > 0) {
         this.logFileData.set(file, data);
-      } else {
-        // Remove any tab for files which are completely empty or do not
-        // exist.
-        this.tabTitles.delete('log-' + file);
-        this.logFileData.delete('log-' + file);
-        this.tabIds.splice(this.tabIds.indexOf('log-' + file), 1);
+        this.tabIds.push('log-' + file);
+        this.tabTitles.set('log-' + file, file);
       }
     }).catch(error => this.handleError(error))
   }
