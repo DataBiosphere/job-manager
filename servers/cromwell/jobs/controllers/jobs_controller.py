@@ -1,10 +1,10 @@
 import requests
-from requests.auth import HTTPBasicAuth
 from flask import current_app
 from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
 from datetime import datetime
 
 from jm_utils import page_tokens
+from jobs.controllers.utils.auth import requires_auth
 from jobs.models.extended_fields import ExtendedFields
 from jobs.models.query_jobs_result import QueryJobsResult
 from jobs.models.query_jobs_request import QueryJobsRequest
@@ -19,7 +19,8 @@ from jobs.controllers.utils import task_statuses
 _DEFAULT_PAGE_SIZE = 64
 
 
-def abort_job(id):
+@requires_auth
+def abort_job(id, **kwargs):
     """
     Abort a job by ID
 
@@ -30,12 +31,14 @@ def abort_job(id):
     """
     url = '{cromwell_url}/{id}/abort'.format(
         cromwell_url=_get_base_url(), id=id)
-    response = requests.post(url, auth=_get_user_auth())
+    response = requests.post(
+        url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
     if response.status_code == NotFound.code:
         raise NotFound(response.json()['message'])
 
 
-def update_job_labels(id, body):
+@requires_auth
+def update_job_labels(id, body, **kwargs):
     """
     Update labels on a job.
 
@@ -49,7 +52,11 @@ def update_job_labels(id, body):
     payload = UpdateJobLabelsRequest.from_dict(body).labels
     url = '{cromwell_url}/{id}/labels'.format(
         cromwell_url=_get_base_url(), id=id)
-    response = requests.patch(url, json=payload, auth=_get_user_auth())
+    response = requests.patch(
+        url,
+        json=payload,
+        auth=kwargs.get('auth'),
+        headers=kwargs.get('auth_headers'))
 
     if response.status_code == InternalServerError.code:
         raise InternalServerError(response.json().get('message'))
@@ -70,7 +77,8 @@ def update_job_labels(id, body):
     return UpdateJobLabelsResponse(labels=all_labels)
 
 
-def get_job(id):
+@requires_auth
+def get_job(id, **kwargs):
     """
     Query for job and task-level metadata for a specified job
 
@@ -81,7 +89,8 @@ def get_job(id):
     """
     url = '{cromwell_url}/{id}/metadata'.format(
         cromwell_url=_get_base_url(), id=id)
-    response = requests.get(url, auth=_get_user_auth())
+    response = requests.get(
+        url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
     job = response.json()
     if response.status_code == BadRequest.code:
         raise BadRequest(job.get('message'))
@@ -152,7 +161,8 @@ def update_key_names(metadata):
     return {remove_workflow_name(k): v for k, v in metadata.items()}
 
 
-def query_jobs(body):
+@requires_auth
+def query_jobs(body, **kwargs):
     """
     Query jobs by various filter criteria. Additional jobs are requested if the number of results is less than the
     requested page size. The returned jobs are ordered from newest to oldest submission time.
@@ -162,11 +172,13 @@ def query_jobs(body):
 
     :rtype: QueryJobsResponse
     """
+    auth = kwargs.get('auth')
+    headers = kwargs.get('auth_headers')
     query = QueryJobsRequest.from_dict(body)
     query_page_size = query.page_size or _DEFAULT_PAGE_SIZE
     # Request more than query.page_size from cromwell since subworkflows will get filtered out
     page_size = query_page_size * 2
-    total_results = get_total_results(query)
+    total_results = get_total_results(query, auth, headers)
 
     results = []
     offset = page_tokens.decode_offset(query.page_token) or 0
@@ -179,7 +191,8 @@ def query_jobs(body):
         response = requests.post(
             _get_base_url() + '/query',
             json=cromwell_query_params(query, page_from_end, page_size),
-            auth=_get_user_auth())
+            auth=auth,
+            headers=headers)
 
         if response.status_code == BadRequest.code:
             raise BadRequest(response.json().get('message'))
@@ -202,13 +215,13 @@ def query_jobs(body):
     return QueryJobsResponse(results=results, next_page_token=next_page_token)
 
 
-def get_total_results(query):
+def get_total_results(query, auth, headers):
     params_for_cromwell = cromwell_query_params(query, page=1, page_size=1)
     response = requests.post(
         _get_base_url() + '/query',
         json=params_for_cromwell,
-        auth=_get_user_auth())
-
+        auth=auth,
+        headers=headers)
     if response.status_code == BadRequest.code:
         raise BadRequest(response.json().get('message'))
     elif response.status_code == InternalServerError.code:
@@ -291,11 +304,6 @@ def _parse_datetime(date_string):
 
 def _get_base_url():
     return current_app.config['cromwell_url']
-
-
-def _get_user_auth():
-    return HTTPBasicAuth(current_app.config['cromwell_user'],
-                         current_app.config['cromwell_password'])
 
 
 def _is_parent_workflow(job):

@@ -12,6 +12,8 @@ services:
     extends:
       file: common-compose.yml
       service: cromwell
+    environment:
+      - USE_CAAS=False
   jobs-proxy:
     extends:
       file: common-compose.yml

@@ -19,6 +19,11 @@ parser.add_argument(
     help='Url for fetching data from cromwell',
     default=os.environ.get('CROMWELL_URL'))
 parser.add_argument(
+    '--use_caas',
+    type=str,
+    help='Whether the cromwell backend is using cromwell-as-a-service',
+    default=os.environ.get('USE_CAAS'))
+parser.add_argument(
     '--path_prefix',
     type=str,
     help='Path prefix, e.g. /api/v1, to serve from',
@@ -55,26 +60,28 @@ finally:
     app.app.config.update(config)
 
 app.app.config['cromwell_url'] = args.cromwell_url
+app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'
 app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)
 
 
 def run():
     # Check the connections with cromwell
-    try:
-        response = requests.head(
-            args.cromwell_url,
-            auth=HTTPBasicAuth(app.app.config['cromwell_user'],
-                               app.app.config['cromwell_password']),
-            timeout=5)
-        if response.status_code == 401:
-            raise requests.exceptions.HTTPError(
-                'Invalid credentials for the Cromwell: {}'.format(
-                    args.cromwell_url))
-        return app.app
-    except KeyError:
-        logger.error('Invalid config.json file provided.')
-    except requests.exceptions.RequestException as err:
-        logger.critical(err)
-        logger.critical('Failed to connect to Cromwell: {}'.format(
-            args.cromwell_url))
+    if not app.app.config['use_caas']:
+        try:
+            response = requests.head(
+                args.cromwell_url,
+                auth=HTTPBasicAuth(app.app.config['cromwell_user'],
+                                   app.app.config['cromwell_password']),
+                timeout=5)
+            if response.status_code == 401:
+                raise requests.exceptions.HTTPError(
+                    'Invalid credentials for the Cromwell: {}'.format(
+                        args.cromwell_url))
+        except KeyError:
+            logger.error('Invalid config.json file provided.')
+        except requests.exceptions.RequestException as err:
+            logger.critical(err)
+            logger.critical('Failed to connect to Cromwell: {}'.format(
+                args.cromwell_url))
+    return app.app
