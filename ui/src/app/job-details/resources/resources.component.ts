@@ -53,13 +53,23 @@ export class JobResourcesComponent implements OnInit {
     }
 
     if (this.job.extensions) {
-      if (this.job.extensions.sourceFile && this.job.extensions.sourceFile.length > 0) {
+      if (this.job.extensions.sourceFile) {
         this.sourceFile = this.job.extensions.sourceFile;
         this.tabIds.push('source-file');
       }
 
       if (this.job.extensions.logs) {
-        Object.keys(this.job.extensions.logs).forEach(file => this.readResourceFile(file))
+        let files = Object.keys(this.job.extensions.logs);
+        Promise.all(files.map(file => this.readResourceFile(file)))
+          .then(entries => {
+            for (let [file, data] of entries.sort()) {
+              if (data) {
+                this.logFileData.set(file, data);
+                this.tabIds.push('log-' + file);
+                this.tabTitles.set('log-' + file, file);
+              }
+            }
+          }).catch(error => this.handleError(error));
       }
     }
 
@@ -96,16 +106,11 @@ export class JobResourcesComponent implements OnInit {
     }
   }
 
-  private readResourceFile(file: string) {
+  private readResourceFile(file: string): Promise<[string, string]> {
     let bucket = ResourceUtils.getResourceBucket(this.job.extensions.logs[file]);
     let object = ResourceUtils.getResourceObject(this.job.extensions.logs[file]);
-    this.gcsService.readObject(bucket, object).then(data => {
-      if (data.length > 0) {
-        this.logFileData.set(file, data);
-        this.tabIds.push('log-' + file);
-        this.tabTitles.set('log-' + file, file);
-      }
-    }).catch(error => this.handleError(error))
+    return this.gcsService.readObject(bucket, object)
+      .then(data => [file, data] as [string, string]);
   }
 
   private handleError(error: any) {

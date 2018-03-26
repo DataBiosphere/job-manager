@@ -133,6 +133,9 @@ describe('JobResourcesComponent', () => {
   it('should retrieve log files from GCS service', fakeAsync(() => {
     testComponent.job = logsJob;
     fixture.detectChanges();
+    tick();
+    fixture.detectChanges();
+    tick();
     let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(3);
 
@@ -146,17 +149,17 @@ describe('JobResourcesComponent', () => {
     tabGroup.componentInstance.selectedIndex = 2;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentTabId).toBe("log-Output Log");
+    expect(testComponent.jobResourcesComponent.currentTabId).toBe("log-Error Log");
     resourceContent = fixture.debugElement.queryAll(By.css('.inline-text'))[0];
-    expect(resourceContent.nativeElement.innerText).toContain("OUTPUT LOG TEXT");
+    expect(resourceContent.nativeElement.innerText).toContain("ERROR LOG TEXT");
 
     tabGroup.componentInstance.selectedIndex = 3;
     tick();
     fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentTabId).toBe("log-Error Log");
+    expect(testComponent.jobResourcesComponent.currentTabId).toBe("log-Output Log");
     expect(fixture.debugElement.queryAll(By.css('.inline-text'))[0].nativeElement.toString())
     resourceContent = fixture.debugElement.queryAll(By.css('.inline-text'))[0];
-    expect(resourceContent.nativeElement.innerText).toContain("ERROR LOG TEXT");
+    expect(resourceContent.nativeElement.innerText).toContain("OUTPUT LOG TEXT");
   }));
 
   @Component({
