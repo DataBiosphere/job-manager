@@ -43,11 +43,11 @@ export class JobResourcesComponent implements OnInit {
     private readonly viewContainer: ViewContainerRef) {}
 
   ngOnInit() {
-    if (this.job.inputs) {
+    if (this.job.inputs && Object.keys(this.job.inputs).length > 0) {
       this.inputs = Object.keys(this.job.inputs).sort();
       this.tabIds.push('inputs');
     }
-    if (this.job.outputs) {
+    if (this.job.outputs && Object.keys(this.job.outputs).length > 0) {
       this.outputs = Object.keys(this.job.outputs).sort();
       this.tabIds.push('outputs');
     }
@@ -59,12 +59,19 @@ export class JobResourcesComponent implements OnInit {
       }
 
       if (this.job.extensions.logs) {
-        for (let file of Object.keys(this.job.extensions.logs)) {
-          this.readResourceFile(file);
-          let tabId = 'log-' + file;
-          this.tabIds.push(tabId);
-          this.tabTitles.set(tabId, file);
-        }
+        const files = Object.keys(this.job.extensions.logs);
+        Promise.all(files.map(file => this.readResourceFile(file)))
+          .then(entries => {
+            // Sort log files by the file name (tuples will be converted to
+            // string and compared).
+            for (let [file, data] of entries.filter(e => !!e).sort()) {
+              if (data) {
+                this.logFileData.set(file, data);
+                this.tabIds.push('log-' + file);
+                this.tabTitles.set('log-' + file, file);
+              }
+            }
+          });
       }
     }
 
@@ -101,23 +108,15 @@ export class JobResourcesComponent implements OnInit {
     }
   }
 
-  private readResourceFile(file: string) {
+  private readResourceFile(file: string): Promise<[string, string]> {
     let bucket = ResourceUtils.getResourceBucket(this.job.extensions.logs[file]);
     let object = ResourceUtils.getResourceObject(this.job.extensions.logs[file]);
-    this.gcsService.readObject(bucket, object).then(data => {
-      if (data.length > 0) {
-        this.logFileData.set(file, data);
-      } else {
-        // Remove any tab for files which are completely empty or do not
-        // exist.
-        this.tabTitles.delete('log-' + file);
-        this.logFileData.delete('log-' + file);
-        this.tabIds.splice(this.tabIds.indexOf('log-' + file), 1);
-      }
-    }).catch(error => this.handleError(error))
+    return this.gcsService.readObject(bucket, object)
+      .then(data => [file, data] as [string, string])
+      .catch(error => this.handleError(error));
   }
 
-  private handleError(error: any) {
+  private handleError(error: any): any {
     this.errorBar.open(
       new ErrorMessageFormatterPipe().transform(error),
       'Dismiss',
