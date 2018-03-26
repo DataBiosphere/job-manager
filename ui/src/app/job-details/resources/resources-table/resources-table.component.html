@@ -4,7 +4,7 @@
   </ng-container>
   <ng-container matColumnDef="value">
     <mat-cell *matCellDef="let key">
-      <a *ngIf="isResourceURL(key)" href="{{ getResourceURL(key) }}">{{ entries[key] }}</a>
+      <a class="resource-button" *ngIf="isResourceURL(key)" href="{{ getResourceURL(key) }}">{{ entries[key] }}</a>
       <span *ngIf="!isResourceURL(key)">{{ entries[key] }}</span>
     </mat-cell>
   </ng-container>
