@@ -24,8 +24,6 @@ def _get_user_auth():
 def _get_auth_header(auth_token):
     if current_app.config['use_caas']:
         if auth_token:
-            return {
-                "Authorization": str(auth_token)
-            }
+            return {"Authorization": str(auth_token)}
         else:
             raise Unauthorized('User not authorized to access this resource.')

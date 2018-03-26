@@ -6,7 +6,6 @@ from . import BaseTestCase
 
 
 class TestAuthUtils(BaseTestCase):
-
     def setUp(self):
         self.base_url = 'https://test-cromwell.org'
 
