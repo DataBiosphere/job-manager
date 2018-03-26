@@ -59,17 +59,19 @@ export class JobResourcesComponent implements OnInit {
       }
 
       if (this.job.extensions.logs) {
-        let files = Object.keys(this.job.extensions.logs);
+        const files = Object.keys(this.job.extensions.logs);
         Promise.all(files.map(file => this.readResourceFile(file)))
           .then(entries => {
-            for (let [file, data] of entries.sort()) {
+            // Sort log files by the file name (tuples will be converted to
+            // string and compared).
+            for (let [file, data] of entries.filter(l => !!l).sort()) {
               if (data) {
                 this.logFileData.set(file, data);
                 this.tabIds.push('log-' + file);
                 this.tabTitles.set('log-' + file, file);
               }
             }
-          }).catch(error => this.handleError(error));
+          });
       }
     }
 
@@ -110,10 +112,11 @@ export class JobResourcesComponent implements OnInit {
     let bucket = ResourceUtils.getResourceBucket(this.job.extensions.logs[file]);
     let object = ResourceUtils.getResourceObject(this.job.extensions.logs[file]);
     return this.gcsService.readObject(bucket, object)
-      .then(data => [file, data] as [string, string]);
+      .then(data => [file, data] as [string, string])
+      .catch(error => this.handleError(error));
   }
 
-  private handleError(error: any) {
+  private handleError(error: any): any {
     this.errorBar.open(
       new ErrorMessageFormatterPipe().transform(error),
       'Dismiss',
