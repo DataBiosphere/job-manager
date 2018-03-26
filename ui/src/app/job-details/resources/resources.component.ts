@@ -64,7 +64,7 @@ export class JobResourcesComponent implements OnInit {
           .then(entries => {
             // Sort log files by the file name (tuples will be converted to
             // string and compared).
-            for (let [file, data] of entries.filter(l => !!l).sort()) {
+            for (let [file, data] of entries.filter(e => !!e).sort()) {
               if (data) {
                 this.logFileData.set(file, data);
                 this.tabIds.push('log-' + file);
