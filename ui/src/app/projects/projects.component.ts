@@ -78,7 +78,9 @@ export class ProjectsComponent implements OnInit {
     this.projectsObservable = Observable.fromPromise(
       this.projectsService.listProjects(filter)
         .then(listView => {
-          this.projects = listView.results.sort() ? listView.results : [];
+          // Sort projects alphabetically so that the shorter, matching project
+          // shows up first.
+          this.projects = (listView ? listView.results : []).sort();
           // If the currently entered string is a valid project ID, hide the
           // autocomplete menu so that the user can click the button
           this.viewJobsEnabled = this.validProject(this.projectsControl.value)
