@@ -1,5 +1,9 @@
 /* Job Manager table */
 
+.job-details-button {
+  color: black;
+}
+
 .mat-table {
   display: table;
   width: 100%;
