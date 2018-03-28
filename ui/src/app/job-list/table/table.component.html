@@ -16,7 +16,7 @@
                     (change)="$event ? selection.toggle(j) : null"
                     [checked]="selection.isSelected(j)">
       </mat-checkbox>
-      <div class="job-details-button mat-body-1" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</div>
+      <a class="job-details-button mat-body-1" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
     </mat-cell>
   </ng-container>
 
