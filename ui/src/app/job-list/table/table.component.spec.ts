@@ -39,6 +39,7 @@ describe('JobsTableComponent', () => {
   let testComponent: TestTableComponent;
   let fixture: ComponentFixture<TestTableComponent>;
 
+  let fakeJobService: FakeJobManagerService;
   let jobs: QueryJobsResult[];
   let capabilities: CapabilitiesResponse =
     {
@@ -95,6 +96,8 @@ describe('JobsTableComponent', () => {
   }
 
   beforeEach(async(() => {
+    jobs = testJobs();
+    fakeJobService = new FakeJobManagerService(jobs)
     TestBed.configureTestingModule({
       declarations: [
         JobsTableComponent,
@@ -121,7 +124,7 @@ describe('JobsTableComponent', () => {
         SharedModule
       ],
       providers: [
-        {provide: JobManagerService, useValue: new FakeJobManagerService([])},
+        {provide: JobManagerService, useValue: fakeJobService},
         {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)}
       ],
     }).compileComponents();
@@ -216,7 +219,7 @@ describe('JobsTableComponent', () => {
     expect(isGroupAbortRendered()).toBeTruthy();
   }))
 
-  it ('displays error message bar', async(() => {
+  it('displays error message bar', async(() => {
     let error = {
       status: 412,
       title: 'Precondition Failed',
@@ -229,7 +232,42 @@ describe('JobsTableComponent', () => {
       .toEqual("Precondition Failed (412): Job already in terminal status `FAILED` Dismiss");
   }))
 
-  // TODO(alanhwang): Add unit tests for component logic
+  it('shows error on failed abort', async(() => {
+    let count = 0;
+    fakeJobService.abortJob = () => {
+      // Fail every odd request.
+      if (count++ % 2 === 0) {
+        return Promise.reject({});
+      }
+      return Promise.resolve();
+    };
+
+    fixture.detectChanges();
+    for (let j of jobs) {
+      j.status = JobStatus.Running;
+    }
+    testComponent.jobs.next(jobs);
+    testComponent.jobsTableComponent.toggleSelectAll();
+    fixture.detectChanges();
+
+    let de: DebugElement = fixture.debugElement;
+    de.query(By.css('.group-abort')).nativeElement.click();
+    fixture.detectChanges();
+
+    fixture.whenStable().then(() => {
+      expect(count).toEqual(5);
+      fixture.detectChanges();
+
+      // Unfortunately the the snackbar is not a child of the debugElement at
+      // this point (before or after whenStable()), so we check the document.
+      const snackTexts = [];
+      document.querySelectorAll('.mat-simple-snackbar').forEach((e) => {
+        snackTexts.push(e.textContent);
+      });
+      expect(snackTexts.find(
+        s => s.includes('Failed to abort 3 of 5 requested jobs'))).toBeTruthy();
+    });
+  }))
 
   @Component({
     selector: 'jm-test-table-component',

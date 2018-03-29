@@ -140,17 +140,33 @@ export class JobsTableComponent implements OnInit {
   onAbortJobs(): void {
     const aborts: Promise<void>[] = [];
     const selected = this.selection.selected.slice();
+
+    let numErrs = 0;
+    const ref = this.errorBar.open(
+      `Aborting jobs...`, /* action */ '',
+      {
+        viewContainerRef: this.viewContainer,
+      });
     for (let job of selected) {
       if (job.status == JobStatus.Running || job.status == JobStatus.Submitted) {
         aborts.push(
           this.jobManagerService.abortJob(job.id)
-            .then(() => { job.status = JobStatus.Aborted; }));
+            .then(() => { job.status = JobStatus.Aborted; })
+            .catch(() => { numErrs++; }));
       }
     }
+    // We catch failed aborts above so that Promise.all() waits for everything
+    // to finish (the default behavior is to short-circuit fail on the first
+    // failure).
     Promise.all(aborts)
-      .then(() => this.onJobsChanged.emit(selected))
-      .catch((errs) => this.handleErrorMessage(
-        `failed to abort ${errs.length}/${selected.length} jobs`));
+      .then(() => {
+        ref.dismiss();
+        if (numErrs) {
+          const countMsg = numErrs < aborts.length ? `${numErrs} of ${aborts.length}` : 'all';
+          this.handleErrorMessage(`Failed to abort ${countMsg} requested jobs`);
+        }
+        this.onJobsChanged.emit(selected)
+      });
   }
 
   showDropdownArrow(job: QueryJobsResult): boolean {
