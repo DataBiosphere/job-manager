@@ -7,7 +7,9 @@
              placeholder="Project ID"
              [matAutocomplete]="auto"
              [formControl]="projectsControl">
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="navigateJobs()">
+      <mat-autocomplete #auto="matAutocomplete"
+                        [autoActiveFirstOption]=true
+                        (optionSelected)="navigateJobs()">
         <mat-option *ngFor="let project of projectsObservable | async" [value]="project">
           <span><div class="project-id">{{ project }}</div></span>
         </mat-option>
