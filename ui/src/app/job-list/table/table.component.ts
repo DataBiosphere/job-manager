@@ -52,7 +52,7 @@ export class JobsTableComponent implements OnInit {
     private readonly jobManagerService: JobManagerService,
     private readonly capabilitiesService: CapabilitiesService,
     private readonly viewContainer: ViewContainerRef,
-    private errorBar: MatSnackBar) { }
+    private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.displayFields = this.capabilitiesService.getCapabilitiesSynchronous().displayFields;
@@ -71,7 +71,7 @@ export class JobsTableComponent implements OnInit {
   }
 
   handleErrorMessage(msg: string) {
-    this.errorBar.open(
+    this.snackBar.open(
       msg,
       'Dismiss',
       {
@@ -142,8 +142,8 @@ export class JobsTableComponent implements OnInit {
     const selected = this.selection.selected.slice();
 
     let numErrs = 0;
-    const ref = this.errorBar.open(
-      `Aborting jobs...`, /* action */ '',
+    const ref = this.snackBar.open(
+      'Aborting jobs...', /* action */ '',
       {
         viewContainerRef: this.viewContainer,
       });
