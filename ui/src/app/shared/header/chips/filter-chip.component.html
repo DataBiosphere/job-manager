@@ -1,0 +1,36 @@
+<mat-chip class="chip" #{{chipKey}}
+          [matMenuTriggerFor]="menu"
+          (onMenuOpen)="focusInput()"
+          (remove)="removeThisChip()"
+          >
+  {{ getDisplayValue() }}
+  <img matChipRemove
+       src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_18dp.png">
+</mat-chip>
+<mat-menu #menu="matMenu" [ngSwitch]="getCurrentChipType()" [overlapTrigger]="false" class="wide-menu">
+  <mat-form-field *ngSwitchCase="'Text'" class="query-input">
+    <!--Free text input-->
+    <input matInput #freeTextInput
+           placeholder="Equals"
+           type="search"
+           [(ngModel)]="currentChipValue"
+           value="{{currentChipValue}}"
+           (keyup.enter)="setChipValue(currentChipValue)"
+           (click)="$event.stopPropagation()"/>
+  </mat-form-field>
+  <!-- Statuses -->
+  <jm-status-selection
+    *ngSwitchCase="'Enum'"
+    [chipKey]="chipKey"
+    [initialChipValue]="currentChipValue"
+    (updateValue)="setChipValue($event)">
+  </jm-status-selection>
+  <!-- Datepicker input -->
+  <jm-datepicker-input
+    *ngSwitchCase="'Date'"
+    [chipKey]="chipKey"
+    [initialChipValue]="currentChipValue"
+    (updateValue)="setChipValue($event)">
+
+  </jm-datepicker-input>
+</mat-menu>
