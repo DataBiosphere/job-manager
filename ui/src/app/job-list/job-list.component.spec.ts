@@ -211,32 +211,30 @@ describe('JobListComponent', () => {
     expectJobsRendered([jobs[1], jobs[3]]);
   }));
 
-  it('reloads properly on abort', fakeAsync(() => {
+  it('reloads properly on abort', async(() => {
     const jobs = testJobs(5);
     fakeJobService.jobs = jobs;
-    tick();
     fixture.detectChanges();
 
     // Filter by active to filter out jobs after they've been aborted.
     let de: DebugElement = fixture.debugElement;
     de.query(By.css('.active-button')).nativeElement.click();
-    tick();
     fixture.detectChanges();
 
     // We select the first page (3 jobs) and abort. Jobs 3 and 4 are unaffected.
     let component = de.query(By.css('jm-job-list-table')).componentInstance;
     component.toggleSelectAll();
-    tick();
     fixture.detectChanges();
 
+    // fakeAsync() doesn't play well with the Promises used on abort.
     de.query(By.css('.group-abort')).nativeElement.click();
-    tick();
-    fixture.detectChanges();
-    tick();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
 
-    // Jobs 3 and 4 should be the only jobs displayed, as they are the only
-    // remaining active jobs.
-    expectJobsRendered(jobs.slice(3, 5));
+      // Jobs 3 and 4 should be the only jobs displayed, as they are the only
+      // remaining active jobs.
+      expectJobsRendered(jobs.slice(3, 5));
+    });
   }));
 
   it('pagination resets on filter', fakeAsync(() => {
