@@ -20,3 +20,10 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.chipShell {
+  width: fit-content !important;
+  height: fit-content !important;
+  margin-right: 0 !important;
+  padding: 0 !important;
+}

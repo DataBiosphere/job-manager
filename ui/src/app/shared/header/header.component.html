@@ -1,13 +1,18 @@
 <div class="content">
   <mat-form-field class="query-form">
     <mat-chip-list #chipList>
-      <jm-filter-chip
+      <mat-chip
         *ngFor="let chipKey of getChipKeys()"
-        [chipKey]=chipKey
-        [initialChipValue]="chips.get(chipKey)"
-        (updateValue)="updateValue(chipKey, $event)"
-        (removeChip)="removeChip(chipKey)">
-      </jm-filter-chip>
+        class="chipShell"
+        (remove)="removeChip(chipKey)"
+        (keyup.enter)="chipToExpand = chipKey">
+        <jm-filter-chip
+          [chipKey]=chipKey
+          [initialChipValue]="chips.get(chipKey)"
+          (updateValue)="updateValue(chipKey, $event)"
+          (removeChip)="removeChip(chipKey)">
+        </jm-filter-chip>
+      </mat-chip>
       <input matInput
              [(ngModel)]="inputValue"
              value="{{inputValue}}"
