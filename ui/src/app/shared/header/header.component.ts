@@ -104,7 +104,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     if (this.chipToExpand) {
       // Search for a newly added chip in the DOM now that it's been rendered
       this.chipElements.toArray().forEach((chip) => {
-        console.log(chip);
         if (chip.chipKey == this.chipToExpand) {
           chip.expandMenu();
         }
