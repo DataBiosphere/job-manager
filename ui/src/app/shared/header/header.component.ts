@@ -45,9 +45,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public pageSubject: Subject<PageEvent> = new Subject<PageEvent>();
-  private chipToExpand: string;
   private pageSubscription: Subscription;
 
+  chipToExpand: string;
   separatorKeysCodes = [ENTER];
   control: FormControl = new FormControl();
   options: Map<string, FieldDataType>;
@@ -177,6 +177,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     this.chips.delete(chipKey);
     this.search();
   }
+
   updateValue(chipKey: string, chipValue: string): void {
     this.chips.set(chipKey, chipValue);
     this.search();

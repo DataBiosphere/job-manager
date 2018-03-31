@@ -36,7 +36,7 @@ export class FilterChipComponent implements OnInit {
 
   focusInput() {
     if (this.freeTextInput) {
-      setTimeout(() => this.freeTextInput.nativeElement.focus(), 100);
+      this.freeTextInput.nativeElement.focus();
     }
   }
 
@@ -57,7 +57,7 @@ export class FilterChipComponent implements OnInit {
   }
 
   setChipValue(value: string): void {
-    if (value != "") {
+    if (value) {
       this.chipMenuTrigger.closeMenu();
       this.currentChipValue = value;
       this.updateValue.emit(this.currentChipValue);

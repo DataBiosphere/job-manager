@@ -6,7 +6,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
   templateUrl: './status-selection.component.html',
 })
 export class StatusSelectionComponent implements OnInit {
-  @Input() chipKey: string;
   @Input() initialChipValue: string;
   @Output() updateValue: EventEmitter<string> = new EventEmitter();
 
