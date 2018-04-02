@@ -8,6 +8,7 @@ from .encoder import JSONEncoder
 import requests
 from requests.auth import HTTPBasicAuth
 import logging
+from .util import flatten_dict
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("{module_path}".format(module_path=__name__))
@@ -47,17 +48,32 @@ DEFAULT_CROMWELL_CREDENTIALS = {'cromwell_user': '', 'cromwell_password': ''}
 # Load credentials for cromwell
 config_path = os.environ.get('CROMWELL_CREDENTIALS')
 
+# Set path to capabilities config
+capabilities_path = os.environ.get('CAPABILITIES_CONFIG')
+
 # Check if the credentials are provided properly
 try:
     with open(config_path) as f:
         config = json.load(f)
 except (IOError, TypeError):
     logger.warning(
-        'Failed to load config.json, using the default config: {}'.format(
+        'Failed to load credentials file, using the default config: {}'.format(
             DEFAULT_CROMWELL_CREDENTIALS))
     config = DEFAULT_CROMWELL_CREDENTIALS
 finally:
     app.app.config.update(config)
+
+# Try to load the capabilities config file
+try:
+    with open(capabilities_path) as f:
+        capabilities_config = json.load(f)
+    capabilities_config['display_fields'] = flatten_dict(capabilities_config['display_fields'], target_keys=['labels'])
+except (IOError, TypeError, KeyError):
+    logger.warning(
+        'Failed to load capabilities config, using default display fields.')
+    capabilities_config = None
+finally:
+    app.app.config['capabilities_config'] = capabilities_config
 
 app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'

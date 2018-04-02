@@ -10,6 +10,7 @@ dist/
 client_secrets.json
 swagger-codegen-cli.jar
 config.json
+capabilities_config.json
 
 .venv
 venv/

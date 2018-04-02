@@ -1,0 +1,24 @@
+{
+  "display_fields": {
+    "status": "Status",
+    "submission": "Submitted",
+    "labels": {
+      "cromwell-workflow-id": "Workflow ID",
+      "bundle-uuid": "Bundle UUID",
+      "bundle-version": "Bundle Version",
+      "workflow-version": "Workflow Version",
+      "workflow-name": "Workflow Name",
+      "comment": "Comment"
+    }
+  },
+  "common_labels": [
+    "cromwell-workflow-name",
+    "cromwell-workflow-id",
+    "bundle-uuid",
+    "bundle-version",
+    "workflow-version",
+    "workflow-name",
+    "comment"
+  ],
+  "query_extensions": []
+}
