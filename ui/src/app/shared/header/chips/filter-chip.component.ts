@@ -34,6 +34,12 @@ export class FilterChipComponent implements OnInit {
     this.currentChipValue = this.initialChipValue;
   }
 
+  focusInput() {
+    if (this.freeTextInput) {
+      this.freeTextInput.nativeElement.focus();
+    }
+  }
+
   getCurrentChipType(): string {
     if (this.chipKey && this.options.has(this.chipKey)) {
       return FieldDataType[this.options.get(this.chipKey)];
@@ -60,9 +66,7 @@ export class FilterChipComponent implements OnInit {
 
   expandMenu() {
     this.chipMenuTrigger.openMenu();
-    if (this.freeTextInput) {
-      this.freeTextInput.nativeElement.focus();
-    }
+    this.focusInput();
   }
 
 }

@@ -13,7 +13,7 @@ export class StatusSelectionComponent implements OnInit {
   jobStatuses: string[] = Object.keys(JobStatus);
 
   ngOnInit(): void {
-    this.currentChipValues = this.initialChipValue.split(',');
+    this.currentChipValues = this.trimStatuses(this.initialChipValue.split(','));
   }
 
   changeStatus(status: string, checked: boolean) {
@@ -27,5 +27,15 @@ export class StatusSelectionComponent implements OnInit {
 
   isChecked(status: string): boolean {
     return this.currentChipValues.indexOf(status) > -1;
+  }
+
+  trimStatuses(statuses: string[]): string[] {
+    let newStatuses: string[] = [];
+    statuses.forEach((status) => {
+      if (status) {
+        newStatuses.push(status);
+      }
+    });
+    return newStatuses;
   }
 }
