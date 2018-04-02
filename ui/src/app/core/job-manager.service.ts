@@ -1,4 +1,4 @@
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 
@@ -57,17 +57,25 @@ export class JobManagerService {
     return response;
   }
 
-  private getErrorTitle(response: any): string {
-    let json = response.json();
-    if ("title" in json && json["title"]) {
+  private respToJson(response: Response) {
+    try {
+      return response.json();
+    } catch (_) {
+      return {};
+    }
+  }
+
+  private getErrorTitle(response: Response): string {
+    const json = this.respToJson(response);
+    if (json["title"]) {
       return json["title"];
     }
     return response.statusText ? response.statusText : JobManagerService.defaultErrorTitle;
   }
 
-  private getErrorDetail(response: any): string {
-    let json = response.json();
-    return "detail" in json && json["detail"] ? json["detail"] : JobManagerService.defaultErrorDetail;
+  private getErrorDetail(response: Response): string {
+    const json = this.respToJson(response);
+    return json["detail"] ? json["detail"] : JobManagerService.defaultErrorDetail;
   }
 
   private getHttpHeaders(): Headers {
@@ -78,7 +86,7 @@ export class JobManagerService {
     return headers;
   }
 
-  private handleError(response: any): Promise<any> {
+  private handleError(response: Response): Promise<any> {
     return Promise.reject({
       status: response["status"],
       title: this.getErrorTitle(response),
