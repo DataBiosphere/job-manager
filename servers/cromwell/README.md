@@ -22,6 +22,26 @@ export CROMWELL_URL=http://192.168.0.106:8000/api/workflows/v1
 }
 ```
 
+3. (Optional) If you want to change the view of UI to some extent, i.e. display more columns in the job list view, such as labels of the jobs, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should strictly follow the below format:
+```
+{
+  "display_fields": {
+    "status": "Status",
+    "submission": "Submitted",
+    "labels": {
+      "cromwell-workflow-id": "Workflow ID",
+      "workflow-name": "Workflow Name",
+      "comment": "Comment"
+    }
+  },
+  "common_labels": [
+    "cromwell-workflow-id",
+    "workflow-name",
+    "comment"
+  ],
+  "query_extensions": []
+}
+```
 ## Running Tests
 To run unit and integration tests on the python-flask app, install
 [`tox`](https://github.com/tox-dev/tox).
