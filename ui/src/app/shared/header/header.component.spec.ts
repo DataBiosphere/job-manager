@@ -1,6 +1,6 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
-import {Component, DebugElement, ViewChild} from "@angular/core";
+import {Component, DebugElement, NO_ERRORS_SCHEMA, ViewChild} from "@angular/core";
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -32,7 +32,7 @@ describe('HeaderComponent', () => {
   const baseJob = {
     status: JobStatus.Running,
     submission: new Date('2015-04-20T20:00:00'),
-  }
+  };
   const testJob1: QueryJobsResult = { ...baseJob, id: 'JOB1' };
   const testJob2: QueryJobsResult = { ...baseJob, id: 'JOB2' };
   const testJob3: QueryJobsResult = { ...baseJob, id: 'JOB3' };
@@ -40,7 +40,7 @@ describe('HeaderComponent', () => {
   const initJobs = {
     results: [testJob1, testJob2, testJob3],
     exhaustive: false
-  }
+  };
 
   let testComponent: HeaderComponent;
   let fixture: ComponentFixture<TestHeaderComponent>;
@@ -80,7 +80,8 @@ describe('HeaderComponent', () => {
       ],
       providers: [
         {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)}
-      ]
+      ],
+      schemas: [ NO_ERRORS_SCHEMA ]
     }).compileComponents();
   }));
 
@@ -96,44 +97,21 @@ describe('HeaderComponent', () => {
 
   it('should display a chip for each query filter', async(() => {
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('#chip')).length).toEqual(3);
+    expect(de.queryAll(By.css('.chipShell')).length).toEqual(3);
   }));
 
   it('should stage a chip', async ( () => {
     testComponent.addChip('key');
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('');
-    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(4);
+    expect(fixture.debugElement.queryAll(By.css('.chipShell')).length).toEqual(4);
   }));
 
-  it('should stage and complete a free text chip', async (() => {
-    testComponent.addChip('key');
-    testComponent.setCurrentChip('key');
-    testComponent.currentChipValue = 'value';
-    testComponent.assignChipValue();
+  it('should stage and complete a chip', async (() => {
+    testComponent.addChip('key: value');
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('value');
-    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(4);
-  }));
-
-  it('should stage and complete a date chip', async (() => {
-    testComponent.addChip('start');
-    testComponent.setCurrentChip('start');
-    testComponent.assignDateValue(new Date("11/11/2011"));
-    fixture.detectChanges();
-    expect(testComponent.chips.get('start')).toEqual('11/11/2011');
-    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(4);
-  }));
-
-  it('should replace existing chip', async (() => {
-    testComponent.addChip('key');
-    testComponent.setCurrentChip('key');
-    testComponent.currentChipValue = 'value1';
-    testComponent.assignChipValue();
-    testComponent.addChip('key: value2');
-    fixture.detectChanges();
-    expect(testComponent.chips.get('key')).toEqual('value2');
-    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(4);
+    expect(fixture.debugElement.queryAll(By.css('.chipShell')).length).toEqual(4);
   }));
 
   it('should not show status buttons', async(() => {
@@ -186,15 +164,6 @@ describe('HeaderComponent', () => {
     });
   }));
 
-  it('should change statuses', async(() => {
-    testComponent.changeStatus(JobStatus.Running, false);
-    testComponent.changeStatus(JobStatus.Aborted, true);
-    testComponent.changeStatus(JobStatus.Aborting, true);
-    fixture.detectChanges();
-    expect(fixture.debugElement.queryAll(By.css('#chip')).length).toEqual(3);
-    expect(testComponent.selectedStatuses.length).toEqual(2);
-  }));
-
   it('should only show length for exhaustive job streams', async(() => {
     testComponent.jobs.next({
       results: [testJob1],
@@ -214,6 +183,7 @@ describe('HeaderComponent', () => {
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
       .toContain('of 2');
   }));
+
 
   @Component({
     selector: 'jm-test-table-component',
