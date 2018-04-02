@@ -1,0 +1,21 @@
+{
+  "TestAdapterSmartSeq2SingleCell.gtf_file": "gs://hca-dcp-mint-test-data/reference/GRCh38_Gencode/gencode.v27.primary_assembly.annotation.gtf",
+  "TestAdapterSmartSeq2SingleCell.hisat2_ref_trans_name": "gencode_v27_trans_rsem",
+  "TestAdapterSmartSeq2SingleCell.rrna_intervals": "gencode.v27.rRNA.interval_list",
+  "TestAdapterSmartSeq2SingleCell.hisat2_ref_index": "genome_snp_tran.tar.gz",
+  "TestAdapterSmartSeq2SingleCell.genome_ref_fasta": "GRCh38.primary_assembly.genome.fa",
+  "TestAdapterSmartSeq2SingleCell.hisat2_ref_trans_index": "gencode_v27_trans_rsem.tar.gz",
+  "TestAdapterSmartSeq2SingleCell.rsem_ref_index": "gencode_v27_primary.tar",
+  "TestAdapterSmartSeq2SingleCell.gene_ref_flat": "GRCh38_gencode.v27.refFlat.txt",
+  "TestAdapterSmartSeq2SingleCell.hisat2_ref_name": "genome_snp_tran",
+  "TestAdapterSmartSeq2SingleCell.stranded":"NONE",
+  "TestAdapterSmartSeq2SingleCell.reference_bundle": "bf51d668-3e14-4843-9bc7-5d676fdf0e01",
+  "TestAdapterSmartSeq2SingleCell.format_map": "file_format_map.json",
+  "TestAdapterSmartSeq2SingleCell.dss_url": "https://dss.dev.data.humancellatlas.org/v1",
+  "TestAdapterSmartSeq2SingleCell.submit_url": "http://api.ingest.dev.data.humancellatlas.org/",
+  "TestAdapterSmartSeq2SingleCell.method": "SmartSeq2SingleCell",
+  "TestAdapterSmartSeq2SingleCell.schema_version": "4.6.1",
+  "TestAdapterSmartSeq2SingleCell.run_type": "run",
+  "TestAdapterSmartSeq2SingleCell.retry_seconds": 10,
+  "TestAdapterSmartSeq2SingleCell.timeout_seconds": 1200
+}

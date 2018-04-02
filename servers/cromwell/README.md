@@ -3,23 +3,46 @@
 Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 
 ## Development
-For cromwell setup see the Cromwell README:
-1. Set the `CROMWELL_URL` environment variable to specify which cromwell instance to use. Job Manager pulls workflow data from `https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1` by default:
-```
-export CROMWELL_URL=https://cromwell.test-cromwell.broadinstitute.org/api/workflows/v1
-```
 
-**Note:** If you want to setup this API Server against a locally hosted Cromwell instance, you need to explicitly provide the ip address (inet if the Cromwell is hosted on the same machine) to the Cromwell with port numbers, for example:
-```
-export CROMWELL_URL=http://192.168.0.106:8000/api/workflows/v1
-```
+1. Set the `CROMWELL_URL` environment variable to specify which cromwell instance to use. Job Manager pulls workflow data from `https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1` by default:
+
+    ```
+    export CROMWELL_URL=https://cromwell.test-cromwell.broadinstitute.org/api/workflows/v1
+    ```
+
+    **Note:** If you want to setup this API Server against a locally hosted Cromwell instance, you need to explicitly provide the ip address (inet if the Cromwell is hosted on the same machine) to the Cromwell with port numbers, for example:
+    ```
+    export CROMWELL_URL=http://192.168.0.106:8000/api/workflows/v1
+    ```
 
 2. Add a file named `config.json` to `job-manager/servers/cromwell/jobs` that contains the username and password for the specified cromwell instance (You may want to skip this step if the Cromwell instance does not have HTTP Basic Authentication):
+    ```
+    {
+      "cromwell_user" : "USERNAME",
+      "cromwell_password" : "PASSWORD"
+    }
+    ```
+
+3. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-compose-caas.yaml` otherwise use `cromwell-compose-dev.yaml`, e.g:
+    ```
+    ln -sf cromwell-compose-dev.yml docker-compose.yml
+    ```
+
+4. From the root directory of the repository, run `docker-compose up` and navigate to http://localhost:4200.
+
+
+## Starting Jobs
+The Job Manager does not currently support launching jobs. Cromwell jobs can be launched by sending a `POST` request to the `/api/workflows/{version}` endpoint. For example:
 ```
-{
-  "cromwell_user" : "USERNAME",
-  "cromwell_password" : "PASSWORD"
-}
+cd servers/cromwell/jobs/test/test_workflow
+curl -X POST "${CROMWELL_URL}" \
+    -u "username:password" \
+    -H "accept: application/json" \
+    -H "Content-Type: multipart/form-data" \
+    -F "workflowSource=@test_workflow.wdl" \
+    -F "workflowInputs=@inputs.json;type=application/json" \
+    -F "labels=@labels.json;type=application/json" \
+    -F "workflowDependencies=@deps.zip;type=application/zip"
 ```
 
 3. (Optional) If you want to change the view of UI to some extent, i.e. display more columns in the job list view, such as labels of the jobs, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should **strictly** follow the following structure:
