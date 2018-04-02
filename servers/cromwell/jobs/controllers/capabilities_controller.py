@@ -12,15 +12,13 @@ def get_capabilities():
     """
     # Set default capabilities
     capabilities = {
-        "display_fields": {
-            "status": "Status",
-            "submission": "Submitted",
-            "labels.cromwell-workflow-id": "Workflow ID"
+        'display_fields': {
+            'status': 'Status',
+            'submission': 'Submitted',
+            'labels.cromwell-workflow-id': 'Workflow ID'
         },
-        "common_labels": [
-            "cromwell-workflow-id"
-        ],
-        "query_extensions": []
+        'common_labels': ['cromwell-workflow-id'],
+        'query_extensions': []
     }
 
     capabilities_config = current_app.config['capabilities_config']

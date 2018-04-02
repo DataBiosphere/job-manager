@@ -11,7 +11,7 @@ import logging
 from .util import flatten_dict
 
 logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger("{module_path}".format(module_path=__name__))
+logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -67,7 +67,8 @@ finally:
 try:
     with open(capabilities_path) as f:
         capabilities_config = json.load(f)
-    capabilities_config['display_fields'] = flatten_dict(capabilities_config['display_fields'], target_keys=['labels'])
+    capabilities_config['display_fields'] = flatten_dict(
+        capabilities_config['display_fields'], target_keys=['labels'])
 except (IOError, TypeError, KeyError):
     logger.warning(
         'Failed to load capabilities config, using default display fields.')
