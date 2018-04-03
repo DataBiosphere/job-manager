@@ -1,6 +1,6 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
-import {Component, DebugElement, NO_ERRORS_SCHEMA, ViewChild} from "@angular/core";
+import {Component, DebugElement, Input, ViewChild} from "@angular/core";
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -57,7 +57,7 @@ describe('HeaderComponent', () => {
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent, TestHeaderComponent],
+      declarations: [HeaderComponent, TestHeaderComponent, MockFilterChipComponent],
       imports: [
         BrowserAnimationsModule,
         FormsModule,
@@ -80,8 +80,7 @@ describe('HeaderComponent', () => {
       ],
       providers: [
         {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)}
-      ],
-      schemas: [ NO_ERRORS_SCHEMA ]
+      ]
     }).compileComponents();
   }));
 
@@ -194,5 +193,14 @@ describe('HeaderComponent', () => {
     public jobs = new BehaviorSubject<JobListView>(initJobs);
     @ViewChild(HeaderComponent)
     public headerComponent: HeaderComponent;
+  }
+
+  @Component({
+    selector: 'jm-filter-chip',
+    template: ''
+  })
+  class MockFilterChipComponent {
+    @Input() chipKey: string;
+    @Input() initialChipValue: string;
   }
 });

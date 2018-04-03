@@ -26,7 +26,7 @@ export class FilterChipComponent implements OnInit {
 
   constructor(
     private readonly capabilitiesService: CapabilitiesService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.options = URLSearchParamsUtils.getQueryFields(
