@@ -25,7 +25,7 @@
     (updateValue)="setChipValue($event)">
   </jm-status-selection>
   <!-- Datepicker input -->
-  <jm-datepicker-input
+  <jm-datepicker-input #datepickerInput
     *ngSwitchCase="'Date'"
     [chipKey]="chipKey"
     [initialChipValue]="currentChipValue"

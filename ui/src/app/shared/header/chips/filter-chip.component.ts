@@ -6,6 +6,7 @@ import {FieldDataType} from "../../common";
 import {URLSearchParamsUtils} from "../../utils/url-search-params.utils";
 import {CapabilitiesService} from "../../../core/capabilities.service";
 import {MatMenuTrigger} from "@angular/material";
+import {DatepickerInputComponent} from "./datepicker-input.component";
 
 @Component({
   selector: 'jm-filter-chip',
@@ -20,6 +21,7 @@ export class FilterChipComponent implements OnInit {
 
   @ViewChild('freeTextInput') freeTextInput: ElementRef;
   @ViewChild(MatMenuTrigger) chipMenuTrigger: MatMenuTrigger;
+  @ViewChild(DatepickerInputComponent) datePickerInput: DatepickerInputComponent;
 
   currentChipValue: string;
   options: Map<string, FieldDataType>;
@@ -37,6 +39,8 @@ export class FilterChipComponent implements OnInit {
   focusInput() {
     if (this.freeTextInput) {
       this.freeTextInput.nativeElement.focus();
+    } else if (this.datePickerInput) {
+      this.datePickerInput.expandCalendar();
     }
   }
 

@@ -1,4 +1,5 @@
-import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
+import {MatDatepicker} from "@angular/material";
 
 @Component({
   selector: 'jm-datepicker-input',
@@ -9,6 +10,8 @@ export class DatepickerInputComponent implements OnInit {
   @Input() chipKey: string;
   @Input() initialChipValue: string;
   @Output() updateValue: EventEmitter<string> = new EventEmitter();
+
+  @ViewChild(MatDatepicker) datePicker: MatDatepicker<Date>;
 
   currentChipValue: string;
 
@@ -28,5 +31,9 @@ export class DatepickerInputComponent implements OnInit {
 
   assignDateValue(date: Date): void {
     this.updateValue.emit(date.toLocaleDateString());
+  }
+
+  expandCalendar() {
+    this.datePicker.open();
   }
 }
