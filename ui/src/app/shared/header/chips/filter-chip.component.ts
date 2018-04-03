@@ -40,7 +40,8 @@ export class FilterChipComponent implements OnInit {
     if (this.freeTextInput) {
       this.freeTextInput.nativeElement.focus();
     } else if (this.datePickerInput) {
-      this.datePickerInput.expandCalendar();
+      // Wait for the form expansion animation to complete before expanding the calendar
+      setTimeout(() => this.datePickerInput.expandCalendar(), 100);
     }
   }
 
