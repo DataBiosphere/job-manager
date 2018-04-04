@@ -10,6 +10,7 @@ import {
   MatCheckboxModule,
   MatChipsModule,
   MatDatepickerModule,
+  MatFormFieldModule,
   MatIconModule,
   MatInputModule,
   MatListModule,
@@ -19,6 +20,9 @@ import {
 } from "@angular/material";
 import {HeaderComponent} from "./header/header.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {FilterChipComponent} from "./header/chips/filter-chip.component";
+import {StatusSelectionComponent} from "./header/chips/status-selection.component";
+import {DatepickerInputComponent} from "./header/chips/datepicker-input.component";
 
 @NgModule({
   imports: [
@@ -29,6 +33,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     MatCheckboxModule,
     MatChipsModule,
     MatDatepickerModule,
+    MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatListModule,
@@ -38,10 +43,13 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     ReactiveFormsModule,
   ],
   declarations: [
-    ShortDateTimePipe,
-    ErrorMessageFormatterPipe,
+    DatepickerInputComponent,
     DurationPipe,
-    HeaderComponent
+    ErrorMessageFormatterPipe,
+    FilterChipComponent,
+    HeaderComponent,
+    ShortDateTimePipe,
+    StatusSelectionComponent,
   ],
   providers: [],
   exports: [
