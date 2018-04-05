@@ -17,10 +17,6 @@ export class JobDetailsResolver implements Resolve<JobMetadataResponse> {
 
   resolve(route: ActivatedRouteSnapshot,
           state: RouterStateSnapshot): Promise<JobMetadataResponse> {
-    return this.JobManagerService.getJob(route.params['id'])
-      .catch(error => {
-        this.router.navigate(['jobs']);
-        return Promise.reject(error);
-      });
+    return this.JobManagerService.getJob(route.params['id']);
   }
 }

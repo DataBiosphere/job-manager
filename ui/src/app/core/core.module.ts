@@ -1,20 +1,27 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
 import {MatSnackBarModule} from '@angular/material';
+import {BrowserModule} from '@angular/platform-browser';
 
 import {CapabilitiesActivator} from "./capabilities-activator.service";
 import {CapabilitiesService} from "./capabilities.service";
 import {AuthService} from "./auth.service";
 import {JobManagerService} from './job-manager.service';
 import {NotifyLoadingService} from './notify-loading.service';
+import {InitialErrorComponent} from "./initial-error/initial-error.component";
 
 /** Provides all of the common singleton components and services that can be
  *  shared across the app and should only ever be instantiated once. */
 @NgModule({
   imports: [
+    BrowserModule,
     MatSnackBarModule,
   ],
-  declarations: [],
-  exports: [],
+  declarations: [
+    InitialErrorComponent,
+  ],
+  exports: [
+    InitialErrorComponent,
+  ],
   providers: [
     AuthService,
     CapabilitiesActivator,

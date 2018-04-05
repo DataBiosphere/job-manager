@@ -26,10 +26,6 @@ export class JobListResolver implements Resolve<JobStream> {
                                   URLSearchParamsUtils.unpackURLSearchParams(route.queryParams['q']));
     return jobStream
         .loadAtLeast(initialBackendPageSize)
-        .then(resp => jobStream)
-        .catch(error => {
-          this.router.navigate(['']);
-          return Promise.reject(error);
-        });
+        .then(resp => jobStream);
   }
 }
