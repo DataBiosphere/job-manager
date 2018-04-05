@@ -70,10 +70,9 @@ try:
     logger.info('Successfully loaded the custom capabilities config.')
     app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
         capabilities_config)
-except IOError:
+except (IOError, TypeError):
     logger.warning(
         'Failed to load capabilities config, using default display fields.')
-    app.app.config['capabilities'] = None
 
 app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'

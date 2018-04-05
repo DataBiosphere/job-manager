@@ -10,9 +10,8 @@ def get_capabilities():
         CapabilitiesResponse: Response containing this backend's capabilities
     """
     # Check if a capabilities config is given
-    capabilities = current_app.config['capabilities']
-    if capabilities:
-        return capabilities  # Early return for performance
+    if 'capabilities' in current_app.config:
+        return current_app.config['capabilities']  # Early return for performance
 
     # Default capabilities configuration
     capabilities = CapabilitiesResponse(
