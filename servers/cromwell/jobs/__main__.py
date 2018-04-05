@@ -68,7 +68,8 @@ try:
     with open(capabilities_path) as f:
         capabilities_config = json.load(f)
     logger.info('Successfully loaded the custom capabilities config.')
-    app.app.config['capabilities'] = CapabilitiesResponse.from_dict(capabilities_config)
+    app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
+        capabilities_config)
 except IOError:
     logger.warning(
         'Failed to load capabilities config, using default display fields.')

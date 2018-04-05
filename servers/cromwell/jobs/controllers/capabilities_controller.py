@@ -19,7 +19,8 @@ def get_capabilities():
         display_fields=[
             DisplayField(field='status', display='Status'),
             DisplayField(field='submission', display='Submitted'),
-            DisplayField(field='labels.cromwell-workflow-id', display='Workflow ID'),
+            DisplayField(
+                field='labels.cromwell-workflow-id', display='Workflow ID'),
         ],
         common_labels=['cromwell-workflow-id'],
         query_extensions=[])
