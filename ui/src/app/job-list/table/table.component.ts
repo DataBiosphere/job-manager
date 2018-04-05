@@ -16,7 +16,6 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 
-import {CapabilitiesResponse} from '../../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {DisplayField} from '../../shared/model/DisplayField';
 import {JobManagerService} from '../../core/job-manager.service';
@@ -26,7 +25,6 @@ import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-format
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {JobStatusImage} from '../../shared/common';
 import {ActivatedRoute, Params} from '@angular/router';
-import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'jm-job-list-table',

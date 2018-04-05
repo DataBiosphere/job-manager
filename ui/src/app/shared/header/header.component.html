@@ -1,50 +1,19 @@
 <div class="content">
   <mat-form-field class="query-form">
     <mat-chip-list #chipList>
-      <mat-chip id="chip" *ngFor="let chipKey of getChipKeys()"
-               [matMenuTriggerFor]="menu"
-               (remove)="removeChip(chipKey)"
-               (click)="setCurrentChip(chipKey)">
-        {{ getDisplayValue(chipKey) }}
-        <img matChipRemove
-             src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_18dp.png">
+      <mat-chip
+        *ngFor="let chipKey of getChipKeys()"
+        class="chipShell"
+        (remove)="removeChip(chipKey)"
+        (keyup.enter)="chipToExpand = chipKey">
+        <jm-filter-chip
+          [chipKey]=chipKey
+          [initialChipValue]="chips.get(chipKey)"
+          (updateValue)="updateValue(chipKey, $event)"
+          (removeChip)="removeChip(chipKey)">
+        </jm-filter-chip>
       </mat-chip>
-      <mat-menu #menu="matMenu" [ngSwitch]="getCurrentChipType()" [overlapTrigger]="false" class="wide-menu">
-        <mat-form-field *ngSwitchCase="'Text'" class="query-input">
-          <!--Free text input-->
-          <input matInput
-                 placeholder="Equals"
-                 type="search"
-                 [(ngModel)]="currentChipValue"
-                 (keyup.enter)="assignChipValue()"
-                 (click)="$event.stopPropagation()"/>
-        </mat-form-field>
-        <!-- Statuses -->
-        <mat-list *ngSwitchCase="'Enum'">
-          <mat-list-item  *ngFor="let status of jobStatuses">
-            <mat-checkbox
-              (click)="$event.stopPropagation()"
-              [checked]="isChecked(status)"
-              (change)="changeStatus(status, $event.checked)">
-              {{ status }}
-            </mat-checkbox>
-          </mat-list-item>
-        </mat-list>
-        <!-- Datepicker input -->
-        <mat-form-field *ngSwitchCase="'Date'" class="query-input">
-          <input id="dateInput"
-                 matInput
-                 [matDatepicker]="picker"
-                 placeholder="{{ getDatePlaceholder() }}"
-                 [(ngModel)]="currentChipValue"
-                 (click)="$event.stopPropagation()"
-                 (dateChange)="assignDateValue($event.value)">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker ></mat-datepicker>
-        </mat-form-field>
-      </mat-menu>
       <input matInput
-             placeholder="Filter jobs..."
              [(ngModel)]="inputValue"
              value="{{inputValue}}"
              [matAutocomplete]="auto"

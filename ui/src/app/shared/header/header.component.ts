@@ -1,16 +1,17 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
 import {
+  AfterViewChecked,
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
-  EventEmitter,
   Injectable,
   Input,
   NgZone,
   OnDestroy,
-  OnInit,
-  Output,
-  ViewChild
+  OnInit, QueryList,
+  ViewChild,
+  ViewChildren
 } from '@angular/core';
 import {ENTER} from '@angular/cdk/keycodes';
 import {FormControl} from '@angular/forms';
@@ -18,44 +19,40 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {
+  MatAutocompleteTrigger,
   MatPaginator,
   MatPaginatorIntl,
-  MatSnackBar,
-  PageEvent
+  PageEvent,
 } from '@angular/material';
 
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
 import {JobStatus} from '../model/JobStatus';
 import {QueryJobsRequest} from '../model/QueryJobsRequest';
-import {environment} from '../../../environments/environment';
-import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from '../common';
-import {MatMenuTrigger} from '@angular/material';
+import {FieldDataType} from '../common';
 import {JobListView} from '../job-stream';
+import {FilterChipComponent} from "./chips/filter-chip.component";
 
 @Component({
   selector: 'jm-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
+export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @Input() jobs: BehaviorSubject<JobListView>;
   @Input() pageSize: number;
+  @ViewChildren(FilterChipComponent) chipElements: QueryList<FilterChipComponent>;
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public pageSubject: Subject<PageEvent> = new Subject<PageEvent>();
   private pageSubscription: Subscription;
 
-  @ViewChild(MatMenuTrigger) chipMenuTrigger: MatMenuTrigger;
-
+  chipToExpand: string;
   separatorKeysCodes = [ENTER];
   control: FormControl = new FormControl();
   options: Map<string, FieldDataType>;
   chips: Map<string, string>;
-  currentChipKey: string = '';
-  currentChipValue: string = '';
   inputValue: string = '';
-  jobStatuses: JobStatus[] = Object.keys(JobStatus).map(k => JobStatus[k]);
-  selectedStatuses: JobStatus[] = [];
 
   filteredOptions: Observable<string[]>;
 
@@ -68,6 +65,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly router: Router,
     private readonly capabilitiesService: CapabilitiesService,
     private zone: NgZone,
+    private cdr: ChangeDetectorRef,
   ) {
     route.queryParams.subscribe(params => this.refreshChips(params['q']));
   }
@@ -75,9 +73,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     if (this.route.snapshot.queryParams['q']) {
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
-    }
-    if (this.chips.get('statuses')) {
-      this.selectedStatuses = this.chips.get('statuses').split(',').map(k => JobStatus[k]);
     }
 
     this.options = URLSearchParamsUtils.getQueryFields(
@@ -105,6 +100,19 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  ngAfterViewChecked(): void {
+    if (this.chipToExpand) {
+      // Search for a newly added chip in the DOM now that it's been rendered
+      this.chipElements.toArray().forEach((chip) => {
+        if (chip.chipKey == this.chipToExpand) {
+          chip.expandMenu();
+        }
+      });
+      this.chipToExpand = null;
+    }
+    this.cdr.detectChanges();
+  }
+
   ngOnDestroy(): void {
     if (this.pageSubscription) {
       this.pageSubscription.unsubscribe();
@@ -118,6 +126,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   addChip(value: string): void {
+    this.autocompleteTrigger.closePanel();
     if ((value || '').trim()) {
       if (value.split(':').length == 2) {
         // Parse as a full key:value pair
@@ -130,37 +139,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
         // Parse as just the key
         this.deleteChipIfExists(value);
         this.chips.set(value.trim(), '');
+        // This chip will be expanded via ngAfterViewChecked() once initialized
+        this.chipToExpand = value.trim();
       }
       this.inputValue = '';
     }
-  }
-
-  assignChipValue(): void {
-    this.removeChip(this.currentChipKey);
-    this.chips.set(this.currentChipKey, this.currentChipValue);
-    if (this.chipMenuTrigger) {
-      this.chipMenuTrigger.closeMenu();
-    }
-    this.search();
-  }
-
-  assignDateValue(date: Date): void {
-    this.removeChip(this.currentChipKey);
-    this.chips.set(this.currentChipKey, date.toLocaleDateString());
-    if (this.chipMenuTrigger) {
-      this.chipMenuTrigger.closeMenu();
-    }
-    this.search();
-  }
-
-  changeStatus(status: JobStatus, checked: boolean) {
-    if (checked) {
-      this.selectedStatuses.push(status);
-    } else if (this.selectedStatuses.indexOf(status) > -1) {
-      this.selectedStatuses.splice(this.selectedStatuses.indexOf(status), 1);
-    }
-    this.chips.set('statuses', this.selectedStatuses.join(','));
-    this.search();
   }
 
   filter(val: string): string[] {
@@ -179,37 +162,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     return Array.from(this.chips.keys());
   }
 
-  getCurrentChipType(): string {
-    if (this.currentChipKey && this.options.has(this.currentChipKey)) {
-      return FieldDataType[this.options.get(this.currentChipKey)];
-    }
-    // Default to text for all labels
-    return FieldDataType[FieldDataType.Text];
-  }
-
-  getDatePlaceholder(): string {
-    if (this.currentChipKey == 'start') {
-      return 'Jobs started on or after...';
-    } else if (this.currentChipKey == 'end') {
-      return 'Jobs ended on or before...';
-    } else if (this.currentChipKey == 'submission') {
-      return 'Jobs submitted on or before...';
-    }
-  }
-
-  getDisplayValue(chipKey: string) {
-    return chipKey + ': ' + this.chips.get(chipKey);
-  }
-
-  isChecked(status: JobStatus): boolean {
-    return this.selectedStatuses.indexOf(status) > -1;
-  }
-
   navigateWithStatus(statuses: JobStatus[]): void {
     let query: QueryJobsRequest =
       URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
     query.statuses = statuses;
-    this.selectedStatuses = statuses;
+    this.chips.set('statuses', statuses.map((status) => JobStatus[status]).join(','));
     this.router.navigate(
       ['jobs'],
       {queryParams: { q: URLSearchParamsUtils.encodeURLSearchParams(query)}}
@@ -218,9 +175,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   removeChip(chipKey: string): void {
     this.chips.delete(chipKey);
-    if (chipKey == 'statuses') {
-      this.selectedStatuses = [];
-    }
+    this.search();
+  }
+
+  updateValue(chipKey: string, chipValue: string): void {
+    this.chips.set(chipKey, chipValue);
     this.search();
   }
 
@@ -237,11 +196,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
       ['jobs'],
       {queryParams: { q: query}}
     );
-  }
-
-  setCurrentChip(chipKey: string): void {
-    this.currentChipKey = chipKey;
-    this.currentChipValue = this.chips.get(chipKey);
   }
 
   shouldDisplayStatusButtons(): boolean {
@@ -300,7 +254,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy {
  */
 @Injectable()
 export class JobsPaginatorIntl extends MatPaginatorIntl {
-  private defaultIntl = new MatPaginatorIntl()
+  private defaultIntl = new MatPaginatorIntl();
 
   constructor(private backendJobs: BehaviorSubject<JobListView>,
               public changes: Subject<void>) {
