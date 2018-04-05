@@ -11,7 +11,8 @@ def get_capabilities():
     """
     # Check if a capabilities config is given
     if 'capabilities' in current_app.config:
-        return current_app.config['capabilities']  # Early return for performance
+        return current_app.config[
+            'capabilities']  # Early return for performance
 
     # Default capabilities configuration
     capabilities = CapabilitiesResponse(
