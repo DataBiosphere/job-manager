@@ -144,26 +144,3 @@ def _deserialize_dict(data, boxed_type):
     :rtype: dict
     """
     return {k: _deserialize(v, boxed_type) for k, v in iteritems(data)}
-
-
-def flatten_dict(dic, target_keys=None, sep='.'):
-    """
-    Flatten a nested dict to a flat dictionary.
-
-    :param dict dic: Target dictionary.
-    :param list or tuple target_keys: A list of dictionary keys as flatten targets. If not given, all of keys will be
-     checked during the flatten process.
-    :param str sep: A string of separator. '.' by default.
-
-    :return dict: Result flattened dictionary.
-    """
-    target_keys = set(target_keys) if target_keys else set(dic.keys())
-    res_dic = {}
-
-    for key, val in dic.items():
-        if isinstance(val, dict) and key in target_keys:
-            for inner_key, inner_val in val.items():
-                res_dic['{0}{1}{2}'.format(key, sep, inner_key)] = inner_val
-        else:
-            res_dic[key] = val
-    return res_dic

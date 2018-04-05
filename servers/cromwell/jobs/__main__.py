@@ -8,7 +8,7 @@ from .encoder import JSONEncoder
 import requests
 from requests.auth import HTTPBasicAuth
 import logging
-from .util import flatten_dict
+from .models.capabilities_response import CapabilitiesResponse
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('{module_path}'.format(module_path=__name__))
@@ -67,14 +67,12 @@ finally:
 try:
     with open(capabilities_path) as f:
         capabilities_config = json.load(f)
-    capabilities_config['display_fields'] = flatten_dict(
-        capabilities_config['display_fields'], target_keys=['labels'])
-except (IOError, TypeError, KeyError):
+    logger.info('Successfully loaded the custom capabilities config.')
+    app.app.config['capabilities'] = CapabilitiesResponse.from_dict(capabilities_config)
+except IOError:
     logger.warning(
         'Failed to load capabilities config, using default display fields.')
-    capabilities_config = None
-finally:
-    app.app.config['capabilities_config'] = capabilities_config
+    app.app.config['capabilities'] = None
 
 app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'

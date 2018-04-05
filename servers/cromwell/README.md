@@ -22,24 +22,28 @@ export CROMWELL_URL=http://192.168.0.106:8000/api/workflows/v1
 }
 ```
 
-3. (Optional) If you want to change the view of UI to some extent, i.e. display more columns in the job list view, such as labels of the jobs, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should strictly follow the below format:
+3. (Optional) If you want to change the view of UI to some extent, i.e. display more columns in the job list view, such as labels of the jobs, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should **strictly** follow the following structure:
 ```
 {
-  "display_fields": {
-    "status": "Status",
-    "submission": "Submitted",
-    "labels": {
-      "cromwell-workflow-id": "Workflow ID",
-      "workflow-name": "Workflow Name",
-      "comment": "Comment"
+  "displayFields": [
+    {
+      "field": "status",
+      "display": "Status"
+    },
+    {
+      "field": "submission",
+      "display": "Submitted"
+    },
+    {
+      "field": "labels.cromwell-workflow-id",
+      "display": "Workflow ID"
     }
-  },
-  "common_labels": [
-    "cromwell-workflow-id",
-    "workflow-name",
-    "comment"
   ],
-  "query_extensions": []
+  "commonLabels": [
+    "cromwell-workflow-id",
+    "workflow-name"
+  ],
+  "queryExtensions": []
 }
 ```
 ## Running Tests
