@@ -23,28 +23,6 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     }
     ```
 
-3. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-compose-caas.yaml` otherwise use `cromwell-compose-dev.yaml`, e.g:
-    ```
-    ln -sf cromwell-compose-dev.yml docker-compose.yml
-    ```
-
-4. From the root directory of the repository, run `docker-compose up` and navigate to http://localhost:4200.
-
-
-## Starting Jobs
-The Job Manager does not currently support launching jobs. Cromwell jobs can be launched by sending a `POST` request to the `/api/workflows/{version}` endpoint. For example:
-```
-cd servers/cromwell/jobs/test/test_workflow
-curl -X POST "${CROMWELL_URL}" \
-    -u "username:password" \
-    -H "accept: application/json" \
-    -H "Content-Type: multipart/form-data" \
-    -F "workflowSource=@test_workflow.wdl" \
-    -F "workflowInputs=@inputs.json;type=application/json" \
-    -F "labels=@labels.json;type=application/json" \
-    -F "workflowDependencies=@deps.zip;type=application/zip"
-```
-
 3. (Optional) If you want to change the view of UI to some extent, i.e. display more columns in the job list view, such as labels of the jobs, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should **strictly** follow the following structure:
 ```
 {
@@ -69,6 +47,30 @@ curl -X POST "${CROMWELL_URL}" \
   "queryExtensions": []
 }
 ```
+
+4. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-compose-caas.yaml` otherwise use `cromwell-compose-dev.yaml`, e.g:
+    ```
+    ln -sf cromwell-compose-dev.yml docker-compose.yml
+    ```
+
+5. From the root directory of the repository, run `docker-compose up` and navigate to http://localhost:4200.
+
+
+## Starting Jobs
+The Job Manager does not currently support launching jobs. Cromwell jobs can be launched by sending a `POST` request to the `/api/workflows/{version}` endpoint. For example:
+```
+cd servers/cromwell/jobs/test/test_workflow
+curl -X POST "${CROMWELL_URL}" \
+    -u "username:password" \
+    -H "accept: application/json" \
+    -H "Content-Type: multipart/form-data" \
+    -F "workflowSource=@test_workflow.wdl" \
+    -F "workflowInputs=@inputs.json;type=application/json" \
+    -F "labels=@labels.json;type=application/json" \
+    -F "workflowDependencies=@deps.zip;type=application/zip"
+```
+
+
 ## Running Tests
 To run unit and integration tests on the python-flask app, install
 [`tox`](https://github.com/tox-dev/tox).
