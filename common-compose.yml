@@ -35,6 +35,7 @@ services:
     environment:
       - PATH_PREFIX=/api/v1
       - CROMWELL_CREDENTIALS=/app/jobs/config.json
+      - CAPABILITIES_CONFIG=/app/jobs/capabilities_config.json
       - CROMWELL_URL=${CROMWELL_URL:-https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1}
     volumes:
       - ./servers/cromwell/jobs:/app/jobs
