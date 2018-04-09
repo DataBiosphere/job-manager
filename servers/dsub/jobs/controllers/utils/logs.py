@@ -12,7 +12,7 @@ def dsub_to_api(job):
         base_log_path = job['logging'][:-4]
         return {
             'Controller Log': '{}.log'.format(base_log_path),
-            'Output Log': '{}-stderr.log'.format(base_log_path),
-            'Error Log': '{}-stdout.log'.format(base_log_path),
+            'Error Log': '{}-stderr.log'.format(base_log_path),
+            'Output Log': '{}-stdout.log'.format(base_log_path),
         }
     return None
