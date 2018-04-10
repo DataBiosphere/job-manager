@@ -72,7 +72,7 @@ see [servers/cromwell](servers/cromwell/README.md#Development).
 #### Notes
 1. Websocket reload on code change does not work in docker-compose (see
 https://github.com/angular/angular-cli/issues/6349).
-1. Changes to `package.json` or `requirements.txt` require a rebuild with:
+1. Changes to `package.json` or `requirements.txt` or [regenerating the API](#updating-the-api-using-swagger-codegen) require a rebuild with:
   ```
   docker-compose up --build
   ```
