@@ -91,6 +91,10 @@ export class JobsTableComponent implements OnInit {
     return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
   }
 
+  canEdit(df: DisplayField): boolean {
+    return (df.field !== "status" && df.field !== "cromwell-workflow-id" && df.field !== "submission");
+  }
+
   canAbortAnySelected(): boolean {
     for (let j of this.selection.selected) {
       if (this.canAbort(j)) {

@@ -57,7 +57,10 @@
     <ng-container matColumnDef="{{ df.field }}">
       <mat-header-cell *matHeaderCellDef>{{ df.display }}</mat-header-cell>
       <mat-cell class="additional-column" *matCellDef="let j">
-        <div *ngIf=!isStatusField(df)>{{ getFieldValue(j, df) }}</div>
+        <<mat-form-field *ngIf=canEdit(df)>
+          <input matInput value="{{ getFieldValue(j, df) }}">
+        </mat-form-field>
+        <div *ngIf="!canEdit(df) && isStatusField(df)">{{ getFieldValue(j, df) }}</div>
         <button mat-icon-button disabled *ngIf=isStatusField(df)>
           <img matTooltip="{{ getFieldValue(j, df) }}" matTooltipPosition="before"
              src="{{ getStatusUrl(getFieldValue(j, df)) }}">
