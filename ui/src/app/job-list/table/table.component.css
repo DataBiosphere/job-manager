@@ -1,4 +1,5 @@
 /* Job Manager table */
+/* Job Manager table */
 
 .job-details-button {
   color: black;
@@ -82,4 +83,21 @@
   font-size: .65rem;
   text-transform: uppercase;
   margin: .65rem;
+}
+
+/* Label Editing */
+.edit-field {
+  display: flex;
+  flex-direction: row;
+}
+
+.edit-field .mat-icon-button {
+  height: 18px;
+  flex-shrink: 0;
+  line-height: 0;
+  border-radius: 0;
+}
+
+.edit-field .field-value {
+  width: 100%;
 }

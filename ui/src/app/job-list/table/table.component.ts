@@ -92,7 +92,18 @@ export class JobsTableComponent implements OnInit {
   }
 
   canEdit(df: DisplayField): boolean {
-    return (df.field !== "status" && df.field !== "cromwell-workflow-id" && df.field !== "submission");
+    return (df.field !== "status" && df.field !== "labels.cromwell-workflow-id" && df.field !== "submission");
+  }
+
+  updateFieldValue(job: QueryJobsResult, df: DisplayField, value: string): void {
+    var labelParts = df.field.split('.');
+    var label = (labelParts[1] != null) ? labelParts[1] : value;
+    let labelJson = "{\"" + label + "\":\"" + value + "\"}";
+    this.jobManagerService.updateJobLabels(job.id, labelJson)
+      .then(() =>
+        console.log(job.id)
+      )
+      .catch((error) => this.handleError(error));
   }
 
   canAbortAnySelected(): boolean {

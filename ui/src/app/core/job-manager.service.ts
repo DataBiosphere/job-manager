@@ -103,6 +103,15 @@ export class JobManagerService {
       .catch((e) => this.handleError(e));
   }
 
+  updateJobLabels(id: string, json: string): Promise<void> {
+    return this.http.post(`${environment.apiUrl}/jobs/${id}/labels`,
+      {},
+      new RequestOptions({headers: this.getHttpHeaders(), body: json}))
+      .toPromise()
+      .then(response => response.status == 200)
+      .catch((e) => this.handleError(e));
+  }
+
   getJob(id: string): Promise<JobMetadataResponse> {
     return this.http.get(`${environment.apiUrl}/jobs/${id}`,
       new RequestOptions({headers: this.getHttpHeaders()}))

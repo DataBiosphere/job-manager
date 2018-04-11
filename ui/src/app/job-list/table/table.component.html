@@ -57,10 +57,24 @@
     <ng-container matColumnDef="{{ df.field }}">
       <mat-header-cell *matHeaderCellDef>{{ df.display }}</mat-header-cell>
       <mat-cell class="additional-column" *matCellDef="let j">
-        <<mat-form-field *ngIf=canEdit(df)>
-          <input matInput value="{{ getFieldValue(j, df) }}">
-        </mat-form-field>
-        <div *ngIf="!canEdit(df) && isStatusField(df)">{{ getFieldValue(j, df) }}</div>
+        <div *ngIf=canEdit(df) class="edit-field">
+          <span class="field-value">{{ getFieldValue(j, df) }}</span>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <img src="https://www.gstatic.com/images/icons/material/system/1x/edit_grey600_18dp.png">
+          </button>
+        </div>
+        <mat-menu #menu="matMenu" class="wide-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
+          <mat-form-field>
+            <input matInput
+                   #labelField
+                   value="{{ getFieldValue(j, df) }}"
+                   (click)="$event.stopPropagation()">
+          </mat-form-field>
+          <div>
+            <a href="#" (click)="updateFieldValue(j, df, labelField.value)">Apply</a>
+          </div>
+        </mat-menu>
+        <div *ngIf="!canEdit(df) && !isStatusField(df)">{{ getFieldValue(j, df) }}</div>
         <button mat-icon-button disabled *ngIf=isStatusField(df)>
           <img matTooltip="{{ getFieldValue(j, df) }}" matTooltipPosition="before"
              src="{{ getStatusUrl(getFieldValue(j, df)) }}">
