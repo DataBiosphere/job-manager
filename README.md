@@ -67,12 +67,12 @@ see [servers/cromwell](servers/cromwell/README.md#Development).
 
 ### Run Locally
 1. Run `docker-compose up` from the root of the repository:
-1. Navigate to http://localhost:4200.
+2. Navigate to http://localhost:4200.
 
 #### Notes
 1. Websocket reload on code change does not work in docker-compose (see
 https://github.com/angular/angular-cli/issues/6349).
-1. Changes to `package.json` or `requirements.txt` require a rebuild with:
+2. Changes to `package.json` or `requirements.txt` or [regenerating the API](#updating-the-api-using-swagger-codegen) require a rebuild with:
   ```
   docker-compose up --build
   ```
@@ -93,13 +93,13 @@ update the server implementations:
     # macOS
     brew install swagger-codegen
     ```
-1. Clear out existing generated models:
+2. Clear out existing generated models:
     ```
     rm ui/src/app/shared/model/*
     rm servers/dsub/jobs/models/*
     rm servers/cromwell/jobs/models/*
     ```
-1. Regenerate both the python and angular definitions.
+3. Regenerate both the python and angular definitions.
     ```
     java -jar swagger-codegen-cli.jar generate \
       -i api/jobs.yaml \
@@ -116,7 +116,7 @@ update the server implementations:
       -o servers/cromwell \
       -DsupportPython2=true,packageName=jobs
       ```
-1. Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
+4. Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
 ## Job Manager UI Server
 For UI server documentation, see [ui](ui/).
