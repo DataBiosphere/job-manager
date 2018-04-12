@@ -1,5 +1,3 @@
-import {Injectable} from '@angular/core';
-
 import {JobStatus} from '../shared/model/JobStatus';
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
@@ -7,7 +5,6 @@ import {JobManagerService} from '../core/job-manager.service';
 import {QueryJobsRequest} from '../shared/model/QueryJobsRequest';
 import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 
-@Injectable()
 export class FakeJobManagerService extends JobManagerService {
   constructor(public jobs: QueryJobsResult[]) {
     super(null, null);

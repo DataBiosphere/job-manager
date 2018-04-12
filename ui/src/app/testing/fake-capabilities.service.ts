@@ -1,9 +1,6 @@
-import {Injectable} from '@angular/core';
-
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from '../core/capabilities.service';
 
-@Injectable()
 export class FakeCapabilitiesService extends CapabilitiesService {
   constructor(public capabilities: CapabilitiesResponse) {
     super(null);
