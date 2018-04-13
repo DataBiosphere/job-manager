@@ -25,6 +25,7 @@ import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-format
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {JobStatusImage} from '../../shared/common';
 import {ActivatedRoute, Params} from '@angular/router';
+import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
 
 @Component({
   selector: 'jm-job-list-table',
@@ -95,14 +96,13 @@ export class JobsTableComponent implements OnInit {
     return (df.field !== "status" && df.field !== "labels.cromwell-workflow-id" && df.field !== "submission");
   }
 
-  updateFieldValue(job: QueryJobsResult, df: DisplayField, value: string): void {
-    var labelParts = df.field.split('.');
-    var label = (labelParts[1] != null) ? labelParts[1] : value;
-    let labelJson = "{\"" + label + "\":\"" + value + "\"}";
-    this.jobManagerService.updateJobLabels(job.id, labelJson)
-      .then(() =>
-        console.log(job.id)
-      )
+  updateFieldValue(job: QueryJobsResult, df: DisplayField, value: string) {
+    const labelParts = df.field.split('.');
+    const label = (labelParts[1] != null) ? labelParts[1] : value;
+    let req: UpdateJobLabelsRequest = {};
+    req.labels = JSON.parse("{\"" + label + "\":\"" + value + "\"}");
+    this.jobManagerService.updateJobLabels(job.id, req)
+      .then(() => this.onJobsChanged.emit([job]))
       .catch((error) => this.handleError(error));
   }
 

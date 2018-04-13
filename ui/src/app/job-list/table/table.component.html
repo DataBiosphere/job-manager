@@ -71,7 +71,7 @@
                    (click)="$event.stopPropagation()">
           </mat-form-field>
           <div>
-            <a href="#" (click)="updateFieldValue(j, df, labelField.value)">Apply</a>
+            <button (click)="updateFieldValue(j, df, labelField.value)">Apply</button>
           </div>
         </mat-menu>
         <div *ngIf="!canEdit(df) && !isStatusField(df)">{{ getFieldValue(j, df) }}</div>
