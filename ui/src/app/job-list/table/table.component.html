@@ -2,7 +2,7 @@
 
   <!-- Job name column -->
   <ng-container matColumnDef="Job">
-    <mat-header-cell *matHeaderCellDef>
+    <mat-header-cell class="checkbox-column" *matHeaderCellDef>
       <mat-checkbox class = "checkbox"
                     (change)="$event ? toggleSelectAll() : null"
                     [checked]="allSelected()"
@@ -10,7 +10,7 @@
       </mat-checkbox>
       Job
     </mat-header-cell>
-    <mat-cell *matCellDef="let j">
+    <mat-cell class="checkbox-column" *matCellDef="let j">
       <mat-checkbox class = "checkbox"
                     (click)="$event.stopPropagation()"
                     (change)="$event ? selection.toggle(j) : null"
@@ -57,7 +57,7 @@
     <ng-container matColumnDef="{{ df.field }}">
       <mat-header-cell *matHeaderCellDef>{{ df.display }}</mat-header-cell>
       <mat-cell class="additional-column" *matCellDef="let j">
-        <div *ngIf=!isStatusField(df)>{{ getFieldValue(j, df) }}</div>
+        <div class="display-field" *ngIf=!isStatusField(df)>{{ getFieldValue(j, df) }}</div>
         <button mat-icon-button disabled *ngIf=isStatusField(df)>
           <img matTooltip="{{ getFieldValue(j, df) }}" matTooltipPosition="before"
              src="{{ getStatusUrl(getFieldValue(j, df)) }}">
