@@ -17,9 +17,9 @@
 
 .table-container {
   position: relative;
-  overflow: scroll;
   width: 100%;
   top: 9rem;
+  bottom: 0;
 }
 
 .spinner-container {
