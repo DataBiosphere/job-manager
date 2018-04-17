@@ -1,9 +1,5 @@
 /* Job Manager table */
 
-.job-details-button {
-  color: black;
-}
-
 .mat-table {
   display: table;
   width: 100%;
@@ -21,10 +17,18 @@
   vertical-align: middle;
   padding: 0 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  max-width: 40rem;
+  white-space: nowrap;
+}
+
+.checkbox-column {
+  min-width: 10rem;
+}
+
+.display-field {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 20rem;
 }
 
 .mat-column-select {
@@ -49,6 +53,7 @@
   text-align: center;
   float: left;
   cursor: pointer;
+  color: black;
 }
 
 /* Job details dropdown */
