@@ -10,6 +10,7 @@ import {
   MatTableModule,
   MatTooltipModule,
 } from '@angular/material';
+import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
@@ -25,6 +26,7 @@ import {SharedModule} from '../shared/shared.module';
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
+    MatDividerModule,
     MatMenuModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
