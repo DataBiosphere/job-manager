@@ -1,7 +1,25 @@
+.header {
+  background: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 9rem;
+  z-index: 1;
+}
+
+.divider {
+  position: fixed;
+  width: 100%;
+  top: 9rem;
+  z-index: 1;
+}
+
 .table-container {
   position: relative;
   overflow: scroll;
   width: 100%;
+  top: 9rem;
 }
 
 .spinner-container {
