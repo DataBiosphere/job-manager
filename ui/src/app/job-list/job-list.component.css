@@ -1,6 +1,6 @@
 .table-container {
   position: relative;
-  overflow: scroll;
+  overflow-x: scroll;
   width: 100%;
 }
 
