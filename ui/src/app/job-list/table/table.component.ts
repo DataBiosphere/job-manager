@@ -42,8 +42,7 @@ export class JobsTableComponent implements OnInit {
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
 
-  // TODO(alanhwang): Allow these columns to be configured by the user
-  displayedColumns: string[] = ["Job", "Details"];
+  displayedColumns: string[] = ["Checkbox", "Job", "Details"];
 
   constructor(
     private readonly route: ActivatedRoute,
