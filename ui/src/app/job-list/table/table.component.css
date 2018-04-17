@@ -21,10 +21,6 @@
   white-space: nowrap;
 }
 
-.checkbox-column {
-  min-width: 10rem;
-}
-
 .display-field {
   white-space: nowrap;
   overflow: hidden;
@@ -57,9 +53,13 @@
 }
 
 /* Job details dropdown */
+.details-drop-down-cell {
+  max-width: 2rem;
+}
+
 .jobs-dropdown-arrow {
   visibility: hidden;
-  float: right;
+  float: left;
   margin-right: 4rem;
   display: inline-block;
 }

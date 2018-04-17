@@ -151,7 +151,7 @@ describe('JobsTableComponent', () => {
     testComponent.jobs.next([jobs[0]]);
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.job-details-button')).nativeElement.textContent)
+    expect(de.query(By.css('.job-details-button')).nativeElement.textContent.trim())
       .toEqual(jobs[0].name);
   }));
 
@@ -161,7 +161,7 @@ describe('JobsTableComponent', () => {
     fixture.detectChanges();
 
     let de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.job-details-button')).nativeElement.textContent)
+    expect(de.query(By.css('.job-details-button')).nativeElement.textContent.trim())
       .toEqual(jobs[0].name);
 
 
