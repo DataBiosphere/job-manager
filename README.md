@@ -46,16 +46,41 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
 
 ## Development
 
-### Prerequisite
-The following commands assume you have symbolically linked your preferred
-local API backend docker compose file as `docker-compose.yml`, e.g.:
-```
-ln -sf dsub-local-compose.yml docker-compose.yml
-```
-Alternatively, use:
-```
-docker-compose -f dsub-google-compose.yml CMD
-```
+### Prerequisites
+
+- Install docker and docker-compose
+- Setup git-secrets:
+
+  Download the git-secrets tool. If you are on a mac, run:
+  ```
+    brew install git-secrets
+  ```
+
+  If you are on Linux, run:
+  ```
+  rm -rf git-secrets
+  git clone https://github.com/awslabs/git-secrets.git
+  cd git-secrets
+  sudo make install && sudo chmod o+rx /usr/local/bin/git-secrets
+  cd ..
+  rm -rf git-secrets
+  ```
+
+  Then configure the hook:
+  ```
+  git secrets --install
+  ```
+
+- The following commands assume you have symbolically linked your preferred local API backend docker compose file as `docker-compose.yml`, e.g.:
+
+  ```
+  ln -sf dsub-local-compose.yml docker-compose.yml
+  ```
+
+  If you prefer not to create a symbolic link, use:
+  ```
+  docker-compose -f dsub-google-compose.yml CMD
+  ```
 
 ### Server Setup
 For setting up development with [`dsub`](https://github.com/googlegenomics/dsub)

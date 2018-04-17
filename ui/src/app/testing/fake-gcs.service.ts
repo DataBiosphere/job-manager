@@ -1,7 +1,5 @@
-import {Injectable} from '@angular/core';
 import {GcsService} from '../core/gcs.service';
 
-@Injectable()
 export class FakeGcsService extends GcsService {
   constructor(public bucket: string, public objectsMap: Map<string, string>) {
     super(null);

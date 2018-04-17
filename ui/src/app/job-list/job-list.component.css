@@ -1,5 +1,7 @@
 .table-container {
   position: relative;
+  overflow: scroll;
+  width: 100%;
 }
 
 .spinner-container {
@@ -13,7 +15,8 @@
 }
 
 .job-list-table {
-  display: block;
+  display: inline-block;
+  width: 100%;
 }
 
 /* The pagination controls are near the top, so position relatively high. */

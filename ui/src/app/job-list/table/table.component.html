@@ -1,29 +1,39 @@
 <mat-table #table [dataSource]="dataSource">
 
-  <!-- Job name column -->
-  <ng-container matColumnDef="Job">
+  <!-- Checkbox column -->
+  <ng-container matColumnDef="Checkbox">
     <mat-header-cell *matHeaderCellDef>
       <mat-checkbox class = "checkbox"
                     (change)="$event ? toggleSelectAll() : null"
                     [checked]="allSelected()"
                     [indeterminate]="partiallySelected()">
       </mat-checkbox>
-      Job
     </mat-header-cell>
     <mat-cell *matCellDef="let j">
-      <mat-checkbox class = "checkbox"
-                    (click)="$event.stopPropagation()"
-                    (change)="$event ? selection.toggle(j) : null"
-                    [checked]="selection.isSelected(j)">
-      </mat-checkbox>
-      <a class="job-details-button mat-body-1" [routerLink]="[j.id]" [queryParams]="getQueryParams()">{{ j.name }}</a>
+        <mat-checkbox class = "checkbox"
+                      (click)="$event.stopPropagation()"
+                      (change)="$event ? selection.toggle(j) : null"
+                      [checked]="selection.isSelected(j)">
+        </mat-checkbox>
     </mat-cell>
   </ng-container>
 
+  <!-- Job name column -->
+  <ng-container matColumnDef="Job">
+    <mat-header-cell *matHeaderCellDef>Job</mat-header-cell>
+    <mat-cell *matCellDef="let j">
+      <a class="job-details-button mat-body-1"
+         [routerLink]="[j.id]"
+         [queryParams]="getQueryParams()">
+         {{ j.name }}
+       </a>
+     </mat-cell>
+   </ng-container>
+
   <!-- Job details dropdown column -->
   <ng-container matColumnDef="Details">
-    <mat-header-cell *matHeaderCellDef></mat-header-cell>
-    <mat-cell *matCellDef="let j">
+    <mat-header-cell class="details-drop-down-cell" *matHeaderCellDef></mat-header-cell>
+    <mat-cell class="details-drop-down-cell" *matCellDef="let j">
       <button mat-icon-button class="jobs-dropdown-arrow"
               [class.visible]="showDropdownArrow(j)"
               [matMenuTriggerFor]="menu">
@@ -57,7 +67,7 @@
     <ng-container matColumnDef="{{ df.field }}">
       <mat-header-cell *matHeaderCellDef>{{ df.display }}</mat-header-cell>
       <mat-cell class="additional-column" *matCellDef="let j">
-        <div *ngIf=canEdit(df) class="edit-field">
+        <div class="display-field" *ngIf=canEdit(df) class="edit-field">
           <span class="field-value">{{ getFieldValue(j, df) }}</span>
           <button mat-icon-button [matMenuTriggerFor]="menu">
             <img src="https://www.gstatic.com/images/icons/material/system/1x/edit_grey600_18dp.png">
