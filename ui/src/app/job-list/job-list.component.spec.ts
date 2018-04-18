@@ -14,6 +14,7 @@ import {
   MatTooltipModule,
   MatCheckboxModule
 } from '@angular/material';
+import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {RouterTestingModule} from '@angular/router/testing';
 
@@ -78,6 +79,7 @@ describe('JobListComponent', () => {
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
+        MatDividerModule,
         MatMenuModule,
         MatPaginatorModule,
         MatProgressSpinnerModule,

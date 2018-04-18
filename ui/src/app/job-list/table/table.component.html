@@ -70,8 +70,7 @@
         <div class="display-field" *ngIf=canEdit(df) class="edit-field">
           <span class="field-value">{{ getFieldValue(j, df) }}</span>
           <button class="jobs-dropdown-arrow" mat-icon-button [matMenuTriggerFor]="menu" [class.visible]="showDropdownArrow(j)">
-
-            <img src="https://www.gstatic.com/images/icons/material/system/1x/edit_grey600_18dp.png">
+            <img src="{{ getDropdownArrowUrl() }}">
           </button>
         </div>
         <mat-menu #menu="matMenu" class="wide-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
