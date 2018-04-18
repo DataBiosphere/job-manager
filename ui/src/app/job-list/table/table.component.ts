@@ -95,13 +95,16 @@ export class JobsTableComponent implements OnInit {
     return (df.field !== "status" && df.field !== "labels.cromwell-workflow-id" && df.field !== "submission");
   }
 
-  updateFieldValue(job: QueryJobsResult, df: DisplayField, value: string) {
+  setFieldValue(job: QueryJobsResult, df: DisplayField, value: string) {
     const labelParts = df.field.split('.');
     const label = (labelParts[1] != null) ? labelParts[1] : value;
     let req: UpdateJobLabelsRequest = {};
     req.labels = JSON.parse("{\"" + label + "\":\"" + value + "\"}");
     this.jobManagerService.updateJobLabels(job.id, req)
-      .then(() => this.onJobsChanged.emit([job]))
+      .then(() => {
+        job.labels[label] = value;
+        this.onJobsChanged.emit([job]);
+      })
       .catch((error) => this.handleError(error));
   }
 
