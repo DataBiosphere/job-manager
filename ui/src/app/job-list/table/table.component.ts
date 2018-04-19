@@ -92,7 +92,7 @@ export class JobsTableComponent implements OnInit {
   }
 
   canEdit(df: DisplayField): boolean {
-    return (df.field !== "status" && df.field !== "labels.cromwell-workflow-id" && df.field !== "submission");
+    return df.editable;
   }
 
   setFieldValue(job: QueryJobsResult, df: DisplayField, value: string) {
@@ -142,6 +142,14 @@ export class JobsTableComponent implements OnInit {
     }
 
     return value;
+  }
+
+  getFieldType(df: DisplayField): string {
+    return df.fieldType.toString();
+  }
+
+  getFieldOptions(df: DisplayField): string[] {
+    return df.fieldValues;
   }
 
   getQueryParams(): Params {

@@ -166,6 +166,19 @@ definitions:
         type: "string"
       display:
         type: "string"
+      editable:
+        type: "boolean"
+        default: false
+      fieldType:
+        type: "string"
+        default: "text"
+        enum:
+        - "text"
+        - "list"
+      fieldValues:
+        type: "array"
+        items:
+          type: "string"
     description: "Description of a display field"
   CapabilitiesResponse:
     properties:

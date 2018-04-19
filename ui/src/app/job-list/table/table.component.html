@@ -67,28 +67,47 @@
     <ng-container matColumnDef="{{ df.field }}">
       <mat-header-cell *matHeaderCellDef>{{ df.display }}</mat-header-cell>
       <mat-cell class="additional-column" *matCellDef="let j">
-        <div class="display-field" *ngIf=canEdit(df) class="edit-field">
-          <span class="field-value">{{ getFieldValue(j, df) }}</span>
-          <button class="jobs-dropdown-arrow" mat-icon-button [matMenuTriggerFor]="menu" [class.visible]="showDropdownArrow(j)">
-            <img src="{{ getDropdownArrowUrl() }}">
-          </button>
-        </div>
-        <mat-menu #menu="matMenu" class="wide-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
-          <mat-form-field>
-            <input matInput
-                   #labelField
-                   value="{{ getFieldValue(j, df) }}"
-                   (click)="$event.stopPropagation()">
-          </mat-form-field>
-          <div>
-            <button (click)="setFieldValue(j, df, labelField.value)">Apply</button>
+        <div class="display-field" *ngIf=canEdit(df)>
+          <div [ngSwitch]="getFieldType(df)">
+            <div *ngSwitchCase="'text'">
+              <div class="edit-field">
+                <span class="field-value">{{ getFieldValue(j, df) }}</span>
+                <button class="jobs-dropdown-arrow" mat-icon-button [matMenuTriggerFor]="menu" [class.visible]="showDropdownArrow(j)">
+                  <img src="{{ getDropdownArrowUrl() }}">
+                </button>
+              </div>
+              <mat-menu #menu="matMenu" class="wide-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+                <mat-form-field>
+                  <input matInput
+                         #labelField
+                         value="{{ getFieldValue(j, df) }}"
+                         (click)="$event.stopPropagation()">
+                </mat-form-field>
+                <div>
+                  <button (click)="setFieldValue(j, df, labelField.value)">Apply</button>
+                </div>
+              </mat-menu>
+            </div>
+            <mat-form-field *ngSwitchCase="'list'">
+              <mat-select #labelSelect
+                          [value]="getFieldValue(j, df) ? getFieldValue(j, df) : null"
+                          (change)="setFieldValue(j, df, labelSelect.value)">
+                <mat-option value="">(empty)</mat-option>
+                <mat-option *ngFor="let fieldOption of getFieldOptions(df)"
+                            [value]="fieldOption"
+                            [attr.selected]="(getFieldValue(j, df) == fieldOption) ? 'selected' : null"
+                            (click)="$event.stopPropagation()">
+                            {{ fieldOption }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
-        </mat-menu>
-        <div *ngIf="!canEdit(df) && !isStatusField(df)">{{ getFieldValue(j, df) }}</div>
+        </div>
         <button mat-icon-button disabled *ngIf=isStatusField(df)>
           <img matTooltip="{{ getFieldValue(j, df) }}" matTooltipPosition="before"
-             src="{{ getStatusUrl(getFieldValue(j, df)) }}">
+               src="{{ getStatusUrl(getFieldValue(j, df)) }}">
         </button>
+        <div *ngIf="!canEdit(df) && !isStatusField(df)">{{ getFieldValue(j, df) }}</div>
       </mat-cell>
     </ng-container>
   </ng-container>
