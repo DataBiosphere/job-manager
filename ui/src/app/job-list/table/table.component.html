@@ -83,9 +83,7 @@
                          value="{{ getFieldValue(j, df) }}"
                          (click)="$event.stopPropagation()">
                 </mat-form-field>
-                <div>
-                  <button (click)="setFieldValue(j, df, labelField.value)">Apply</button>
-                </div>
+                <button class="apply-link" (click)="setFieldValue(j, df, labelField.value)">Apply</button>
               </mat-menu>
             </div>
             <mat-form-field *ngSwitchCase="'list'">

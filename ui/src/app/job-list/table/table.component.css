@@ -107,11 +107,37 @@
   width: 100%;
 }
 
-/deep/ div.mat-input-underline.mat-form-field-underline {
+button.apply-link {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 12px;
+  border: none;
+  display: block;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button.apply-link:hover {
+  text-decoration: underline;
+}
+
+/deep/ mat-form-field.mat-form-field-type-mat-select div.mat-input-underline {
   display: none;
 }
 
+/deep/ mat-form-field.mat-form-field-type-mat-select .mat-select-arrow {
+  color: #fff;
+}
 
-/deep/ .mat-row:hover div.mat-input-underline.mat-form-field-underline {
+/deep/ .mat-row:hover div.mat-input-underline {
   display: block;
+}
+
+/deep/ .mat-row:hover mat-form-field.mat-form-field-type-mat-select .mat-select-arrow {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+/deep/ div.mat-menu-content mat-form-field input {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
 }

@@ -58,7 +58,8 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
   ],
   "commonLabels": [
     "cromwell-workflow-id",
-    "workflow-name"
+    "workflow-name",
+    "flag"
   ],
   "queryExtensions": []
 }
