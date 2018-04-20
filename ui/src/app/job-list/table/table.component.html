@@ -92,7 +92,7 @@
               <mat-select #labelSelect
                           [value]="getFieldValue(j, df) ? getFieldValue(j, df) : null"
                           (change)="setFieldValue(j, df, labelSelect.value)">
-                <mat-option value="">(empty)</mat-option>
+                <mat-option value="">(none)</mat-option>
                 <mat-option *ngFor="let fieldOption of getFieldOptions(df)"
                             [value]="fieldOption"
                             [attr.selected]="(getFieldValue(j, df) == fieldOption) ? 'selected' : null"

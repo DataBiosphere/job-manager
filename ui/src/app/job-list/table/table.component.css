@@ -106,3 +106,12 @@
 .edit-field .field-value {
   width: 100%;
 }
+
+/deep/ div.mat-input-underline.mat-form-field-underline {
+  display: none;
+}
+
+
+/deep/ .mat-row:hover div.mat-input-underline.mat-form-field-underline {
+  display: block;
+}

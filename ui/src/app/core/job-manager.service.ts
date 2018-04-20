@@ -105,7 +105,7 @@ export class JobManagerService {
       .catch((e) => this.handleError(e));
   }
 
-  updateJobLabels(id: string, req: UpdateJobLabelsRequest): Promise<void> {
+  updateJobLabels(id: string, req: UpdateJobLabelsRequest): Promise<UpdateJobLabelsResponse> {
     return this.http.post(`${environment.apiUrl}/jobs/${id}/updateLabels`,
       req,
       new RequestOptions({headers: this.getHttpHeaders()}))
