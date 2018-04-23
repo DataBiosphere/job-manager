@@ -16,6 +16,7 @@
            [(ngModel)]="currentChipValue"
            value="{{currentChipValue}}"
            (keyup.enter)="setChipValue(currentChipValue)"
+           (blur)="setChipValue(currentChipValue)"
            (click)="$event.stopPropagation()"/>
   </mat-form-field>
   <!-- Statuses -->
