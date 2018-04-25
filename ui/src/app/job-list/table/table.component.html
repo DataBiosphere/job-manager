@@ -88,6 +88,10 @@
 
 <div class="group-options" *ngIf="showSelectionBar()">
   {{ selection.selected.length }} jobs selected
-  <button mat-raised-button color="accent" class="group-button group-abort"
-          (click)="onAbortJobs()">Abort Jobs</button>
+  <button mat-raised-button color="accent"
+          class="group-button group-abort"
+          (click)="onAbortJobs()"
+          [disabled]="!canAbortAny()">
+    Abort Jobs
+  </button>
 </div>

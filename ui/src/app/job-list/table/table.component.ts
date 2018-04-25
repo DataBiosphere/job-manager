@@ -90,13 +90,17 @@ export class JobsTableComponent implements OnInit {
     return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
   }
 
-  showSelectionBar(): boolean {
+  canAbortAnySelected(): boolean {
     for (let j of this.selection.selected) {
       if (this.canAbort(j)) {
         return true;
       }
     }
     return false;
+  }
+
+  showSelectionBar(): boolean {
+    return this.selection.selected.length > 0;
   }
 
   getDropdownArrowUrl(): string {
