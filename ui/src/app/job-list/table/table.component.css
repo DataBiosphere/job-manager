@@ -75,7 +75,10 @@
 
 /* Pause, Delete, and Group buttons */
 .group-options {
-  float: left;
+  position: fixed;
+  bottom: 0;
+  background-color: white;
+  width: 100%;
   font-family: 'Roboto', sans-serif;
   font-weight: bold;
   font-size: .65rem;

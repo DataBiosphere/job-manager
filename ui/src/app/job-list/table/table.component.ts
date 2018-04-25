@@ -90,7 +90,7 @@ export class JobsTableComponent implements OnInit {
     return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
   }
 
-  canAbortAnySelected(): boolean {
+  showSelectionBar(): boolean {
     for (let j of this.selection.selected) {
       if (this.canAbort(j)) {
         return true;
