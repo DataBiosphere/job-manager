@@ -256,6 +256,10 @@ def cromwell_query_params(query, page, page_size):
     if query.statuses:
         statuses = [{'status': s} for s in set(query.statuses)]
         query_params.extend(statuses)
+    if query.labels:
+        labels = [{'label': k + ':' + v} for k, v in query.labels.items()]
+        query_params.extend(labels)
+
     query_params.append({'pageSize': str(page_size)})
     query_params.append({'page': str(page)})
     query_params.append({'additionalQueryResultFields': 'parentWorkflowId'})
