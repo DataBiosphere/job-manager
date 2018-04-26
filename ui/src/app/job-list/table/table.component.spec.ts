@@ -137,8 +137,13 @@ describe('JobsTableComponent', () => {
     testComponent.jobs.next(jobs);
   });
 
-  function isGroupAbortRendered(): boolean {
+  function isGroupSelectionRendered(): boolean {
     return fixture.debugElement.queryAll(By.css('.group-abort')).length > 0;
+  }
+
+  function isGroupAbortIsEnabled(): boolean {
+    const abortButton = fixture.debugElement.queryAll(By.css('.group-abort'))[0];
+    return abortButton.componentInstance.disabled == false;
   }
 
   it('should display a row for each job', async(() => {
@@ -183,12 +188,12 @@ describe('JobsTableComponent', () => {
       .toEqual(jobs[0].labels['status-detail']);
   }));
 
-  it('hides the abort button on 0 selection', async(() => {
+  it('hides the group selection on 0 selection', async(() => {
     fixture.detectChanges();
-    expect(isGroupAbortRendered()).toBeFalsy();
+    expect(isGroupSelectionRendered()).toBeFalsy();
   }))
 
-  it('hides the abort button for non-abortable selection', async(() => {
+  it('disables the abort button for non-abortable selection', async(() => {
     fixture.detectChanges();
     for (let j of jobs) {
       j.status = JobStatus.Succeeded;
@@ -196,19 +201,21 @@ describe('JobsTableComponent', () => {
     testComponent.jobs.next(jobs);
     testComponent.jobsTableComponent.toggleSelectAll();
     fixture.detectChanges();
-    expect(isGroupAbortRendered()).toBeFalsy();
+    expect(isGroupSelectionRendered()).toBeTruthy();
+    expect(isGroupAbortIsEnabled()).toBeFalsy();
   }))
 
-  it('shows the abort button when some selected are abortable', async(() => {
+  it('enables the abort button when some selected are abortable', async(() => {
     fixture.detectChanges();
     jobs[2].status = JobStatus.Running;
     testComponent.jobs.next(jobs);
     testComponent.jobsTableComponent.toggleSelectAll();
     fixture.detectChanges();
-    expect(isGroupAbortRendered()).toBeTruthy();
+    expect(isGroupSelectionRendered()).toBeTruthy();
+    expect(isGroupAbortIsEnabled()).toBeTruthy();
   }))
 
-  it('shows the abort button when all selected are abortable', async(() => {
+  it('enables the abort button when all selected are abortable', async(() => {
     fixture.detectChanges();
     for (let j of jobs) {
       j.status = JobStatus.Running;
@@ -216,7 +223,8 @@ describe('JobsTableComponent', () => {
     testComponent.jobs.next(jobs);
     testComponent.jobsTableComponent.toggleSelectAll();
     fixture.detectChanges();
-    expect(isGroupAbortRendered()).toBeTruthy();
+    expect(isGroupSelectionRendered()).toBeTruthy();
+    expect(isGroupAbortIsEnabled()).toBeTruthy();
   }))
 
   it('displays error message bar', async(() => {
