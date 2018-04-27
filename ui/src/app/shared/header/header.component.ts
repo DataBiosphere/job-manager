@@ -197,7 +197,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
         ['jobs'],
         {queryParams: { q: query}}
       );
-    } else if (this.route.snapshot.queryParams['q']) {
+    } else {
       this.router.navigate(
         ['jobs']
       );
