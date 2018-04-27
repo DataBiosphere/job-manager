@@ -99,6 +99,10 @@ export class JobsTableComponent implements OnInit {
     return false;
   }
 
+  showSelectionBar(): boolean {
+    return this.selection.selected.length > 0;
+  }
+
   getDropdownArrowUrl(): string {
     return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
   }
