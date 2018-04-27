@@ -174,8 +174,13 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   }
 
   removeChip(chipKey: string): void {
-    this.chips.delete(chipKey);
-    this.search();
+    if (this.chips.get(chipKey).valueOf()) {
+      this.chips.delete(chipKey);
+      this.search();
+    }
+    else {
+      this.chips.delete(chipKey);
+    }
   }
 
   updateValue(chipKey: string, chipValue: string): void {

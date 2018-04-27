@@ -67,9 +67,6 @@ export class FilterChipComponent implements OnInit {
       this.currentChipValue = value;
       this.updateValue.emit(this.currentChipValue);
     }
-    else {
-      this.removeThisChip();
-    }
   }
 
   expandMenu() {
