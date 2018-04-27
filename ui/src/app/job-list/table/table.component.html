@@ -1,4 +1,4 @@
-<mat-table #table [dataSource]="dataSource">
+<mat-table #table [dataSource]="dataSource" [ngStyle]="{'padding-bottom': showSelectionBar() ? '4.8rem' : '0'}">
 
   <!-- Checkbox column -->
   <ng-container matColumnDef="Checkbox">
@@ -120,8 +120,12 @@
 
 </mat-table>
 
-<div class="group-options" *ngIf="canAbortAnySelected()">
+<div class="group-options" *ngIf="showSelectionBar()">
   {{ selection.selected.length }} jobs selected
-  <button mat-raised-button color="accent" class="group-button group-abort"
-          (click)="onAbortJobs()">Abort Jobs</button>
+  <button mat-raised-button color="accent"
+          class="group-button group-abort"
+          (click)="onAbortJobs()"
+          [disabled]="!canAbortAnySelected()">
+    Abort Jobs
+  </button>
 </div>
