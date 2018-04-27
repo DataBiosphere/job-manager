@@ -192,10 +192,16 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
       }
     });
     let query: string = URLSearchParamsUtils.encodeURLSearchParamsFromMap(paramMap);
-    this.router.navigate(
-      ['jobs'],
-      {queryParams: { q: query}}
-    );
+    if (query) {
+      this.router.navigate(
+        ['jobs'],
+        {queryParams: { q: query}}
+      );
+    } else if (this.route.snapshot.queryParams['q']) {
+      this.router.navigate(
+        ['jobs']
+      );
+    }
   }
 
   shouldDisplayStatusButtons(): boolean {
