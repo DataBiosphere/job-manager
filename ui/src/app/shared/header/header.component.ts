@@ -163,14 +163,8 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   }
 
   navigateWithStatus(statuses: JobStatus[]): void {
-    let query: QueryJobsRequest =
-      URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
-    query.statuses = statuses;
     this.chips.set('statuses', statuses.map((status) => JobStatus[status]).join(','));
-    this.router.navigate(
-      ['jobs'],
-      {queryParams: { q: URLSearchParamsUtils.encodeURLSearchParams(query)}}
-    );
+    this.search();
   }
 
   removeChip(chipKey: string): void {
