@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import {async, ComponentFixture, fakeAsync, TestBed, tick} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 import {Component, DebugElement, Input, ViewChild} from "@angular/core";
 import {
@@ -183,6 +183,19 @@ describe('HeaderComponent', () => {
       .toContain('of 2');
   }));
 
+  it('should maintain chip ordering', fakeAsync(() => {
+    testComponent.chips.delete('statuses');
+    testComponent.search();
+    fixture.detectChanges();
+    tick();
+    const de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('jm-filter-chip')).length).toEqual(2);
+    de.query(By.css('.completed-button')).nativeElement.click();
+    tick();
+    fixture.detectChanges();
+    const lastFilter = de.queryAll(By.css('jm-filter-chip'))[2].componentInstance;
+    expect(lastFilter.chipKey).toEqual('statuses');
+  }));
 
   @Component({
     selector: 'jm-test-table-component',
