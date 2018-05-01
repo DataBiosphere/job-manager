@@ -68,10 +68,12 @@
       <mat-header-cell *matHeaderCellDef>{{ df.display }}</mat-header-cell>
       <mat-cell class="additional-column" *matCellDef="let j">
         <div class="display-field" *ngIf=!isStatusField(df)>{{ getFieldValue(j, df) }}</div>
-        <button mat-icon-button disabled *ngIf=isStatusField(df)>
-          <img matTooltip="{{ getFieldValue(j, df) }}" matTooltipPosition="before"
-             src="{{ getStatusUrl(getFieldValue(j, df)) }}">
-        </button>
+        <clr-tooltip *ngIf=isStatusField(df)>
+          <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(getFieldValue(j, df))" size="24"></clr-icon>
+          <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+            <span>{{ getFieldValue(j, df) }}</span>
+          </clr-tooltip-content>
+        </clr-tooltip>
       </mat-cell>
     </ng-container>
   </ng-container>

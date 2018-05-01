@@ -11,7 +11,7 @@ import {Observable} from 'rxjs/Observable';
 
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
-import {JobStatusImage} from '../../shared/common';
+import {JobStatusIcon} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {environment} from "../../../environments/environment";
@@ -47,8 +47,8 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     this.database.dataChange.next(this.tasks);
   }
 
-  getStatusUrl(status: JobStatus): string {
-    return JobStatusImage[status];
+  getStatusIcon(status: JobStatus): string {
+    return JobStatusIcon[status];
   }
 
   getResourceUrl(url: string): string {

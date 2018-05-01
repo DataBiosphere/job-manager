@@ -29,10 +29,12 @@
       <ng-container matColumnDef="status">
         <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
         <mat-cell *matCellDef="let t">
-          <button mat-icon-button disabled>
-            <img class='task-status-tooltip' matTooltip="{{ t.executionStatus }}" matTooltipPosition="before"
-                 src="{{ getStatusUrl(t.executionStatus) }}">
-          </button>
+          <clr-tooltip>
+            <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(t.executionStatus)" size="24"></clr-icon>
+            <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+              <span>{{ t.executionStatus }}</span>
+            </clr-tooltip-content>
+          </clr-tooltip>
         </mat-cell>
       </ng-container>
 
