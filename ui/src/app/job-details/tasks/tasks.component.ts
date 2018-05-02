@@ -14,7 +14,6 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusIcon} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
-import {environment} from "../../../environments/environment";
 import {MatTabChangeEvent} from '@angular/material';
 
 @Component({
@@ -34,8 +33,7 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     'startTime',
     'duration',
     'attempts',
-    'stdout',
-    'stderr'
+    'logs',
   ];
 
   ngOnInit() {
@@ -55,15 +53,28 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     return ResourceUtils.getResourceURL(url);
   }
 
-  getResourceFileName(url: string): string {
-    return ResourceUtils.getResourceFileName(url);
+  getTaskDirectory(job: JobMetadataResponse, task: TaskMetadata): string {
+    const bucketName = "broad-verily-cromwell-execution";
+    console.log(task);
+    return ResourceUtils.browserPrefix + bucketName + "/" + job.name + "/" + job.id;
+    // if (task.stdout) {
+    //   const file = ResourceUtils.getResourceBrowserURL(task.stdout);
+    //   return file.substring(0, file.lastIndexOf("?"));
+    // } else if (task.stderr) {
+    //   const file = ResourceUtils.getResourceBrowserURL(task.stderr);
+    //   return file.substring(0, file.lastIndexOf("?"));
+    // } else {
+    //   console.log(task);
+    //   const file = ResourceUtils.getResourceBrowserURL(task.jobId);
+    //   return ResourceUtils.getResourceBrowserURL(file);
+    // }
   }
 
   hasTimingUrl(): boolean {
     return this.job.extensions && !!this.job.extensions.timingUrl;
   }
 
-   tabChanged(event: MatTabChangeEvent) {
+  tabChanged(event: MatTabChangeEvent) {
     event.tab.isActive = false;
   }
 }

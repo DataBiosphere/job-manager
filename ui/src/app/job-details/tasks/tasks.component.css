@@ -55,9 +55,21 @@
 
 clr-tooltip-content {
   background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   font-size: 0.65rem;
   color: #fff;
   display: block;
   margin: -0.6rem 0.5rem 0 0;
+}
+
+clr-icon {
+  margin-right: 1rem;
+}
+
+::ng-deep clr-icon.has-alert.log-error svg.can-alert path.clr-i-alert.clr-i-outline--alerted {
+  fill: #e62700;
+}
+
+::ng-deep clr-icon.has-alert.log-error.disabled svg.can-alert path.clr-i-alert.clr-i-outline--alerted {
+  fill: currentColor;
 }
