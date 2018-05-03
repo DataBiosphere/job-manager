@@ -66,10 +66,11 @@ clr-icon {
   margin-right: 1rem;
 }
 
-::ng-deep clr-icon.has-alert.log-error svg.can-alert path.clr-i-alert.clr-i-outline--alerted {
+/* override default color of alert triangle for clarity icon */
+::ng-deep clr-icon.log-error .clr-i-alert.clr-i-outline--alerted {
   fill: #e62700;
 }
 
-::ng-deep clr-icon.has-alert.log-error.disabled svg.can-alert path.clr-i-alert.clr-i-outline--alerted {
+::ng-deep clr-icon.log-error.disabled .clr-i-alert.clr-i-outline--alerted {
   fill: currentColor;
 }
