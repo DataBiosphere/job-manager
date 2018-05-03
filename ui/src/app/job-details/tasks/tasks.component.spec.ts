@@ -9,6 +9,8 @@ import {
   MatTabsModule,
   MatTooltipModule,
 } from '@angular/material';
+import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
+
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {TaskDetailsComponent} from './tasks.component';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
@@ -52,6 +54,8 @@ describe('TaskDetailsComponent', () => {
       ],
       imports: [
         BrowserAnimationsModule,
+        ClrIconModule,
+        ClrTooltipModule,
         CommonModule,
         MatButtonModule,
         MatExpansionModule,
@@ -81,17 +85,17 @@ describe('TaskDetailsComponent', () => {
       .toContain(task.name);
     expect(de.query(By.css('.title-link')).nativeElement.href)
       .toContain('/jobs/' + task.jobId);
-    expect(de.query(By.css('.task-status-tooltip')).attributes['ng-reflect-message'])
-      .toContain('Failed');
+    expect(de.query(By.css('.mat-column-status clr-icon')).attributes['shape'])
+      .toContain('times');
     expect(de.queryAll(By.css('.mat-column-startTime'))[1].nativeElement.textContent)
       .toContain('1:00 PM');
     expect(de.queryAll(By.css('.mat-column-duration'))[1].nativeElement.textContent)
       .toEqual('0h 15m');
     expect(de.queryAll(By.css('.mat-column-attempts'))[1].nativeElement.textContent)
       .toEqual(task.attempts.toString());
-    expect(de.queryAll(By.css('.mat-column-stdout'))[1].nativeElement.textContent)
+    expect(de.queryAll(By.css('.mat-column-logs a.log-item'))[0].properties['href'])
       .toContain('stdout.txt');
-    expect(de.queryAll(By.css('.mat-column-stderr'))[1].nativeElement.textContent)
+    expect(de.queryAll(By.css('.mat-column-logs a.log-item'))[1].properties['href'])
       .toContain('stderr.txt');
   }));
 

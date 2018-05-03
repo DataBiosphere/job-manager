@@ -20,8 +20,8 @@ import {
 } from '@angular/material';
 import {DataSource} from '@angular/cdk/collections';
 import {RouterTestingModule} from '@angular/router/testing';
+import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
-import {JobListView} from "../../shared/job-stream";
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {JobManagerService} from '../../core/job-manager.service';
@@ -32,7 +32,7 @@ import {FakeJobManagerService} from '../../testing/fake-job-manager.service';
 import {FakeCapabilitiesService} from '../../testing/fake-capabilities.service';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {SharedModule} from '../../shared/shared.module';
-import {environment} from '../../../environments/environment';
+import {JobStatusIcon} from "../../shared/common";
 
 describe('JobsTableComponent', () => {
 
@@ -105,6 +105,8 @@ describe('JobsTableComponent', () => {
       ],
       imports: [
         BrowserAnimationsModule,
+        ClrIconModule,
+        ClrTooltipModule,
         CommonModule,
         MatButtonModule,
         MatCardModule,
@@ -178,8 +180,8 @@ describe('JobsTableComponent', () => {
     let dsubColumns = de.queryAll(By.css('.additional-column'));
     expect(dsubColumns.length).toEqual(4);
     // Unwrap image tag to verify the reflect message
-    expect(dsubColumns[0].children[0].children[0].children[0].attributes["ng-reflect-message"])
-      .toEqual(JobStatus[jobs[0].status]);
+    expect((dsubColumns[0].children[0].childNodes[2]['attributes']['shape']))
+      .toEqual(JobStatusIcon[jobs[0].status]);
     expect(dsubColumns[1].nativeElement.textContent.trim())
       .toEqual((new ShortDateTimePipe("en-US")).transform(jobs[0].submission));
     expect(dsubColumns[2].nativeElement.textContent.trim())

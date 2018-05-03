@@ -14,6 +14,7 @@ import {
   MatTooltipModule,
 } from '@angular/material';
 import {RouterTestingModule} from '@angular/router/testing';
+import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {JobDetailsComponent} from "./job-details.component"
 import {JobPanelsComponent} from './panels/panels.component';
@@ -25,7 +26,6 @@ import {JobDetailsResolver} from './job-details-resolver.service';
 import {FakeJobManagerService} from '../testing/fake-job-manager.service';
 import {SharedModule} from '../shared/shared.module';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable} from "rxjs/Observable";
 import {URLSearchParamsUtils} from '../shared/utils/url-search-params.utils';
 import {JobStatus} from "../shared/model/JobStatus";
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
@@ -62,6 +62,8 @@ describe('JobDetailsComponent', () => {
         TaskDetailsComponent,
       ],
       imports: [
+        ClrIconModule,
+        ClrTooltipModule,
         CommonModule,
         MatButtonModule,
         MatCardModule,
