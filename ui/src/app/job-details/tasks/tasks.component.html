@@ -72,17 +72,6 @@
             </a>
           </clr-tooltip>
           <clr-icon *ngIf="!getResourceUrl(t.stderr)" shape="file" size="24" class="has-alert log-error disabled" style="color: #ccc;"></clr-icon>
-          <clr-tooltip *ngIf="getTaskDirectory(job, t)">
-            <a class="log-item" href="{{ getTaskDirectory(job, t) }}">
-              <clr-icon clrTooltipTrigger shape="folder" size="24" style="color: #000;"></clr-icon>
-              <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
-                <span>task directory</span>
-              </clr-tooltip-content>
-            </a>
-          </clr-tooltip>
-          <span *ngIf="!getTaskDirectory(job, t)">
-            <clr-icon shape="folder" size="24" style="color: #ccc;"></clr-icon>
-          </span>
         </mat-cell>
       </ng-container>
 
