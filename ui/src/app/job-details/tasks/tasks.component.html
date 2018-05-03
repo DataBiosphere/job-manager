@@ -63,6 +63,9 @@
           <a class="log-item" href="{{ getResourceUrl(t.stderr) }}">
             {{ getResourceFileName(t.stderr) }}
           </a>
+          <a class="log-item" href="{{ getTaskDirectory(job, t) }}">
+              <span>task directory</span>
+          </a>
         </mat-cell>
       </ng-container>
 
