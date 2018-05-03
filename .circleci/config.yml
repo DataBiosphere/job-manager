@@ -17,7 +17,7 @@ jobs:
             /opt/circleci/.nvm/nvm.sh install 8.5.0
             cd ui
             npm install
-            npm install -g @angular/cli@6.0.0
+            npm install -g @angular/cli@1.7.4
       - save_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
           paths:
