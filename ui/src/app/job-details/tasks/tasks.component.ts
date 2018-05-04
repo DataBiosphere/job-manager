@@ -53,10 +53,6 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     return ResourceUtils.getResourceURL(url);
   }
 
-  getResourceFileName(url: string): string {
-    return ResourceUtils.getResourceFileName(url);
-  }
-
   getTaskDirectory(task: TaskMetadata): string {
     if (task.callRoot) {
       return ResourceUtils.getDirectoryBrowserURL(task.callRoot);
