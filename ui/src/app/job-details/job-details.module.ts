@@ -12,6 +12,7 @@ import {
   MatTabsModule,
   MatTooltipModule,
 } from '@angular/material';
+import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {JobDetailsComponent} from './job-details.component';
 import {JobPanelsComponent} from './panels/panels.component';
@@ -24,6 +25,8 @@ import {GcsService} from '../core/gcs.service';
 
 @NgModule({
   imports: [
+    ClrIconModule,
+    ClrTooltipModule,
     CommonModule,
     MatButtonModule,
     MatCardModule,

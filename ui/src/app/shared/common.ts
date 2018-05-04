@@ -1,13 +1,13 @@
 /** A collection of enums and static functions. */
 
-/** Enum mapping of statuses and the app-wide icons representing with them. */
-export enum JobStatusImage {
-  Submitted = <any> 'https://www.gstatic.com/images/icons/material/system/1x/remove_grey600_24dp.png',
-  Running = <any> 'https://www.gstatic.com/images/icons/material/system/1x/autorenew_grey600_24dp.png',
-  Aborting = <any> 'https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png',
-  Failed = <any> 'https://www.gstatic.com/images/icons/material/system/1x/close_grey600_24dp.png',
-  Succeeded = <any> 'https://www.gstatic.com/images/icons/material/system/1x/done_grey600_24dp.png',
-  Aborted = <any> 'https://www.gstatic.com/images/icons/material/system/1x/report_problem_grey600_24dp.png'
+/** Enum mapping of statuses and the clarity icon shapes representing with them. */
+export enum JobStatusIcon {
+  Submitted = 'minus',
+  Running = 'sync',
+  Aborting = 'exclamation-triangle',
+  Failed = 'times',
+  Succeeded = 'check',
+  Aborted = 'exclamation-triangle'
 }
 
 // TODO(bryancrampton): We may want to move this to be part of

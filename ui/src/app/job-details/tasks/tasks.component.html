@@ -29,10 +29,12 @@
       <ng-container matColumnDef="status">
         <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
         <mat-cell *matCellDef="let t">
-          <button mat-icon-button disabled>
-            <img class='task-status-tooltip' matTooltip="{{ t.executionStatus }}" matTooltipPosition="before"
-                 src="{{ getStatusUrl(t.executionStatus) }}">
-          </button>
+          <clr-tooltip>
+            <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(t.executionStatus)" size="24"></clr-icon>
+            <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+              <span>{{ t.executionStatus }}</span>
+            </clr-tooltip-content>
+          </clr-tooltip>
         </mat-cell>
       </ng-container>
 
@@ -49,20 +51,27 @@
         <mat-header-cell *matHeaderCellDef> Attempts </mat-header-cell>
         <mat-cell *matCellDef="let t" class="column">{{ t.attempts }}</mat-cell>
       </ng-container>
-      <ng-container matColumnDef="stdout">
-        <mat-header-cell *matHeaderCellDef> Stdout </mat-header-cell>
+      <ng-container matColumnDef="logs">
+        <mat-header-cell *matHeaderCellDef> Log files </mat-header-cell>
         <mat-cell *matCellDef="let t" class="column">
-          <a class="log-item" href="{{ getResourceUrl(t.stdout) }}">
-            {{ getResourceFileName(t.stdout) }}
-          </a>
-        </mat-cell>
-      </ng-container>
-      <ng-container matColumnDef="stderr">
-        <mat-header-cell *matHeaderCellDef> Stderr </mat-header-cell>
-        <mat-cell *matCellDef="let t" class="column">
-          <a class="log-item" href="{{ getResourceUrl(t.stderr) }}">
-            {{ getResourceFileName(t.stderr) }}
-          </a>
+          <clr-tooltip *ngIf="getResourceUrl(t.stdout)">
+            <a class="log-item" href="{{ getResourceUrl(t.stdout) }}">
+              <clr-icon clrTooltipTrigger shape="file" size="24"></clr-icon>
+              <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+                <span>stdout log</span>
+              </clr-tooltip-content>
+            </a>
+          </clr-tooltip>
+          <clr-icon *ngIf="!getResourceUrl(t.stdout)" shape="file" size="24" style="color: #ccc;"></clr-icon>
+          <clr-tooltip *ngIf="getResourceUrl(t.stderr)">
+            <a class="log-item" href="{{ getResourceUrl(t.stderr) }}">
+              <clr-icon clrTooltipTrigger shape="file" size="24" class="has-alert log-error" style="color: #000;"></clr-icon>
+              <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+                <span>stderr log</span>
+              </clr-tooltip-content>
+            </a>
+          </clr-tooltip>
+          <clr-icon *ngIf="!getResourceUrl(t.stderr)" shape="file" size="24" class="has-alert log-error disabled" style="color: #ccc;"></clr-icon>
         </mat-cell>
       </ng-container>
 

@@ -52,3 +52,25 @@
   cursor: pointer;
   text-decoration: none;
 }
+
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+  color: #fff;
+  display: block;
+  margin: -0.6rem 0.5rem 0 0;
+}
+
+clr-icon {
+  margin-right: 1rem;
+}
+
+/* override default color of alert triangle for clarity icon */
+::ng-deep clr-icon.log-error .clr-i-alert.clr-i-outline--alerted {
+  fill: #e62700;
+}
+
+::ng-deep clr-icon.log-error.disabled .clr-i-alert.clr-i-outline--alerted {
+  fill: currentColor;
+}
