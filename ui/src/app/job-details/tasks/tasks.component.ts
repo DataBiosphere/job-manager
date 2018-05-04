@@ -33,7 +33,7 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     'startTime',
     'duration',
     'attempts',
-    'logs',
+    'files',
   ];
 
   ngOnInit() {
