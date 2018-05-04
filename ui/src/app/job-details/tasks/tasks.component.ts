@@ -57,21 +57,10 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     return ResourceUtils.getResourceFileName(url);
   }
 
-  getTaskDirectory(job: JobMetadataResponse, task: TaskMetadata): string {
-    const bucketName = "broad-verily-cromwell-execution";
-    console.log(job);
-    return ResourceUtils.browserPrefix + bucketName + "/" + job.name + "/" + job.id;
-    // if (task.stdout) {
-    //   const file = ResourceUtils.getResourceBrowserURL(task.stdout);
-    //   return file.substring(0, file.lastIndexOf("?"));
-    // } else if (task.stderr) {
-    //   const file = ResourceUtils.getResourceBrowserURL(task.stderr);
-    //   return file.substring(0, file.lastIndexOf("?"));
-    // } else {
-    //   console.log(task);
-    //   const file = ResourceUtils.getResourceBrowserURL(task.jobId);
-    //   return ResourceUtils.getResourceBrowserURL(file);
-    // }
+  getTaskDirectory(task: TaskMetadata): string {
+    if (task.callRoot) {
+      return ResourceUtils.getDirectoryBrowserURL(task.callRoot);
+    }
   }
 
   hasTimingUrl(): boolean {
