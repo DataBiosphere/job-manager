@@ -32,9 +32,7 @@ export class ResourceUtils {
       return undefined;
     }
     var browserUrl = ResourceUtils.browserPrefix + parts.slice(2,-1).join('/');
-    if (url.indexOf('*') == -1) {
-      browserUrl += '/' + ResourceUtils.getResourceFileName(url) + '/';
-    }
+    browserUrl += '/' + ResourceUtils.getResourceFileName(url) + '/';
     return browserUrl;
   }
 
