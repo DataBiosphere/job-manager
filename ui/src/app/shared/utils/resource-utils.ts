@@ -25,6 +25,17 @@ export class ResourceUtils {
     return browserUrl;
   }
 
+  /** Get link to a directory from its gcs url */
+  public static getDirectoryBrowserURL(url: string): string {
+    const parts = ResourceUtils.validateGcsURLGetParts(url);
+    if (!parts) {
+      return undefined;
+    }
+    var browserUrl = ResourceUtils.browserPrefix + parts.slice(2,-1).join('/');
+    browserUrl += '/' + ResourceUtils.getResourceFileName(url) + '/';
+    return browserUrl;
+  }
+
   /** Get link to a file/folder from its gcs url */
   public static getResourceURL(url: string): string {
     const parts = ResourceUtils.validateGcsURLGetParts(url);

@@ -69,6 +69,11 @@ export interface TaskMetadata {
     attempts?: number;
 
     /**
+     * The root directory of the task execution
+     */
+    callRoot?: string;
+
+    /**
      * Id of the job corresponding to this task, if this task is a nested child job. Expresses a child:parent relationship between this job and the job containing this task. 
      */
     jobId?: string;

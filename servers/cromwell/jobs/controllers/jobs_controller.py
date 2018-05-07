@@ -143,6 +143,7 @@ def format_task(task_name, task_metadata):
         inputs=update_key_names(task_metadata.get('inputs', {})),
         return_code=task_metadata.get('returnCode'),
         attempts=task_metadata.get('attempt'),
+        call_root=task_metadata.get('callRoot'),
         job_id=task_metadata.get('subWorkflowId'))
 
 

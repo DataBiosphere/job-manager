@@ -51,7 +51,7 @@
         <mat-header-cell *matHeaderCellDef> Attempts </mat-header-cell>
         <mat-cell *matCellDef="let t" class="column">{{ t.attempts }}</mat-cell>
       </ng-container>
-      <ng-container matColumnDef="logs">
+      <ng-container matColumnDef="files">
         <mat-header-cell *matHeaderCellDef> Log files </mat-header-cell>
         <mat-cell *matCellDef="let t" class="column">
           <clr-tooltip *ngIf="getResourceUrl(t.stdout)">
@@ -72,6 +72,15 @@
             </a>
           </clr-tooltip>
           <clr-icon *ngIf="!getResourceUrl(t.stderr)" shape="file" size="24" class="has-alert log-error disabled" style="color: #ccc;"></clr-icon>
+          <clr-tooltip *ngIf="getTaskDirectory(t)">
+            <a class="log-item" href="{{ getTaskDirectory(t) }}">
+              <clr-icon clrTooltipTrigger shape="folder" size="24"></clr-icon>
+              <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+                <span>execution directory</span>
+              </clr-tooltip-content>
+            </a>
+          </clr-tooltip>
+          <clr-icon *ngIf="!getTaskDirectory(t)" shape="folder" size="24" style="color: #ccc;"></clr-icon>
         </mat-cell>
       </ng-container>
 
