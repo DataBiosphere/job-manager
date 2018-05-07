@@ -18,6 +18,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
+import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {JobDetailsResolver} from '../job-details/job-details-resolver.service';
 import {JobListComponent} from './job-list.component';
@@ -26,6 +27,8 @@ import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   imports: [
+    ClrIconModule,
+    ClrTooltipModule,
     CommonModule,
     MatButtonModule,
     MatCardModule,

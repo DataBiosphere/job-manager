@@ -11,10 +11,9 @@ import {Observable} from 'rxjs/Observable';
 
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
-import {JobStatusImage} from '../../shared/common';
+import {JobStatusIcon} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
-import {environment} from "../../../environments/environment";
 import {MatTabChangeEvent} from '@angular/material';
 
 @Component({
@@ -34,8 +33,7 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     'startTime',
     'duration',
     'attempts',
-    'stdout',
-    'stderr'
+    'logs',
   ];
 
   ngOnInit() {
@@ -47,23 +45,19 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     this.database.dataChange.next(this.tasks);
   }
 
-  getStatusUrl(status: JobStatus): string {
-    return JobStatusImage[status];
+  getStatusIcon(status: JobStatus): string {
+    return JobStatusIcon[status];
   }
 
   getResourceUrl(url: string): string {
     return ResourceUtils.getResourceURL(url);
   }
 
-  getResourceFileName(url: string): string {
-    return ResourceUtils.getResourceFileName(url);
-  }
-
   hasTimingUrl(): boolean {
     return this.job.extensions && !!this.job.extensions.timingUrl;
   }
 
-   tabChanged(event: MatTabChangeEvent) {
+  tabChanged(event: MatTabChangeEvent) {
     event.tab.isActive = false;
   }
 }

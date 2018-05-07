@@ -124,23 +124,32 @@ button.apply-link:hover {
   text-decoration: underline;
 }
 
-/deep/ mat-form-field.mat-form-field-type-mat-select div.mat-input-underline {
+::ng-deep mat-form-field.mat-form-field-type-mat-select div.mat-input-underline {
   display: none;
 }
 
-/deep/ mat-form-field.mat-form-field-type-mat-select .mat-select-arrow {
+::ng-deep mat-form-field.mat-form-field-type-mat-select .mat-select-arrow {
   color: #fff;
 }
 
-/deep/ .mat-row:hover div.mat-input-underline {
+::ng-deep .mat-row:hover div.mat-input-underline {
   display: block;
 }
 
-/deep/ .mat-row:hover mat-form-field.mat-form-field-type-mat-select .mat-select-arrow {
+::ng-deep .mat-row:hover mat-form-field.mat-form-field-type-mat-select .mat-select-arrow {
   color: rgba(0, 0, 0, 0.54);
 }
 
-/deep/ div.mat-menu-content mat-form-field input {
+::ng-deep div.mat-menu-content mat-form-field input {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 14px;
+}
+
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0.25rem;
+  font-size: 0.65rem;
+  color: #fff;
+  display: block;
+  margin: -0.6rem 0.5rem 0 0;
 }

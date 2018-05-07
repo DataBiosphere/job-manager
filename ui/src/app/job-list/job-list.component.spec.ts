@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/t
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
-import {Component, DebugElement, ViewChild} from '@angular/core';
+import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
@@ -17,6 +17,7 @@ import {
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {RouterTestingModule} from '@angular/router/testing';
+import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {CapabilitiesService} from '../core/capabilities.service';
 import {JobListComponent} from "./job-list.component"
@@ -27,7 +28,6 @@ import {FakeJobManagerService} from '../testing/fake-job-manager.service';
 import {FakeCapabilitiesService} from '../testing/fake-capabilities.service';
 import {SharedModule} from '../shared/shared.module';
 import {Router} from "@angular/router";
-import {Observable} from "rxjs/Observable";
 import 'rxjs/add/observable/of';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
@@ -75,6 +75,8 @@ describe('JobListComponent', () => {
       ],
       imports: [
         BrowserAnimationsModule,
+        ClrIconModule,
+        ClrTooltipModule,
         CommonModule,
         MatButtonModule,
         MatCardModule,

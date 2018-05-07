@@ -101,11 +101,13 @@
             </mat-form-field>
           </div>
         </div>
-        <button mat-icon-button disabled *ngIf=isStatusField(df)>
-          <img matTooltip="{{ getFieldValue(j, df) }}" matTooltipPosition="before"
-               src="{{ getStatusUrl(getFieldValue(j, df)) }}">
-        </button>
-        <div *ngIf="!canEdit(df) && !isStatusField(df)">{{ getFieldValue(j, df) }}</div>
+        <div class="display-field" *ngIf="!isStatusField(df) && !canEdit(df)">{{ getFieldValue(j, df) }}</div>
+        <clr-tooltip *ngIf=isStatusField(df)>
+          <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(getFieldValue(j, df))" size="24"></clr-icon>
+          <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+            <span>{{ getFieldValue(j, df) }}</span>
+          </clr-tooltip-content>
+        </clr-tooltip>
       </mat-cell>
     </ng-container>
   </ng-container>

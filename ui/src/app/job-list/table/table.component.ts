@@ -23,7 +23,7 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
-import {JobStatusImage} from '../../shared/common';
+import {JobStatusIcon} from '../../shared/common';
 import {ActivatedRoute, Params} from '@angular/router';
 import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
 
@@ -160,8 +160,8 @@ export class JobsTableComponent implements OnInit {
     return this.route.snapshot.queryParams;
   }
 
-  getStatusUrl(status: JobStatus): string {
-    return JobStatusImage[status];
+  getStatusIcon(status: JobStatus): string {
+    return JobStatusIcon[status];
   }
 
   onAbortJobs(): void {
