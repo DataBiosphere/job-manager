@@ -6,7 +6,7 @@
   </button>
   <p class="job-id">ID: <b>{{ job.id }}</b></p>
   <span class="label" *ngFor="let l of labels">
-    {{ l + ': '}}<b>{{ job.labels[l] }}</b>
+    <span *ngIf="job.labels[l] != ''">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
   </span>
 </div>
 
