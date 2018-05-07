@@ -442,6 +442,9 @@ definitions:
       attempts:
         type: "integer"
         description: "Number of times the task was run"
+      callRoot:
+        type: "string"
+        description: "The root directory of the task execution"
       jobId:
         type: "string"
         description: "Id of the job corresponding to this task, if this task is a\

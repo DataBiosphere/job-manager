@@ -93,9 +93,9 @@ describe('TaskDetailsComponent', () => {
       .toEqual('0h 15m');
     expect(de.queryAll(By.css('.mat-column-attempts'))[1].nativeElement.textContent)
       .toEqual(task.attempts.toString());
-    expect(de.queryAll(By.css('.mat-column-logs a.log-item'))[0].properties['href'])
+    expect(de.queryAll(By.css('.mat-column-files a.log-item'))[0].properties['href'])
       .toContain('stdout.txt');
-    expect(de.queryAll(By.css('.mat-column-logs a.log-item'))[1].properties['href'])
+    expect(de.queryAll(By.css('.mat-column-files a.log-item'))[1].properties['href'])
       .toContain('stderr.txt');
   }));
 

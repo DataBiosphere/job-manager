@@ -33,7 +33,7 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     'startTime',
     'duration',
     'attempts',
-    'logs',
+    'files',
   ];
 
   ngOnInit() {
@@ -51,6 +51,12 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   getResourceUrl(url: string): string {
     return ResourceUtils.getResourceURL(url);
+  }
+
+  getTaskDirectory(task: TaskMetadata): string {
+    if (task.callRoot) {
+      return ResourceUtils.getDirectoryBrowserURL(task.callRoot);
+    }
   }
 
   hasTimingUrl(): boolean {
