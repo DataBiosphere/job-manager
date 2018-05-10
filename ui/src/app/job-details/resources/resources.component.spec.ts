@@ -62,10 +62,16 @@ describe('JobResourcesComponent', () => {
       }
     };
 
-  let gcsObjects: Map<string, string> = new Map([
+  let objectDataMap: Map<string, string> = new Map([
     ['controller-log', 'CONTROLLER LOG TEXT'],
     ['stdout', 'OUTPUT LOG TEXT'],
     ['stderr', 'ERROR LOG TEXT'],
+  ]);
+
+  let objectSizeMap: Map<string, number> = new Map([
+    ['controller-log', 1000],
+    ['stdout', 2000],
+    ['stderr', 100000000], // 100Mb  > 10Mb limit
   ]);
 
   beforeEach(async(() => {
@@ -84,9 +90,10 @@ describe('JobResourcesComponent', () => {
         MatTableModule,
         SharedModule
       ],
-      providers: [
-        {provide: GcsService, useValue: new FakeGcsService('test-bucket', gcsObjects)}
-      ]
+      providers: [{
+        provide: GcsService,
+        useValue: new FakeGcsService('test-bucket', objectSizeMap, objectDataMap)
+      }]
     }).compileComponents();
   }));
 
@@ -151,7 +158,8 @@ describe('JobResourcesComponent', () => {
     fixture.detectChanges();
     expect(testComponent.jobResourcesComponent.currentTabId).toBe("log-Error Log");
     resourceContent = fixture.debugElement.queryAll(By.css('.inline-text'))[0];
-    expect(resourceContent.nativeElement.innerText).toContain("ERROR LOG TEXT");
+    expect(resourceContent.nativeElement.innerText)
+      .toContain("Log file is > 10Mb. Please download it from GCS directly.");
 
     tabGroup.componentInstance.selectedIndex = 3;
     tick();
