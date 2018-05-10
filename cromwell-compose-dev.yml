@@ -1,10 +1,10 @@
 version: '2.1'
 services:
-  ui:
+  jmui:
     extends:
       file: common-compose.yml
-      service: ui
-    command: ["npm", "run-script", "ng", "--", "serve", "--host", "ui", "--env=cromwell_dev"]
+      service: jmui
+    command: ["npm", "run-script", "ng", "--", "serve", "--host", "jmui", "--env=cromwell_dev"]
   cromwell:
     build:
       context: .
@@ -19,5 +19,5 @@ services:
       file: common-compose.yml
       service: jobs-proxy
     links:
-      - ui
-      - cromwell:api
+      - jmui
+      - cromwell:jmapi
