@@ -71,7 +71,8 @@ try:
     for settings in capabilities_config['displayFields']:
         if settings['field'].startswith('labels.'):
             if len(settings['field']) == 7 or len(settings['field']) > 262:
-                raise ValueError('Custom capabilities config contained invalid label key')
+                raise ValueError(
+                    'Custom capabilities config contained invalid label key')
     logger.info('Successfully loaded the custom capabilities config.')
     app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
         capabilities_config)
