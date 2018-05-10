@@ -1,4 +1,5 @@
 /* Job Manager table */
+/* Job Manager table */
 
 .mat-table {
   display: table;
@@ -90,6 +91,58 @@
   font-size: .65rem;
   text-transform: uppercase;
   margin: .65rem;
+}
+
+/* Label Editing */
+.edit-field {
+  display: flex;
+  flex-direction: row;
+}
+
+.edit-field .mat-icon-button {
+  height: 18px;
+  flex-shrink: 0;
+  line-height: 0;
+  border-radius: 0;
+}
+
+.edit-field .field-value {
+  width: 100%;
+}
+
+button.apply-link {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 12px;
+  border: none;
+  display: block;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button.apply-link:hover {
+  text-decoration: underline;
+}
+
+::ng-deep mat-form-field.mat-form-field-type-mat-select div.mat-input-underline {
+  display: none;
+}
+
+::ng-deep mat-form-field.mat-form-field-type-mat-select .mat-select-arrow {
+  color: #fff;
+}
+
+::ng-deep .mat-row:hover div.mat-input-underline {
+  display: block;
+}
+
+::ng-deep .mat-row:hover mat-form-field.mat-form-field-type-mat-select .mat-select-arrow {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+::ng-deep div.mat-menu-content mat-form-field textarea {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 14px;
 }
 
 clr-tooltip-content {

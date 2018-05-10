@@ -67,7 +67,43 @@
     <ng-container matColumnDef="{{ df.field }}">
       <mat-header-cell *matHeaderCellDef>{{ df.display }}</mat-header-cell>
       <mat-cell class="additional-column" *matCellDef="let j">
-        <div class="display-field" *ngIf=!isStatusField(df)>{{ getFieldValue(j, df) }}</div>
+        <div class="display-field" *ngIf=canEdit(df)>
+          <div [ngSwitch]="getFieldType(df)">
+            <div *ngSwitchCase="'text'">
+              <div class="edit-field">
+                <span class="field-value">{{ getFieldValue(j, df) }}</span>
+                <button class="jobs-dropdown-arrow" mat-icon-button [matMenuTriggerFor]="menu" [class.visible]="showDropdownArrow(j)">
+                  <img src="{{ getDropdownArrowUrl() }}">
+                </button>
+              </div>
+              <mat-menu #menu="matMenu" class="wide-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+                <mat-form-field>
+                  <textarea matInput
+                         #labelField
+                         value="{{ getFieldValue(j, df) }}"
+                         maxlength="255"
+                         (click)="$event.stopPropagation()"></textarea>
+                  <mat-hint align="end">{{labelField.value?.length || 0}}/255</mat-hint>
+                </mat-form-field>
+                <button class="apply-link" (click)="setFieldValue(j, df, labelField.value)">Apply</button>
+              </mat-menu>
+            </div>
+            <mat-form-field *ngSwitchCase="'list'">
+              <mat-select #labelSelect
+                          [value]="getFieldValue(j, df) ? getFieldValue(j, df) : null"
+                          (change)="setFieldValue(j, df, labelSelect.value)">
+                <mat-option value="">(none)</mat-option>
+                <mat-option *ngFor="let fieldOption of getFieldOptions(df)"
+                            [value]="fieldOption"
+                            [attr.selected]="(getFieldValue(j, df) == fieldOption) ? 'selected' : null"
+                            (click)="$event.stopPropagation()">
+                            {{ fieldOption }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="display-field" *ngIf="!isStatusField(df) && !canEdit(df)">{{ getFieldValue(j, df) }}</div>
         <clr-tooltip *ngIf=isStatusField(df)>
           <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(getFieldValue(j, df))" size="24"></clr-icon>
           <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>

@@ -20,4 +20,16 @@ export interface DisplayField {
 
     display?: string;
 
+    editable?: boolean;
+
+    fieldType?: DisplayField.FieldTypeEnum;
+
+    fieldValues?: Array<string>;
+
+}
+export namespace DisplayField {
+    export enum FieldTypeEnum {
+        Text = <any> 'text',
+        List = <any> 'list'
+    }
 }
