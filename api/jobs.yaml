@@ -149,6 +149,19 @@ definitions:
         type: string
       display:
         type: string
+      editable:
+        type: boolean
+        default: false
+      fieldType:
+        type: string
+        default: text
+        enum:
+          - text
+          - list
+      fieldValues:
+        type: array
+        items:
+          type: string
   CapabilitiesResponse:
     description: Specification of the backend's capabilities
     properties:

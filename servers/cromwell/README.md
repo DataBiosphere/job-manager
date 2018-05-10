@@ -38,15 +38,33 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     {
       "field": "labels.cromwell-workflow-id",
       "display": "Workflow ID"
+    },
+    {
+      "field": "labels.flag",
+      "display": "Flag",
+      "editable": true,
+      "fieldType": "list",
+      "fieldValues": [
+        "archive",
+        "follow-up"
+      ]
+    },
+    {
+      "field": "labels.comment",
+      "display": "Comments",
+      "fieldType": "text",
+      "editable": true
     }
   ],
   "commonLabels": [
     "cromwell-workflow-id",
-    "workflow-name"
+    "workflow-name",
+    "flag"
   ],
   "queryExtensions": []
 }
 ```
+   The default "fieldType" is `text` and "editable" will treated as `false` unless explicity set to `true`.
 
 4. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-compose-caas.yaml` otherwise use `cromwell-compose-dev.yaml`, e.g:
     ```
