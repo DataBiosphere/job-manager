@@ -70,8 +70,6 @@ def update_job_labels(id, body, **kwargs):
     result = response.json()
     if not result.get('labels'):
         result.get('labels').update({})
-
-    # Redundantly update all_labels with updated labels to provide consistency guarantees
     return UpdateJobLabelsResponse(labels=result.get('labels'))
 
 
