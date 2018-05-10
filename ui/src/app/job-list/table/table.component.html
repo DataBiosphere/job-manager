@@ -78,10 +78,12 @@
               </div>
               <mat-menu #menu="matMenu" class="wide-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
                 <mat-form-field>
-                  <input matInput
+                  <textarea matInput
                          #labelField
                          value="{{ getFieldValue(j, df) }}"
-                         (click)="$event.stopPropagation()">
+                         maxlength="255"
+                         (click)="$event.stopPropagation()"></textarea>
+                  <mat-hint align="end">{{labelField.value?.length || 0}}/255</mat-hint>
                 </mat-form-field>
                 <button class="apply-link" (click)="setFieldValue(j, df, labelField.value)">Apply</button>
               </mat-menu>
