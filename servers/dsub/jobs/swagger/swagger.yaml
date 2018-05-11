@@ -166,6 +166,16 @@ definitions:
         type: "string"
       display:
         type: "string"
+      editable:
+        type: "boolean"
+        default: false
+      fieldType:
+        $ref: "#/definitions/FieldType"
+      validFieldValues:
+        type: "array"
+        description: "A list of values the field can be set to"
+        items:
+          type: "string"
     description: "Description of a display field"
   CapabilitiesResponse:
     properties:
@@ -463,6 +473,12 @@ definitions:
         format: "date-time"
         description: "The time at which this failure occurred"
     description: "Failure messages"
+  FieldType:
+    type: "string"
+    enum:
+    - "text"
+    - "list"
+    default: "text"
 responses:
   BadRequest:
     description: "Bad request"

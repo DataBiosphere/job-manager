@@ -12,21 +12,7 @@
 
 import * as models from './models';
 
-/**
- * Description of a display field
- */
-export interface DisplayField {
-    field?: string;
-
-    display?: string;
-
-    editable?: boolean;
-
-    fieldType?: models.FieldType;
-
-    /**
-     * A list of values the field can be set to
-     */
-    validFieldValues?: Array<string>;
-
+export enum FieldType {
+    Text = <any> 'text',
+    List = <any> 'list'
 }

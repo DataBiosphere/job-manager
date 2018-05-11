@@ -8,6 +8,7 @@ from .display_field import DisplayField
 from .extended_fields import ExtendedFields
 from .extended_query_fields import ExtendedQueryFields
 from .failure_message import FailureMessage
+from .field_type import FieldType
 from .job_metadata_response import JobMetadataResponse
 from .job_status import JobStatus
 from .query_jobs_request import QueryJobsRequest
