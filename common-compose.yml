@@ -1,6 +1,6 @@
 version: '2.1'
 services:
-  ui:
+  jmui:
     build:
       context: ui
       dockerfile: Dockerfile.dev
@@ -42,7 +42,7 @@ services:
     ports:
       - 8190:8190
   jobs-proxy:
-    # Child services must have links named "ui", "api".
+    # Child services must have links named "jmui", "jmapi".
     image: nginx
     volumes:
       - ./nginx.dev.conf:/etc/nginx/nginx.conf
