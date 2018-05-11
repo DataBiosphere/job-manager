@@ -1,13 +1,13 @@
 version: '2.1'
 services:
-  ui:
+  jmui:
     extends:
       file: common-compose.yml
-      service: ui
-    # Use --host "ui" to match the container name, as this is how nginx will
+      service: jmui
+    # Use --host "jmui" to match the container name, as this is how nginx will
     # access the UI on the network. This must match to avoid "Invalid Host"
     # errors. See also https://github.com/angular/angular-cli/issues/6349.
-    command: ["npm", "run-script", "ng", "--", "serve", "--host", "ui", "--env=dsub_local"]
+    command: ["npm", "run-script", "ng", "--", "serve", "--host", "jmui", "--env=dsub_local"]
   dsub:
     build:
       context: servers
@@ -31,5 +31,5 @@ services:
       file: common-compose.yml
       service: jobs-proxy
     links:
-      - ui
-      - dsub:api
+      - jmui
+      - dsub:jmapi
