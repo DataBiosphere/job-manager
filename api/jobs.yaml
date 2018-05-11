@@ -153,12 +153,9 @@ definitions:
         type: boolean
         default: false
       fieldType:
-        type: string
-        default: text
-        enum:
-          - text
-          - list
-      fieldValues:
+        $ref: '#/definitions/FieldType'
+      validFieldValues:
+        description: A list of values the field can be set to
         type: array
         items:
           type: string
@@ -466,6 +463,12 @@ definitions:
         type: string
         format: date-time
         description: The time at which this failure occurred
+  FieldType:
+    type: string
+    default: text
+    enum:
+      - text
+      - list
 responses:
   BadRequest:
     description: 'Bad request'

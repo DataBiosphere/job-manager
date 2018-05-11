@@ -4,6 +4,7 @@ export * from './DisplayField';
 export * from './ExtendedFields';
 export * from './ExtendedQueryFields';
 export * from './FailureMessage';
+export * from './FieldType';
 export * from './JobMetadataResponse';
 export * from './JobStatus';
 export * from './QueryJobsRequest';
