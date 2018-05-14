@@ -8,20 +8,14 @@ declare const gapi: any;
 export class GcsService {
 
   private static readonly apiPrefix = "https://www.googleapis.com/storage/v1";
-  private static readonly maximumObjectBytes = 10000000;
+  private static readonly maximumBytes = "1000000";
 
   constructor(private readonly authService: AuthService) {}
 
   readObject(bucket: string, object: string): Promise<string> {
-    return this.isAuthenticated().then( () => {
-      return this.getObjectSize(bucket, object).then( contentLength => {
-        if (contentLength < GcsService.maximumObjectBytes) {
-          return this.getObjectData(bucket, object);
-        } else {
-          return Promise.resolve("Log file is > 10Mb. Please download it from GCS directly.");
-        }
-      }).catch(response => this.handleError(response));
-    })
+    return this.isAuthenticated()
+      .then( () => this.getObjectData(bucket, object))
+      .catch(response => this.handleError(response));
   }
 
   isAuthenticated(): Promise<void> {
@@ -41,18 +35,17 @@ export class GcsService {
   getObjectData(bucket: string, object: string): Promise<string> {
     return gapi.client.request({
       path: `${GcsService.apiPrefix}/b/${bucket}/o/${object}`,
-      params: {alt: 'media'}
+      params: {alt: 'media'},
+      headers: {range: 'bytes=0-999999'} // Limit file size to 1Mb
     })
-    .then(response => response.body)
+    .then(response => {
+      if (response.headers["content-length"] == GcsService.maximumBytes) {
+        return response.body + "\n\nTruncated download at 1Mb...";
+      } else {
+        return response.body;
+      }
+    })
     .catch(response => this.handleError(response));
-  }
-
-  getObjectSize(bucket: string, object: string): Promise<number> {
-    return gapi.client.request({
-      path: `${GcsService.apiPrefix}/b/${bucket}/o/${object}`,
-    })
-    .then(response => response.result.size)
-    .catch(response => this.handleError(response))
   }
 
   private handleError(response: any): Promise<string> {

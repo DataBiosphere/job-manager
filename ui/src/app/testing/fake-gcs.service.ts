@@ -14,13 +14,12 @@ export class FakeGcsService extends GcsService {
 
   getObjectData(bucket: string, object: string): Promise<string> {
     if (bucket == this.bucket) {
-      return Promise.resolve(this.objectDataMap.get(object));
-    }
-  }
-
-  getObjectSize(bucket: string, object: string): Promise<number> {
-    if (bucket == this.bucket) {
-      return Promise.resolve(this.objectSizeMap.get(object));
+      const data = this.objectDataMap.get(object);
+      if (this.objectSizeMap.get(object) < 1000000) {
+        return Promise.resolve(data);
+      } else {
+        return Promise.resolve(data + "\n\nTruncated download at 1Mb...");
+      }
     }
   }
 }
