@@ -33,7 +33,6 @@
         "dsub_google": "environments/environment.dsub.google.ts",
         "dsub_local": "environments/environment.dsub.local.ts",
         "cromwell_dev": "environments/environment.cromwell.dev.ts",
-        "cromwell_staging": "environments/environment.cromwell.staging.ts",
         "cromwell_caas": "environments/environment.cromwell.caas.ts"
       }
     }
