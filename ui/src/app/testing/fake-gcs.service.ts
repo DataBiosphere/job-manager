@@ -18,7 +18,7 @@ export class FakeGcsService extends GcsService {
       if (this.objectSizeMap.get(object) < 1000000) {
         return Promise.resolve(data);
       } else {
-        return Promise.resolve(data + "\n\nTruncated download at 1Mb...");
+        return Promise.resolve(data + "\n\nTruncated download at 1MB...");
       }
     }
   }

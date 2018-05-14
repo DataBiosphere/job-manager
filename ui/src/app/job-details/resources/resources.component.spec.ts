@@ -71,7 +71,7 @@ describe('JobResourcesComponent', () => {
   let objectSizeMap: Map<string, number> = new Map([
     ['controller-log', 1000],
     ['stdout', 2000],
-    ['stderr', 1000000], // 100Mb  > 10Mb limit
+    ['stderr', 1000000], // 10MB should hit limit
   ]);
 
   beforeEach(async(() => {
@@ -159,7 +159,7 @@ describe('JobResourcesComponent', () => {
     expect(testComponent.jobResourcesComponent.currentTabId).toBe("log-Error Log");
     resourceContent = fixture.debugElement.queryAll(By.css('.inline-text'))[0];
     expect(resourceContent.nativeElement.innerText)
-      .toContain("Truncated download at 1Mb");
+      .toContain("Truncated download at 1MB");
 
     tabGroup.componentInstance.selectedIndex = 3;
     tick();
