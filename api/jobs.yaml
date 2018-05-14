@@ -149,6 +149,16 @@ definitions:
         type: string
       display:
         type: string
+      editable:
+        type: boolean
+        default: false
+      fieldType:
+        $ref: '#/definitions/FieldType'
+      validFieldValues:
+        description: A list of values the field can be set to
+        type: array
+        items:
+          type: string
   CapabilitiesResponse:
     description: Specification of the backend's capabilities
     properties:
@@ -453,6 +463,12 @@ definitions:
         type: string
         format: date-time
         description: The time at which this failure occurred
+  FieldType:
+    type: string
+    default: text
+    enum:
+      - text
+      - list
 responses:
   BadRequest:
     description: 'Bad request'
