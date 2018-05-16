@@ -200,4 +200,26 @@ export class JobsTableComponent implements OnInit {
       this.jobs.forEach(j => this.selection.select(j));
     }
   }
+
+  updateCheckBoxSelection(clickedJob: QueryJobsResult, event: MouseEvent): void {
+    // if the user has shift-clicked on a job, find the last selected job and
+    // select all jobs between the two
+    if (!event) {
+      return;
+    } else if (event.shiftKey && this.selection.selected.length) {
+      const lastJobClicked = this.selection.selected[this.selection.selected.length - 1];
+      var startSelecting = false;
+      for (let job of this.jobs) {
+        if (!startSelecting && job.id == lastJobClicked.id) {
+          startSelecting = true;
+        } else if (startSelecting && job.id == clickedJob.id) {
+          this.selection.toggle(clickedJob);
+          return;
+        } else if (startSelecting == true) {
+          this.selection.select(job);
+        }
+      }
+      this.selection.toggle(clickedJob);
+    }
+  }
 }
