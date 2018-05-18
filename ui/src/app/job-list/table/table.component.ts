@@ -205,9 +205,9 @@ export class JobsTableComponent implements OnInit {
     // if the user has shift-clicked on a job, find the last selected job and
     // select all jobs between the two
     if (event.shiftKey && this.selection.selected) {
-      const lastJobClicked = this.selection.selected[this.selection.selected.length - 1];
+      const lastJobSelected = this.selection.selected[this.selection.selected.length - 1];
       const [from, to] = [
-        this.jobs.findIndex(j => j.id === lastJobClicked.id),
+        this.jobs.findIndex(j => j.id === lastJobSelected.id),
         this.jobs.findIndex(j => j.id === clickedJob.id)
       ].sort();
       for (let i = from; i <= to; i++) {
