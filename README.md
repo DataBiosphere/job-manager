@@ -20,6 +20,7 @@ The Job Manager aspires to bring ease and efficiency to developing and debugging
 * Dynamic grouping, filtering, and drill-down
 * Re-launching workflows
 * Simplified troubleshooting of failed workflows
+* Improved UI design
 
 ## Roadmap
 
