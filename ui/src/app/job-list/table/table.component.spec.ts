@@ -279,6 +279,31 @@ describe('JobsTableComponent', () => {
     });
   }))
 
+  it('should select multiple jobs on shift-click', async( () => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+
+    const checkboxes = de.queryAll(By.css('.mat-checkbox-input'));
+
+    checkboxes[2].nativeElement.click();
+    fixture.detectChanges();
+    let shiftClick = new MouseEvent('click', {
+      'button' : 0,
+      'buttons' : 0,
+      'bubbles': true,
+      'cancelable' : false,
+      'shiftKey': true
+    });
+    testComponent.jobsTableComponent.updateCheckBoxSelection(jobs[3], shiftClick);
+    fixture.detectChanges();
+
+    expect(checkboxes[1].nativeElement.checked).toEqual(false);
+    expect(checkboxes[2].nativeElement.checked).toEqual(true);
+    expect(checkboxes[3].nativeElement.checked).toEqual(true);
+    expect(checkboxes[4].nativeElement.checked).toEqual(true);
+    expect(checkboxes[5].nativeElement.checked).toEqual(false);
+  }))
+
   @Component({
     selector: 'jm-test-table-component',
     template:
