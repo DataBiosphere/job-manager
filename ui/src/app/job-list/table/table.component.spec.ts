@@ -293,7 +293,7 @@ describe('JobsTableComponent', () => {
     });
   }))
 
-  it('should select multiple jobs on shift-click', async( () => {
+  it('should select multiple jobs on shift-click', async(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[1].nativeElement.click();
@@ -304,7 +304,7 @@ describe('JobsTableComponent', () => {
       .toEqual([false, true, true, true, false]);
   }))
 
-  it('should select multiple jobs on shift-click (reverse order)', async( () => {
+  it('should select multiple jobs on shift-click (reverse order)', async(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[4].nativeElement.click();
@@ -315,7 +315,7 @@ describe('JobsTableComponent', () => {
       .toEqual([false, false, true, true, true]);
   }))
 
-  it('should select multiple jobs on shift-click (with an already-checked job within the range)', async( () => {
+  it('should select multiple jobs on shift-click (with an already-checked job within the range)', async(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[1].nativeElement.click();
@@ -327,7 +327,7 @@ describe('JobsTableComponent', () => {
       .toEqual([true, true, true, true, false]);
   }))
 
-  it('should select multiple jobs on shift-click (if you check/uncheck a job within the range)', async( () => {
+  it('should select multiple jobs on shift-click (if you check/uncheck a job within the range)', async(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[0].nativeElement.click();
@@ -341,7 +341,7 @@ describe('JobsTableComponent', () => {
     expect(testComponent.jobsTableComponent.allSelected()).toEqual(true);
   }))
 
-  it('should select multiple jobs on shift-click (if one of the boundaries is already selected)', async( () => {
+  it('should select multiple jobs on shift-click (if one of the boundaries is already selected)', async(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[0].nativeElement.click();
