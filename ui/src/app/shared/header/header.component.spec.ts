@@ -37,9 +37,10 @@ describe('HeaderComponent', () => {
   const testJob2: QueryJobsResult = { ...baseJob, id: 'JOB2' };
   const testJob3: QueryJobsResult = { ...baseJob, id: 'JOB3' };
 
-  const initJobs = {
+  const initJobs: JobListView = {
     results: [testJob1, testJob2, testJob3],
-    exhaustive: false
+    exhaustive: false,
+    needsRefresh: false
   };
 
   let testComponent: HeaderComponent;
@@ -137,7 +138,8 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
-      exhaustive: true
+      exhaustive: true,
+      needsRefresh: false
     });
     testComponent.search();
     fixture.detectChanges();
@@ -152,7 +154,8 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
-      exhaustive: false
+      exhaustive: false,
+      needsRefresh: false
     });
     testComponent.search();
     fixture.detectChanges();
@@ -166,7 +169,8 @@ describe('HeaderComponent', () => {
   it('should only show length for exhaustive job streams', async(() => {
     testComponent.jobs.next({
       results: [testJob1],
-      exhaustive: false
+      exhaustive: false,
+      needsRefresh: false
     });
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
@@ -176,7 +180,8 @@ describe('HeaderComponent', () => {
     // Transition to exhaustive, "of X" should now display length.
     testComponent.jobs.next({
       results: [testJob1, testJob2],
-      exhaustive: true
+      exhaustive: true,
+      needsRefresh: false
     });
     fixture.detectChanges();
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
