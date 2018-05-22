@@ -5,7 +5,7 @@ import {DataSource} from '@angular/cdk/collections';
 import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {PageEvent, MatSnackBar} from '@angular/material'
 import {Observable} from 'rxjs/Observable';
-import {ActivatedRoute, NavigationError, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
@@ -32,7 +32,8 @@ export class JobListComponent implements OnInit {
   // whenever we change query parameters, via a subscription.
   jobs = new BehaviorSubject<JobListView>({
     results: [],
-    exhaustive: false
+    exhaustive: false,
+    needsRefresh: false
   });
   loading = false;
   private jobStream: JobStream;
@@ -48,7 +49,7 @@ export class JobListComponent implements OnInit {
     readonly capabilitiesService: CapabilitiesService,
   ) {
     this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
-    route.queryParams.subscribe(params => this.reloadJobs(params['q']));
+    route.queryParams.subscribe(params => this.reloadJobs(params['q'], true));
   }
 
   ngOnInit(): void {
@@ -65,15 +66,19 @@ export class JobListComponent implements OnInit {
       if (event instanceof NavigationError) {
         this.handleError(event.error);
       }
+      if (event instanceof NavigationEnd && this.jobStream.value.needsRefresh) {
+        this.reloadJobs(this.route.snapshot.queryParams['q'], false);
+      }
     });
   }
 
-  reloadJobs(query: string) {
+  reloadJobs(query: string, displayLoading: boolean): void {
     if (!this.streamSubscription) {
       // ngOnInit hasn't happened yet, this shouldn't occur.
       return;
     }
-    this.loading = true;
+
+    this.loading = displayLoading;
     const req = URLSearchParamsUtils.unpackURLSearchParams(query);
     if (!req.extensions.projectId &&
         this.capabilities.queryExtensions &&
@@ -119,7 +124,7 @@ export class JobListComponent implements OnInit {
   }
 
   handleJobsChanged() {
-    this.reloadJobs(this.route.snapshot.queryParams['q']);
+    this.reloadJobs(this.route.snapshot.queryParams['q'], true);
   }
 
   private onClientPaginate(e: PageEvent) {

@@ -159,7 +159,7 @@ describe('JobListComponent', () => {
     // Ideally we'd click a nav element here instead, but unfortunately the
     // navigate and job load would be evaluated within a single tick(), so we'd
     // never see the loading spinner.
-    testComponent.reloadJobs('');
+    testComponent.reloadJobs('', true);
     fixture.detectChanges();
     expect(de.queryAll(By.css('.spinner-container')).length).toEqual(1);
     tick();
@@ -263,7 +263,7 @@ describe('JobListComponent', () => {
 
   it('navigates on missing project when projects supported', fakeAsync(() => {
     capabilities.queryExtensions = ['projectId'];
-    testComponent.reloadJobs('');
+    testComponent.reloadJobs('', true);
 
     fixture.detectChanges();
     tick();
