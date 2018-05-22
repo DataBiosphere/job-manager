@@ -282,12 +282,11 @@ describe('JobsTableComponent', () => {
   it('should select multiple jobs on shift-click', async( () => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-
     const checkboxes = de.queryAll(By.css('.mat-checkbox-input'));
 
     checkboxes[2].nativeElement.click();
     fixture.detectChanges();
-    let shiftClick = new MouseEvent('click', {
+    const shiftClick = new MouseEvent('click', {
       'button' : 0,
       'buttons' : 0,
       'bubbles': true,
@@ -297,11 +296,84 @@ describe('JobsTableComponent', () => {
     testComponent.jobsTableComponent.updateCheckBoxSelection(jobs[3], shiftClick);
     fixture.detectChanges();
 
-    expect(checkboxes[1].nativeElement.checked).toEqual(false);
+    expect(testComponent.jobsTableComponent.allSelected()).toEqual(false);
     expect(checkboxes[2].nativeElement.checked).toEqual(true);
     expect(checkboxes[3].nativeElement.checked).toEqual(true);
     expect(checkboxes[4].nativeElement.checked).toEqual(true);
     expect(checkboxes[5].nativeElement.checked).toEqual(false);
+  }))
+
+  it('should select multiple jobs on shift-click (reverse order)', async( () => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    const checkboxes = de.queryAll(By.css('.mat-checkbox-input'));
+
+    checkboxes[5].nativeElement.click();
+    fixture.detectChanges();
+    const shiftClick = new MouseEvent('click', {
+      'button' : 0,
+      'buttons' : 0,
+      'bubbles': true,
+      'cancelable' : false,
+      'shiftKey': true
+    });
+    testComponent.jobsTableComponent.updateCheckBoxSelection(jobs[2], shiftClick);
+    fixture.detectChanges();
+
+    expect(checkboxes[1].nativeElement.checked).toEqual(false);
+    expect(checkboxes[2].nativeElement.checked).toEqual(false);
+    expect(checkboxes[3].nativeElement.checked).toEqual(true);
+    expect(checkboxes[4].nativeElement.checked).toEqual(true);
+    expect(checkboxes[5].nativeElement.checked).toEqual(true);
+  }))
+
+  it('should select multiple jobs on shift-click (with an internal already-checked job in the range)', async( () => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    const checkboxes = de.queryAll(By.css('.mat-checkbox-input'));
+
+    checkboxes[2].nativeElement.click();
+    checkboxes[1].nativeElement.click();
+    fixture.detectChanges();
+    const shiftClick = new MouseEvent('click', {
+      'button' : 0,
+      'buttons' : 0,
+      'bubbles': true,
+      'cancelable' : false,
+      'shiftKey': true
+    });
+    testComponent.jobsTableComponent.updateCheckBoxSelection(jobs[3], shiftClick);
+    fixture.detectChanges();
+
+    expect(checkboxes[1].nativeElement.checked).toEqual(true);
+    expect(checkboxes[2].nativeElement.checked).toEqual(true);
+    expect(checkboxes[3].nativeElement.checked).toEqual(true);
+    expect(checkboxes[4].nativeElement.checked).toEqual(true);
+    expect(checkboxes[5].nativeElement.checked).toEqual(false);
+  }))
+
+  it('should select multiple jobs on shift-click (if you check/uncheck a job)', async( () => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    const checkboxes = de.queryAll(By.css('.mat-checkbox-input'));
+
+    checkboxes[1].nativeElement.click();
+    fixture.detectChanges();
+    checkboxes[3].nativeElement.click();
+    fixture.detectChanges();
+    checkboxes[3].nativeElement.click();
+    fixture.detectChanges();
+    const shiftClick = new MouseEvent('click', {
+      'button' : 0,
+      'buttons' : 0,
+      'bubbles': true,
+      'cancelable' : false,
+      'shiftKey': true
+    });
+    testComponent.jobsTableComponent.updateCheckBoxSelection(jobs[4], shiftClick);
+    fixture.detectChanges();
+
+    expect(testComponent.jobsTableComponent.allSelected()).toEqual(true);
   }))
 
   @Component({
