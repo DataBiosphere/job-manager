@@ -49,7 +49,7 @@ export class JobListComponent implements OnInit {
     readonly capabilitiesService: CapabilitiesService,
   ) {
     this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
-    route.queryParams.subscribe(params => this.reloadJobs(params['q'], true));
+    route.queryParams.subscribe(params => this.reloadJobs(params['q']));
   }
 
   ngOnInit(): void {
@@ -72,7 +72,7 @@ export class JobListComponent implements OnInit {
     });
   }
 
-  reloadJobs(query: string, displayLoading: boolean): void {
+  reloadJobs(query: string, displayLoading = true): void {
     if (!this.streamSubscription) {
       // ngOnInit hasn't happened yet, this shouldn't occur.
       return;
@@ -124,7 +124,7 @@ export class JobListComponent implements OnInit {
   }
 
   handleJobsChanged() {
-    this.reloadJobs(this.route.snapshot.queryParams['q'], true);
+    this.reloadJobs(this.route.snapshot.queryParams['q']);
   }
 
   private onClientPaginate(e: PageEvent) {

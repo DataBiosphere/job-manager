@@ -12,11 +12,12 @@ export class RouteReuse implements RouteReuseStrategy {
 
   public static cached: { [key: string]: any } = {};
 
-  public static routeKey(route: ActivatedRouteSnapshot): string {
-    // We currently only cache the jobs-list route so we can store them based
-    // on just the query parameter. If we add job-detail caching we should
-    // make this key more specific.
-    return route.queryParams.q
+  public static isCached(route: ActivatedRouteSnapshot): boolean {
+    return !!RouteReuse.cached[RouteReuse.routeKey(route)];
+  }
+
+  public static getCached(route: ActivatedRouteSnapshot): any {
+    return RouteReuse.cached[RouteReuse.routeKey(route)];
   }
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
@@ -26,11 +27,10 @@ export class RouteReuse implements RouteReuseStrategy {
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
-    let storedRoute = {
+    RouteReuse.cached[RouteReuse.routeKey(route)] = {
         snapshot: route,
         handle: handle
     };
-    RouteReuse.cached[RouteReuse.routeKey(route)] = storedRoute;
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
@@ -40,13 +40,20 @@ export class RouteReuse implements RouteReuseStrategy {
   }
 
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
-    if (!route.routeConfig || !RouteReuse.cached[RouteReuse.routeKey(route)]) {
+    if (!route.routeConfig || !RouteReuse.isCached(route)) {
       return null;
     }
-    return RouteReuse.cached[RouteReuse.routeKey(route)].handle;
+    return RouteReuse.getCached(route).handle;
   }
 
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-    return false;
+    return future.routeConfig === curr.routeConfig;
+  }
+
+  private static routeKey(route: ActivatedRouteSnapshot): string {
+    // We currently only cache the jobs-list route so we can store them based
+    // on just the query parameter. If we add job-detail caching we should
+    // make this key more specific.
+    return route.queryParams.q;
   }
 }

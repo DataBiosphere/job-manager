@@ -22,19 +22,18 @@ export class JobListResolver implements Resolve<JobStream> {
 
   resolve(route: ActivatedRouteSnapshot,
           state: RouterStateSnapshot): Promise<JobStream> {
-    const routeKey = RouteReuse.routeKey(route);
     // If this route has been cached do not wait for the load to display the
     // component. Instead, just mark the JobStream as needing a refresh.
-    if (!!RouteReuse.cached[routeKey]) {
-      let jobStream = RouteReuse.cached[routeKey].snapshot.data.stream;
+    if (RouteReuse.isCached(route)) {
+      let jobStream = RouteReuse.getCached(route).snapshot.data.stream;
       jobStream.setNeedsRefresh();
       return Promise.resolve(jobStream);
-    } else {
-      let jobStream = new JobStream(this.jobManagerService,
-                                    URLSearchParamsUtils.unpackURLSearchParams(route.queryParams['q']));
-      return jobStream
-          .loadAtLeast(initialBackendPageSize)
-          .then(resp => jobStream);
     }
+
+    const jobStream = new JobStream(this.jobManagerService,
+                                    URLSearchParamsUtils.unpackURLSearchParams(route.queryParams['q']));
+    return jobStream
+        .loadAtLeast(initialBackendPageSize)
+        .then(resp => jobStream);
   }
 }
