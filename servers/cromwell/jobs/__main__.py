@@ -67,6 +67,11 @@ finally:
 try:
     with open(capabilities_path) as f:
         capabilities_config = json.load(f)
+    for settings in capabilities_config['displayFields']:
+        if settings['field'].startswith('labels.'):
+            if len(settings['field']) == 7 or len(settings['field']) > 262:
+                raise ValueError(
+                    'Custom capabilities config contained invalid label key')
     logger.info('Successfully loaded the custom capabilities config.')
     app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
         capabilities_config)

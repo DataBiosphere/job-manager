@@ -25,6 +25,7 @@ import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-format
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {JobStatusIcon} from '../../shared/common';
 import {ActivatedRoute, Params} from '@angular/router';
+import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
 
 @Component({
   selector: 'jm-job-list-table',
@@ -90,6 +91,23 @@ export class JobsTableComponent implements OnInit {
     return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
   }
 
+  canEdit(df: DisplayField): boolean {
+    return df.editable;
+  }
+
+  setFieldValue(job: QueryJobsResult, displayField: string, value: string) {
+    const labelParts = displayField.split('.');
+    const label = (labelParts[1] != null) ? labelParts[1] : value;
+    let req: UpdateJobLabelsRequest = {};
+    req.labels = JSON.parse("{\"" + label + "\":\"" + value + "\"}");
+    this.jobManagerService.updateJobLabels(job.id, req)
+      .then(() => {
+        job.labels[label] = value;
+        this.onJobsChanged.emit([job]);
+      })
+      .catch((error) => this.handleError(error));
+  }
+
   canAbortAnySelected(): boolean {
     for (let j of this.selection.selected) {
       if (this.canAbort(j)) {
@@ -128,6 +146,14 @@ export class JobsTableComponent implements OnInit {
     }
 
     return value;
+  }
+
+  getFieldType(df: DisplayField): string {
+    return df.fieldType.toString();
+  }
+
+  getFieldOptions(df: DisplayField): string[] {
+    return df.validFieldValues;
   }
 
   getQueryParams(): Params {

@@ -7,6 +7,8 @@ import {environment} from '../../environments/environment';
 import {QueryJobsRequest} from '../shared/model/QueryJobsRequest';
 import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
+import {UpdateJobLabelsRequest} from "../shared/model/UpdateJobLabelsRequest";
+import {UpdateJobLabelsResponse} from "../shared/model/UpdateJobLabelsResponse";
 
 
 /** Service wrapper for accessing the job manager API. */
@@ -100,6 +102,15 @@ export class JobManagerService {
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => response.status == 200)
+      .catch((e) => this.handleError(e));
+  }
+
+  updateJobLabels(id: string, req: UpdateJobLabelsRequest): Promise<UpdateJobLabelsResponse> {
+    return this.http.post(`${environment.apiUrl}/jobs/${id}/updateLabels`,
+      req,
+      new RequestOptions({headers: this.getHttpHeaders()}))
+      .toPromise()
+      .then((response) => response.status == 200)
       .catch((e) => this.handleError(e));
   }
 

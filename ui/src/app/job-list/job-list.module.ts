@@ -3,12 +3,17 @@ import {
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
   MatMenuModule,
+  MatOptionModule,
   MatPaginatorModule,
   MatSnackBarModule,
+  MatSelectModule,
   MatSortModule,
   MatTableModule,
-  MatTooltipModule,
+  MatTooltipModule
 } from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -30,9 +35,14 @@ import {SharedModule} from '../shared/shared.module';
     MatCardModule,
     MatCheckboxModule,
     MatDividerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatOptionModule,
     MatMenuModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
     MatSnackBarModule,
     MatSortModule,
     MatTableModule,
