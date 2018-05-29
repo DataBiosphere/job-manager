@@ -101,8 +101,8 @@ export class JobsTableComponent implements OnInit {
 
   setFieldValue(job: QueryJobsResult, displayField: string, value: string) {
     const label = displayField.replace('labels.', '');
-    let req: UpdateJobLabelsRequest = {};
-    req.labels = JSON.parse('{"' + label + '":"' + value + '"}');
+    const req: UpdateJobLabelsRequest = { labels : {} };
+    req.labels[label] = value;
     this.jobManagerService.updateJobLabels(job.id, req)
       .then(() => {
         job.labels[label] = value;
