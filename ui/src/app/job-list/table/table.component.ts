@@ -8,7 +8,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {DataSource, SelectionModel} from '@angular/cdk/collections';
-import {MatSnackBar} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
@@ -16,6 +16,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 
+import {BulkChangeComponent} from "./bulk-change/bulk-change.component";
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {DisplayField} from '../../shared/model/DisplayField';
 import {JobManagerService} from '../../core/job-manager.service';
@@ -40,6 +41,7 @@ export class JobsTableComponent implements OnInit {
   private mouseoverJob: QueryJobsResult;
 
   public displayFields: DisplayField[];
+  public bulkLabelFields: DisplayField[];
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
 
@@ -54,12 +56,18 @@ export class JobsTableComponent implements OnInit {
     private readonly jobManagerService: JobManagerService,
     private readonly capabilitiesService: CapabilitiesService,
     private readonly viewContainer: ViewContainerRef,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    public bulkChangeDialog: MatDialog) { }
 
   ngOnInit() {
+    // set up display fields and bulk update-able labels
     this.displayFields = this.capabilitiesService.getCapabilitiesSynchronous().displayFields;
+    this.bulkLabelFields = [];
     for (let displayField of this.displayFields) {
       this.displayedColumns.push(displayField.field);
+      if (displayField.bulkEditable) {
+        this.bulkLabelFields.push(displayField);
+      }
     }
 
     this.dataSource.connect(null).subscribe((jobs: QueryJobsResult[]) => {
@@ -118,6 +126,10 @@ export class JobsTableComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  canBulkUpdateLabels(): boolean {
+    return this.bulkLabelFields.length && (this.selection.selected.length > 1);
   }
 
   showSelectionBar(): boolean {
@@ -244,4 +256,58 @@ export class JobsTableComponent implements OnInit {
       }
     }
   }
+
+  openBulkChangeDialog(): void {
+    this.resetBulkLabelFieldDefaults();
+    // figure out default values for bulk fields; if all jobs have the same label value,
+    // set that to the defualt; otherwise, set default to boolean false
+    for (let j = 0; j < this.selection.selected.length; j++) {
+      for (let f = 0; f < this.bulkLabelFields.length; f++) {
+        const label = this.bulkLabelFields[f].field.replace('labels.', '');
+        const jobLabelValue = this.selection.selected[j].labels[label] || '';
+        if (this.bulkLabelFields[f]['default'] == null) {
+          this.bulkLabelFields[f]['default'] = jobLabelValue;
+        } else if (this.bulkLabelFields[f]['default'] !== false &&
+          this.bulkLabelFields[f]['default'] != jobLabelValue) {
+          this.bulkLabelFields[f]['default'] = false;
+        }
+      }
+    }
+    let dialogRef = this.bulkChangeDialog.open(BulkChangeComponent, {
+      width: '350px',
+      height: (this.bulkLabelFields.length * 150).toString() + 'px',
+      disableClose: true,
+      data: {
+        'bulkLabelFields' : this.bulkLabelFields,
+        'selectedJobs' :  this.selection.selected,
+        'newValues': []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        for (let i = 0; i < result.jobs.length; i++) {
+          const req: UpdateJobLabelsRequest = { labels : {} };
+          Object.keys(result.fields).forEach((displayField) => {
+            const label = displayField.replace('labels.', '');
+            req.labels[label] = result.fields[displayField];
+          });
+          this.jobManagerService.updateJobLabels(result.jobs[i].id, req)
+            .then(() => {
+              this.onJobsChanged.emit(result.jobs[i]);
+            })
+            .catch((error) => this.handleError(error));
+        }
+      }
+    });
+  }
+
+  private resetBulkLabelFieldDefaults() {
+    for (let f = 0; f < this.bulkLabelFields.length; f++) {
+      if (this.bulkLabelFields[f]['default'] !== null) {
+        this.bulkLabelFields[f]['default'] = null;
+      }
+    }
+  }
+
 }

@@ -132,4 +132,11 @@
           [disabled]="!canAbortAnySelected()">
     Abort Jobs
   </button>
+  <button mat-raised-button color="accent"
+          class="group-button group-update-label"
+          (click)="openBulkChangeDialog()"
+          [disabled]="!canBulkUpdateLabels()">
+          Set Metadata
+  </button>
+
 </div>

@@ -3,6 +3,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
@@ -21,6 +22,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
+import {BulkChangeComponent} from "./table/bulk-change/bulk-change.component";
 import {JobDetailsResolver} from '../job-details/job-details-resolver.service';
 import {JobListComponent} from './job-list.component';
 import {JobsTableComponent} from './table/table.component';
@@ -34,6 +36,7 @@ import {SharedModule} from '../shared/shared.module';
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
+    MatDialogModule,
     MatDividerModule,
     MatFormFieldModule,
     MatIconModule,
@@ -49,6 +52,9 @@ import {SharedModule} from '../shared/shared.module';
     MatTooltipModule,
     RouterModule,
     SharedModule,
+  ],
+  entryComponents: [
+    BulkChangeComponent,
   ],
   declarations: [
     JobListComponent,
