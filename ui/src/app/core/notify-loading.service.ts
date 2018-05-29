@@ -32,7 +32,7 @@ export class NotifyLoadingService {
     });
   }
 
-  private showSpinner() {
+  showSpinner() {
     this.zone.runOutsideAngular(() => {
       if (this.snackBarRef) {
         this.snackBarRef.dismiss();
@@ -41,7 +41,7 @@ export class NotifyLoadingService {
     });
   }
 
-  private hideSpinner() {
+  hideSpinner() {
     this.zone.runOutsideAngular(() => {
       if (this.snackBarRef) {
         this.snackBarRef.dismiss();

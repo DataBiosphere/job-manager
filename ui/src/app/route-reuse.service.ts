@@ -10,14 +10,14 @@ import {
 @Injectable()
 export class RouteReuse implements RouteReuseStrategy {
 
-  public static cached: { [key: string]: any } = {};
+  private cached: { [key: string]: DetachedRouteHandle } = {};
 
-  public static isCached(route: ActivatedRouteSnapshot): boolean {
-    return !!RouteReuse.cached[RouteReuse.routeKey(route)];
+  public isCached(route: ActivatedRouteSnapshot): boolean {
+    return !!this.cached[RouteReuse.routeKey(route)];
   }
 
-  public static getCached(route: ActivatedRouteSnapshot): any {
-    return RouteReuse.cached[RouteReuse.routeKey(route)];
+  public getCached(route: ActivatedRouteSnapshot): DetachedRouteHandle {
+    return this.cached[RouteReuse.routeKey(route)];
   }
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
@@ -27,23 +27,20 @@ export class RouteReuse implements RouteReuseStrategy {
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
-    RouteReuse.cached[RouteReuse.routeKey(route)] = {
-        snapshot: route,
-        handle: handle
-    };
+    this.cached[RouteReuse.routeKey(route)] = handle;
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
     return !!route.routeConfig
       && route.routeConfig.path == "jobs"
-      && !!RouteReuse.cached[RouteReuse.routeKey(route)];
+      && this.isCached(route);
   }
 
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
-    if (!route.routeConfig || !RouteReuse.isCached(route)) {
+    if (!route.routeConfig || !this.isCached(route)) {
       return null;
     }
-    return RouteReuse.getCached(route).handle;
+    return this.getCached(route);
   }
 
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {

@@ -16,6 +16,7 @@ import {initialBackendPageSize} from "../shared/common";
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from '../core/capabilities.service';
+import {NotifyLoadingService} from '../core/notify-loading.service';
 
 @Component({
   selector: 'jm-job-list',
@@ -33,9 +34,10 @@ export class JobListComponent implements OnInit {
   jobs = new BehaviorSubject<JobListView>({
     results: [],
     exhaustive: false,
-    needsRefresh: false
+    stale: false
   });
   loading = false;
+  lazyLoading = false;
   private jobStream: JobStream;
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
@@ -45,8 +47,9 @@ export class JobListComponent implements OnInit {
     private readonly router: Router,
     private readonly jobManagerService: JobManagerService,
     private readonly viewContainer: ViewContainerRef,
-    private errorBar: MatSnackBar,
-    readonly capabilitiesService: CapabilitiesService,
+    private snackBar: MatSnackBar,
+    private readonly capabilitiesService: CapabilitiesService,
+    private readonly notifyLoadingService: NotifyLoadingService
   ) {
     this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
     route.queryParams.subscribe(params => this.reloadJobs(params['q']));
@@ -61,24 +64,30 @@ export class JobListComponent implements OnInit {
       pageIndex: 0,
       length: 0,
     });
+
     // Handle navigation errors raised in JobDetailsResolver
     this.router.events.subscribe(event => {
       if (event instanceof NavigationError) {
         this.handleError(event.error);
       }
-      if (event instanceof NavigationEnd && this.jobStream.value.needsRefresh) {
-        this.reloadJobs(this.route.snapshot.queryParams['q'], false);
+    });
+
+    // If stale is set to 'true', lazy re-load the job list
+    this.jobs.subscribe(jobListView => {
+      if (jobListView.stale) {
+        this.reloadJobs(this.route.snapshot.queryParams['q'], true);
       }
     });
   }
 
-  reloadJobs(query: string, displayLoading = true): void {
+  reloadJobs(query: string, lazyLoading = false): void {
     if (!this.streamSubscription) {
       // ngOnInit hasn't happened yet, this shouldn't occur.
       return;
     }
 
-    this.loading = displayLoading;
+    this.setLoading(true, lazyLoading);
+
     const req = URLSearchParamsUtils.unpackURLSearchParams(query);
     if (!req.extensions.projectId &&
         this.capabilities.queryExtensions &&
@@ -104,7 +113,7 @@ export class JobListComponent implements OnInit {
         this.jobStream = nextStream;
         this.header.resetPagination();
         this.streamSubscription = this.jobStream.subscribe(this.jobs);
-        this.loading = false;
+        this.setLoading(false, lazyLoading);
       })
       .catch(error => this.handleError(error));
   }
@@ -117,7 +126,7 @@ export class JobListComponent implements OnInit {
   }
 
   handleError(error: any) {
-    this.errorBar.open(
+    this.snackBar.open(
       new ErrorMessageFormatterPipe().transform(error),
       'Dismiss',
       {viewContainerRef: this.viewContainer});
@@ -125,6 +134,18 @@ export class JobListComponent implements OnInit {
 
   handleJobsChanged() {
     this.reloadJobs(this.route.snapshot.queryParams['q']);
+  }
+
+  private setLoading(loading: boolean, lazy: boolean): void {
+    if (!lazy) {
+      this.loading = loading;
+    } else {
+      if (loading) {
+        this.snackBar.open('Loading...');
+      } else {
+        this.snackBar.dismiss();
+      }
+    }
   }
 
   private onClientPaginate(e: PageEvent) {

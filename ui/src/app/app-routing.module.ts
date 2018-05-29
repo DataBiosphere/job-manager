@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {
   CanActivate,
   RouterModule,
-  RouteReuseStrategy,
   Routes
 } from '@angular/router';
 
@@ -56,12 +55,5 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [
-    JobDetailsResolver,
-    {
-      provide: RouteReuseStrategy,
-      useClass: RouteReuse
-    }
-  ]
 })
 export class AppRoutingModule {}

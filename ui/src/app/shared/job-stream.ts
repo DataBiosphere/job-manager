@@ -20,7 +20,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
     super({
       results: [],
       exhaustive: false,
-      needsRefresh: false
+      stale: false
     });
   }
 
@@ -40,7 +40,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
         this.next({
           results: this.value.results.concat(resp.results),
           exhaustive: !resp.nextPageToken,
-          needsRefresh: false
+          stale: false
         });
         return resp;
       });
@@ -52,7 +52,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
     this.next({
       results: this.value.results,
       exhaustive: this.value.exhaustive,
-      needsRefresh: true
+      stale: true
     });
   }
 
@@ -70,5 +70,5 @@ export class JobStream extends BehaviorSubject<JobListView> {
 export type JobListView = {
   results: QueryJobsResult[];
   exhaustive: boolean;
-  needsRefresh: boolean;
+  stale: boolean;
 }

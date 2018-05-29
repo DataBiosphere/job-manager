@@ -18,16 +18,20 @@ import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 
 @Injectable()
 export class JobListResolver implements Resolve<JobStream> {
-  constructor(private jobManagerService: JobManagerService, private router: Router) {}
+  constructor(
+    private jobManagerService: JobManagerService,
+    private router: Router,
+    private routeReuse: RouteReuse,
+  ) {}
 
   resolve(route: ActivatedRouteSnapshot,
           state: RouterStateSnapshot): Promise<JobStream> {
     // If this route has been cached do not wait for the load to display the
     // component. Instead, just mark the JobStream as needing a refresh.
-    if (RouteReuse.isCached(route)) {
-      let jobStream = RouteReuse.getCached(route).snapshot.data.stream;
-      jobStream.setNeedsRefresh();
-      return Promise.resolve(jobStream);
+    if (this.routeReuse.isCached(route)) {
+      let jobListComponent = this.routeReuse.getCached(route)["componentRef"].instance;
+      jobListComponent.jobStream.setNeedsRefresh();
+      return Promise.resolve(jobListComponent.jobStream);
     }
 
     const jobStream = new JobStream(this.jobManagerService,

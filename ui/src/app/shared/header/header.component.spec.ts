@@ -40,7 +40,7 @@ describe('HeaderComponent', () => {
   const initJobs: JobListView = {
     results: [testJob1, testJob2, testJob3],
     exhaustive: false,
-    needsRefresh: false
+    stale: false
   };
 
   let testComponent: HeaderComponent;
@@ -139,7 +139,7 @@ describe('HeaderComponent', () => {
     testComponent.jobs.next({
       results: [testJob1, testJob2],
       exhaustive: true,
-      needsRefresh: false
+      stale: false
     });
     testComponent.search();
     fixture.detectChanges();
@@ -155,7 +155,7 @@ describe('HeaderComponent', () => {
     testComponent.jobs.next({
       results: [testJob1, testJob2],
       exhaustive: false,
-      needsRefresh: false
+      stale: false
     });
     testComponent.search();
     fixture.detectChanges();
@@ -170,7 +170,7 @@ describe('HeaderComponent', () => {
     testComponent.jobs.next({
       results: [testJob1],
       exhaustive: false,
-      needsRefresh: false
+      stale: false
     });
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
@@ -181,7 +181,7 @@ describe('HeaderComponent', () => {
     testComponent.jobs.next({
       results: [testJob1, testJob2],
       exhaustive: true,
-      needsRefresh: false
+      stale: false
     });
     fixture.detectChanges();
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
