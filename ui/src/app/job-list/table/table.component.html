@@ -81,21 +81,21 @@
                   <input matInput
                          #labelField
                          value="{{ getFieldValue(j, df) }}"
-                         maxlength="255"
+                         [maxLength]="labelCharLimit"
                          (click)="$event.stopPropagation()">
-                  <mat-hint align="end">{{labelField.value?.length || 0}}/255</mat-hint>
+                  <mat-hint align="end">{{ labelField.value?.length || 0 }}/{{ labelCharLimit }}</mat-hint>
                 </mat-form-field>
                 <button class="apply-link" (click)="setFieldValue(j, df.field, labelField.value)">Apply</button>
               </mat-menu>
             </div>
             <mat-form-field *ngSwitchCase="'list'">
               <mat-select #labelSelect
-                          [value]="getFieldValue(j, df) ? getFieldValue(j, df) : null"
+                          [value]="getFieldValue(j, df) || null"
                           (change)="setFieldValue(j, df.field, labelSelect.value)">
                 <mat-option value="">(none)</mat-option>
                 <mat-option *ngFor="let fieldOption of getFieldOptions(df)"
                             [value]="fieldOption"
-                            [attr.selected]="(getFieldValue(j, df) == fieldOption) ? 'selected' : null"
+                            [attr.selected]="getFieldValue(j, df) == fieldOption || null"
                             (click)="$event.stopPropagation()">
                             {{ fieldOption }}
                 </mat-option>

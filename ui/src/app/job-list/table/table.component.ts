@@ -43,6 +43,10 @@ export class JobsTableComponent implements OnInit {
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
 
+  // currently Cromwell's limit; if there is some variablilty in other backends
+  // this should be moved to a config
+  public readonly labelCharLimit = 255;
+
   displayedColumns: string[] = ["Checkbox", "Job", "Details"];
 
   constructor(
@@ -96,8 +100,7 @@ export class JobsTableComponent implements OnInit {
   }
 
   setFieldValue(job: QueryJobsResult, displayField: string, value: string) {
-    const labelParts = displayField.split('.');
-    const label = (labelParts[1] != null) ? labelParts[1] : value;
+    const label = displayField.replace('labels.', '');
     let req: UpdateJobLabelsRequest = {};
     req.labels = JSON.parse('{"' + label + '":"' + value + '"}');
     this.jobManagerService.updateJobLabels(job.id, req)
