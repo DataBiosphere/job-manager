@@ -68,8 +68,6 @@ def update_job_labels(id, body, **kwargs):
 
     # Follow API spec
     result = response.json()
-    if not result.get('labels'):
-        result.get('labels').update({})
     return UpdateJobLabelsResponse(labels=result.get('labels'))
 
 

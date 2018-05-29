@@ -10,6 +10,10 @@ from requests.auth import HTTPBasicAuth
 import logging
 from .models.capabilities_response import CapabilitiesResponse
 
+CROMWELL_LABEL_MIN_LENGTH = 1
+CROMWELL_LABEL_MAX_LENGTH = 256
+LABELS_PREFIX = 'labels.'
+
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
@@ -68,8 +72,10 @@ try:
     with open(capabilities_path) as f:
         capabilities_config = json.load(f)
     for settings in capabilities_config['displayFields']:
-        if settings['field'].startswith('labels.'):
-            if len(settings['field']) == 7 or len(settings['field']) > 262:
+        if settings['field'].startswith(LABELS_PREFIX):
+            if len(settings['field']) == len(LABELS_PREFIX) or len(
+                    settings['field']
+            ) > LABELS_PREFIX + CROMWELL_LABEL_MAX_LENGTH:
                 raise ValueError(
                     'Custom capabilities config contained invalid label key')
     logger.info('Successfully loaded the custom capabilities config.')
