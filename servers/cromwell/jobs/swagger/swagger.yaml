@@ -169,6 +169,9 @@ definitions:
       editable:
         type: "boolean"
         default: false
+      bulkEditable:
+        type: "boolean"
+        default: false
       fieldType:
         $ref: "#/definitions/FieldType"
       validFieldValues:
