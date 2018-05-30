@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {DisplayField} from "../../../shared/model/DisplayField";
 
 @Component({
-  selector: 'bulk-change-component',
+  selector: 'jm-bulk-change-component',
   templateUrl: 'bulk-change.component.html'
 })
 export class BulkChangeComponent {
