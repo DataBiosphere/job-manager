@@ -44,6 +44,39 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 }
 ```
 
+   **Note:** If you want to use use Job Manager against Cromwell-as-a-Service, which is using SAM/Google OAuth for authN and authZ, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
+ ```
+ {
+   "displayFields": [
+     {
+       "field": "status",
+       "display": "Status"
+     },
+     {
+       "field": "submission",
+       "display": "Submitted"
+     },
+     {
+       "field": "labels.cromwell-workflow-id",
+       "display": "Workflow ID"
+     }
+   ],
+   "commonLabels": [
+     "cromwell-workflow-id",
+     "workflow-name"
+   ],
+   "queryExtensions": [],
+   "authentication": {
+       "isRequired": true, 
+       "scopes": [
+         "openid", 
+         "email", 
+         "profile"
+       ]
+     },
+ }
+ ```
+
 4. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For Cromwell-as-a-Service, e.g. `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-compose-caas.yaml` otherwise use `cromwell-compose-instance.yaml`, e.g:
     ```
     ln -sf cromwell-compose-instance.yml docker-compose.yml
