@@ -1,3 +1,4 @@
+import {EventEmitter} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {JobManagerService} from '../core/job-manager.service';

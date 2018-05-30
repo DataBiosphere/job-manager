@@ -29,9 +29,9 @@ export class JobListResolver implements Resolve<JobStream> {
     // If this route has been cached do not wait for the load to display the
     // component. Instead, just mark the JobStream as needing a refresh.
     if (this.routeReuse.isCached(route)) {
-      let jobListComponent = this.routeReuse.getCached(route)["componentRef"].instance;
-      jobListComponent.jobStream.setNeedsRefresh();
-      return Promise.resolve(jobListComponent.jobStream);
+      let jobStream = this.routeReuse.getCached(route)["componentRef"].instance.jobStream;
+      jobStream.setNeedsRefresh();
+      return Promise.resolve(jobStream);
     }
 
     const jobStream = new JobStream(this.jobManagerService,

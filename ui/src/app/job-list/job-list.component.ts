@@ -16,7 +16,6 @@ import {initialBackendPageSize} from "../shared/common";
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from '../core/capabilities.service';
-import {NotifyLoadingService} from '../core/notify-loading.service';
 
 @Component({
   selector: 'jm-job-list',
@@ -48,9 +47,7 @@ export class JobListComponent implements OnInit {
     private readonly jobManagerService: JobManagerService,
     private readonly viewContainer: ViewContainerRef,
     private snackBar: MatSnackBar,
-    private readonly capabilitiesService: CapabilitiesService,
-    private readonly notifyLoadingService: NotifyLoadingService
-  ) {
+    private readonly capabilitiesService: CapabilitiesService) {
     this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
     route.queryParams.subscribe(params => this.reloadJobs(params['q']));
   }
@@ -58,6 +55,12 @@ export class JobListComponent implements OnInit {
   ngOnInit(): void {
     this.jobStream = this.route.snapshot.data['stream'];
     this.streamSubscription = this.jobStream.subscribe(this.jobs);
+    this.jobs.subscribe(jobs => {
+      if (jobs.stale) {
+        this.reloadJobs(this.route.snapshot.queryParams['q'], true);
+      }
+    });
+
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
@@ -71,22 +74,15 @@ export class JobListComponent implements OnInit {
         this.handleError(event.error);
       }
     });
-
-    // If stale is set to 'true', lazy re-load the job list
-    this.jobs.subscribe(jobListView => {
-      if (jobListView.stale) {
-        this.reloadJobs(this.route.snapshot.queryParams['q'], true);
-      }
-    });
   }
 
-  reloadJobs(query: string, lazyLoading = false): void {
+  reloadJobs(query: string, lazy = false): void {
     if (!this.streamSubscription) {
       // ngOnInit hasn't happened yet, this shouldn't occur.
       return;
     }
 
-    this.setLoading(true, lazyLoading);
+    this.setLoading(true, lazy);
 
     const req = URLSearchParamsUtils.unpackURLSearchParams(query);
     if (!req.extensions.projectId &&
@@ -113,7 +109,7 @@ export class JobListComponent implements OnInit {
         this.jobStream = nextStream;
         this.header.resetPagination();
         this.streamSubscription = this.jobStream.subscribe(this.jobs);
-        this.setLoading(false, lazyLoading);
+        this.setLoading(false, lazy);
       })
       .catch(error => this.handleError(error));
   }

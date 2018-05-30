@@ -32,7 +32,8 @@ import {Router} from "@angular/router";
 import 'rxjs/add/observable/of';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
-import {JobStatus} from "../shared/model/JobStatus";
+import {JobStatus} from '../shared/model/JobStatus';
+import {RouteReuse} from '../route-reuse.service';
 
 describe('JobListComponent', () => {
 
@@ -100,7 +101,8 @@ describe('JobListComponent', () => {
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
         {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
-        JobListResolver
+        JobListResolver,
+        RouteReuse
       ],
     }).compileComponents();
   }));

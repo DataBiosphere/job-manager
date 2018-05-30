@@ -23,7 +23,7 @@ export class RouteReuse implements RouteReuseStrategy {
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
     // Currently we only cache the job list page, we may want to also do
     // details pages in the future.
-    return !!route.routeConfig && route.routeConfig.path == "jobs";
+    return !!route.routeConfig && route.routeConfig.path == 'jobs';
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
@@ -32,7 +32,7 @@ export class RouteReuse implements RouteReuseStrategy {
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
     return !!route.routeConfig
-      && route.routeConfig.path == "jobs"
+      && route.routeConfig.path == 'jobs'
       && this.isCached(route);
   }
 
