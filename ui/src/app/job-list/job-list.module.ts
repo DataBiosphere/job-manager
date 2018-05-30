@@ -57,6 +57,7 @@ import {SharedModule} from '../shared/shared.module';
     BulkChangeComponent,
   ],
   declarations: [
+    BulkChangeComponent,
     JobListComponent,
     JobsTableComponent,
   ],

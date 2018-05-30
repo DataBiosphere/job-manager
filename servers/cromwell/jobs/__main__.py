@@ -75,7 +75,7 @@ try:
         if settings['field'].startswith(LABELS_PREFIX):
             if len(settings['field']) == len(LABELS_PREFIX) or len(
                     settings['field']
-            ) > LABELS_PREFIX + CROMWELL_LABEL_MAX_LENGTH:
+            ) > len(LABELS_PREFIX) + CROMWELL_LABEL_MAX_LENGTH:
                 raise ValueError(
                     'Custom capabilities config contained invalid label key')
     logger.info('Successfully loaded the custom capabilities config.')
