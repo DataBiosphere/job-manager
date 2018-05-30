@@ -68,13 +68,7 @@ def update_job_labels(id, body, **kwargs):
 
     # Follow API spec
     result = response.json()
-    all_labels = get_job(id).labels
-    if not all_labels:
-        all_labels = {}
-
-    # Redundantly update all_labels with updated labels to provide consistency guarantees
-    all_labels.update(result.get('labels'))
-    return UpdateJobLabelsResponse(labels=all_labels)
+    return UpdateJobLabelsResponse(labels=result.get('labels'))
 
 
 @requires_auth
