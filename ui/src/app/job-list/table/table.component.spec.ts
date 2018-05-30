@@ -48,7 +48,8 @@ describe('JobsTableComponent', () => {
         {field: 'status', display: 'Status'},
         {field: 'submission', display: 'Submitted'},
         {field: 'extensions.userId', display: 'User ID'},
-        {field: 'labels.status-detail', display: 'Status Detail'}
+        {field: 'labels.status-detail', display: 'Status Detail'},
+        {field: 'labels.comment', display: 'Comment', fieldType: "text", editable: true}
       ]
     };
 
@@ -89,7 +90,7 @@ describe('JobsTableComponent', () => {
       submission: new Date('2015-04-20T20:00:00'),
       start: new Date('2015-04-20T21:00:00'),
       end: new Date('2015-04-20T22:00:00'),
-      labels: {'status-detail': 'status-detail-3'},
+      labels: {'status-detail': 'status-detail-3', 'comment': 'this was aborted for reasons'},
       extensions: {userId: 'user-3'}
     }, {
       id: 'JOB4',
@@ -194,7 +195,7 @@ describe('JobsTableComponent', () => {
     fixture.detectChanges();
 
     let dsubColumns = de.queryAll(By.css('.additional-column'));
-    expect(dsubColumns.length).toEqual(4);
+    expect(dsubColumns.length).toEqual(5);
     // Unwrap image tag to verify the reflect message
     expect((dsubColumns[0].children[0].childNodes[2]['attributes']['shape']))
       .toEqual(JobStatusIcon[jobs[0].status]);
@@ -206,10 +207,24 @@ describe('JobsTableComponent', () => {
       .toEqual(jobs[0].labels['status-detail']);
   }));
 
+  it('should not display editable field for job label if config has not explicitly said it is editable', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('.cdk-column-labels-status-detail .edit-field')).length)
+      .toEqual(0);
+  }));
+
+  it('should display editable field for job label if config has explicitly said it is editable', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('.cdk-column-labels-comment .edit-field')).length)
+      .toEqual(de.queryAll(By.css('.cdk-column-labels-comment')).length - 1);
+  }));
+
   it('hides the group selection on 0 selection', async(() => {
     fixture.detectChanges();
     expect(isGroupSelectionRendered()).toBeFalsy();
-  }))
+  }));
 
   it('disables the abort button for non-abortable selection', async(() => {
     fixture.detectChanges();
