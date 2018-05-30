@@ -34,6 +34,6 @@ import {SharedModule} from '../shared/shared.module';
     ProjectsComponent,
   ],
   exports: [],
-  providers: [ProjectsService, JobListResolver]
+  providers: [ProjectsService]
 })
 export class ProjectsModule {}
