@@ -1,6 +1,7 @@
 export * from './AuthenticationCapability';
 export * from './CapabilitiesResponse';
 export * from './DisplayField';
+export * from './Event';
 export * from './ExtendedFields';
 export * from './ExtendedQueryFields';
 export * from './FailureMessage';

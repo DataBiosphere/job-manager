@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from .authentication_capability import AuthenticationCapability
 from .capabilities_response import CapabilitiesResponse
 from .display_field import DisplayField
+from .event import Event
 from .extended_fields import ExtendedFields
 from .extended_query_fields import ExtendedQueryFields
 from .failure_message import FailureMessage

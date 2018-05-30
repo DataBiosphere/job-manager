@@ -240,6 +240,7 @@ def _handle_http_error(error, proj_id):
 
 
 def _metadata_response(id, job):
+    print "metadata-response called"
     return JobMetadataResponse(
         id=id,
         status=job_statuses.dsub_to_api(job),

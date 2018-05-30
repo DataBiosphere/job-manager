@@ -27,13 +27,15 @@ export class JobResourcesComponent implements OnInit {
   sourceFile: string = '';
   inputs: Array<string> = [];
   outputs: Array<string> = [];
+  eventDetails: Array<object> = [];
   logFileData: Map<string, string> = new Map();
 
   tabIds: Array<string> = [];
   tabTitles: Map<string, string> = new Map([
     ['inputs', 'Inputs'],
     ['outputs', 'Outputs'],
-    ['source-file', 'Source File']
+    ['source-file', 'Source File'],
+    ['event-detail', 'Event Detail']
   ]);
   currentTabId: string;
 
@@ -43,6 +45,8 @@ export class JobResourcesComponent implements OnInit {
     private readonly viewContainer: ViewContainerRef) {}
 
   ngOnInit() {
+    console.log(this.job);
+
     if (this.job.inputs && Object.keys(this.job.inputs).length > 0) {
       this.inputs = Object.keys(this.job.inputs).sort();
       this.tabIds.push('inputs');
@@ -72,6 +76,11 @@ export class JobResourcesComponent implements OnInit {
               }
             }
           });
+      }
+
+      if (this.job.extensions.events) {
+        this.eventDetails = this.job.extensions.events;
+        this.tabIds.push('event-detail');
       }
     }
 

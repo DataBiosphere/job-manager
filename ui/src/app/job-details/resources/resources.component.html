@@ -20,5 +20,10 @@
         {{ logFileData.get(logFile) }}
       </div>
     </div>
+    <div *ngIf="currentTabId == 'event-detail'">
+      <div *ngFor="let eventDetail of eventDetails" class="inline-text">
+          {{ eventDetail.startTime + ' ' + eventDetail.description }}
+      </div>
+    </div>
   </mat-expansion-panel>
 </div>
