@@ -26,6 +26,7 @@ import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {JobStatusIcon} from '../../shared/common';
 import {ActivatedRoute, Params} from '@angular/router';
 import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
+import {UpdateJobLabelsResponse} from "../../shared/model/UpdateJobLabelsResponse";
 
 @Component({
   selector: 'jm-job-list-table',
@@ -104,8 +105,12 @@ export class JobsTableComponent implements OnInit {
     const req: UpdateJobLabelsRequest = { labels : {} };
     req.labels[label] = value;
     this.jobManagerService.updateJobLabels(job.id, req)
-      .then(() => {
-        job.labels[label] = value;
+    /* NOTE: currently, response does not reflect whether or not the requested changes to job have
+     * actually been made; it just contains what the job's labels would look like, assuming the
+     * changes have gone through successfully
+     */
+      .then((response: UpdateJobLabelsResponse) => {
+        job.labels = response.labels;
         this.onJobsChanged.emit([job]);
       })
       .catch((error) => this.handleError(error));
