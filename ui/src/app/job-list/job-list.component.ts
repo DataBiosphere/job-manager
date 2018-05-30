@@ -3,13 +3,12 @@ import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
 import {DataSource} from '@angular/cdk/collections';
 import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {PageEvent, MatPaginator, MatSnackBar} from '@angular/material'
+import {PageEvent, MatSnackBar} from '@angular/material'
 import {Observable} from 'rxjs/Observable';
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
-import {JobsTableComponent} from './table/table.component';
 import {JobListView, JobStream} from '../shared/job-stream';
 import {HeaderComponent} from '../shared/header/header.component';
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
