@@ -49,7 +49,7 @@ describe('JobsTableComponent', () => {
         {field: 'submission', display: 'Submitted'},
         {field: 'extensions.userId', display: 'User ID'},
         {field: 'labels.status-detail', display: 'Status Detail'},
-        {field: 'labels.comment', display: 'Comment', fieldType: "text", editable: true}
+        {field: 'labels.comment', display: 'Comment', fieldType: 'text', editable: true}
       ]
     };
 
