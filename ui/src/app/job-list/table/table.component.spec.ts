@@ -34,6 +34,7 @@ import {FakeCapabilitiesService} from '../../testing/fake-capabilities.service';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {SharedModule} from '../../shared/shared.module';
 import {JobStatusIcon} from "../../shared/common";
+import {FieldType} from "../../shared/model/FieldType";
 
 describe('JobsTableComponent', () => {
 
@@ -49,7 +50,7 @@ describe('JobsTableComponent', () => {
         {field: 'submission', display: 'Submitted'},
         {field: 'extensions.userId', display: 'User ID'},
         {field: 'labels.status-detail', display: 'Status Detail'},
-        {field: 'labels.comment', display: 'Comment', fieldType: 'text', editable: true}
+        {field: 'labels.comment', display: 'Comment', fieldType: FieldType.Text, editable: true}
       ]
     };
 
