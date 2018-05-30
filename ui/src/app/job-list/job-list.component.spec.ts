@@ -32,7 +32,8 @@ import {Router} from "@angular/router";
 import 'rxjs/add/observable/of';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
-import {JobStatus} from "../shared/model/JobStatus";
+import {JobStatus} from '../shared/model/JobStatus';
+import {RouteReuse} from '../route-reuse.service';
 
 describe('JobListComponent', () => {
 
@@ -41,6 +42,8 @@ describe('JobListComponent', () => {
     const base = {
       status: JobStatus.Running,
       submission: new Date('2015-04-20T20:00:00'),
+      start: new Date('2015-04-20T20:00:01'),
+      end: new Date('2015-04-20T20:01:00'),
       extensions: {userId: 'test-user-id'}
     };
     return (new Array(count)).fill(null).map((_, i) => {
@@ -100,7 +103,8 @@ describe('JobListComponent', () => {
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
         {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
-        JobListResolver
+        JobListResolver,
+        RouteReuse
       ],
     }).compileComponents();
   }));
@@ -240,6 +244,25 @@ describe('JobListComponent', () => {
       // Jobs 3 and 4 should be the only jobs displayed, as they are the only
       // remaining active jobs.
       expectJobsRendered(jobs.slice(3, 5));
+    });
+  }));
+
+  fit('reloads properly with stale data', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+
+    const freshJobs = testJobs(10);
+    freshJobs[0].name = "updated";
+    freshJobs[1].name = "new";
+    fakeJobService.jobs = freshJobs;
+    testComponent.jobStream.setStale();
+
+    fixture.detectChanges();
+    tick(1000);
+
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expectJobsRendered(freshJobs.slice(0, 3));
     });
   }));
 

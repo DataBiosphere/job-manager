@@ -1,6 +1,7 @@
 import {NgModule, Optional, SkipSelf} from '@angular/core';
 import {MatSnackBarModule} from '@angular/material';
 import {BrowserModule} from '@angular/platform-browser';
+import {RouteReuseStrategy} from '@angular/router';
 
 import {CapabilitiesActivator} from "./capabilities-activator.service";
 import {CapabilitiesService} from "./capabilities.service";
@@ -8,6 +9,9 @@ import {AuthService} from "./auth.service";
 import {JobManagerService} from './job-manager.service';
 import {NotifyLoadingService} from './notify-loading.service';
 import {InitialErrorComponent} from "./initial-error/initial-error.component";
+import {JobListResolver} from '../job-list/job-list-resolver.service';
+import {JobDetailsResolver} from '../job-details/job-details-resolver.service';
+import {RouteReuse} from '../route-reuse.service';
 
 /** Provides all of the common singleton components and services that can be
  *  shared across the app and should only ever be instantiated once. */
@@ -27,7 +31,14 @@ import {InitialErrorComponent} from "./initial-error/initial-error.component";
     CapabilitiesActivator,
     CapabilitiesService,
     JobManagerService,
-    NotifyLoadingService
+    NotifyLoadingService,
+    JobListResolver,
+    JobDetailsResolver,
+    RouteReuse,
+    {
+      provide: RouteReuseStrategy,
+      useExisting: RouteReuse,
+    }
   ]
 })
 export class CoreModule {
