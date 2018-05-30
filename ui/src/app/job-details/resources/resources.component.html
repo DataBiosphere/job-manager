@@ -21,7 +21,7 @@
       </div>
     </div>
     <div *ngIf="currentTabId == 'event-detail'" class="inline-text">
-      <div *ngFor="let eventDetail of eventDetails" class="inline-text event-detail">
+      <div *ngFor="let eventDetail of eventDetails" class="event-detail">
           {{ eventDetail.startTime + ' ' + eventDetail.description }}
       </div>
     </div>
