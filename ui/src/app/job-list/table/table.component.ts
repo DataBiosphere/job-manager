@@ -25,6 +25,8 @@ import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-format
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {JobStatusIcon} from '../../shared/common';
 import {ActivatedRoute, Params} from '@angular/router';
+import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
+import {UpdateJobLabelsResponse} from "../../shared/model/UpdateJobLabelsResponse";
 
 @Component({
   selector: 'jm-job-list-table',
@@ -41,6 +43,10 @@ export class JobsTableComponent implements OnInit {
   public displayFields: DisplayField[];
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
+
+  // currently Cromwell's limit; if there is some variablilty in other backends
+  // this should be moved to a config
+  public readonly labelCharLimit = 255;
 
   displayedColumns: string[] = ["Checkbox", "Job", "Details"];
 
@@ -90,6 +96,26 @@ export class JobsTableComponent implements OnInit {
     return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
   }
 
+  canEdit(df: DisplayField): boolean {
+    return df.editable;
+  }
+
+  setFieldValue(job: QueryJobsResult, displayField: string, value: string) {
+    const label = displayField.replace('labels.', '');
+    const req: UpdateJobLabelsRequest = { labels : {} };
+    req.labels[label] = value;
+    this.jobManagerService.updateJobLabels(job.id, req)
+    /* NOTE: currently, Cromwell response does not reflect whether or not the requested changes to
+     * job have actually been made; it just contains what the job's labels would look like,
+     * assuming the changes have gone through successfully
+     */
+      .then((response: UpdateJobLabelsResponse) => {
+        job.labels = response.labels;
+        this.onJobsChanged.emit([job]);
+      })
+      .catch((error) => this.handleError(error));
+  }
+
   canAbortAnySelected(): boolean {
     for (let j of this.selection.selected) {
       if (this.canAbort(j)) {
@@ -128,6 +154,14 @@ export class JobsTableComponent implements OnInit {
     }
 
     return value;
+  }
+
+  getFieldType(df: DisplayField): string {
+    return df.fieldType.toString();
+  }
+
+  getFieldOptions(df: DisplayField): string[] {
+    return df.validFieldValues;
   }
 
   getQueryParams(): Params {

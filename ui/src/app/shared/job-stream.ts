@@ -1,3 +1,4 @@
+import {EventEmitter} from '@angular/core';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {JobManagerService} from '../core/job-manager.service';
@@ -19,14 +20,15 @@ export class JobStream extends BehaviorSubject<JobListView> {
               private request: QueryJobsRequest) {
     super({
       results: [],
-      exhaustive: false
+      exhaustive: false,
+      stale: false
     });
   }
 
   // Makes an API request if this JobStream doesn't have atLeast this many
   // total entries; no-op otherwise. The job stream may elect to load more than
   // the requested number.
-  loadAtLeast(atLeast: number): Promise<any> {
+  public loadAtLeast(atLeast: number): Promise<any> {
     this.queryPromise = this.queryPromise.then(prevResp => {
       if (this.value.exhaustive ||
         this.value.results.length >= atLeast) {
@@ -38,12 +40,21 @@ export class JobStream extends BehaviorSubject<JobListView> {
       return this.queryJobs(pageSize, prevResp.nextPageToken).then(resp => {
         this.next({
           results: this.value.results.concat(resp.results),
-          exhaustive: !resp.nextPageToken
+          exhaustive: !resp.nextPageToken,
+          stale: false
         });
         return resp;
       });
     });
     return this.queryPromise;
+  }
+
+  public setStale(): void {
+    this.next({
+      results: this.value.results,
+      exhaustive: this.value.exhaustive,
+      stale: true
+    });
   }
 
   private queryJobs(pageSize: number, pageToken?: string): Promise<QueryJobsResponse> {
@@ -60,4 +71,5 @@ export class JobStream extends BehaviorSubject<JobListView> {
 export type JobListView = {
   results: QueryJobsResult[];
   exhaustive: boolean;
+  stale: boolean;
 }

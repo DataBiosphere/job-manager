@@ -1,5 +1,9 @@
 import {NgModule} from '@angular/core';
-import {CanActivate, RouterModule, Routes} from '@angular/router';
+import {
+  CanActivate,
+  RouterModule,
+  Routes
+} from '@angular/router';
 
 import {CapabilitiesActivator} from './core/capabilities-activator.service';
 import {JobDetailsComponent} from './job-details/job-details.component';
@@ -8,6 +12,7 @@ import {JobListResolver} from './job-list/job-list-resolver.service';
 import {JobListComponent} from './job-list/job-list.component';
 import {SignInComponent} from './sign-in/sign-in.component';
 import {ProjectsComponent} from './projects/projects.component'
+import {RouteReuse} from './route-reuse.service';
 
 import {environment} from '../environments/environment';
 
@@ -46,9 +51,9 @@ const routes: Routes = [
     }
   },
 ];
+
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [JobDetailsResolver]
 })
 export class AppRoutingModule {}

@@ -171,7 +171,13 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback_labels(request, context):
             context.status_code = 200
-            return {"labels": {"new_test_label": "new_test_label_value"}}
+            return {
+                "labels": {
+                    "new_test_label": "new_test_label_value",
+                    "existing_test_label1": "existing_test_label_value1",
+                    "existing_test_label2": "existing_test_label_value2"
+                }
+            }
 
         def _request_callback_get_job(request, context):
             context.status_code = 200

@@ -3,13 +3,12 @@ import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
 import {DataSource} from '@angular/cdk/collections';
 import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {PageEvent, MatPaginator, MatSnackBar} from '@angular/material'
+import {PageEvent, MatSnackBar} from '@angular/material'
 import {Observable} from 'rxjs/Observable';
-import {ActivatedRoute, NavigationError, Router} from '@angular/router';
+import {ActivatedRoute, NavigationEnd, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
-import {JobsTableComponent} from './table/table.component';
 import {JobListView, JobStream} from '../shared/job-stream';
 import {HeaderComponent} from '../shared/header/header.component';
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
@@ -33,10 +32,12 @@ export class JobListComponent implements OnInit {
   // whenever we change query parameters, via a subscription.
   jobs = new BehaviorSubject<JobListView>({
     results: [],
-    exhaustive: false
+    exhaustive: false,
+    stale: false
   });
   loading = false;
-  private jobStream: JobStream;
+  lazyLoading = false;
+  jobStream: JobStream;
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
 
@@ -45,9 +46,8 @@ export class JobListComponent implements OnInit {
     private readonly router: Router,
     private readonly jobManagerService: JobManagerService,
     private readonly viewContainer: ViewContainerRef,
-    private errorBar: MatSnackBar,
-    readonly capabilitiesService: CapabilitiesService,
-  ) {
+    private snackBar: MatSnackBar,
+    private readonly capabilitiesService: CapabilitiesService) {
     this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
     route.queryParams.subscribe(params => this.reloadJobs(params['q']));
   }
@@ -55,12 +55,19 @@ export class JobListComponent implements OnInit {
   ngOnInit(): void {
     this.jobStream = this.route.snapshot.data['stream'];
     this.streamSubscription = this.jobStream.subscribe(this.jobs);
+    this.jobs.subscribe(jobs => {
+      if (jobs.stale) {
+        this.reloadJobs(this.route.snapshot.queryParams['q'], true);
+      }
+    });
+
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
       pageIndex: 0,
       length: 0,
     });
+
     // Handle navigation errors raised in JobDetailsResolver
     this.router.events.subscribe(event => {
       if (event instanceof NavigationError) {
@@ -69,12 +76,14 @@ export class JobListComponent implements OnInit {
     });
   }
 
-  reloadJobs(query: string) {
+  reloadJobs(query: string, lazy = false): void {
     if (!this.streamSubscription) {
       // ngOnInit hasn't happened yet, this shouldn't occur.
       return;
     }
-    this.loading = true;
+
+    this.setLoading(true, lazy);
+
     const req = URLSearchParamsUtils.unpackURLSearchParams(query);
     if (!req.extensions.projectId &&
         this.capabilities.queryExtensions &&
@@ -100,7 +109,7 @@ export class JobListComponent implements OnInit {
         this.jobStream = nextStream;
         this.header.resetPagination();
         this.streamSubscription = this.jobStream.subscribe(this.jobs);
-        this.loading = false;
+        this.setLoading(false, lazy);
       })
       .catch(error => this.handleError(error));
   }
@@ -113,7 +122,7 @@ export class JobListComponent implements OnInit {
   }
 
   handleError(error: any) {
-    this.errorBar.open(
+    this.snackBar.open(
       new ErrorMessageFormatterPipe().transform(error),
       'Dismiss',
       {viewContainerRef: this.viewContainer});
@@ -121,6 +130,18 @@ export class JobListComponent implements OnInit {
 
   handleJobsChanged() {
     this.reloadJobs(this.route.snapshot.queryParams['q']);
+  }
+
+  private setLoading(loading: boolean, lazy: boolean): void {
+    if (!lazy) {
+      this.loading = loading;
+    } else {
+      if (loading) {
+        this.snackBar.open('Loading...');
+      } else {
+        this.snackBar.dismiss();
+      }
+    }
   }
 
   private onClientPaginate(e: PageEvent) {
