@@ -55,8 +55,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
      "display": "Label",
      "fieldType": "text",
      "editable": true,
-     "bulkEditable": true,
-     "editable": true
+     "bulkEditable": true
    },
    {
      "field": "labels.comment",
@@ -72,11 +71,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
   "queryExtensions": []
 }
 ```
-<<<<<<< HEAD
 The default "fieldType" is `text` and both "editable" and "bulkEditable" will treated as `false` unless explicity set to `true`.
-=======
-The default "fieldType" is `text` and "editable" will treated as `false` unless explicity set to `true`.
->>>>>>> master
 
 4. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-compose-caas.yaml` otherwise use `cromwell-compose-dev.yaml`, e.g:
     ```
