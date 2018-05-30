@@ -16,10 +16,10 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 
-import {BulkChangeComponent} from "./bulk-change/bulk-change.component";
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {DisplayField} from '../../shared/model/DisplayField';
 import {JobManagerService} from '../../core/job-manager.service';
+import {JobsBulkChangeComponent} from "./bulk-change/bulk-change.component";
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
@@ -278,7 +278,7 @@ export class JobsTableComponent implements OnInit {
         }
       }
     }
-    let dialogRef = this.bulkChangeDialog.open(BulkChangeComponent, {
+    let dialogRef = this.bulkChangeDialog.open(JobsBulkChangeComponent, {
       width: '350px',
       height: (this.bulkLabelFields.length * 150).toString() + 'px',
       disableClose: true,

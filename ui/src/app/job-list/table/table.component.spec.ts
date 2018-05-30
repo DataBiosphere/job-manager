@@ -27,7 +27,7 @@ import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {JobManagerService} from '../../core/job-manager.service';
-import {BulkChangeComponent} from "./bulk-change/bulk-change.component";
+import {JobsBulkChangeComponent} from "./bulk-change/bulk-change.component";
 import {JobsTableComponent} from './table.component';
 import {CapabilitiesResponse} from '../../shared/model/CapabilitiesResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
@@ -120,7 +120,7 @@ describe('JobsTableComponent', () => {
     fakeJobService = new FakeJobManagerService(jobs)
     TestBed.configureTestingModule({
       declarations: [
-        BulkChangeComponent,
+        JobsBulkChangeComponent,
         JobsTableComponent,
         TestTableComponent
       ],

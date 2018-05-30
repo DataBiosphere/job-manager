@@ -6,9 +6,9 @@ import {DisplayField} from "../../../shared/model/DisplayField";
   selector: 'jm-bulk-change-component',
   templateUrl: 'bulk-change.component.html'
 })
-export class BulkChangeComponent {
+export class JobsBulkChangeComponent {
   constructor(
-    public dialogRef: MatDialogRef<BulkChangeComponent>,
+    public dialogRef: MatDialogRef<JobsBulkChangeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   cancelChanges(): void {
