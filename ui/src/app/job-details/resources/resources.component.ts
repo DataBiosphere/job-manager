@@ -15,6 +15,7 @@ import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-format
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {GcsService} from '../../core/gcs.service';
+import {EventDetail} from "../../shared/model/EventDetail";
 
 @Component({
   selector: 'jm-resources',
