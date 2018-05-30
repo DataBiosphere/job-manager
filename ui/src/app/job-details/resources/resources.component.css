@@ -26,3 +26,7 @@
   white-space: pre-line;
   font-family: 'Consolas', "courier new";
 }
+
+.event-detail {
+  white-space: normal;
+}

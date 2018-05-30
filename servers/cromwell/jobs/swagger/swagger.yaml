@@ -413,10 +413,10 @@ definitions:
       events:
         type: "array"
         items:
-          $ref: "#/definitions/Event"
+          $ref: "#/definitions/EventDetail"
     description: "Extended fields on jobs which may not be populated by all backends.\
       \ See the /capabilities endpoint for more details.\n"
-  Event:
+  EventDetail:
     properties:
       time:
         type: "string"

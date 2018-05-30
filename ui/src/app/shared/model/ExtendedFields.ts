@@ -58,6 +58,6 @@ export interface ExtendedFields {
 
     tasks?: Array<models.TaskMetadata>;
 
-    events?: Array<models.Event>;
+    events?: Array<models.EventDetail>;
 
 }

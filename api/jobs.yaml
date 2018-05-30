@@ -404,9 +404,9 @@ definitions:
       events:
         type: array
         items:
-          $ref: '#/definitions/Event'
+          $ref: '#/definitions/EventDetail'
 
-  Event:
+  EventDetail:
     description: Event with timestamp.
     properties:
         time:

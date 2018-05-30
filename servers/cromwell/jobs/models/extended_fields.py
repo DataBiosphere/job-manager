@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from __future__ import absolute_import
-from jobs.models.event import Event
+from jobs.models.event_detail import EventDetail
 from jobs.models.task_metadata import TaskMetadata
 from .base_model_ import Model
 from datetime import date, datetime
@@ -37,7 +37,7 @@ class ExtendedFields(Model):
         :param tasks: The tasks of this ExtendedFields.
         :type tasks: List[TaskMetadata]
         :param events: The events of this ExtendedFields.
-        :type events: List[Event]
+        :type events: List[EventDetail]
         """
         self.swagger_types = {
             'user_id': str,
@@ -49,7 +49,7 @@ class ExtendedFields(Model):
             'parent_job_id': str,
             'timing_url': str,
             'tasks': List[TaskMetadata],
-            'events': List[Event]
+            'events': List[EventDetail]
         }
 
         self.attribute_map = {
@@ -299,7 +299,7 @@ class ExtendedFields(Model):
         Gets the events of this ExtendedFields.
 
         :return: The events of this ExtendedFields.
-        :rtype: List[Event]
+        :rtype: List[EventDetail]
         """
         return self._events
 
@@ -309,7 +309,7 @@ class ExtendedFields(Model):
         Sets the events of this ExtendedFields.
 
         :param events: The events of this ExtendedFields.
-        :type events: List[Event]
+        :type events: List[EventDetail]
         """
 
         self._events = events

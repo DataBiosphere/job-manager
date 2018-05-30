@@ -27,7 +27,7 @@ export class JobResourcesComponent implements OnInit {
   sourceFile: string = '';
   inputs: Array<string> = [];
   outputs: Array<string> = [];
-  eventDetails: Array<object> = [];
+  eventDetails: Array<EventDetail> = [];
   logFileData: Map<string, string> = new Map();
 
   tabIds: Array<string> = [];
@@ -45,8 +45,6 @@ export class JobResourcesComponent implements OnInit {
     private readonly viewContainer: ViewContainerRef) {}
 
   ngOnInit() {
-    console.log(this.job);
-
     if (this.job.inputs && Object.keys(this.job.inputs).length > 0) {
       this.inputs = Object.keys(this.job.inputs).sort();
       this.tabIds.push('inputs');

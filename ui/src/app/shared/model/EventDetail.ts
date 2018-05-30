@@ -15,7 +15,7 @@ import * as models from './models';
 /**
  * Event with timestamp.
  */
-export interface Event {
+export interface EventDetail {
     time?: string;
 
     content?: string;
