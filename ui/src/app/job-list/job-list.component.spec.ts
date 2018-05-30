@@ -6,6 +6,7 @@ import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
+  MatDialogModule,
   MatMenuModule,
   MatSelectModule,
   MatSortModule,
@@ -82,6 +83,7 @@ describe('JobListComponent', () => {
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
+        MatDialogModule,
         MatDividerModule,
         MatMenuModule,
         MatPaginatorModule,
@@ -121,7 +123,7 @@ describe('JobListComponent', () => {
 
   function expectJobsRendered(jobs: QueryJobsResult[]) {
     const de: DebugElement = fixture.debugElement;
-    const rows = de.queryAll(By.css('.mat-row'))
+    const rows = de.queryAll(By.css('.mat-row'));
     expect(rows.length).toEqual(jobs.length);
     rows.forEach((row, i) => {
       expect(row.nativeElement.textContent).toContain(jobs[i].name);
