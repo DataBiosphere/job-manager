@@ -105,9 +105,9 @@ export class JobsTableComponent implements OnInit {
     const req: UpdateJobLabelsRequest = { labels : {} };
     req.labels[label] = value;
     this.jobManagerService.updateJobLabels(job.id, req)
-    /* NOTE: currently, response does not reflect whether or not the requested changes to job have
-     * actually been made; it just contains what the job's labels would look like, assuming the
-     * changes have gone through successfully
+    /* NOTE: currently, Cromwell response does not reflect whether or not the requested changes to
+     * job have actually been made; it just contains what the job's labels would look like,
+     * assuming the changes have gone through successfully
      */
       .then((response: UpdateJobLabelsResponse) => {
         job.labels = response.labels;
