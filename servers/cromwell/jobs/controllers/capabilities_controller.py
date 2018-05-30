@@ -22,11 +22,18 @@ def get_capabilities():
             DisplayField(
                 field='labels.cromwell-workflow-id', display='Workflow ID'),
             DisplayField(
-                field='labels.label', display='Label', editable=True, bulk_editable=True, field_type='text'),
+                field='labels.label',
+                display='Label',
+                editable=True,
+                bulk_editable=True,
+                field_type='text'),
             DisplayField(
-                field='labels.flag', display='Flag', editable=True, bulk_editable=True, field_type='list', valid_field_values=[
-                    'archive', 'follow-up'
-                ])
+                field='labels.flag',
+                display='Flag',
+                editable=True,
+                bulk_editable=True,
+                field_type='list',
+                valid_field_values=['archive', 'follow-up'])
         ],
         common_labels=['cromwell-workflow-id', 'label', 'flag'],
         query_extensions=[])
