@@ -235,10 +235,28 @@ describe('JobsTableComponent', () => {
       .toEqual(numOfEditableLabelsPerField);
   }))
 
+  it('should not display editable field for job label if config has not explicitly said it is editable', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+
+    // because status-detail isn't editable, there shouldn't be any edit-field blocks within that column's fields
+    expect(de.queryAll(By.css('.cdk-column-labels-status-detail .edit-field')).length)
+      .toEqual(0);
+  }));
+
+  it('should display editable field for job label if config has explicitly said it is editable', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+
+    // because comment is editable, there should be one edit-field block within that column's fields per row (except header row)
+    expect(de.queryAll(By.css('.cdk-column-labels-comment .edit-field')).length)
+      .toEqual(de.queryAll(By.css('.cdk-column-labels-comment')).length - 1);
+  }));
+
   it('hides the group selection on 0 selection', async(() => {
     fixture.detectChanges();
     expect(isGroupSelectionRendered()).toBeFalsy();
-  }))
+  }));
 
   it('disables the abort button for non-abortable selection', async(() => {
     fixture.detectChanges();
