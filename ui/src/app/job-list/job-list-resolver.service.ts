@@ -30,7 +30,7 @@ export class JobListResolver implements Resolve<JobStream> {
     // component. Instead, just mark the JobStream as needing a refresh.
     if (this.routeReuse.isCached(route)) {
       let jobStream = this.routeReuse.getCached(route)["componentRef"].instance.jobStream;
-      jobStream.setNeedsRefresh();
+      jobStream.setStale();
       return Promise.resolve(jobStream);
     }
 

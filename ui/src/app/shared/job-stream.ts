@@ -49,7 +49,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
     return this.queryPromise;
   }
 
-  public setNeedsRefresh(): void {
+  public setStale(): void {
     this.next({
       results: this.value.results,
       exhaustive: this.value.exhaustive,

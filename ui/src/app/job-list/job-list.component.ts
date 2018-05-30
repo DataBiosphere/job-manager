@@ -37,7 +37,7 @@ export class JobListComponent implements OnInit {
   });
   loading = false;
   lazyLoading = false;
-  private jobStream: JobStream;
+  jobStream: JobStream;
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
 
