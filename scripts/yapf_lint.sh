@@ -8,7 +8,8 @@ if [ -z "$yapf_out" ]; then
   echo "Passed yapf linter!"
   exit 0
 else
-	echo "Failed yapf linter, the following command will lint all python files:"
+	echo "Failed yapf linter, the following commands will lint all python files:"
+	echo "pip install yapf # First-time only"
 	echo "yapf -i \$($python_files_command)"
 	exit 1
 fi
