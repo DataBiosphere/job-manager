@@ -168,12 +168,12 @@ describe('JobsTableComponent', () => {
 
   function isGroupAbortIsEnabled(): boolean {
     const abortButton = fixture.debugElement.queryAll(By.css('.group-abort'))[0];
-    return abortButton.componentInstance.disabled == false;
+    return !abortButton.componentInstance.disabled;
   }
 
   function isBulkLabelEditIsEnabled(): boolean {
     const bulkLabelEditButton = fixture.debugElement.queryAll(By.css('.group-update-label'))[0];
-    return bulkLabelEditButton.componentInstance.disabled == false;
+    return !bulkLabelEditButton.componentInstance.disabled;
   }
 
   it('should display a row for each job', async(() => {

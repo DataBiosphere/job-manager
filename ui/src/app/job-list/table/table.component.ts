@@ -278,8 +278,6 @@ export class JobsTableComponent implements OnInit {
       }
     }
     let dialogRef = this.bulkEditDialog.open(JobsBulkEditComponent, {
-      width: '350px',
-      height: (this.bulkLabelFields.length * 150).toString() + 'px',
       disableClose: true,
       data: {
         'bulkLabelFields' : this.bulkLabelFields,
@@ -293,9 +291,9 @@ export class JobsTableComponent implements OnInit {
         for (let job of result.jobs) {
           this.jobManagerService.updateJobLabels(job.id,
               this.prepareUpdateJobLabelsRequest(result.fields))
-            .then((response) => {
-              result.job.labels = response.labels;
-              this.onJobsChanged.emit(result.job);
+            .then((response: UpdateJobLabelsResponse) => {
+              job.labels = response.labels;
+              this.onJobsChanged.emit(job);
             })
             .catch((error) => this.handleError(error));
         }
