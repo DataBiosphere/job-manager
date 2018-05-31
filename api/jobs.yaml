@@ -401,6 +401,20 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/TaskMetadata'
+      events:
+        type: array
+        items:
+          $ref: '#/definitions/EventDetail'
+
+  EventDetail:
+    description: Event with timestamp.
+    properties:
+        time:
+          type: string
+          format: data-time
+        content:
+          type: string
+          
   TaskMetadata:
     description: Task level metadata
     properties:

@@ -17,6 +17,8 @@ def get_extensions(job):
         script = envs['_SCRIPT']
         del envs['_SCRIPT']
 
+    # TODO: Plumb dstat events.
+
     return ExtendedFields(
         user_id=job['user-id'],
         status_detail=job.get('status-detail'),

@@ -15,6 +15,7 @@ import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-format
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {GcsService} from '../../core/gcs.service';
+import {EventDetail} from "../../shared/model/EventDetail";
 
 @Component({
   selector: 'jm-resources',
@@ -27,16 +28,17 @@ export class JobResourcesComponent implements OnInit {
   sourceFile: string = '';
   inputs: Array<string> = [];
   outputs: Array<string> = [];
+  eventDetails: Array<EventDetail> = [];
   logFileData: Map<string, string> = new Map();
 
   tabIds: Array<string> = [];
   tabTitles: Map<string, string> = new Map([
     ['inputs', 'Inputs'],
     ['outputs', 'Outputs'],
-    ['source-file', 'Source File']
+    ['source-file', 'Source File'],
+    ['event-detail', 'Event Detail']
   ]);
   currentTabId: string;
-
   constructor(
     private readonly gcsService: GcsService,
     private errorBar: MatSnackBar,
@@ -72,6 +74,11 @@ export class JobResourcesComponent implements OnInit {
               }
             }
           });
+      }
+
+      if (this.job.extensions.events) {
+        this.eventDetails = this.job.extensions.events;
+        this.tabIds.push('event-detail');
       }
     }
 
