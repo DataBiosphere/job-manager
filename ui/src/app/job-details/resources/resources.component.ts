@@ -39,7 +39,6 @@ export class JobResourcesComponent implements OnInit {
     ['event-detail', 'Event Detail']
   ]);
   currentTabId: string;
-
   constructor(
     private readonly gcsService: GcsService,
     private errorBar: MatSnackBar,

@@ -22,7 +22,7 @@
     </div>
     <div *ngIf="currentTabId == 'event-detail'" class="inline-text">
       <div *ngFor="let eventDetail of eventDetails" class="event-detail">
-          {{ eventDetail.startTime + ' ' + eventDetail.description }}
+          {{ eventDetail.time + ' ' + eventDetail.content }}
       </div>
     </div>
   </mat-expansion-panel>
