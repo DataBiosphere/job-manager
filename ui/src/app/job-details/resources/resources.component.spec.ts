@@ -113,7 +113,7 @@ describe('JobResourcesComponent', () => {
     testComponent.job = inputOutputSourceFileJob;
     fixture.detectChanges();
     let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
-    expect(tabGroup.componentInstance._tabs.length).toBe(3);
+    expect(tabGroup.componentInstance._tabs.length).toBe(4);
   }));
 
   it('should switch content when tabs switch', fakeAsync(() => {
