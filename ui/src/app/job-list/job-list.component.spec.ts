@@ -23,6 +23,7 @@ import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {CapabilitiesService} from '../core/capabilities.service';
 import {JobListComponent} from "./job-list.component"
+import {JobsBulkEditComponent} from "./table/bulk-edit/bulk-edit.component";
 import {JobsTableComponent} from "./table/table.component"
 import {JobManagerService} from '../core/job-manager.service';
 import {JobListResolver} from './job-list-resolver.service';
@@ -74,6 +75,7 @@ describe('JobListComponent', () => {
       declarations: [
         AppComponent,
         FakeProjectsComponent,
+        JobsBulkEditComponent,
         JobListComponent,
         TestJobListComponent,
         JobsTableComponent
@@ -249,7 +251,7 @@ describe('JobListComponent', () => {
     });
   }));
 
-  fit('reloads properly with stale data', fakeAsync(() => {
+  it('reloads properly with stale data', fakeAsync(() => {
     tick();
     fixture.detectChanges();
 
