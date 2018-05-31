@@ -132,7 +132,7 @@ button.apply-link:hover {
 }
 
 ::ng-deep mat-form-field.mat-form-field-type-mat-select .mat-select-arrow {
-  color: #fff;
+  color: rgba(0, 0, 0, 0);
 }
 
 ::ng-deep .mat-row:hover div.mat-input-underline {

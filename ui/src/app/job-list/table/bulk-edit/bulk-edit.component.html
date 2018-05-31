@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>Set Metadata</h2>
+<mat-dialog-content>
+  <ng-container *ngFor="let dfItem of data.bulkLabelFields">
+    <div [ngSwitch]="getFieldType(dfItem.displayField)">
+      <div *ngSwitchCase="'text'">
+        <label for="{{ dfItem.displayField.field }}">{{dfItem.displayField.display}}</label>
+        <mat-form-field>
+          <input matInput
+                 type="text"
+                 [value]="(dfItem.default !== false) ? dfItem.default : '(multiple)'"
+                 [id]="dfItem.displayField.field"
+                 #bulkLabelField
+                 maxlength="255"
+                 (focus)="bulkLabelField.select()"
+                 (change)="setFieldValue(dfItem.displayField, bulkLabelField.value)">
+          <button mat-button *ngIf="dfItem.displayField.display" matSuffix mat-icon-button aria-label="Clear" (click)="clearFieldValue(dfItem.displayField, bulkLabelField)">
+            <clr-icon shape="times-circle"></clr-icon>
+          </button>
+          <mat-hint align="end">{{bulkLabelField.value?.length || 0}}/255</mat-hint>
+        </mat-form-field>
+      </div>
+      <div *ngSwitchCase="'list'">
+        <label for="{{ dfItem.displayField.field }}">{{ dfItem.displayField.display }}</label>
+        <mat-form-field>
+          <mat-select #bulkLabelSelect
+                      [placeholder]="(dfItem.default !== false) ? dfItem.default : '(multiple)'"
+                      [id]="dfItem.displayField.field"
+                      (change)="setFieldValue(dfItem.displayField, bulkLabelSelect.value)">
+            <mat-option value="">(none)</mat-option>
+            <mat-option *ngFor="let fieldOption of getFieldOptions(dfItem.displayField)"
+                        [value]="fieldOption">
+              {{ fieldOption }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </ng-container>
+ </mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="cancelChanges()">Cancel</button>
+  <button mat-button (click)="saveChanges()">Apply</button>
+</mat-dialog-actions>

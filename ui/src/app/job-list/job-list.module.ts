@@ -23,7 +23,7 @@ import {RouterModule} from '@angular/router';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {JobListComponent} from './job-list.component';
-import {JobsBulkChangeComponent} from "./table/bulk-change/bulk-change.component";
+import {JobsBulkEditComponent} from "./table/bulk-edit/bulk-edit.component";
 import {JobsTableComponent} from './table/table.component';
 import {SharedModule} from '../shared/shared.module';
 
@@ -53,11 +53,11 @@ import {SharedModule} from '../shared/shared.module';
     SharedModule,
   ],
   entryComponents: [
-    JobsBulkChangeComponent
+    JobsBulkEditComponent
   ],
   declarations: [
     JobListComponent,
-    JobsBulkChangeComponent,
+    JobsBulkEditComponent,
     JobsTableComponent,
   ],
   exports: []

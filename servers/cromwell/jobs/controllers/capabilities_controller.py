@@ -33,7 +33,12 @@ def get_capabilities():
                 editable=True,
                 bulk_editable=True,
                 field_type='list',
-                valid_field_values=['archive', 'follow-up'])
+                valid_field_values=['archive', 'follow-up']),
+            DisplayField(
+                field='labels.comment',
+                display='Comment',
+                editable=True,
+                field_type='text')
         ],
         common_labels=['cromwell-workflow-id', 'label', 'flag'],
         query_extensions=[])

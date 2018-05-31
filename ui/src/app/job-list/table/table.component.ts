@@ -19,7 +19,7 @@ import 'rxjs/add/observable/fromEvent';
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {DisplayField} from '../../shared/model/DisplayField';
 import {JobManagerService} from '../../core/job-manager.service';
-import {JobsBulkChangeComponent} from "./bulk-change/bulk-change.component";
+import {JobsBulkEditComponent} from "./bulk-edit/bulk-edit.component";
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
@@ -42,7 +42,7 @@ export class JobsTableComponent implements OnInit {
   private mouseoverJob: QueryJobsResult;
 
   public displayFields: DisplayField[];
-  public bulkLabelFields: DisplayField[];
+  public bulkLabelFields: object[];
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
 
@@ -58,7 +58,7 @@ export class JobsTableComponent implements OnInit {
     private readonly capabilitiesService: CapabilitiesService,
     private readonly viewContainer: ViewContainerRef,
     private snackBar: MatSnackBar,
-    public bulkChangeDialog: MatDialog) { }
+    public bulkEditDialog: MatDialog) { }
 
   ngOnInit() {
     // set up display fields and bulk update-able labels
@@ -67,7 +67,7 @@ export class JobsTableComponent implements OnInit {
     for (let displayField of this.displayFields) {
       this.displayedColumns.push(displayField.field);
       if (displayField.bulkEditable) {
-        this.bulkLabelFields.push(displayField);
+        this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
       }
     }
 
@@ -262,23 +262,22 @@ export class JobsTableComponent implements OnInit {
     }
   }
 
-  openBulkChangeDialog(): void {
+  openbulkEditDialog(): void {
     this.resetBulkLabelFieldDefaults();
     // figure out default values for bulk fields; if all jobs have the same label value,
     // set that to the defualt; otherwise, set default to boolean false
-    for (let j = 0; j < this.selection.selected.length; j++) {
-      for (let f = 0; f < this.bulkLabelFields.length; f++) {
-        const label = this.bulkLabelFields[f].field.replace('labels.', '');
-        const jobLabelValue = this.selection.selected[j].labels[label] || '';
-        if (this.bulkLabelFields[f]['default'] == null) {
-          this.bulkLabelFields[f]['default'] = jobLabelValue;
-        } else if (this.bulkLabelFields[f]['default'] !== false &&
-          this.bulkLabelFields[f]['default'] != jobLabelValue) {
-          this.bulkLabelFields[f]['default'] = false;
+    for (let job of this.selection.selected) {
+      for (let bulkFieldItem of this.bulkLabelFields) {
+        const label = bulkFieldItem.displayField.field.replace('labels.', '');
+        const jobLabelValue = job.labels[label] || '';
+        if (bulkFieldItem.default === null) {
+          bulkFieldItem.default = jobLabelValue;
+        } else if (bulkFieldItem.default !== false && bulkFieldItem.default !== jobLabelValue) {
+          bulkFieldItem.default = false;
         }
       }
     }
-    let dialogRef = this.bulkChangeDialog.open(JobsBulkChangeComponent, {
+    let dialogRef = this.bulkEditDialog.open(JobsBulkEditComponent, {
       width: '350px',
       height: (this.bulkLabelFields.length * 150).toString() + 'px',
       disableClose: true,

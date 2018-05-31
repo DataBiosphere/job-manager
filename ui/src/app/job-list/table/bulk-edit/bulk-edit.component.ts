@@ -3,12 +3,12 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
 import {DisplayField} from "../../../shared/model/DisplayField";
 
 @Component({
-  selector: 'jm-bulk-change-component',
-  templateUrl: 'bulk-change.component.html'
+  selector: 'jm-bulk-edit-component',
+  templateUrl: 'bulk-edit.component.html'
 })
-export class JobsBulkChangeComponent {
+export class JobsBulkEditComponent {
   constructor(
-    public dialogRef: MatDialogRef<JobsBulkChangeComponent>,
+    public dialogRef: MatDialogRef<JobsBulkEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   cancelChanges(): void {
@@ -27,9 +27,9 @@ export class JobsBulkChangeComponent {
     this.data.newValues[df.field] = value;
   }
 
-  clearFieldValue(df: DisplayField, field): void {
-    field.value = '';
-    this.setFieldValue(df, '');
+  clearFieldValue(labelField: DisplayField, bulkEditFieldInput: HTMLObjectElement): void {
+    bulkEditFieldInput.value = '';
+    this.setFieldValue(labelField, '');
   }
 
   saveChanges() {
