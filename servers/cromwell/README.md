@@ -40,28 +40,29 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
       "display": "Workflow ID"
     },
     {
-     "field": "labels.flag",
-     "display": "Flag",
-     "editable": true,
-     "bulkEditable": true,
-     "fieldType": "list",
-     "fieldValues": [
-       "archive",
-       "follow-up"
-     ]
-   },
-   {
-     "field": "labels.label",
-     "display": "Label",
-     "fieldType": "text",
-     "editable": true,
-     "bulkEditable": true
-   },
-   {
-     "field": "labels.comment",
-     "display": "Comment",
-     "fieldType": "text",
-     "editable": true
+      "field": "labels.flag",
+      "display": "Flag",
+      "editable": true,
+      "bulkEditable": true,
+      "fieldType": "list",
+      "fieldValues": [
+        "archive",
+        "follow-up"
+      ]
+    },
+    {
+      "field": "labels.label",
+      "display": "Label",
+      "fieldType": "text",
+      "editable": true,
+      "bulkEditable": true
+    },
+    {
+      "field": "labels.comment",
+      "display": "Comment",
+      "fieldType": "text",
+      "editable": true
+    }
   ],
   "commonLabels": [
     "cromwell-workflow-id",

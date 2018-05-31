@@ -27,7 +27,7 @@ export class JobsBulkEditComponent {
     this.data.newValues[df.field] = value;
   }
 
-  clearFieldValue(labelField: DisplayField, bulkEditFieldInput: HTMLObjectElement): void {
+  clearFieldValue(labelField: DisplayField, bulkEditFieldInput: HTMLInputElement): void {
     bulkEditFieldInput.value = '';
     this.setFieldValue(labelField, '');
   }
