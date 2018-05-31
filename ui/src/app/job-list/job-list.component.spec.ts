@@ -247,7 +247,7 @@ describe('JobListComponent', () => {
     });
   }));
 
-  fit('reloads properly with stale data', fakeAsync(() => {
+  it('reloads properly with stale data', fakeAsync(() => {
     tick();
     fixture.detectChanges();
 
