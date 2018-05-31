@@ -42,7 +42,7 @@ export class JobsTableComponent implements OnInit {
   private mouseoverJob: QueryJobsResult;
 
   public displayFields: DisplayField[];
-  public bulkLabelFields: [{'displayField' : DisplayField, 'default' }];
+  public bulkLabelFields;
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
 
@@ -63,6 +63,7 @@ export class JobsTableComponent implements OnInit {
   ngOnInit() {
     // set up display fields and bulk update-able labels
     this.displayFields = this.capabilitiesService.getCapabilitiesSynchronous().displayFields;
+    this.bulkLabelFields = [];
     for (let displayField of this.displayFields) {
       this.displayedColumns.push(displayField.field);
       if (displayField.bulkEditable) {
