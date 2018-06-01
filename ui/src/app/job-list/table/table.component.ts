@@ -42,7 +42,10 @@ export class JobsTableComponent implements OnInit {
   private mouseoverJob: QueryJobsResult;
 
   public displayFields: DisplayField[];
-  public bulkLabelFields;
+  public bulkLabelFields: Array<{
+    default: string|null,
+    field: DisplayField
+  }>;
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
 
@@ -118,6 +121,7 @@ export class JobsTableComponent implements OnInit {
      * assuming the changes have gone through successfully
      */
       .then((response: UpdateJobLabelsResponse) => {
+        response.
         job.labels = response.labels;
         this.onJobsChanged.emit([job]);
       })
@@ -263,20 +267,17 @@ export class JobsTableComponent implements OnInit {
   }
 
   openbulkEditDialog(): void {
-    this.resetBulkLabelFieldDefaults();
-    // figure out default values for bulk fields; if all jobs have the same label value,
-    // set that to the default; otherwise, set default to boolean false
-    for (let job of this.selection.selected) {
-      for (let bulkFieldItem of this.bulkLabelFields) {
-        const label = bulkFieldItem.displayField.field.replace('labels.', '');
-        const jobLabelValue = job.labels[label] || '';
-        if (bulkFieldItem.default === null) {
-          bulkFieldItem.default = jobLabelValue;
-        } else if (bulkFieldItem.default !== false && bulkFieldItem.default !== jobLabelValue) {
-          bulkFieldItem.default = false;
+    for (let bulkFieldItem of this.bulkLabelFields) {
+      const label = bulkFieldItem.displayField.field.replace('labels.', '');
+      bulkFieldItem.default = this.selection.selected[0].labels[label];
+      for (let job of this.selection.selected) {
+        const jobLabelValue = job.labels[label];
+        if (bulkFieldItem.default !== jobLabelValue) {
+          bulkFieldItem.default = null;
         }
       }
     }
+
     let dialogRef = this.bulkEditDialog.open(JobsBulkEditComponent, {
       disableClose: true,
       data: {
@@ -286,27 +287,21 @@ export class JobsTableComponent implements OnInit {
       }
     });
 
+    // TO DO: prevent calls of updateJobLabels if result.fields is empty
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        for (let job of result.jobs) {
-          this.jobManagerService.updateJobLabels(job.id,
-              this.prepareUpdateJobLabelsRequest(result.fields))
-            .then((response: UpdateJobLabelsResponse) => {
-              job.labels = response.labels;
-              this.onJobsChanged.emit(job);
-            })
-            .catch((error) => this.handleError(error));
-        }
+      if (!result) {
+        return;
+      }
+      for (let job of result.jobs) {
+        this.jobManagerService.updateJobLabels(job.id,
+            this.prepareUpdateJobLabelsRequest(result.fields))
+          .then((response: UpdateJobLabelsResponse) => {
+            job.labels = response.labels;
+            this.onJobsChanged.emit(job);
+          })
+          .catch((error) => this.handleError(error));
       }
     });
-  }
-
-  private resetBulkLabelFieldDefaults(): void {
-    for (let bulkLabelField of this.bulkLabelFields) {
-      if (bulkLabelField['default'] !== null) {
-        bulkLabelField['default'] = null;
-      }
-    }
   }
 
   private prepareUpdateJobLabelsRequest (fieldValues: {}): UpdateJobLabelsRequest {

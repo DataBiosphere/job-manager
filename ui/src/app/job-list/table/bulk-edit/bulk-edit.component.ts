@@ -24,8 +24,8 @@ export class JobsBulkEditComponent {
     return df.validFieldValues;
   }
 
-  getFieldDefaultValue(displayFieldItem: {'default'}): string {
-    if (displayFieldItem.default !== false) {
+  getFieldDefaultValue(displayFieldItem: object): string {
+    if (displayFieldItem.default !== null) {
       return displayFieldItem.default
     } else {
       return '(multiple)';
