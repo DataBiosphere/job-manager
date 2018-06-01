@@ -45,7 +45,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
       "editable": true,
       "bulkEditable": true,
       "fieldType": "list",
-      "fieldValues": [
+      "validFieldValues": [
         "archive",
         "follow-up"
       ]
