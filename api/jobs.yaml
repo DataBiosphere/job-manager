@@ -414,10 +414,10 @@ definitions:
     properties:
         time:
           type: string
-          format: data-time
+          format: date-time
         content:
           type: string
-          
+
   TaskMetadata:
     description: Task level metadata
     properties:

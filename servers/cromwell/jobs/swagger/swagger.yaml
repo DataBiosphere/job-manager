@@ -423,7 +423,7 @@ definitions:
     properties:
       time:
         type: "string"
-        format: "data-time"
+        format: "date-time"
       content:
         type: "string"
     description: "Event with timestamp."

@@ -16,7 +16,7 @@ import * as models from './models';
  * Event with timestamp.
  */
 export interface EventDetail {
-    time?: string;
+    time?: Date;
 
     content?: string;
 
