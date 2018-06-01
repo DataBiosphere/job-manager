@@ -7,7 +7,7 @@
         <mat-form-field>
           <input matInput
                  type="text"
-                 [value]="(dfItem.default !== false) ? dfItem.default : '(multiple)'"
+                 [value]="getFieldDefaultValue(dfItem)"
                  [id]="dfItem.displayField.field"
                  #bulkLabelField
                  maxlength="255"
@@ -23,7 +23,7 @@
         <label for="{{ dfItem.displayField.field }}">{{ dfItem.displayField.display }}</label>
         <mat-form-field>
           <mat-select #bulkLabelSelect
-                      [placeholder]="(dfItem.default !== false) ? dfItem.default : '(multiple)'"
+                      [placeholder]="getFieldDefaultValue(dfItem)"
                       [id]="dfItem.displayField.field"
                       (change)="setFieldValue(dfItem.displayField, bulkLabelSelect.value)">
             <mat-option value="">(none)</mat-option>

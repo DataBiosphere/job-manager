@@ -23,6 +23,14 @@ export class JobsBulkEditComponent {
     return df.validFieldValues;
   }
 
+  getFieldDefaultValue(displayFieldItem: {'default'}): string {
+    if (displayFieldItem.default !== false) {
+      return displayFieldItem.default
+    } else {
+      return '(multiple)';
+    }
+  }
+
   setFieldValue(df: DisplayField, value: string): void {
     this.data.newValues[df.field] = value;
   }
