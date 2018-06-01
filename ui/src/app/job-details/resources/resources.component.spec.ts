@@ -62,11 +62,11 @@ describe('JobResourcesComponent', () => {
         events: [
           {
             content: 'start',
-            time: '2018-05-24T21:42:49.699649148Z'
+            time: new Date('2018-05-24T21:42:49.699649148Z')
           },
           {
             content: 'pulling-image',
-            time: '2018-05-24T21:42:49.699699675Z'
+            time: new Date('2018-05-24T21:42:49.699699675Z')
           }
         ]
       }

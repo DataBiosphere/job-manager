@@ -17,12 +17,12 @@ class EventDetail(Model):
         EventDetail - a model defined in Swagger
 
         :param time: The time of this EventDetail.
-        :type time: str
+        :type time: datetime
         :param content: The content of this EventDetail.
         :type content: str
         """
         self.swagger_types = {
-            'time': str,
+            'time': datetime,
             'content': str
         }
 
@@ -52,7 +52,7 @@ class EventDetail(Model):
         Gets the time of this EventDetail.
 
         :return: The time of this EventDetail.
-        :rtype: str
+        :rtype: datetime
         """
         return self._time
 
@@ -62,7 +62,7 @@ class EventDetail(Model):
         Sets the time of this EventDetail.
 
         :param time: The time of this EventDetail.
-        :type time: str
+        :type time: datetime
         """
 
         self._time = time
