@@ -4,7 +4,8 @@ import {DisplayField} from "../../../shared/model/DisplayField";
 
 @Component({
   selector: 'jm-bulk-edit-component',
-  templateUrl: 'bulk-edit.component.html'
+  templateUrl: 'bulk-edit.component.html',
+  styleUrls: ['bulk-edit.component.css']
 })
 export class JobsBulkEditComponent {
   constructor(

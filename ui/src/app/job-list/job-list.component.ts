@@ -5,7 +5,7 @@ import {DataSource} from '@angular/cdk/collections';
 import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {PageEvent, MatSnackBar} from '@angular/material'
 import {Observable} from 'rxjs/Observable';
-import {ActivatedRoute, NavigationEnd, NavigationError, Router} from '@angular/router';
+import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';

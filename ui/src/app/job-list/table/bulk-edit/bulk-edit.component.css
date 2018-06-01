@@ -1,0 +1,12 @@
+label {
+  display: block;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+button {
+  font-weight: bold;
+  font-size: .75rem;
+  text-transform: uppercase;
+}
