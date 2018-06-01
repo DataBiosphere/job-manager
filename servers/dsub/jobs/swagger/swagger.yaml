@@ -413,8 +413,20 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/TaskMetadata"
+      events:
+        type: "array"
+        items:
+          $ref: "#/definitions/EventDetail"
     description: "Extended fields on jobs which may not be populated by all backends.\
       \ See the /capabilities endpoint for more details.\n"
+  EventDetail:
+    properties:
+      time:
+        type: "string"
+        format: "data-time"
+      content:
+        type: "string"
+    description: "Event with timestamp."
   TaskMetadata:
     properties:
       inputs:
