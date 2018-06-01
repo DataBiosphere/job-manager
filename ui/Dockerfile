@@ -5,7 +5,7 @@ ADD package-lock.json package.json tsconfig.json .angular-cli.json /ui/
 RUN npm install
 
 ADD src /ui/src
-RUN node_modules/.bin/ng build --aot --build-optimizer
+RUN node_modules/.bin/ng build --prod
 
 FROM nginx
 
