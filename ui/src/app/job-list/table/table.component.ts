@@ -291,15 +291,17 @@ export class JobsTableComponent implements OnInit {
       if (!result || !this.doesResultHaveLabelChanges(result)) {
         return;
       }
+      let lastJobUpdated: QueryJobsResult[];
       for (let job of result.jobs) {
         this.jobManagerService.updateJobLabels(job.id,
             this.prepareUpdateJobLabelsRequest(result.fields))
           .then((response: UpdateJobLabelsResponse) => {
             job.labels = response.labels;
-            this.onJobsChanged.emit(job);
+            lastJobUpdated = job;
           })
           .catch((error) => this.handleError(error));
       }
+      this.onJobsChanged.emit(lastJobUpdated);
     });
   }
 
@@ -311,10 +313,7 @@ export class JobsTableComponent implements OnInit {
     return req;
   }
 
-  private doesResultHaveLabelChanges (result: object) {
-    for (let i in result['fields']) {
-      return true;
-    }
-    return false;
+  private doesResultHaveLabelChanges (result: object): boolean {
+    return Object.keys(result['fields']).length > 0;
   }
 }
