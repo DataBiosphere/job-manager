@@ -1,8 +1,11 @@
+.mat-dialog-content {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 0.85rem;
+}
+
 label {
   display: block;
-  font-family: 'Roboto', sans-serif;
   font-weight: bold;
-  font-size: 0.85rem;
 }
 
 button {
