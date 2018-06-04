@@ -4,7 +4,11 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 
 ## Development
 
-1. Set the `CROMWELL_URL` environment variable to specify which cromwell instance to use.
+1. Set the `CROMWELL_URL` environment variable to specify which cromwell instance to use, for example:
+    
+    ```
+    export CROMWELL_URL=https://exapmle-cromwell.broadinstitute.org/api/workflows/v1
+    ```
 
     **Note:** If you want to setup this API Server against a locally hosted Cromwell instance, you need to explicitly provide the ip address (inet if the Cromwell is hosted on the same machine) to the Cromwell with port numbers, for example:
     ```
@@ -44,7 +48,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 }
 ```
 
-   **Note:** If you want to use use Job Manager against Cromwell-as-a-Service, which is using SAM/Google OAuth for authN and authZ, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
+   **Note:** If you want to use use Job Manager against Cromwell-as-a-Service, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
  ```
  {
    "displayFields": [
