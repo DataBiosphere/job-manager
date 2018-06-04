@@ -44,12 +44,12 @@ export class JobsTableComponent implements OnInit {
   public displayFields: DisplayField[];
   public bulkLabelFields: Array<{
     default: string|null,
-    field: DisplayField
+    displayField: DisplayField
   }>;
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
 
-  // currently Cromwell's limit; if there is some variablilty in other backends
+  // currently Cromwell's limit; if there is some variability in other backends
   // this should be moved to a config
   public readonly labelCharLimit = 255;
 
@@ -121,7 +121,6 @@ export class JobsTableComponent implements OnInit {
      * assuming the changes have gone through successfully
      */
       .then((response: UpdateJobLabelsResponse) => {
-        response.
         job.labels = response.labels;
         this.onJobsChanged.emit([job]);
       })
@@ -267,14 +266,22 @@ export class JobsTableComponent implements OnInit {
   }
 
   openbulkEditDialog(): void {
+    // get default values for bulk edit fields in dialog
     for (let bulkFieldItem of this.bulkLabelFields) {
       const label = bulkFieldItem.displayField.field.replace('labels.', '');
+
+      console.log(bulkFieldItem.default);
+
       bulkFieldItem.default = this.selection.selected[0].labels[label];
+
+      console.log(bulkFieldItem.default);
+
       for (let job of this.selection.selected) {
-        const jobLabelValue = job.labels[label];
+        const jobLabelValue = job.labels[label] || '';
         if (bulkFieldItem.default !== jobLabelValue) {
           bulkFieldItem.default = null;
         }
+        console.log(bulkFieldItem.default);
       }
     }
 
