@@ -287,7 +287,7 @@ export class JobsTableComponent implements OnInit {
       }
     });
 
-    // TO DO: prevent calls of updateJobLabels if result.fields is empty
+    // TODO: prevent calls of updateJobLabels if result.fields is empty
     dialogRef.afterClosed().subscribe((result) => {
       if (!result) {
         return;

@@ -8,6 +8,10 @@ import {DisplayField} from "../../../shared/model/DisplayField";
   styleUrls: ['bulk-edit.component.css']
 })
 export class JobsBulkEditComponent {
+  // currently Cromwell's limit; if there is some variability in other backends
+  // this should be moved to a config
+  public readonly labelCharLimit = 255;
+
   constructor(
     public dialogRef: MatDialogRef<JobsBulkEditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }

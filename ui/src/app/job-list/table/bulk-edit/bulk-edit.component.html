@@ -10,13 +10,13 @@
                  [value]="getFieldDefaultValue(dfItem)"
                  [id]="dfItem.displayField.field"
                  #bulkLabelField
-                 maxlength="255"
+                 [maxLength]="labelCharLimit"
                  (focus)="bulkLabelField.select()"
                  (change)="setFieldValue(dfItem.displayField, bulkLabelField.value)">
           <button mat-button *ngIf="dfItem.displayField.display" matSuffix mat-icon-button aria-label="Clear" (click)="clearFieldValue(dfItem.displayField, bulkLabelField)">
             <clr-icon shape="times-circle"></clr-icon>
           </button>
-          <mat-hint align="end">{{bulkLabelField.value?.length || 0}}/255</mat-hint>
+          <mat-hint align="end">{{bulkLabelField.value?.length || 0}}/{{ labelCharLimit }}</mat-hint>
         </mat-form-field>
       </div>
       <div *ngSwitchCase="'list'">
