@@ -287,9 +287,8 @@ export class JobsTableComponent implements OnInit {
       }
     });
 
-    // TODO: prevent calls of updateJobLabels if result.fields is empty
     dialogRef.afterClosed().subscribe((result) => {
-      if (!result) {
+      if (!result || !this.doesResultHaveLabelChanges(result)) {
         return;
       }
       for (let job of result.jobs) {
@@ -310,5 +309,12 @@ export class JobsTableComponent implements OnInit {
       req.labels[displayField.replace('labels.', '')] = fieldValues[displayField];
     }
     return req;
+  }
+
+  private doesResultHaveLabelChanges (result: object) {
+    for (let i in result['fields']) {
+      return true;
+    }
+    return false;
   }
 }
