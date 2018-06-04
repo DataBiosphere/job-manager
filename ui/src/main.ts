@@ -3,15 +3,17 @@ import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
 import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
-import { environmentLoader as environmentLoaderPromise } from './environments/environmentLoader';
+import { ConfigurationLoader as configurationLoaderPromise } from './environments/configurationLoader';
 
 
-environmentLoaderPromise.then(env => {
-  if (env.production) {
-    enableProdMode();
-  }
-  environment.apiUrl = env.apiUrl;
-  environment.clientId = env.clientId;
+if (environment.production) {
+  enableProdMode();
+}
+
+configurationLoaderPromise.then(env => {
+  Object.entries(env).forEach(([key, value]) => {
+    environment[key] = value;
+  });
 
   platformBrowserDynamic().bootstrapModule(AppModule)
     .catch(err => console.log(err));
