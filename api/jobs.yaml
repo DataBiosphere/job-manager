@@ -489,7 +489,7 @@ definitions:
   BulkLabelField:
     description: a DisplayField that can be bulk-editable via the UI
     required:
-      - field
+      - displayField
     properties:
       default:
         type: string
