@@ -26,6 +26,7 @@ import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-format
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {JobStatusIcon} from '../../shared/common';
 import {ActivatedRoute, Params} from '@angular/router';
+import {BulkLabelField} from '../../shared/model/BulkLabelField';
 import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
 import {UpdateJobLabelsResponse} from "../../shared/model/UpdateJobLabelsResponse";
 
@@ -42,10 +43,7 @@ export class JobsTableComponent implements OnInit {
   private mouseoverJob: QueryJobsResult;
 
   public displayFields: DisplayField[];
-  public bulkLabelFields: Array<{
-    default: string|null,
-    displayField: DisplayField
-  }>;
+  public bulkLabelFields: BulkLabelField[];
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
 

@@ -1,5 +1,6 @@
 import {Component, Inject} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
+import {BulkLabelField} from '../../../shared/model/BulkLabelField';
 import {DisplayField} from "../../../shared/model/DisplayField";
 
 @Component({
@@ -28,9 +29,7 @@ export class JobsBulkEditComponent {
     return df.validFieldValues;
   }
 
-  getFieldDefaultValue(displayFieldItem: {
-    default: string|null,
-    displayField: DisplayField }): string {
+  getFieldDefaultValue(displayFieldItem: BulkLabelField): string {
     if (displayFieldItem.default !== null) {
       return displayFieldItem.default
     } else {

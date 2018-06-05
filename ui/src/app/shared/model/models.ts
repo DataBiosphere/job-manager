@@ -1,4 +1,5 @@
 export * from './AuthenticationCapability';
+export * from './BulkLabelField';
 export * from './CapabilitiesResponse';
 export * from './DisplayField';
 export * from './EventDetail';

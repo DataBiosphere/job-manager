@@ -494,6 +494,13 @@ definitions:
     - "text"
     - "list"
     default: "text"
+  BulkLabelField:
+    properties:
+      default:
+        type: "string"
+      displayField:
+        $ref: "#/definitions/DisplayField"
+    description: "a DisplayField that can be bulk-editable via the UI"
 responses:
   BadRequest:
     description: "Bad request"
