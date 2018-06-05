@@ -18,6 +18,6 @@ import * as models from './models';
 export interface BulkLabelField {
     default?: string;
 
-    displayField?: models.DisplayField;
+    displayField: models.DisplayField;
 
 }

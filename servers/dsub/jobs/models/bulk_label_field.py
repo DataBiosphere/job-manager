@@ -86,6 +86,8 @@ class BulkLabelField(Model):
         :param display_field: The display_field of this BulkLabelField.
         :type display_field: DisplayField
         """
+        if display_field is None:
+            raise ValueError("Invalid value for `display_field`, must not be `None`")
 
         self._display_field = display_field
 
