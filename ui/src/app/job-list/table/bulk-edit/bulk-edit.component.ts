@@ -32,9 +32,8 @@ export class JobsBulkEditComponent {
   getFieldDefaultValue(displayFieldItem: BulkLabelField): string {
     if (displayFieldItem.default !== null) {
       return displayFieldItem.default
-    } else {
-      return '(multiple)';
     }
+    return '(multiple)';
   }
 
   setFieldValue(df: DisplayField, value: string): void {

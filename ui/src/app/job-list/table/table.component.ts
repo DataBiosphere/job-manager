@@ -135,7 +135,7 @@ export class JobsTableComponent implements OnInit {
   }
 
   canBulkUpdateLabels(): boolean {
-    return this.bulkLabelFields.length && (this.selection.selected.length > 1);
+    return this.bulkLabelFields.length && (this.selection.selected.length > 0);
   }
 
   showSelectionBar(): boolean {
@@ -289,17 +289,19 @@ export class JobsTableComponent implements OnInit {
       if (!result || !this.doesResultHaveLabelChanges(result)) {
         return;
       }
-      let lastJobUpdated: QueryJobsResult[];
+      const jobUpdates: Promise<void>[] = [];
       for (let job of result.jobs) {
-        this.jobManagerService.updateJobLabels(job.id,
+        jobUpdates.push(this.jobManagerService.updateJobLabels(job.id,
             this.prepareUpdateJobLabelsRequest(result.fields))
           .then((response: UpdateJobLabelsResponse) => {
             job.labels = response.labels;
-            lastJobUpdated = job;
           })
-          .catch((error) => this.handleError(error));
+          .catch((error) => this.handleError(error)));
       }
-      this.onJobsChanged.emit(lastJobUpdated);
+      Promise.all(jobUpdates)
+        .then(() => {
+          this.onJobsChanged.emit(result.jobs);
+        });
     });
   }
 

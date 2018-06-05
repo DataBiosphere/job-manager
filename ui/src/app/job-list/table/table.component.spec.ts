@@ -292,17 +292,10 @@ describe('JobsTableComponent', () => {
     expect(isGroupAbortIsEnabled()).toBeTruthy();
   }))
 
-  it('disables the bulk edit button when there is a bulkEditable field but less than two jobs selected', async(() => {
+  it('enables the bulk edit button when there is a bulkEditable field and at least one job selected', async(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[1].nativeElement.click();
-    fixture.detectChanges();
-    expect(isBulkLabelEditIsEnabled()).toBeFalsy();
-  }))
-
-  it('enables the bulk edit button when there is a bulkEditable field and at least two jobs selected', async(() => {
-    fixture.detectChanges();
-    testComponent.jobsTableComponent.toggleSelectAll();
     fixture.detectChanges();
     expect(isBulkLabelEditIsEnabled()).toBeTruthy();
   }))
