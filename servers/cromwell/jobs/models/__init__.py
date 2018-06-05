@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 # import models into model package
 from .authentication_capability import AuthenticationCapability
+from .bulk_label_field import BulkLabelField
 from .capabilities_response import CapabilitiesResponse
 from .display_field import DisplayField
 from .event_detail import EventDetail

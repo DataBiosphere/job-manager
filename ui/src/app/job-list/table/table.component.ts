@@ -8,7 +8,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {DataSource, SelectionModel} from '@angular/cdk/collections';
-import {MatSnackBar} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
@@ -19,12 +19,14 @@ import 'rxjs/add/observable/fromEvent';
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {DisplayField} from '../../shared/model/DisplayField';
 import {JobManagerService} from '../../core/job-manager.service';
+import {JobsBulkEditComponent} from "./bulk-edit/bulk-edit.component";
 import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {JobStatusIcon} from '../../shared/common';
 import {ActivatedRoute, Params} from '@angular/router';
+import {BulkLabelField} from '../../shared/model/BulkLabelField';
 import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
 import {UpdateJobLabelsResponse} from "../../shared/model/UpdateJobLabelsResponse";
 
@@ -41,10 +43,11 @@ export class JobsTableComponent implements OnInit {
   private mouseoverJob: QueryJobsResult;
 
   public displayFields: DisplayField[];
+  public bulkLabelFields: BulkLabelField[];
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
 
-  // currently Cromwell's limit; if there is some variablilty in other backends
+  // currently Cromwell's limit; if there is some variability in other backends
   // this should be moved to a config
   public readonly labelCharLimit = 255;
 
@@ -55,12 +58,18 @@ export class JobsTableComponent implements OnInit {
     private readonly jobManagerService: JobManagerService,
     private readonly capabilitiesService: CapabilitiesService,
     private readonly viewContainer: ViewContainerRef,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    public bulkEditDialog: MatDialog) { }
 
   ngOnInit() {
+    // set up display fields and bulk update-able labels
     this.displayFields = this.capabilitiesService.getCapabilitiesSynchronous().displayFields;
+    this.bulkLabelFields = [];
     for (let displayField of this.displayFields) {
       this.displayedColumns.push(displayField.field);
+      if (displayField.bulkEditable) {
+        this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
+      }
     }
 
     this.dataSource.connect(null).subscribe((jobs: QueryJobsResult[]) => {
@@ -101,10 +110,10 @@ export class JobsTableComponent implements OnInit {
   }
 
   setFieldValue(job: QueryJobsResult, displayField: string, value: string) {
-    const label = displayField.replace('labels.', '');
-    const req: UpdateJobLabelsRequest = { labels : {} };
-    req.labels[label] = value;
-    this.jobManagerService.updateJobLabels(job.id, req)
+    let fieldItems = {};
+    fieldItems[displayField] = value;
+    this.jobManagerService.updateJobLabels(job.id,
+        this.prepareUpdateJobLabelsRequest(fieldItems))
     /* NOTE: currently, Cromwell response does not reflect whether or not the requested changes to
      * job have actually been made; it just contains what the job's labels would look like,
      * assuming the changes have gone through successfully
@@ -123,6 +132,10 @@ export class JobsTableComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  canBulkUpdateLabels(): boolean {
+    return this.bulkLabelFields.length && (this.selection.selected.length > 0);
   }
 
   showSelectionBar(): boolean {
@@ -248,5 +261,59 @@ export class JobsTableComponent implements OnInit {
         this.selection.select(this.jobs[i]);
       }
     }
+  }
+
+  openbulkEditDialog(): void {
+    // get default values for bulk edit fields in dialog
+    for (let bulkFieldItem of this.bulkLabelFields) {
+      const label = bulkFieldItem.displayField.field.replace('labels.', '');
+      bulkFieldItem.default = this.selection.selected[0].labels[label];
+      for (let job of this.selection.selected) {
+        const jobLabelValue = job.labels[label] || '';
+        if (bulkFieldItem.default !== jobLabelValue) {
+          bulkFieldItem.default = null;
+        }
+      }
+    }
+
+    let dialogRef = this.bulkEditDialog.open(JobsBulkEditComponent, {
+      disableClose: true,
+      data: {
+        'bulkLabelFields' : this.bulkLabelFields,
+        'selectedJobs' :  this.selection.selected,
+        'newValues': []
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result || !this.doesResultHaveLabelChanges(result)) {
+        return;
+      }
+      const jobUpdates: Promise<void>[] = [];
+      for (let job of result.jobs) {
+        jobUpdates.push(this.jobManagerService.updateJobLabels(job.id,
+            this.prepareUpdateJobLabelsRequest(result.fields))
+          .then((response: UpdateJobLabelsResponse) => {
+            job.labels = response.labels;
+          })
+          .catch((error) => this.handleError(error)));
+      }
+      Promise.all(jobUpdates)
+        .then(() => {
+          this.onJobsChanged.emit(result.jobs);
+        });
+    });
+  }
+
+  private prepareUpdateJobLabelsRequest (fieldValues: {}): UpdateJobLabelsRequest {
+    const req: UpdateJobLabelsRequest = { labels : {} };
+    for (let displayField in fieldValues) {
+      req.labels[displayField.replace('labels.', '')] = fieldValues[displayField];
+    }
+    return req;
+  }
+
+  private doesResultHaveLabelChanges (result: object): boolean {
+    return Object.keys(result['fields']).length > 0;
   }
 }

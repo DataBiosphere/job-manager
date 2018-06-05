@@ -152,6 +152,9 @@ definitions:
       editable:
         type: boolean
         default: false
+      bulkEditable:
+        type: boolean
+        default: false
       fieldType:
         $ref: '#/definitions/FieldType'
       validFieldValues:
@@ -483,6 +486,15 @@ definitions:
     enum:
       - text
       - list
+  BulkLabelField:
+    description: a DisplayField that can be bulk-editable via the UI
+    required:
+      - displayField
+    properties:
+      default:
+        type: string
+      displayField:
+        $ref: '#/definitions/DisplayField'
 responses:
   BadRequest:
     description: 'Bad request'

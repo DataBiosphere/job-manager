@@ -169,6 +169,9 @@ definitions:
       editable:
         type: "boolean"
         default: false
+      bulkEditable:
+        type: "boolean"
+        default: false
       fieldType:
         $ref: "#/definitions/FieldType"
       validFieldValues:
@@ -491,6 +494,15 @@ definitions:
     - "text"
     - "list"
     default: "text"
+  BulkLabelField:
+    required:
+    - "displayField"
+    properties:
+      default:
+        type: "string"
+      displayField:
+        $ref: "#/definitions/DisplayField"
+    description: "a DisplayField that can be bulk-editable via the UI"
 responses:
   BadRequest:
     description: "Bad request"

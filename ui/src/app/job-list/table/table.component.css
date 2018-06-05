@@ -132,7 +132,7 @@ button.apply-link:hover {
 }
 
 ::ng-deep mat-form-field.mat-form-field-type-mat-select .mat-select-arrow {
-  color: #fff;
+  color: rgba(0, 0, 0, 0);
 }
 
 ::ng-deep .mat-row:hover div.mat-input-underline {
@@ -143,9 +143,10 @@ button.apply-link:hover {
   color: rgba(0, 0, 0, 0.54);
 }
 
+::ng-deep .mat-select-content,
 ::ng-deep div.mat-menu-content mat-form-field input {
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  font-size: 14px;
+  font-size: 0.85rem;
 }
 
 clr-tooltip-content {

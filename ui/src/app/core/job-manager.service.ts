@@ -110,6 +110,7 @@ export class JobManagerService {
       req,
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
+      .then(response => response.json())
       .catch((e) => this.handleError(e));
   }
 

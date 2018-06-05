@@ -40,26 +40,29 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
       "display": "Workflow ID"
     },
     {
-     "field": "labels.flag",
-     "display": "Flag",
-     "editable": true,
-     "fieldType": "list",
-     "fieldValues": [
-       "archive",
-       "follow-up"
-     ]
-   },
-   {
-     "field": "labels.label",
-     "display": "Label",
-     "fieldType": "text",
-     "editable": true
-   },
-   {
-     "field": "labels.comment",
-     "display": "Comment",
-     "fieldType": "text",
-     "editable": true
+      "field": "labels.flag",
+      "display": "Flag",
+      "editable": true,
+      "bulkEditable": true,
+      "fieldType": "list",
+      "validFieldValues": [
+        "archive",
+        "follow-up"
+      ]
+    },
+    {
+      "field": "labels.label",
+      "display": "Label",
+      "fieldType": "text",
+      "editable": true,
+      "bulkEditable": true
+    },
+    {
+      "field": "labels.comment",
+      "display": "Comment",
+      "fieldType": "text",
+      "editable": true
+    }
   ],
   "commonLabels": [
     "cromwell-workflow-id",
@@ -69,7 +72,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
   "queryExtensions": []
 }
 ```
-The default "fieldType" is `text` and "editable" will treated as `false` unless explicity set to `true`.
+The default "fieldType" is `text` and both "editable" and "bulkEditable" will treated as `false` unless explicity set to `true`.
 
 4. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-compose-caas.yaml` otherwise use `cromwell-compose-dev.yaml`, e.g:
     ```

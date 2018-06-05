@@ -8,6 +8,8 @@ import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
+  MatDialogModule,
+  MatInputModule,
   MatMenuModule,
   MatSelectModule,
   MatSortModule,
@@ -16,7 +18,6 @@ import {
   MatPaginatorModule,
   MatSnackBarModule,
   MatTooltipModule,
-  MatInputModule,
   MatCheckboxModule
 } from '@angular/material';
 import {DataSource} from '@angular/cdk/collections';
@@ -26,6 +27,7 @@ import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {JobManagerService} from '../../core/job-manager.service';
+import {JobsBulkEditComponent} from "./bulk-edit/bulk-edit.component";
 import {JobsTableComponent} from './table.component';
 import {CapabilitiesResponse} from '../../shared/model/CapabilitiesResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
@@ -50,6 +52,7 @@ describe('JobsTableComponent', () => {
         {field: 'submission', display: 'Submitted'},
         {field: 'extensions.userId', display: 'User ID'},
         {field: 'labels.status-detail', display: 'Status Detail'},
+        {field: 'labels.label', display: 'Label', fieldType: FieldType.Text, editable: true, bulkEditable: true},
         {field: 'labels.comment', display: 'Comment', fieldType: FieldType.Text, editable: true}
       ]
     };
@@ -117,6 +120,7 @@ describe('JobsTableComponent', () => {
     fakeJobService = new FakeJobManagerService(jobs)
     TestBed.configureTestingModule({
       declarations: [
+        JobsBulkEditComponent,
         JobsTableComponent,
         TestTableComponent
       ],
@@ -128,6 +132,7 @@ describe('JobsTableComponent', () => {
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
+        MatDialogModule,
         MatInputModule,
         MatMenuModule,
         MatPaginatorModule,
@@ -163,7 +168,12 @@ describe('JobsTableComponent', () => {
 
   function isGroupAbortIsEnabled(): boolean {
     const abortButton = fixture.debugElement.queryAll(By.css('.group-abort'))[0];
-    return abortButton.componentInstance.disabled == false;
+    return !abortButton.componentInstance.disabled;
+  }
+
+  function isBulkLabelEditIsEnabled(): boolean {
+    const bulkLabelEditButton = fixture.debugElement.queryAll(By.css('.group-update-label'))[0];
+    return !bulkLabelEditButton.componentInstance.disabled;
   }
 
   it('should display a row for each job', async(() => {
@@ -196,7 +206,7 @@ describe('JobsTableComponent', () => {
     fixture.detectChanges();
 
     let dsubColumns = de.queryAll(By.css('.additional-column'));
-    expect(dsubColumns.length).toEqual(5);
+    expect(dsubColumns.length).toEqual(6);
     // Unwrap image tag to verify the reflect message
     expect((dsubColumns[0].children[0].childNodes[2]['attributes']['shape']))
       .toEqual(JobStatusIcon[jobs[0].status]);
@@ -206,7 +216,24 @@ describe('JobsTableComponent', () => {
       .toEqual(jobs[0].extensions.userId);
     expect(dsubColumns[3].nativeElement.textContent.trim())
       .toEqual(jobs[0].labels['status-detail']);
-  }));
+  }))
+
+  it('should not display editable field for job label if config has not explicitly said it is editable', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('.cdk-column-labels-status-detail .edit-field')).length)
+      .toEqual(0);
+  }))
+
+  it('should display editable field for job label if config has explicitly said it is editable', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    const numOfEditableLabelsPerField = 5;
+    expect(de.queryAll(By.css('.cdk-column-labels-comment .edit-field')).length)
+      .toEqual(numOfEditableLabelsPerField);
+    expect(de.queryAll(By.css('.cdk-column-labels-label .edit-field')).length)
+      .toEqual(numOfEditableLabelsPerField);
+  }))
 
   it('should not display editable field for job label if config has not explicitly said it is editable', async(() => {
     fixture.detectChanges();
@@ -263,6 +290,14 @@ describe('JobsTableComponent', () => {
     fixture.detectChanges();
     expect(isGroupSelectionRendered()).toBeTruthy();
     expect(isGroupAbortIsEnabled()).toBeTruthy();
+  }))
+
+  it('enables the bulk edit button when there is a bulkEditable field and at least one job selected', async(() => {
+    fixture.detectChanges();
+    const jobCheckboxes = getJobCheckboxes();
+    jobCheckboxes[1].nativeElement.click();
+    fixture.detectChanges();
+    expect(isBulkLabelEditIsEnabled()).toBeTruthy();
   }))
 
   it('displays error message bar', async(() => {

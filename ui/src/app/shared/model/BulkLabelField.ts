@@ -13,22 +13,11 @@
 import * as models from './models';
 
 /**
- * Description of a display field
+ * a DisplayField that can be bulk-editable via the UI
  */
-export interface DisplayField {
-    field?: string;
+export interface BulkLabelField {
+    default?: string;
 
-    display?: string;
-
-    editable?: boolean;
-
-    bulkEditable?: boolean;
-
-    fieldType?: models.FieldType;
-
-    /**
-     * A list of values the field can be set to
-     */
-    validFieldValues?: Array<string>;
+    displayField: models.DisplayField;
 
 }

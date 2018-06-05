@@ -6,6 +6,7 @@ import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
+  MatDialogModule,
   MatMenuModule,
   MatSelectModule,
   MatSortModule,
@@ -22,6 +23,7 @@ import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {CapabilitiesService} from '../core/capabilities.service';
 import {JobListComponent} from "./job-list.component"
+import {JobsBulkEditComponent} from "./table/bulk-edit/bulk-edit.component";
 import {JobsTableComponent} from "./table/table.component"
 import {JobManagerService} from '../core/job-manager.service';
 import {JobListResolver} from './job-list-resolver.service';
@@ -73,6 +75,7 @@ describe('JobListComponent', () => {
       declarations: [
         AppComponent,
         FakeProjectsComponent,
+        JobsBulkEditComponent,
         JobListComponent,
         TestJobListComponent,
         JobsTableComponent
@@ -85,6 +88,7 @@ describe('JobListComponent', () => {
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
+        MatDialogModule,
         MatDividerModule,
         MatMenuModule,
         MatPaginatorModule,
@@ -125,7 +129,7 @@ describe('JobListComponent', () => {
 
   function expectJobsRendered(jobs: QueryJobsResult[]) {
     const de: DebugElement = fixture.debugElement;
-    const rows = de.queryAll(By.css('.mat-row'))
+    const rows = de.queryAll(By.css('.mat-row'));
     expect(rows.length).toEqual(jobs.length);
     rows.forEach((row, i) => {
       expect(row.nativeElement.textContent).toContain(jobs[i].name);

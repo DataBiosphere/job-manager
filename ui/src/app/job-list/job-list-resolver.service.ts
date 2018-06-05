@@ -13,7 +13,6 @@ import {initialBackendPageSize} from '../shared/common';
 import {JobStream} from '../shared/job-stream';
 import {RouteReuse} from '../route-reuse.service';
 
-import {environment} from '../../environments/environment';
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 
 @Injectable()
