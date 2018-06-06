@@ -72,7 +72,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
   "queryExtensions": []
 }
 ```
-Both "editable" and "bulkEditable" will treated as `false` unless explicity set to `true`; if the field is editable, then "fieldType" is required.
+Both "editable" and "bulkEditable" will be treated as `false` unless explicity set to `true`; if the field is editable, then "fieldType" is required.
 
 4. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-compose-caas.yaml` otherwise use `cromwell-compose-dev.yaml`, e.g:
     ```
