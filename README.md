@@ -36,7 +36,7 @@ The Job Manager [defines an API](api/jobs.yaml) via OpenAPI. An Angular2 UI is p
 The UI must be deployed along with a backend implementation of the API, two such implementations are provided here:
 
 ### Cromwell
-Monitors jobs launched by the [Cromwell workflow engine](https://github.com/broadinstitute/cromwell). The Python Flask wrapper was created using Swagger Codegen and can be configured to pull data from a specific Cromwell instance. The Job Manager currently supports Cromwell version 30.2.
+Monitors jobs launched by the [Cromwell workflow engine](https://github.com/broadinstitute/cromwell). The Python Flask wrapper was created using Swagger Codegen and can be configured to pull data from a specific Cromwell instance. At this time, to utilize all job manager features, please consider using Cromwell v32 or newer.
 
 ### dsub
 
