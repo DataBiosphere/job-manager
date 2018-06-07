@@ -1,19 +1,27 @@
 import { environment as defaultEnvironment } from './environment';
 
-export const ConfigurationLoader = new Promise<any>(resolve => {
+export const ConfigurationLoader = new Promise<any>((resolve, reject) => {
 
-  let xmlhttp = new XMLHttpRequest(),
+  const xmlhttp = new XMLHttpRequest(),
     method = 'GET',
     url = './assets/environments/environment.json';
 
   xmlhttp.open(method, url, true);
 
-  xmlhttp.onload = () => {
+  xmlhttp.onload = event => {
+
     if (xmlhttp.status === 200) {
-      resolve(JSON.parse(xmlhttp.responseText));
+      resolve(
+        xmlhttp.responseText
+      )
     } else {
-      resolve(defaultEnvironment);
+      reject("err_msg") // log for debugging TODO: show err msg: fail to load the file
     }
+
+  };
+
+  xmlhttp.onerror = event => {
+    reject("err_msg"); // log for debugging TODO: show err msg: fail to load the file
   };
 
   xmlhttp.send();
