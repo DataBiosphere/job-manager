@@ -4,10 +4,10 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 
 ## Development
 
-1. Set the `CROMWELL_URL` environment variable to specify which cromwell instance to use. Job Manager pulls workflow data from `https://cromwell.mint-dev.broadinstitute.org/api/workflows/v1` by default:
-
+1. Set the `CROMWELL_URL` environment variable to specify which cromwell instance to use, for example:
+    
     ```
-    export CROMWELL_URL=https://cromwell.test-cromwell.broadinstitute.org/api/workflows/v1
+    export CROMWELL_URL=https://exapmle-cromwell.broadinstitute.org/api/workflows/v1
     ```
 
     **Note:** If you want to setup this API Server against a locally hosted Cromwell instance, you need to explicitly provide the ip address (inet if the Cromwell is hosted on the same machine) to the Cromwell with port numbers, for example:
@@ -23,7 +23,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     }
     ```
 
-3. (Optional) If you want to change the view of UI to some extent, i.e. display more columns in the job list view, such as labels of the jobs, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should **strictly** follow the following structure:
+3. (Optional) If you want to change the either the predefined view or the default behavior of UI to some extent, e.g. display more columns in the job list view such as labels of the jobs, or make more columns to be popped up by the query builder, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should **strictly** follow the following structure:
 ```
 {
   "displayFields": [
@@ -74,9 +74,42 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 ```
 Both "editable" and "bulkEditable" will be treated as `false` unless explicity set to `true`; if the field is editable, then "fieldType" is required.
 
-4. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-compose-caas.yaml` otherwise use `cromwell-compose-dev.yaml`, e.g:
+   **Note:** If you want to use use Job Manager against Cromwell-as-a-Service, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
+ ```
+ {
+   "displayFields": [
+     {
+       "field": "status",
+       "display": "Status"
+     },
+     {
+       "field": "submission",
+       "display": "Submitted"
+     },
+     {
+       "field": "labels.cromwell-workflow-id",
+       "display": "Workflow ID"
+     }
+   ],
+   "commonLabels": [
+     "cromwell-workflow-id",
+     "workflow-name"
+   ],
+   "queryExtensions": [],
+   "authentication": {
+       "isRequired": true, 
+       "scopes": [
+         "openid", 
+         "email", 
+         "profile"
+       ]
+     },
+ }
+ ```
+
+4. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For Cromwell-as-a-Service, e.g. `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-compose-caas.yaml` otherwise use `cromwell-compose-instance.yaml`, e.g:
     ```
-    ln -sf cromwell-compose-dev.yml docker-compose.yml
+    ln -sf cromwell-compose-instance.yml docker-compose.yml
     ```
 
 5. From the root directory of the repository, run `docker-compose up` and navigate to http://localhost:4200.
