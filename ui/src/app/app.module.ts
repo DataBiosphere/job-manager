@@ -11,6 +11,8 @@ import {JobDetailsModule} from './job-details/job-details.module';
 import {JobListModule} from './job-list/job-list.module';
 import {SignInModule} from './sign-in/sign-in.module';
 import {ProjectsModule} from './projects/projects.module';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import {DashboardModule} from "./dashboard/dashboard.module";
 
 @NgModule({
   imports: [
@@ -24,6 +26,7 @@ import {ProjectsModule} from './projects/projects.module';
     JobListModule,
     SignInModule,
     ProjectsModule,
+    DashboardModule
   ],
   declarations: [AppComponent],
   // This specifies the top-level component, to load first.
