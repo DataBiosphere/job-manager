@@ -206,7 +206,7 @@ def query_jobs(body, **kwargs):
         offset = offset + page_size
         page = page_from_offset(offset, page_size)
 
-    if query_page_size > len(results):
+    if query_page_size >= len(results):
         return QueryJobsResponse(results=results)
 
     next_page_token = page_tokens.encode_offset(offset)
