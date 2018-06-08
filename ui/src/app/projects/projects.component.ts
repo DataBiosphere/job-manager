@@ -94,11 +94,13 @@ export class ProjectsComponent implements OnInit {
   }
 
   navigateJobs() {
-    let extras = {queryParams: {q: URLSearchParamsUtils.encodeURLSearchParams({extensions: {projectId: this.projectsControl.value}})}};
+    let jobsExtras = {queryParams: {q: URLSearchParamsUtils.encodeURLSearchParams({extensions: {projectId: this.projectsControl.value}})}};
+    let dashboardExtras = {queryParams: {projectId: this.projectsControl.value}};
+
     if (environment.dashboardEnabled) {
-      this.router.navigate(['dashboard'], extras);
+      this.router.navigate(['dashboard'], dashboardExtras);
     } else {
-      this.router.navigate(['jobs'], extras);
+      this.router.navigate(['jobs'], jobsExtras);
     }
   }
 }
