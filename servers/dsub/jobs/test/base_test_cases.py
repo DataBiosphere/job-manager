@@ -155,7 +155,7 @@ class BaseTestCases:
 
             if task_count > 1:
                 task_descriptors = [
-                    job_model.TaskDecriptor({
+                    job_model.TaskDescriptor({
                         'task-id': i + 1
                     }, {
                         'envs': env_data,
