@@ -24,7 +24,7 @@ def get_capabilities():
                 field='extensions.statusDetail', display='Status Detail'),
         ],
         common_labels=['job-id', 'task-id'],
-        query_extensions=['projectId', 'userId', 'submission'])
+        query_extensions=['userId', 'submission'])
 
     if _provider_type() == ProviderType.GOOGLE:
         capabilities.authentication = AuthenticationCapability(
@@ -34,6 +34,7 @@ def get_capabilities():
                 'https://www.googleapis.com/auth/cloudplatformprojects.readonly',
                 'https://www.googleapis.com/auth/devstorage.read_only',
             ])
+        capabilities.query_extensions.append('projectId')
 
     return capabilities
 
