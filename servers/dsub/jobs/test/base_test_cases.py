@@ -1,7 +1,7 @@
 import connexion
 import datetime
 from dsub.commands import dsub
-from dsub.lib import job_util, param_util
+from dsub.lib import job_model, param_util
 import flask
 import flask_testing
 import logging
@@ -113,12 +113,12 @@ class BaseTestCases:
                       task_count=1,
                       wait=False):
             logging = param_util.build_logging_param(self.log_path)
-            resources = job_util.JobResources(
+            resources = job_model.Resources(
                 image=DOCKER_IMAGE, logging=logging, zones=['us-central1*'])
 
             env_data = {param_util.EnvParam(k, v) for (k, v) in envs.items()}
             label_data = {
-                param_util.LabelParam(k, v)
+                job_model.LabelParam(k, v)
                 for (k, v) in labels.items()
             }
 
@@ -146,7 +146,7 @@ class BaseTestCases:
                         output_file_param_util.make_param(
                             name, value, recursive))
 
-            job_data = {
+            job_params = {
                 'envs': env_data,
                 'inputs': input_data,
                 'outputs': output_data,
@@ -154,18 +154,37 @@ class BaseTestCases:
             }
 
             if task_count > 1:
+                task_descriptors = [
+                    job_model.TaskDescriptor({
+                        'task-id': i + 1
+                    }, {
+                        'envs': env_data,
+                        'inputs': input_data,
+                        'outputs': output_data,
+                        'labels': label_data,
+                    }, job_model.Resources()) for i in xrange(task_count)
+                ]
                 all_task_data = [{
                     'task-id': i + 1
                 } for i in xrange(task_count)]
             else:
-                all_task_data = [job_data]
+                task_descriptors = [
+                    job_model.TaskDescriptor({
+                        'task-id': None
+                    }, {
+                        'labels': set(),
+                        'envs': set(),
+                        'inputs': set(),
+                        'outputs': set()
+                    }, job_model.Resources())
+                ]
 
             return execute_redirect_stdout(lambda:
                 dsub.run(
                     self.provider,
                     resources,
-                    job_data,
-                    all_task_data,
+                    job_params,
+                    task_descriptors,
                     name=name,
                     command=command,
                     wait=wait,
