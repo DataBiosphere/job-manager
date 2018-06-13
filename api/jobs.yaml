@@ -130,6 +130,37 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
+  '/aggregations':
+    get:
+      operationId: GetJobAggregation
+      summary: Query for aggregated jobs in the given time frame
+      parameters:
+        - name: timeFrame
+          description: Time Frame
+          required: true
+          type: string
+          in: query
+        - name: projectId
+          description: The ID of the project to query
+          required: true
+          type: string
+          in: query
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/AggregationResponse'
+        '400':
+          $ref: '#/responses/BadRequest'
+        '401':
+          $ref: '#/responses/Unauthorized'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/ServerError'
+      tags:
+        - Aggregation
+
 definitions:
   AuthenticationCapability:
     description: Specification of the backend's authentication capabilities
@@ -187,6 +218,11 @@ definitions:
         description: Fields on ExtendedQueryFields which are queryable
         items:
           type: string
+      aggregationTimeFrames:
+        type: array
+        description: Time frames for jobs information agggregation
+        items:
+          $ref: '#/definitions/TimeFrame'
   JobMetadataResponse:
     description: Job and task level metadata
     required:
@@ -244,6 +280,46 @@ definitions:
       labels:
         type: object
         description: All job labels, after the update has been applied.
+  AggregationResponse:
+    description: >
+      Returns aggregated jobs with specified time range or label.
+    properties:
+      summary:
+        $ref: '#/definitions/StatusCounts'
+      aggregations:
+        type: array
+        items:
+          $ref: '#/definitions/Aggregation'
+  Aggregation:
+    description: Aggregated jobs specified by the keys.
+    properties:
+      name:
+        type: string
+      key:
+        type: string
+      values:
+        properties:
+          key:
+            type: string
+          value:
+              $ref: '#/definitions/StatusCounts'
+  StatusCounts:
+    description: >
+      A mapping of JobStatus to number of jobs with that status. If a
+      status is not present, its job count is assumed 0.
+    properties:
+    # TODO: not sure if we should leave it as an object or use an array of key-value pair
+      counts:
+        type: object
+  TimeFrame:
+    type: string
+    enum:
+      - HOURS_1
+      - HOURS_8
+      - HOURS_24
+      - DAYS_7
+      - DAYS_30
+      - ALL_TIME
   QueryJobsRequest:
     description: Job query parameters
     properties:
