@@ -132,17 +132,17 @@ paths:
         - Jobs
   '/aggregations':
     get:
-      operationId: GetJobAggregation
-      summary: Query for aggregated jobs in the given time frame
+      operationId: GetJobAggregations
+      summary: Query for aggregated jobs in the given time frame.
       parameters:
         - name: timeFrame
-          description: Time Frame
+          description: Time Frame to aggregate over.
           required: true
-          type: string
-          in: query
+          in: body
+          schema:
+            $ref: '#/definitions/TimeFrame'
         - name: projectId
-          description: The ID of the project to query
-          required: true
+          description: The ID of the project to query.
           type: string
           in: query
       responses:
@@ -220,7 +220,7 @@ definitions:
           type: string
       aggregationTimeFrames:
         type: array
-        description: Time frames for jobs information agggregation
+        description: Time frames supported by the /aggregations endpoint.
         items:
           $ref: '#/definitions/TimeFrame'
   JobMetadataResponse:
@@ -281,8 +281,7 @@ definitions:
         type: object
         description: All job labels, after the update has been applied.
   AggregationResponse:
-    description: >
-      Returns aggregated jobs with specified time range or label.
+    description: Jobs aggregated by label and status within the specified time frame.
     properties:
       summary:
         $ref: '#/definitions/StatusCounts'
@@ -291,26 +290,38 @@ definitions:
         items:
           $ref: '#/definitions/Aggregation'
   Aggregation:
-    description: Aggregated jobs specified by the keys.
+    description: Aggregation of jobs by statuses for a given label, within a specified time frame.
     properties:
       name:
         type: string
       key:
         type: string
-      values:
-        properties:
-          key:
-            type: string
-          value:
-              $ref: '#/definitions/StatusCounts'
-  StatusCounts:
-    description: >
-      A mapping of JobStatus to number of jobs with that status. If a
-      status is not present, its job count is assumed 0.
+      entries:
+        type: array
+        items:
+          $ref: '#/definitions/AggregationEntry'
+  AggregationEntry:
+    description: An aggregation entry for a given label value.
     properties:
-    # TODO: not sure if we should leave it as an object or use an array of key-value pair
+      label:
+        description: The label value for this aggregation entry.
+        type: string
+      status_Counts:
+        $ref: '#/definitions/StatusCounts'
+  StatusCounts:
+    description: A collection of StatusCount
+    properties:
       counts:
-        type: object
+        type: array
+        items:
+          $ref: '#/definitions/StatusCount'
+  StatusCount:
+    description: A mapping of JobStatus to number of jobs with that status.
+    properties:
+      status:
+        $ref: '#/definitions/JobStatus'
+      count:
+        type: integer
   TimeFrame:
     type: string
     enum:
