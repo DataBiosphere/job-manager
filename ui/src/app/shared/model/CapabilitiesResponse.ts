@@ -33,4 +33,9 @@ export interface CapabilitiesResponse {
      */
     queryExtensions?: Array<string>;
 
+    /**
+     * Time frames supported by the /aggregations endpoint.
+     */
+    aggregationTimeFrames?: Array<models.TimeFrame>;
+
 }

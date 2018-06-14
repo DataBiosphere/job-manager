@@ -8,6 +8,13 @@ info:
   version: '0.0.1'
 produces:
   - application/json
+enum: &TIMEFRAME
+  - HOURS_1
+  - HOURS_8
+  - HOURS_24
+  - DAYS_7
+  - DAYS_30
+  - ALL_TIME
 paths:
   '/capabilities':
     get:
@@ -130,6 +137,37 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
+  '/aggregations':
+    get:
+      operationId: GetJobAggregations
+      summary: Query for aggregated jobs in the given time frame.
+      parameters:
+        - name: timeFrame
+          description: Time Frame to aggregate over.
+          required: true
+          in: query
+          type: string
+          enum: *TIMEFRAME
+        - name: projectId
+          description: The ID of the project to query.
+          type: string
+          in: query
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/AggregationResponse'
+        '400':
+          $ref: '#/responses/BadRequest'
+        '401':
+          $ref: '#/responses/Unauthorized'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/ServerError'
+      tags:
+        - Aggregation
+
 definitions:
   AuthenticationCapability:
     description: Specification of the backend's authentication capabilities
@@ -187,6 +225,11 @@ definitions:
         description: Fields on ExtendedQueryFields which are queryable
         items:
           type: string
+      aggregationTimeFrames:
+        type: array
+        description: Time frames supported by the /aggregations endpoint.
+        items:
+          $ref: '#/definitions/TimeFrame'
   JobMetadataResponse:
     description: Job and task level metadata
     required:
@@ -244,6 +287,52 @@ definitions:
       labels:
         type: object
         description: All job labels, after the update has been applied.
+  AggregationResponse:
+    description: Jobs aggregated by label and status within the specified time frame.
+    properties:
+      summary:
+        $ref: '#/definitions/StatusCounts'
+      aggregations:
+        type: array
+        items:
+          $ref: '#/definitions/Aggregation'
+  Aggregation:
+    description: Aggregation of jobs by statuses for a given label, within a specified time frame.
+    properties:
+      name:
+        type: string
+      key:
+        type: string
+      entries:
+        type: array
+        items:
+          $ref: '#/definitions/AggregationEntry'
+  AggregationEntry:
+    description: An aggregation entry for a given label value.
+    properties:
+      label:
+        description: The label value for this aggregation entry.
+        type: string
+      status_Counts:
+        $ref: '#/definitions/StatusCounts'
+  StatusCounts:
+    description: A collection of StatusCount
+    properties:
+      counts:
+        type: array
+        items:
+          $ref: '#/definitions/StatusCount'
+  StatusCount:
+    description: A mapping of JobStatus to number of jobs with that status.
+    properties:
+      status:
+        $ref: '#/definitions/JobStatus'
+      count:
+        type: integer
+  TimeFrame:
+    type: string
+    enum: *TIMEFRAME
+
   QueryJobsRequest:
     description: Job query parameters
     properties:

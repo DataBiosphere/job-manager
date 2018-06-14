@@ -1,3 +1,6 @@
+export * from './Aggregation';
+export * from './AggregationEntry';
+export * from './AggregationResponse';
 export * from './AuthenticationCapability';
 export * from './BulkLabelField';
 export * from './CapabilitiesResponse';
@@ -12,6 +15,9 @@ export * from './JobStatus';
 export * from './QueryJobsRequest';
 export * from './QueryJobsResponse';
 export * from './QueryJobsResult';
+export * from './StatusCount';
+export * from './StatusCounts';
 export * from './TaskMetadata';
+export * from './TimeFrame';
 export * from './UpdateJobLabelsRequest';
 export * from './UpdateJobLabelsResponse';
