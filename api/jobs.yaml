@@ -8,6 +8,14 @@ info:
   version: '0.0.1'
 produces:
   - application/json
+x-types:
+enum: &TIMEFRAME
+  - HOURS_1
+  - HOURS_8
+  - HOURS_24
+  - DAYS_7
+  - DAYS_30
+  - ALL_TIME
 paths:
   '/capabilities':
     get:
@@ -138,9 +146,9 @@ paths:
         - name: timeFrame
           description: Time Frame to aggregate over.
           required: true
-          in: body
-          schema:
-            $ref: '#/definitions/TimeFrame'
+          in: query
+          type: string
+          enum: *TIMEFRAME
         - name: projectId
           description: The ID of the project to query.
           type: string
@@ -324,13 +332,8 @@ definitions:
         type: integer
   TimeFrame:
     type: string
-    enum:
-      - HOURS_1
-      - HOURS_8
-      - HOURS_24
-      - DAYS_7
-      - DAYS_30
-      - ALL_TIME
+    enum: &TIMEFRAME
+
   QueryJobsRequest:
     description: Job query parameters
     properties:
