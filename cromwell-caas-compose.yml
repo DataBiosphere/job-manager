@@ -4,7 +4,9 @@ services:
     extends:
       file: common-compose.yml
       service: jmui
-    command: ["npm", "run-script", "ng", "--", "serve", "--host", "jmui", "--env=cromwell_dev"]
+    command: ["npm", "run-script", "ng", "--", "serve", "--host", "jmui"]
+    volumes:
+      - ${PWD}/ui/assets/environments/environment.cromwell.caas.json:/ui/src/assets/environments/environment.json
   cromwell:
     build:
       context: .
@@ -13,7 +15,8 @@ services:
       file: common-compose.yml
       service: cromwell
     environment:
-      - USE_CAAS=False
+      - CROMWELL_URL=${CROMWELL_URL:-https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1}
+      - USE_CAAS=True
   jobs-proxy:
     extends:
       file: common-compose.yml
