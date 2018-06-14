@@ -98,7 +98,7 @@ export class JobManagerService {
   }
 
   abortJob(id: string): Promise<void> {
-    return this.http.post(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous().apiUrl}/jobs/${id}/abort`,
+    return this.http.post(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous()['apiUrl']}/jobs/${id}/abort`,
       {},
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
@@ -107,7 +107,7 @@ export class JobManagerService {
   }
 
   updateJobLabels(id: string, req: UpdateJobLabelsRequest): Promise<UpdateJobLabelsResponse> {
-    return this.http.post(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous().apiUrl}/jobs/${id}/updateLabels`,
+    return this.http.post(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous()['apiUrl']}/jobs/${id}/updateLabels`,
       req,
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
@@ -116,7 +116,7 @@ export class JobManagerService {
   }
 
   getJob(id: string): Promise<JobMetadataResponse> {
-    return this.http.get(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous().apiUrl}/jobs/${id}`,
+    return this.http.get(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous()['apiUrl']}/jobs/${id}`,
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => this.convertToJobMetadataResponse(response.json()))
@@ -127,7 +127,7 @@ export class JobManagerService {
   // consistency with other ng2 APIs, in addition to the retry/cancel
   // capabilities.
   queryJobs(req: QueryJobsRequest): Promise<QueryJobsResponse> {
-    return this.http.post(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous().apiUrl}/jobs/query`,
+    return this.http.post(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous()['apiUrl']}/jobs/query`,
       req,
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()

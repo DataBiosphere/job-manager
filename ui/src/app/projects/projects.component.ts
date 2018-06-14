@@ -95,7 +95,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   navigateJobs() {
-    if (this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous().dashboardEnabled) {
+    if (this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous()['dashboardEnabled']) {
       const dashboardExtras = {queryParams: {projectId: this.projectsControl.value}};
       this.router.navigate(['dashboard'], dashboardExtras);
     } else {

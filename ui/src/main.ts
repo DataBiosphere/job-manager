@@ -20,10 +20,6 @@ environmentConfigurationLoader.getEnvironmentConfig()
     console.log("The env config stored in the singleton is: ");
     console.log(environmentConfigurationLoader.getEnvironmentConfigSynchronous());
 
-    Object.entries(environmentConfig).forEach(([key, value]) => {
-      environment[key] = value;
-    });
-
     platformBrowserDynamic([{
       provide: EnvironmentConfigurationLoaderService, useValue: environmentConfigurationLoader
     }])

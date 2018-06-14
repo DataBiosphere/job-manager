@@ -15,7 +15,7 @@ export class AuthService {
 
   private initAuth(scopes: string[]): Promise<void> {
     return gapi.auth2.init({
-      client_id: this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous().clientId,
+      client_id: this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous()['clientId'],
       cookiepolicy: 'single_host_origin',
       scope: scopes.join(" ")
     });

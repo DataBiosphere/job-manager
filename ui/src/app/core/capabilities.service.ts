@@ -25,7 +25,7 @@ export class CapabilitiesService {
   getCapabilities(): Promise<CapabilitiesResponse> {
     if (!this.capabilitiesResponsePromise) {
       this.capabilitiesResponsePromise =
-        this.http.get(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous().apiUrl}/capabilities`,
+        this.http.get(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous()['apiUrl']}/capabilities`,
           new RequestOptions({headers: new Headers({'Content-Type': 'application/json'})}))
           .toPromise()
           .then(response => {
