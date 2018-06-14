@@ -1,4 +1,5 @@
 {
   "apiUrl": "/api/v1",
-  "clientId": "738242158346-l0vdrjp6sdlg61ni5fm26m7nu75gql51.apps.googleusercontent.com"
+  "clientId": "738242158346-l0vdrjp6sdlg61ni5fm26m7nu75gql51.apps.googleusercontent.com",
+  "dashboardEnabled": false
 }

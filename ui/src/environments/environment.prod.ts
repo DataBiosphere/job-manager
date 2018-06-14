@@ -3,5 +3,4 @@
 
 export const environment = {
   production: true,
-  dashboardEnabled: false,
 };
