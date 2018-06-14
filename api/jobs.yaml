@@ -8,7 +8,6 @@ info:
   version: '0.0.1'
 produces:
   - application/json
-x-types:
 enum: &TIMEFRAME
   - HOURS_1
   - HOURS_8
@@ -332,7 +331,7 @@ definitions:
         type: integer
   TimeFrame:
     type: string
-    enum: &TIMEFRAME
+    enum: *TIMEFRAME
 
   QueryJobsRequest:
     description: Job query parameters

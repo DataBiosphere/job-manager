@@ -12,5 +12,11 @@
 
 import * as models from './models';
 
-export interface TimeFrame {
+export enum TimeFrame {
+    HOURS1 = <any> 'HOURS_1',
+    HOURS8 = <any> 'HOURS_8',
+    HOURS24 = <any> 'HOURS_24',
+    DAYS7 = <any> 'DAYS_7',
+    DAYS30 = <any> 'DAYS_30',
+    ALLTIME = <any> 'ALL_TIME'
 }

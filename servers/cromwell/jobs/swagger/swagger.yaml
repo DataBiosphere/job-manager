@@ -352,6 +352,13 @@ definitions:
     description: "A mapping of JobStatus to number of jobs with that status."
   TimeFrame:
     type: "string"
+    enum:
+    - "HOURS_1"
+    - "HOURS_8"
+    - "HOURS_24"
+    - "DAYS_7"
+    - "DAYS_30"
+    - "ALL_TIME"
   QueryJobsRequest:
     properties:
       start:
@@ -602,4 +609,3 @@ responses:
     description: "Internal server error"
   Unauthorized:
     description: "Unauthorized"
-x-types: null
