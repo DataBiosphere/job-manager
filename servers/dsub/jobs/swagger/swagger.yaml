@@ -142,12 +142,18 @@ paths:
       summary: "Query for aggregated jobs in the given time frame."
       operationId: "get_job_aggregations"
       parameters:
-      - in: "body"
-        name: "timeFrame"
+      - name: "timeFrame"
+        in: "query"
         description: "Time Frame to aggregate over."
         required: true
-        schema:
-          $ref: "#/definitions/TimeFrame"
+        type: "string"
+        enum:
+        - "HOURS_1"
+        - "HOURS_8"
+        - "HOURS_24"
+        - "DAYS_7"
+        - "DAYS_30"
+        - "ALL_TIME"
       - name: "projectId"
         in: "query"
         description: "The ID of the project to query."
@@ -346,13 +352,6 @@ definitions:
     description: "A mapping of JobStatus to number of jobs with that status."
   TimeFrame:
     type: "string"
-    enum:
-    - "HOURS_1"
-    - "HOURS_8"
-    - "HOURS_24"
-    - "DAYS_7"
-    - "DAYS_30"
-    - "ALL_TIME"
   QueryJobsRequest:
     properties:
       start:
@@ -603,3 +602,4 @@ responses:
     description: "Internal server error"
   Unauthorized:
     description: "Unauthorized"
+x-types: null
