@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
-import {environment} from '../../environments/environment';
+import {EnvironmentConfigurationLoaderService} from "../../environments/environment-configuration-loader.service";
 
 /** Service wrapper for accessing the capabilities endpoint. */
 @Injectable()
@@ -12,7 +12,8 @@ export class CapabilitiesService {
   private capabilitiesResponse: CapabilitiesResponse;
   private capabilitiesResponsePromise: Promise<CapabilitiesResponse>;
 
-  constructor(private http: Http) {}
+  constructor(private http: Http,
+              private readonly environmentConfigurationLoaderService:EnvironmentConfigurationLoaderService) {}
 
   getCapabilitiesSynchronous(): CapabilitiesResponse {
     if (this.capabilitiesResponse) {
@@ -24,7 +25,7 @@ export class CapabilitiesService {
   getCapabilities(): Promise<CapabilitiesResponse> {
     if (!this.capabilitiesResponsePromise) {
       this.capabilitiesResponsePromise =
-        this.http.get(`${environment.apiUrl}/capabilities`,
+        this.http.get(`${this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous().apiUrl}/capabilities`,
           new RequestOptions({headers: new Headers({'Content-Type': 'application/json'})}))
           .toPromise()
           .then(response => {

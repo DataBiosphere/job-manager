@@ -19,7 +19,7 @@ import {AuthService} from '../core/auth.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {ProjectsService} from './projects.service'
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
-import {environment} from "../../environments/environment";
+import {EnvironmentConfigurationLoaderService} from "../../environments/environment-configuration-loader.service";
 
 @Component({
   selector: 'jm-projects',
@@ -37,7 +37,8 @@ export class ProjectsComponent implements OnInit {
     private readonly projectsService: ProjectsService,
     private readonly router: Router,
     private readonly viewContainer: ViewContainerRef,
-    private errorBar: MatSnackBar) {}
+    private errorBar: MatSnackBar,
+    private readonly environmentConfigurationLoaderService:EnvironmentConfigurationLoaderService) {}
 
   private validProject(projectId: string): boolean {
     if (this.projects) {
@@ -94,7 +95,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   navigateJobs() {
-    if (environment.dashboardEnabled) {
+    if (this.environmentConfigurationLoaderService.getEnvironmentConfigSynchronous().dashboardEnabled) {
       const dashboardExtras = {queryParams: {projectId: this.projectsControl.value}};
       this.router.navigate(['dashboard'], dashboardExtras);
     } else {
