@@ -17,4 +17,5 @@ def get_job_aggregations(timeFrame, projectId=None):
 
     :rtype: AggregationResponse
     """
-    return 'do some magic!'
+    # return 'do some magic!'
+    raise NotImplemented('function not implemented yet.')
