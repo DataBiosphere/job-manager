@@ -4,18 +4,18 @@ from datetime import date, datetime
 from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
-
+from werkzeug.exceptions import NotImplemented
 
 def get_job_aggregations(timeFrame, projectId=None):
     """
     Query for aggregated jobs in the given time frame.
-    
-    :param timeFrame: Time Frame to aggregate over.
-    :type timeFrame: str
-    :param projectId: The ID of the project to query.
-    :type projectId: str
 
-    :rtype: AggregationResponse
+    Args:
+        timeFrame (str): Time Frame to aggregate over
+        param projectId (str): The ID of the project to query
+
+    Returns:
+        AggregationResponse: Response contains aggregation of jobs
     """
-    # return 'do some magic!'
+
     raise NotImplemented('function not implemented yet.')
