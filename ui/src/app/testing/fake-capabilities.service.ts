@@ -3,7 +3,7 @@ import {CapabilitiesService} from '../core/capabilities.service';
 
 export class FakeCapabilitiesService extends CapabilitiesService {
   constructor(public capabilities: CapabilitiesResponse) {
-    super(null);
+    super(null, null);
   }
 
   getCapabilitiesSynchronous(): CapabilitiesResponse {
