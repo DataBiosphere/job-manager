@@ -3,25 +3,22 @@ import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
 import {AppModule} from './app/app.module';
 import {environment} from './environments/environment';
-import {EnvironmentConfigurationLoaderService} from "./environments/environment-configuration-loader.service";
+import {ConfigLoaderService} from "./environments/config-loader.service";
 
 if (environment.production) {
   enableProdMode();
 }
 
-let environmentConfigurationLoader = ReflectiveInjector
-  .resolveAndCreate([EnvironmentConfigurationLoaderService])
-  .get(EnvironmentConfigurationLoaderService)
+let configLoader = ReflectiveInjector
+  .resolveAndCreate([ConfigLoaderService])
+  .get(ConfigLoaderService);
 
-environmentConfigurationLoader.getEnvironmentConfig()
-  .then(environmentConfig => {
-    console.log("The loaded env config is: ");
-    console.log(environmentConfig);
-    console.log("The env config stored in the singleton is: ");
-    console.log(environmentConfigurationLoader.getEnvironmentConfigSynchronous());
-
+configLoader.getEnvironmentConfig()
+  //TODO(Rex): Show err with snackBar(optional) and stop app peacefully
+  .catch(err => console.log(err))
+  .then(() => {
     platformBrowserDynamic([{
-      provide: EnvironmentConfigurationLoaderService, useValue: environmentConfigurationLoader
+      provide: ConfigLoaderService, useValue: configLoader
     }])
       .bootstrapModule(AppModule).catch(err => console.log(err));
 });
