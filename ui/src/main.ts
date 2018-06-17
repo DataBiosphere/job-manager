@@ -1,4 +1,4 @@
-import {enableProdMode, ReflectiveInjector} from '@angular/core';
+import {enableProdMode, ReflectiveInjector, Injector} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
 import {AppModule} from './app/app.module';
@@ -9,9 +9,7 @@ if (environment.production) {
   enableProdMode();
 }
 
-let configLoader = ReflectiveInjector
-  .resolveAndCreate([ConfigLoaderService])
-  .get(ConfigLoaderService);
+const configLoader = new ConfigLoaderService();
 
 configLoader.getEnvironmentConfig()
   //TODO(Rex): Show err with snackBar(optional) and stop app peacefully
