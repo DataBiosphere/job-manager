@@ -7,11 +7,15 @@ export class ConfigLoaderService {
 
   constructor() { }
 
-  private static loadJSONAsync(rawText:string): Promise<object> {
-    return Promise.resolve(JSON.parse(rawText));
+  private static loadJSONAsync(rawText:string): Promise<any> {
+    return Promise.resolve(rawText).then(JSON.parse);
   }
 
   getEnvironmentConfig(): Promise<any> {
+    if (this.environmentConfig) {
+      return Promise.resolve(this.environmentConfig);
+    }
+
     if (!this.environmentConfigPromise) {
       this.environmentConfigPromise = new Promise<any>((resolve, reject) => {
         const xmr = new XMLHttpRequest(),

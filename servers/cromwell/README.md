@@ -7,7 +7,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 1. Set the `CROMWELL_URL` environment variable to specify which cromwell instance to use, for example:
     
     ```
-    export CROMWELL_URL=https://exapmle-cromwell.broadinstitute.org/api/workflows/v1
+    export CROMWELL_URL=https://example-cromwell.broadinstitute.org/api/workflows/v1
     ```
 
     **Note:** If you want to setup this API Server against a locally hosted Cromwell instance, you need to explicitly provide the ip address (inet if the Cromwell is hosted on the same machine) to the Cromwell with port numbers, for example:
@@ -23,7 +23,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     }
     ```
 
-3. (Optional) If you want to change the either the predefined view or the default behavior of UI to some extent, e.g. display more columns in the job list view such as labels of the jobs, or make more columns to be popped up by the query builder, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should **strictly** follow the following structure:
+3. (Optional) If you want to change either the predefined view or the default behavior of UI to some extent, e.g. display more columns in the job list view such as labels of the jobs, or make more columns to be popped up by the query builder, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should **strictly** follow the following structure:
 ```
 {
   "displayFields": [
@@ -38,15 +38,41 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     {
       "field": "labels.cromwell-workflow-id",
       "display": "Workflow ID"
+    },
+    {
+      "field": "labels.flag",
+      "display": "Flag",
+      "editable": true,
+      "bulkEditable": true,
+      "fieldType": "list",
+      "validFieldValues": [
+        "archive",
+        "follow-up"
+      ]
+    },
+    {
+      "field": "labels.label",
+      "display": "Label",
+      "fieldType": "text",
+      "editable": true,
+      "bulkEditable": true
+    },
+    {
+      "field": "labels.comment",
+      "display": "Comment",
+      "fieldType": "text",
+      "editable": true
     }
   ],
   "commonLabels": [
     "cromwell-workflow-id",
-    "workflow-name"
+    "workflow-name",
+    "flag"
   ],
   "queryExtensions": []
 }
 ```
+Both "editable" and "bulkEditable" will be treated as `false` unless explicity set to `true`; if the field is editable, then "fieldType" is required.
 
    **Note:** If you want to use use Job Manager against Cromwell-as-a-Service, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
  ```
@@ -63,13 +89,39 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
      {
        "field": "labels.cromwell-workflow-id",
        "display": "Workflow ID"
+     },
+     {
+       "field": "labels.flag",
+       "display": "Flag",
+       "editable": true,
+       "bulkEditable": true,
+       "fieldType": "list",
+       "validFieldValues": [
+         "archive",
+         "follow-up"
+       ]
+     },
+     {
+       "field": "labels.label",
+       "display": "Label",
+       "fieldType": "text",
+       "editable": true,
+       "bulkEditable": true
+     },
+     {
+       "field": "labels.comment",
+       "display": "Comment",
+       "fieldType": "text",
+       "editable": true
      }
    ],
    "commonLabels": [
      "cromwell-workflow-id",
-     "workflow-name"
+     "workflow-name",
+     "flag"
    ],
-   "queryExtensions": [],
+   "queryExtensions": []
+ },
    "authentication": {
        "isRequired": true, 
        "scopes": [
@@ -77,7 +129,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
          "email", 
          "profile"
        ]
-     },
+    },
  }
  ```
 
