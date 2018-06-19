@@ -1,5 +1,6 @@
 import connexion
 from jobs.models.aggregation_response import AggregationResponse
+
 from jobs.models.status_count import StatusCount
 from jobs.models.status_counts import StatusCounts
 from jobs.models.aggregation import Aggregation
@@ -116,5 +117,3 @@ def get_job_aggregations(timeFrame, projectId=None):
         summary = summaryCounts,
         aggregations = [ownerAggregation, projectAggregation]
     )
-    
-    # raise NotImplemented('function not implemented yet.')
