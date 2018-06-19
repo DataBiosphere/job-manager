@@ -10,6 +10,6 @@ export class DashboardResolver implements Resolve<AggregationResponse>{
     private jobManagerService: JobManagerService,
   ) {}
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<AggregationResponse> {
-    return this.jobManagerService.queryAggregations(TimeFrame.ALLTIME, route.queryParams['projectId']);
+    return this.jobManagerService.queryAggregations(TimeFrame.DAYS7, route.queryParams['projectId']);
   }
 }

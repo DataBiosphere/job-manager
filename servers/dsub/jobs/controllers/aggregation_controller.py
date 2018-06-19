@@ -24,7 +24,7 @@ def get_job_aggregations(timeFrame, projectId=None):
     Returns:
         AggregationResponse: Response contains aggregation of jobs
     """
-    # temperate fake data for testing front-end.
+    # temporary fake data for testing front-end.
     statusCount1 = StatusCount(status='success', count=10)
 
     statusCount2 = StatusCount(status='fail', count=2)
@@ -67,5 +67,3 @@ def get_job_aggregations(timeFrame, projectId=None):
     return AggregationResponse(
         summary=summaryCounts,
         aggregations=[ownerAggregation, projectAggregation])
-
-    # raise NotImplemented('function not implemented yet.')

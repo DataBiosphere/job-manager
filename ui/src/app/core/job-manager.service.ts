@@ -9,7 +9,7 @@ import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {UpdateJobLabelsRequest} from "../shared/model/UpdateJobLabelsRequest";
 import {UpdateJobLabelsResponse} from "../shared/model/UpdateJobLabelsResponse";
-import { TimeFrame, AggregationResponse } from '../shared/model/models';
+import {TimeFrame, AggregationResponse} from '../shared/model/models';
 
 
 /** Service wrapper for accessing the job manager API. */
@@ -143,9 +143,13 @@ export class JobManagerService {
 
   queryAggregations(timeFrame: TimeFrame, projectId: string): Promise<AggregationResponse> {
     return this.http.get(`${environment.apiUrl}/aggregations`,
-      new RequestOptions({params: {
-        'projectId':projectId, 'timeFrame':timeFrame
-        }, headers: this.getHttpHeaders()}))
+      new RequestOptions({
+        params: {
+          projectId,
+          timeFrame
+        },
+        headers: this.getHttpHeaders()
+      }))
       .toPromise()
       .then(response => this.convertToAggregationJobsResponse(response.json()))
       .catch((e) => this.handleError(e));

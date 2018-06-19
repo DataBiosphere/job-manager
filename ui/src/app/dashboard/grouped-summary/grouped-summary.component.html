@@ -1,15 +1,14 @@
 <mat-card *ngFor="let aggregation of aggregationResponse.aggregations">
   <mat-card-title>
     {{ aggregation.key }}
-
   </mat-card-title>
 
   <mat-card-content>
     <table>
       <tr>
-        <th mat-sort-header="key"> Key</th>
+        <th mat-sort-header="key">Key</th>
         <ng-container *ngFor="let status of statusArray">
-          <th mat-sort-header="'status'"> {{ status }}</th>
+          <th mat-sort-header="'status'">{{ status }}</th>
         </ng-container>
       </tr>
 
@@ -18,8 +17,8 @@
         <ng-container *ngFor="let status of statusArray">
           <td>{{ convertCountsToMap(entry).get(status) }}</td>
         </ng-container>
-
       </tr>
+
     </table>
   </mat-card-content>
 </mat-card>
