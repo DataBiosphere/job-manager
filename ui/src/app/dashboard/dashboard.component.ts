@@ -11,11 +11,12 @@ export class DashboardComponent implements OnInit {
   aggregationResponse: AggregationResponse;
 
   constructor(private readonly activatedRoute: ActivatedRoute) {
-    this.aggregationResponse = this.activatedRoute.snapshot.data['aggregations'];
+
+
   }
 
   ngOnInit() {
-
+    this.aggregationResponse = this.activatedRoute.snapshot.data['aggregations'];
   }
 
 }
