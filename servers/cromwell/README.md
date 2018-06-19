@@ -67,6 +67,8 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
   "commonLabels": [
     "cromwell-workflow-id",
     "workflow-name",
+    "label",
+    "comment,
     "flag"
   ],
   "queryExtensions": []
@@ -118,7 +120,9 @@ Both "editable" and "bulkEditable" will be treated as `false` unless explicity s
    "commonLabels": [
      "cromwell-workflow-id",
      "workflow-name",
-     "flag"
+     "flag",
+     "label",
+     "comment
    ],
    "queryExtensions": []
  },
