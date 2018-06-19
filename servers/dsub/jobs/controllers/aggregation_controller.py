@@ -22,99 +22,49 @@ def get_job_aggregations(timeFrame, projectId=None):
 
     Returns:
         AggregationResponse: Response contains aggregation of jobs
-    """         
+    """
     # temperate fake data for testing front-end.
-    statusCount1 = StatusCount(
-        status= 'success',
-        count=10
-    )
+    statusCount1 = StatusCount(status='success', count=10)
 
-    statusCount2 = StatusCount(
-        status='fail',
-        count=2
-    )
+    statusCount2 = StatusCount(status='fail', count=2)
 
-    summaryCounts = StatusCounts(
-        counts=[statusCount1, statusCount2]
-    )
+    summaryCounts = StatusCounts(counts=[statusCount1, statusCount2])
 
     entry1 = AggregationEntry(
         label='owner1',
-        status_counts=StatusCounts(
-            counts=[
-                StatusCount(
-                    status = 'success',
-                    count = 2
-                ),
-                StatusCount(
-                    status = 'fail',
-                    count = 1
-                )
-            ]
-        )
-    )
+        status_counts=StatusCounts(counts=[
+            StatusCount(status='success', count=2),
+            StatusCount(status='fail', count=1)
+        ]))
 
     entry2 = AggregationEntry(
         label='owner2',
-        status_counts=StatusCounts(
-            counts=[
-                StatusCount(
-                    status = 'success',
-                    count = 4
-                ),
-                StatusCount(
-                    status = 'fail',
-                    count = 6
-                )
-            ]
-        )
-    )
+        status_counts=StatusCounts(counts=[
+            StatusCount(status='success', count=4),
+            StatusCount(status='fail', count=6)
+        ]))
 
     userEntry1 = AggregationEntry(
         label='user1',
-        status_counts=StatusCounts(
-            counts=[
-                StatusCount(
-                    status = 'success',
-                    count = 3
-                ),
-                StatusCount(
-                    status = 'fail',
-                    count = 7
-                )
-            ]
-        )
-    )
+        status_counts=StatusCounts(counts=[
+            StatusCount(status='success', count=3),
+            StatusCount(status='fail', count=7)
+        ]))
 
     userEntry2 = AggregationEntry(
         label='user2',
-        status_counts=StatusCounts(
-            counts=[
-                StatusCount(
-                    status = 'success',
-                    count = 7
-                ),
-                StatusCount(
-                    status = 'fail',
-                    count = 4
-                )
-            ]
-        )
-    )
+        status_counts=StatusCounts(counts=[
+            StatusCount(status='success', count=7),
+            StatusCount(status='fail', count=4)
+        ]))
 
-    ownerAggregation = Aggregation(
-        key='Owner',
-        entries=[entry1, entry2]
-    )
+    ownerAggregation = Aggregation(key='Owner', entries=[entry1, entry2])
 
     projectAggregation = Aggregation(
-        key = 'User',
-        entries = [userEntry1, userEntry2]
-    )
+        key='User', entries=[userEntry1, userEntry2])
 
     return AggregationResponse(
-        summary = summaryCounts,
-        aggregations = [ownerAggregation, projectAggregation]
-    )
-    
+        summary=summaryCounts,
+        aggregations=[ownerAggregation, projectAggregation])
+
     # raise NotImplemented('function not implemented yet.')
