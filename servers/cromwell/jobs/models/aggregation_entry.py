@@ -29,7 +29,7 @@ class AggregationEntry(Model):
 
         self.attribute_map = {
             'label': 'label',
-            'status_counts': 'status_Counts'
+            'status_counts': 'statusCounts'
         }
 
         self._label = label

@@ -9,6 +9,7 @@ import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {UpdateJobLabelsRequest} from "../shared/model/UpdateJobLabelsRequest";
 import {UpdateJobLabelsResponse} from "../shared/model/UpdateJobLabelsResponse";
+import { TimeFrame, AggregationResponse } from '../shared/model/models';
 
 
 /** Service wrapper for accessing the job manager API. */
@@ -56,6 +57,12 @@ export class JobManagerService {
         result.end = new Date(result.end);
       }
     }
+    return response;
+  }
+
+  private convertToAggregationJobsResponse(json: object): AggregationResponse {
+    let response: AggregationResponse = json as AggregationResponse;
+    //TODO(zach): convert potentially incompatible object to models
     return response;
   }
 
@@ -131,6 +138,16 @@ export class JobManagerService {
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => this.convertToQueryJobsResponse(response.json()))
+      .catch((e) => this.handleError(e));
+  }
+
+  queryAggregations(timeFrame: TimeFrame, projectId: string): Promise<AggregationResponse> {
+    return this.http.get(`${environment.apiUrl}/aggregations`,
+      new RequestOptions({params: {
+        'projectId':projectId, 'timeFrame':timeFrame
+        }, headers: this.getHttpHeaders()}))
+      .toPromise()
+      .then(response => this.convertToAggregationJobsResponse(response.json()))
       .catch((e) => this.handleError(e));
   }
 }
