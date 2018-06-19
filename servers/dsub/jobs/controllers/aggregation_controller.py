@@ -1,4 +1,5 @@
 import connexion
+
 from jobs.models.aggregation_response import AggregationResponse
 from jobs.models.status_count import StatusCount
 from jobs.models.status_counts import StatusCounts
