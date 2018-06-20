@@ -2,19 +2,43 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GroupedSummaryComponent } from './grouped-summary.component';
 import {MatCardModule, MatDividerModule, MatTableModule} from "@angular/material";
-import {TotalSummaryComponent} from "../total-summary/total-summary.component";
 import {CommonModule} from "@angular/common";
-import {DashboardComponent} from "../dashboard.component";
 import {Component} from "@angular/core";
+import {JobStatus} from "../../shared/model/JobStatus";
+import {Aggregation} from "../../shared/model/Aggregation";
+import {By} from "@angular/platform-browser";
+
+const testStatusArray = [JobStatus.Succeeded, JobStatus.Failed];
+const testAggregation: Aggregation = {
+  entries: [
+    {
+      label: "owner1",
+      statusCounts: {
+        counts: [
+          {
+            count: 2,
+            status: JobStatus.Succeeded
+          },
+          {
+            count: 7,
+            status: JobStatus.Failed
+          }
+        ]
+      }
+    }
+  ]
+};
 
 describe('GroupedSummaryComponent', () => {
-  let component: GroupedSummaryComponent;
-  let fixture: ComponentFixture<GroupedSummaryComponent>;
+  let hostComponent: TestHostComponent;
+  let testComponent: GroupedSummaryComponent;
+  let fixture: ComponentFixture<TestHostComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        GroupedSummaryComponent
+        GroupedSummaryComponent,
+        TestHostComponent
       ],
       imports: [
         CommonModule,
@@ -27,19 +51,31 @@ describe('GroupedSummaryComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GroupedSummaryComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(TestHostComponent);
+    hostComponent = fixture.componentInstance;
+    hostComponent.setInput(testAggregation, testStatusArray);
+    testComponent = fixture.debugElement.query(By.css('jm-grouped-summary')).componentInstance;
     fixture.detectChanges();
   });
 
-  // fit('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(testComponent).toBeTruthy();
+  });
 
   @Component({
     selector: `test-host-component`,
-    template: `<component-under-test input="test input"></component-under-test>`
+    template: `<jm-grouped-summary [aggregation]="aggregation"
+                                   [statusArray]="statusArray"></jm-grouped-summary>`
   })
   class TestHostComponent {
+    private aggregation: Aggregation;
+    private statusArray: Array<JobStatus>;
+
+    setInput(newAggregation: Aggregation, newStatusArray: Array<JobStatus>) {
+      this.aggregation = newAggregation;
+      this.statusArray = newStatusArray;
+    }
   }
 });
+
+

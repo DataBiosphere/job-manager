@@ -24,5 +24,4 @@ export class DashboardComponent implements OnInit {
       this.statusArray.push(countEntry.status);
     }
   }
-
 }

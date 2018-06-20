@@ -21,7 +21,7 @@ import {FakeAggregationService} from "../testing/fake-aggregation.service";
 
 describe('DashboardComponent', () => {
   let testComponent: DashboardComponent;
-  let fixture: ComponentFixture<TestJobListComponent>;
+  let fixture: ComponentFixture<AppComponent>;
   let fakeJobService: FakeAggregationService;
 
   beforeEach(async(() => {
@@ -33,7 +33,6 @@ describe('DashboardComponent', () => {
         DashboardComponent,
         TotalSummaryComponent,
         GroupedSummaryComponent,
-        FakeProjectsComponent
       ],
       imports: [
         CommonModule,
@@ -42,7 +41,6 @@ describe('DashboardComponent', () => {
         MatTableModule,
         RouterTestingModule.withRoutes([
           {path: 'dashboard', component: DashboardComponent, resolve: {aggregations: DashboardResolver}},
-          {path: 'projects', component: FakeProjectsComponent}
         ]),
         SharedModule
       ],
@@ -56,7 +54,6 @@ describe('DashboardComponent', () => {
 
   beforeEach(fakeAsync(() => {
     fixture = TestBed.createComponent(AppComponent);
-
     const router: Router = TestBed.get(Router);
     router.initialNavigation();
     router.navigate(['dashboard']);
@@ -66,7 +63,7 @@ describe('DashboardComponent', () => {
     testComponent = fixture.debugElement.query(By.css('jm-dashboard')).componentInstance;
   }));
 
-  it('should create dashboard', fakeAsync(() => {
+  fit('should create dashboard', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     expect(testComponent).toBeTruthy();
@@ -77,16 +74,4 @@ describe('DashboardComponent', () => {
     template: '<router-outlet></router-outlet>'
   })
   class AppComponent {}
-
-  @Component({
-    selector: 'jm-test-job-list-component',
-    template: '<jm-job-list [pageSize]="3"></jm-job-list>'
-  })
-  class TestJobListComponent {}
-
-  @Component({
-    selector: 'jm-fake-projects-component',
-    template: '<div class="fake-projects"></div>'
-  })
-  class FakeProjectsComponent {}
 });
