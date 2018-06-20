@@ -8,6 +8,7 @@ import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {UpdateJobLabelsRequest} from "../shared/model/UpdateJobLabelsRequest";
 import {UpdateJobLabelsResponse} from "../shared/model/UpdateJobLabelsResponse";
+import {TimeFrame, AggregationResponse} from '../shared/model/models';
 
 import {ConfigLoaderService} from "../../environments/config-loader.service";
 
@@ -57,6 +58,12 @@ export class JobManagerService {
         result.end = new Date(result.end);
       }
     }
+    return response;
+  }
+
+  private convertToAggregationJobsResponse(json: object): AggregationResponse {
+    let response: AggregationResponse = json as AggregationResponse;
+    //TODO(zach): convert potentially incompatible object to models
     return response;
   }
 
@@ -136,6 +143,21 @@ export class JobManagerService {
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => this.convertToQueryJobsResponse(response.json()))
+      .catch((e) => this.handleError(e));
+  }
+
+  queryAggregations(timeFrame: TimeFrame, projectId: string): Promise<AggregationResponse> {
+    const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
+    return this.http.get(`${apiUrl}/aggregations`,
+      new RequestOptions({
+        params: {
+          projectId,
+          timeFrame
+        },
+        headers: this.getHttpHeaders()
+      }))
+      .toPromise()
+      .then(response => this.convertToAggregationJobsResponse(response.json()))
       .catch((e) => this.handleError(e));
   }
 }

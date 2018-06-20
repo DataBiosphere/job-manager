@@ -1,0 +1,8 @@
+<mat-card *ngFor="let statusCount of summary.counts">
+  <mat-card-title>
+    {{ statusCount.status}}
+  </mat-card-title>
+  <mat-card-content>
+    {{ statusCount.count}}
+  </mat-card-content>
+</mat-card>
