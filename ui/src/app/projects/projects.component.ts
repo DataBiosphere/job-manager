@@ -99,8 +99,14 @@ export class ProjectsComponent implements OnInit {
           {projectId: this.projectsControl.value}});
     } else {
       this.router.navigate(['jobs'],
-        {queryParams:
-            {q: URLSearchParamsUtils.encodeURLSearchParams({extensions: {projectId: this.projectsControl.value}})}
+        {
+          queryParams:
+            {
+              q: URLSearchParamsUtils.encodeURLSearchParams({
+                  extensions: {
+                    projectId: this.projectsControl.value
+                  }})
+            }
         });
     }
   }

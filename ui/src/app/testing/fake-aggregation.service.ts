@@ -4,6 +4,7 @@ const aggregationResponse: AggregationResponse =
   {
    aggregations: [
      {
+       key: "Owner",
        entries: [
          {
            label: "owner1",
@@ -35,10 +36,10 @@ const aggregationResponse: AggregationResponse =
              ]
            }
          }
-       ],
-       key: "Owner"
+       ]
      },
      {
+       key: "User",
        entries: [
          {
            label: "user1",
@@ -71,7 +72,6 @@ const aggregationResponse: AggregationResponse =
            }
          }
        ],
-       key: "User"
      },
 
    ],
@@ -90,8 +90,8 @@ const aggregationResponse: AggregationResponse =
   };
 
 export class FakeAggregationService {
-  queryAggregations(timeFrame: TimeFrame, projectId: string): Promise<AggregationResponse> | AggregationResponse {
-    return aggregationResponse;
+  queryAggregations(timeFrame: TimeFrame, projectId: string): Promise<AggregationResponse> {
+    return Promise.resolve(aggregationResponse);
   }
 }
 

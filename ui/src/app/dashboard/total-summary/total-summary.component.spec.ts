@@ -54,7 +54,7 @@ describe('TotalSummaryComponent', () => {
   });
 
   @Component({
-    selector: `test-host-component`,
+    selector: `jm-test-host-component`,
     template: `<jm-total-summary [summary]="componmentSummary"></jm-total-summary>`
   })
 

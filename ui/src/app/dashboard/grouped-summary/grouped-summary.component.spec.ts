@@ -63,7 +63,7 @@ describe('GroupedSummaryComponent', () => {
   });
 
   @Component({
-    selector: `test-host-component`,
+    selector: `jm-test-host-component`,
     template: `<jm-grouped-summary [aggregation]="aggregation"
                                    [statusArray]="statusArray"></jm-grouped-summary>`
   })
