@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GroupedSummaryComponent } from './grouped-summary.component';
+import {MatCardModule, MatDividerModule, MatTableModule} from "@angular/material";
+import {TotalSummaryComponent} from "../total-summary/total-summary.component";
+import {CommonModule} from "@angular/common";
+import {DashboardComponent} from "../dashboard.component";
+import {Component} from "@angular/core";
 
 describe('GroupedSummaryComponent', () => {
   let component: GroupedSummaryComponent;
@@ -8,7 +13,15 @@ describe('GroupedSummaryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GroupedSummaryComponent ]
+      declarations: [
+        GroupedSummaryComponent
+      ],
+      imports: [
+        CommonModule,
+        MatCardModule,
+        MatDividerModule,
+        MatTableModule,
+      ],
     })
     .compileComponents();
   }));
@@ -19,7 +32,14 @@ describe('GroupedSummaryComponent', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
+  // fit('should create', () => {
   //   expect(component).toBeTruthy();
   // });
+
+  @Component({
+    selector: `test-host-component`,
+    template: `<component-under-test input="test input"></component-under-test>`
+  })
+  class TestHostComponent {
+  }
 });

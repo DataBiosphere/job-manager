@@ -1,3 +1,5 @@
 <jm-total-summary [summary]="aggregationResponse.summary"></jm-total-summary>
 <mat-divider></mat-divider>
-<jm-grouped-summary [aggregationResponse]="aggregationResponse"></jm-grouped-summary>
+<jm-grouped-summary *ngFor="let aggregation of aggregationResponse.aggregations"
+                    [statusArray]="statusArray"
+                    [aggregation]="aggregation"></jm-grouped-summary>
