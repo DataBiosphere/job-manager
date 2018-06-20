@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {StatusCounts} from "../../shared/model/StatusCounts";
 
 @Component({
@@ -6,11 +6,8 @@ import {StatusCounts} from "../../shared/model/StatusCounts";
   templateUrl: './total-summary.component.html',
   styleUrls: ['./total-summary.component.css']
 })
-export class TotalSummaryComponent implements OnInit {
+export class TotalSummaryComponent {
   @Input() summary: StatusCounts;
 
-  constructor() { }
-
-  ngOnInit() {}
-
+  constructor() {}
 }

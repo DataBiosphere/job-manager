@@ -44,7 +44,7 @@ describe('TotalSummaryComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TestHostComponent);
     hostComponent = fixture.componentInstance;
-    hostComponent.setInput(testSummary);
+    hostComponent.componmentSummary = testSummary;
     testComponent = fixture.debugElement.query(By.css('jm-total-summary')).componentInstance;
     fixture.detectChanges();
   });
@@ -59,10 +59,6 @@ describe('TotalSummaryComponent', () => {
   })
 
   class TestHostComponent {
-    private componmentSummary: StatusCounts;
-
-    setInput(newSummary: StatusCounts) {
-      this.componmentSummary = newSummary;
-    }
+    public componmentSummary: StatusCounts;
   }
 });

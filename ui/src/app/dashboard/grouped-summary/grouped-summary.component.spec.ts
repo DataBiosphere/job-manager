@@ -53,7 +53,8 @@ describe('GroupedSummaryComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TestHostComponent);
     hostComponent = fixture.componentInstance;
-    hostComponent.setInput(testAggregation, testStatusArray);
+    hostComponent.aggregation = testAggregation;
+    hostComponent.statusArray = testStatusArray;
     testComponent = fixture.debugElement.query(By.css('jm-grouped-summary')).componentInstance;
     fixture.detectChanges();
   });
@@ -69,13 +70,8 @@ describe('GroupedSummaryComponent', () => {
   })
 
   class TestHostComponent {
-    private aggregation: Aggregation;
-    private statusArray: Array<JobStatus>;
-
-    setInput(newAggregation: Aggregation, newStatusArray: Array<JobStatus>) {
-      this.aggregation = newAggregation;
-      this.statusArray = newStatusArray;
-    }
+    public aggregation: Aggregation;
+    public statusArray: Array<JobStatus>;
   }
 });
 

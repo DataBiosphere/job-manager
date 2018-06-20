@@ -2,9 +2,7 @@ import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/t
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component} from '@angular/core';
-import {
-  MatCardModule, MatTableModule
-} from '@angular/material';
+import {MatCardModule, MatTableModule} from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {RouterTestingModule} from '@angular/router/testing';
 

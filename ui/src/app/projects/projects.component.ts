@@ -95,8 +95,9 @@ export class ProjectsComponent implements OnInit {
 
   navigateJobs() {
     if (environment.dashboardEnabled) {
-      this.router.navigate(['dashboard'], {queryParams:
-          {projectId: this.projectsControl.value}});
+      this.router.navigate(['dashboard'], {
+        queryParams: {projectId: this.projectsControl.value}
+      });
     } else {
       this.router.navigate(['jobs'],
         {

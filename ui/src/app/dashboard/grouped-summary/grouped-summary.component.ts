@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {JobStatus} from "../../shared/model/JobStatus";
 import {AggregationEntry} from "../../shared/model/AggregationEntry";
 import {Aggregation} from "../../shared/model/Aggregation";
@@ -8,13 +8,11 @@ import {Aggregation} from "../../shared/model/Aggregation";
   templateUrl: './grouped-summary.component.html',
   styleUrls: ['./grouped-summary.component.css']
 })
-export class GroupedSummaryComponent implements OnInit {
+export class GroupedSummaryComponent {
   @Input() aggregation: Aggregation;
   @Input() statusArray: Array<JobStatus>;
 
   constructor() {}
-
-  ngOnInit() {}
 
   convertCountsToMap(entry: AggregationEntry) : Map<JobStatus, number> {
     let countMap = new Map();
