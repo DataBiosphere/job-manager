@@ -14,7 +14,6 @@ import {SignInComponent} from './sign-in/sign-in.component';
 import {ProjectsComponent} from './projects/projects.component'
 import {RouteReuse} from './route-reuse.service';
 
-import {environment} from '../environments/environment';
 import {DashboardComponent} from "./dashboard/dashboard.component";
 
 // Based on the URL mapping in "routes" below, the RouterModule attaches
