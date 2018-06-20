@@ -63,7 +63,7 @@ describe('DashboardComponent', () => {
     testComponent = fixture.debugElement.query(By.css('jm-dashboard')).componentInstance;
   }));
 
-  fit('should create dashboard', fakeAsync(() => {
+  it('should create dashboard', fakeAsync(() => {
     fixture.detectChanges();
     tick();
     expect(testComponent).toBeTruthy();

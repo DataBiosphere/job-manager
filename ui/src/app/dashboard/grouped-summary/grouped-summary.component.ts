@@ -14,10 +14,7 @@ export class GroupedSummaryComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {
-    debugger;
-    console.log(this.aggregation);
-  }
+  ngOnInit() {}
 
   convertCountsToMap(entry: AggregationEntry) : Map<JobStatus, number> {
     let countMap = new Map();

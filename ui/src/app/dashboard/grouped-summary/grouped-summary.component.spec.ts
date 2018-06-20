@@ -1,12 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { GroupedSummaryComponent } from './grouped-summary.component';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MatCardModule, MatDividerModule, MatTableModule} from "@angular/material";
 import {CommonModule} from "@angular/common";
+import {By} from "@angular/platform-browser";
 import {Component} from "@angular/core";
+
+import {GroupedSummaryComponent} from './grouped-summary.component';
 import {JobStatus} from "../../shared/model/JobStatus";
 import {Aggregation} from "../../shared/model/Aggregation";
-import {By} from "@angular/platform-browser";
 
 const testStatusArray = [JobStatus.Succeeded, JobStatus.Failed];
 const testAggregation: Aggregation = {
@@ -67,6 +67,7 @@ describe('GroupedSummaryComponent', () => {
     template: `<jm-grouped-summary [aggregation]="aggregation"
                                    [statusArray]="statusArray"></jm-grouped-summary>`
   })
+
   class TestHostComponent {
     private aggregation: Aggregation;
     private statusArray: Array<JobStatus>;
