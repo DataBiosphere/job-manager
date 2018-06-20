@@ -3,7 +3,6 @@ import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 
 import {AuthService} from './auth.service';
-import {environment} from '../../environments/environment';
 import {QueryJobsRequest} from '../shared/model/QueryJobsRequest';
 import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
@@ -11,6 +10,7 @@ import {UpdateJobLabelsRequest} from "../shared/model/UpdateJobLabelsRequest";
 import {UpdateJobLabelsResponse} from "../shared/model/UpdateJobLabelsResponse";
 import {TimeFrame, AggregationResponse} from '../shared/model/models';
 
+import {ConfigLoaderService} from "../../environments/config-loader.service";
 
 /** Service wrapper for accessing the job manager API. */
 @Injectable()
@@ -19,7 +19,8 @@ export class JobManagerService {
   private static readonly defaultErrorDetail = "An unknown error has ocurred. Please try again later.";
   private static readonly defaultErrorTitle = "Unknown";
 
-  constructor(private readonly authService: AuthService, private http: Http) {}
+  constructor(private readonly authService: AuthService, private http: Http,
+              private configLoader:ConfigLoaderService) {}
 
   private convertToJobMetadataResponse(json: object): JobMetadataResponse {
     var metadata: JobMetadataResponse = json as JobMetadataResponse;
@@ -104,7 +105,8 @@ export class JobManagerService {
   }
 
   abortJob(id: string): Promise<void> {
-    return this.http.post(`${environment.apiUrl}/jobs/${id}/abort`,
+    const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
+    return this.http.post(`${apiUrl}/jobs/${id}/abort`,
       {},
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
@@ -113,7 +115,8 @@ export class JobManagerService {
   }
 
   updateJobLabels(id: string, req: UpdateJobLabelsRequest): Promise<UpdateJobLabelsResponse> {
-    return this.http.post(`${environment.apiUrl}/jobs/${id}/updateLabels`,
+    const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
+    return this.http.post(`${apiUrl}/jobs/${id}/updateLabels`,
       req,
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
@@ -122,7 +125,8 @@ export class JobManagerService {
   }
 
   getJob(id: string): Promise<JobMetadataResponse> {
-    return this.http.get(`${environment.apiUrl}/jobs/${id}`,
+    const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
+    return this.http.get(`${apiUrl}/jobs/${id}`,
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => this.convertToJobMetadataResponse(response.json()))
@@ -133,7 +137,8 @@ export class JobManagerService {
   // consistency with other ng2 APIs, in addition to the retry/cancel
   // capabilities.
   queryJobs(req: QueryJobsRequest): Promise<QueryJobsResponse> {
-    return this.http.post(`${environment.apiUrl}/jobs/query`,
+    const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
+    return this.http.post(`${apiUrl}/jobs/query`,
       req,
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
@@ -142,7 +147,8 @@ export class JobManagerService {
   }
 
   queryAggregations(timeFrame: TimeFrame, projectId: string): Promise<AggregationResponse> {
-    return this.http.get(`${environment.apiUrl}/aggregations`,
+    const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
+    return this.http.get(`${apiUrl}/aggregations`,
       new RequestOptions({
         params: {
           projectId,

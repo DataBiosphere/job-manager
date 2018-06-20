@@ -2,7 +2,6 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Injectable} from '@angular/core';
 
 import {AuthService} from '../core/auth.service';
-import {environment} from '../../environments/environment';
 
 declare const gapi: any;
 
