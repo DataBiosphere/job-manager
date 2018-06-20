@@ -7,7 +7,7 @@ import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 
 export class FakeJobManagerService extends JobManagerService {
   constructor(public jobs: QueryJobsResult[]) {
-    super(null, null);
+    super(null, null, null);
   }
 
   private findJob(id: string): QueryJobsResult {

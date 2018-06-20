@@ -5,7 +5,6 @@ import {Injectable} from '@angular/core';
 import {AuthService} from './auth.service';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from './capabilities.service';
-import {environment} from '../../environments/environment';
 import {URLSearchParamsUtils} from '../shared/utils/url-search-params.utils'
 
 /** Service wrapper for routing based on current authentication state. */
