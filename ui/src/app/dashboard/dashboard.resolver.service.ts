@@ -11,7 +11,6 @@ export class DashboardResolver implements Resolve<AggregationResponse>{
   ) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<AggregationResponse> {
-    debugger;
     return this.jobManagerService.queryAggregations(TimeFrame.DAYS7, route.queryParams['projectId']);
   }
 }
