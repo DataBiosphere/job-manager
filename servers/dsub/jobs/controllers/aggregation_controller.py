@@ -25,44 +25,43 @@ def get_job_aggregations(timeFrame, projectId=None):
         AggregationResponse: Response contains aggregation of jobs
     """
     # temporary fake data for testing front-end.
-    statusCount1 = StatusCount(status='success', count=10)
+    statusCount1 = StatusCount(status='Succeeded', count=10)
 
-    statusCount2 = StatusCount(status='fail', count=2)
+    statusCount2 = StatusCount(status='Failed', count=2)
 
     summaryCounts = StatusCounts(counts=[statusCount1, statusCount2])
 
     entry1 = AggregationEntry(
-        label='owner1',
+        label='labelValue1',
         status_counts=StatusCounts(counts=[
-            StatusCount(status='success', count=2),
-            StatusCount(status='fail', count=1)
+            StatusCount(status='Succeeded', count=2),
+            StatusCount(status='Failed', count=1)
         ]))
 
     entry2 = AggregationEntry(
-        label='owner2',
+        label='labelValue2',
         status_counts=StatusCounts(counts=[
-            StatusCount(status='success', count=4),
-            StatusCount(status='fail', count=6)
+            StatusCount(status='Succeeded', count=4),
+            StatusCount(status='Failed', count=6)
         ]))
 
     userEntry1 = AggregationEntry(
-        label='user1',
+        label='circleci',
         status_counts=StatusCounts(counts=[
-            StatusCount(status='success', count=3),
-            StatusCount(status='fail', count=7)
+            StatusCount(status='Succeeded', count=3),
+            StatusCount(status='Failed', count=7)
         ]))
 
     userEntry2 = AggregationEntry(
-        label='user2',
+        label='otherUser',
         status_counts=StatusCounts(counts=[
-            StatusCount(status='success', count=7),
-            StatusCount(status='fail', count=4)
+            StatusCount(status='Succeeded', count=7),
+            StatusCount(status='Failed', count=4)
         ]))
 
-    ownerAggregation = Aggregation(key='Owner', entries=[entry1, entry2])
+    ownerAggregation = Aggregation(name='AnotherLabel', key='job-id', entries=[entry1, entry2])
 
-    projectAggregation = Aggregation(
-        key='User', entries=[userEntry1, userEntry2])
+    projectAggregation = Aggregation(name='User', key='userId', entries=[userEntry1, userEntry2])
 
     return AggregationResponse(
         summary=summaryCounts,

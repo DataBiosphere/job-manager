@@ -3,6 +3,8 @@
     {{ statusCount.status}}
   </mat-card-title>
   <mat-card-content>
-    {{ statusCount.count}}
+    <a [routerLink]="['/jobs']" [queryParams]="getUrlParams(statusCount)">
+      {{ statusCount.count }}
+    </a>
   </mat-card-content>
 </mat-card>

@@ -2,6 +2,8 @@ import {Component, Input} from '@angular/core';
 import {JobStatus} from "../../shared/model/JobStatus";
 import {AggregationEntry} from "../../shared/model/AggregationEntry";
 import {Aggregation} from "../../shared/model/Aggregation";
+import {ActivatedRoute} from "@angular/router";
+import {URLSearchParamsUtils} from "../../shared/utils/url-search-params.utils";
 
 @Component({
   selector: 'jm-grouped-summary',
@@ -12,7 +14,7 @@ export class GroupedSummaryComponent {
   @Input() aggregation: Aggregation;
   @Input() statusArray: Array<JobStatus>;
 
-  constructor() {}
+  constructor(private readonly activatedRoute:ActivatedRoute) {}
 
   convertCountsToMap(entry: AggregationEntry) : Map<JobStatus, number> {
     let countMap = new Map();
@@ -20,5 +22,24 @@ export class GroupedSummaryComponent {
       countMap.set(countEntry.status, countEntry.count);
     }
     return countMap;
+  }
+
+  getLabelUrlParams(entry: AggregationEntry) {
+    let map = this.getCommonUrlParamsMap(entry);
+    return {q: URLSearchParamsUtils.encodeURLSearchParamsFromMap(map)};
+  }
+
+  getStatusUrlParams(entry: AggregationEntry, status: JobStatus) {
+    let map = this.getCommonUrlParamsMap(entry);
+    map.set('statuses', [status.toString()]);
+    return {q: URLSearchParamsUtils.encodeURLSearchParamsFromMap(map)};
+  }
+
+  getCommonUrlParamsMap(entry: AggregationEntry) {
+    let map = new Map<string, string[]>();
+    map.set('projectId', [this.activatedRoute.snapshot.queryParams['projectId']]);
+    map.set(this.aggregation.key, [entry.label]);
+
+    return map;
   }
 }
