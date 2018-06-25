@@ -59,9 +59,11 @@ def get_job_aggregations(timeFrame, projectId=None):
             StatusCount(status='Failed', count=4)
         ]))
 
-    ownerAggregation = Aggregation(name='AnotherLabel', key='job-id', entries=[entry1, entry2])
+    ownerAggregation = Aggregation(
+        name='AnotherLabel', key='job-id', entries=[entry1, entry2])
 
-    projectAggregation = Aggregation(name='User', key='userId', entries=[userEntry1, userEntry2])
+    projectAggregation = Aggregation(
+        name='User', key='userId', entries=[userEntry1, userEntry2])
 
     return AggregationResponse(
         summary=summaryCounts,
