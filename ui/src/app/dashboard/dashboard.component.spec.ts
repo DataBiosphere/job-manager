@@ -8,7 +8,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 
 import {JobManagerService} from '../core/job-manager.service';
 import {SharedModule} from '../shared/shared.module';
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import 'rxjs/add/observable/of';
 import {RouteReuse} from '../route-reuse.service';
 import {DashboardResolver} from "./dashboard.resolver.service";
@@ -31,6 +31,7 @@ describe('DashboardComponent', () => {
         DashboardComponent,
         TotalSummaryComponent,
         GroupedSummaryComponent,
+        TestJobListComponent,
       ],
       imports: [
         CommonModule,
@@ -39,8 +40,9 @@ describe('DashboardComponent', () => {
         MatTableModule,
         RouterTestingModule.withRoutes([
           {path: 'dashboard', component: DashboardComponent, resolve: {aggregations: DashboardResolver}},
+          {path: 'jobs', component: TestJobListComponent}
         ]),
-        SharedModule
+        SharedModule,
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
@@ -67,9 +69,23 @@ describe('DashboardComponent', () => {
     expect(testComponent).toBeTruthy();
   }));
 
+  it('should navigate to job-list page (fake) when status counts are clicked', fakeAsync(() => {
+    let countAnchor = fixture.debugElement.query(By.css("jm-dashboard a")).nativeElement;
+    countAnchor.click();
+    fixture.detectChanges();
+    tick();
+    expect(fixture.debugElement.query(By.css("div")).nativeElement.textContent).toEqual("fake job-list page");
+  }));
+
   @Component({
     selector: 'jm-test-app',
     template: '<router-outlet></router-outlet>'
   })
   class AppComponent {}
+
+  @Component({
+    selector: 'jm-test-job-list-component',
+    template: '<div>fake job-list page</div>'
+  })
+  class TestJobListComponent {}
 });
