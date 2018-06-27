@@ -313,7 +313,7 @@ definitions:
       label:
         description: The label value for this aggregation entry.
         type: string
-      status_Counts:
+      statusCounts:
         $ref: '#/definitions/StatusCounts'
   StatusCounts:
     description: A collection of StatusCount

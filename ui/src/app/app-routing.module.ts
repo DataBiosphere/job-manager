@@ -9,13 +9,14 @@ import {CapabilitiesActivator} from './core/capabilities-activator.service';
 import {JobDetailsComponent} from './job-details/job-details.component';
 import {JobDetailsResolver} from './job-details/job-details-resolver.service';
 import {JobListResolver} from './job-list/job-list-resolver.service';
+import { DashboardResolver } from './dashboard/dashboard.resolver.service';
 import {JobListComponent} from './job-list/job-list.component';
 import {SignInComponent} from './sign-in/sign-in.component';
 import {ProjectsComponent} from './projects/projects.component'
 import {RouteReuse} from './route-reuse.service';
 
-import {environment} from '../environments/environment';
 import {DashboardComponent} from "./dashboard/dashboard.component";
+
 
 // Based on the URL mapping in "routes" below, the RouterModule attaches
 // UI Components to the <router-outlet> element in the main AppComponent.
@@ -39,7 +40,10 @@ const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     //TODO: (zach) dashboard need a query param of project id before it can be activated
-    canActivate: [CapabilitiesActivator]
+    canActivate: [CapabilitiesActivator],
+    resolve: {
+      aggregations: DashboardResolver
+    }
   },
   {
     path: 'jobs',

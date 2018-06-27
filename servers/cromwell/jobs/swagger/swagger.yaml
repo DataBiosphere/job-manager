@@ -333,7 +333,7 @@ definitions:
       label:
         type: "string"
         description: "The label value for this aggregation entry."
-      status_Counts:
+      statusCounts:
         $ref: "#/definitions/StatusCounts"
     description: "An aggregation entry for a given label value."
   StatusCounts:

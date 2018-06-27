@@ -2,7 +2,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Injectable, NgZone} from '@angular/core';
 
 import {CapabilitiesService} from './capabilities.service';
-import {environment} from '../../environments/environment';
+import {ConfigLoaderService} from "../../environments/config-loader.service";
 
 declare const gapi: any;
 
@@ -14,8 +14,9 @@ export class AuthService {
   public authToken: string;
 
   private initAuth(scopes: string[]): Promise<void> {
+    const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
     return gapi.auth2.init({
-      client_id: environment.clientId,
+      client_id: clientId,
       cookiepolicy: 'single_host_origin',
       scope: scopes.join(" ")
     });
@@ -31,7 +32,8 @@ export class AuthService {
     }
   }
 
-  constructor(private zone: NgZone, capabilitiesService: CapabilitiesService) {
+  constructor(private zone: NgZone, capabilitiesService: CapabilitiesService,
+              private configLoader: ConfigLoaderService) {
     capabilitiesService.getCapabilities().then(capabilities => {
       if (!capabilities.authentication || !capabilities.authentication.isRequired) {
         return;

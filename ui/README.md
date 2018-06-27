@@ -19,12 +19,12 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 ## Running Tests
 Unit tests are run via [Karma](https://karma-runner.github.io).
 ```
-ng test
+npm test
 ```
 
 By default, this opens a browser. Alternatively run headless:
 ```
-ng test --browsers=ChromeHeadless
+npm test -- --browsers=ChromeHeadless
 ```
 
 ## Further help
