@@ -475,6 +475,7 @@ definitions:
     - "Failed"
     - "Succeeded"
     - "Aborted"
+    - "On Hold"
   ExtendedFields:
     properties:
       userId:
