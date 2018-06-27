@@ -23,11 +23,11 @@ const TEST_AGGREGATION_RESPONSE: AggregationResponse =
   {
     aggregations: [
       {
-        key: "anotherLabel",
-        name: "AnotherLabel",
+        key: 'anotherLabel',
+        name: 'AnotherLabel',
         entries: [
           {
-            label: "labelValue1",
+            label: 'labelValue1',
             statusCounts: {
               counts: [
                 {
@@ -42,7 +42,7 @@ const TEST_AGGREGATION_RESPONSE: AggregationResponse =
             }
           },
           {
-            label: "labelValue1",
+            label: 'labelValue1',
             statusCounts: {
               counts: [
                 {
@@ -59,11 +59,11 @@ const TEST_AGGREGATION_RESPONSE: AggregationResponse =
         ]
       },
       {
-        key: "userId",
-        name: "User",
+        key: 'userId',
+        name: 'User',
         entries: [
           {
-            label: "user1",
+            label: 'user1',
             statusCounts: {
               counts: [
                 {
@@ -78,7 +78,7 @@ const TEST_AGGREGATION_RESPONSE: AggregationResponse =
             }
           },
           {
-            label: "user2",
+            label: 'user2',
             statusCounts: {
               counts: [
                 {
@@ -172,37 +172,37 @@ describe('DashboardComponent', () => {
     expect(testComponent).toBeTruthy();
   }));
 
-  it("should create expected amount of cards", fakeAsync(() => {
-    const matCardNum = de.queryAll(By.css('jm-total-summary mat-card')).length;
+  it('should create expected amount of cards', fakeAsync(() => {
+    const summaryCardNum = de.queryAll(By.css('jm-total-summary mat-card')).length;
     const groupedCardNum = de.queryAll(By.css('jm-grouped-summary')).length;
 
-    expect(matCardNum).toEqual(TEST_AGGREGATION_RESPONSE.summary.counts.length);
+    expect(summaryCardNum).toEqual(TEST_AGGREGATION_RESPONSE.summary.counts.length);
     expect(groupedCardNum).toEqual(TEST_AGGREGATION_RESPONSE.aggregations.length);
   }));
 
   it('should navigate to job-list page (fake) when status counts are clicked', fakeAsync(() => {
-    const countAnchor = de.query(By.css("jm-dashboard a")).nativeElement;
+    const countAnchor = de.query(By.css('jm-dashboard a')).nativeElement;
     countAnchor.click();
     fixture.detectChanges();
     tick();
-    expect(de.query(By.css("div")).nativeElement.textContent).toEqual("fake job-list page");
+    expect(de.query(By.css('div')).nativeElement.textContent).toEqual('fake job-list page');
   }));
 
   it('should have status as url param when totalSummaryComponent links are clicked', fakeAsync(() => {
-    const totalSummaryAnchor = de.query(By.css("jm-total-summary .count a")).nativeElement;
-    const status: JobStatus= JobStatus.Succeeded;
+    const totalSummaryAnchor = de.query(By.css('jm-total-summary .count a')).nativeElement;
+    const status: JobStatus = JobStatus.Succeeded;
 
     totalSummaryAnchor.click();
     fixture.detectChanges();
     tick();
-    const testJobListComponent = de.query(By.css("jm-test-job-list-component")).componentInstance;
+    const testJobListComponent = de.query(By.css('jm-test-job-list-component')).componentInstance;
     const queryJobRequest = URLSearchParamsUtils.unpackURLSearchParams(testJobListComponent.activatedRoute.snapshot.queryParams['q']);
     expect(queryJobRequest.statuses).toContain(status);
     expect(queryJobRequest.extensions['projectId']).toEqual(TEST_PROJECT);
   }));
 
-  it("should have status and label as url params when groupedSummaryComponent links are clicked", fakeAsync(() => {
-    const groupedSummaryAnchor = de.query(By.css("jm-grouped-summary tr td.count a")).nativeElement;
+  it('should have status and label as url params when groupedSummaryComponent links are clicked', fakeAsync(() => {
+    const groupedSummaryAnchor = de.query(By.css('jm-grouped-summary tr td.count a')).nativeElement;
     const status: JobStatus= JobStatus.Succeeded;
     const labelKey = TEST_AGGREGATION_RESPONSE.aggregations[0].key;
     const labelValue = TEST_AGGREGATION_RESPONSE.aggregations[0].entries[0].label;
@@ -210,7 +210,7 @@ describe('DashboardComponent', () => {
     groupedSummaryAnchor.click();
     tick();
 
-    const testJobListComponent = de.query(By.css("jm-test-job-list-component")).componentInstance;
+    const testJobListComponent = de.query(By.css('jm-test-job-list-component')).componentInstance;
     const queryJobRequest = URLSearchParamsUtils.unpackURLSearchParams(testJobListComponent.activatedRoute.snapshot.queryParams['q']);
     // this test is based on the hard-coded aggregation response
     expect(queryJobRequest.statuses).toContain(status);
