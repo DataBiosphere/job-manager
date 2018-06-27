@@ -1,12 +1,11 @@
 import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
-import {Component} from '@angular/core';
+import {Component, DebugElement} from '@angular/core';
 import {MatCardModule, MatTableModule} from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ActivatedRoute, Router} from "@angular/router";
-import 'rxjs/add/observable/of';
 
 import {JobManagerService} from '../core/job-manager.service';
 import {SharedModule} from '../shared/shared.module';
@@ -15,16 +14,111 @@ import {DashboardResolver} from "./dashboard.resolver.service";
 import {DashboardComponent} from "./dashboard.component";
 import {TotalSummaryComponent} from "./total-summary/total-summary.component";
 import {GroupedSummaryComponent} from "./grouped-summary/grouped-summary.component";
-import {FakeAggregationService, CARD_NUM, TEST_AGGREGATION_RESPONSE} from "../testing/fake-aggregation.service";
+import {FakeAggregationService} from "../testing/fake-aggregation.service";
+import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
+import {JobStatus} from "../shared/model/JobStatus";
+import {AggregationResponse} from "../shared/model/AggregationResponse";
+
+const TEST_AGGREGATION_RESPONSE: AggregationResponse =
+  {
+    aggregations: [
+      {
+        key: "anotherLabel",
+        name: "AnotherLabel",
+        entries: [
+          {
+            label: "labelValue1",
+            statusCounts: {
+              counts: [
+                {
+                  count: 2,
+                  status: JobStatus.Succeeded
+                },
+                {
+                  count: 1,
+                  status: JobStatus.Failed
+                }
+              ]
+            }
+          },
+          {
+            label: "labelValue1",
+            statusCounts: {
+              counts: [
+                {
+                  count: 4,
+                  status: JobStatus.Succeeded
+                },
+                {
+                  count: 6,
+                  status: JobStatus.Failed
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        key: "userId",
+        name: "User",
+        entries: [
+          {
+            label: "user1",
+            statusCounts: {
+              counts: [
+                {
+                  count: 5,
+                  status: JobStatus.Succeeded
+                },
+                {
+                  count: 6,
+                  status: JobStatus.Failed
+                }
+              ]
+            }
+          },
+          {
+            label: "user2",
+            statusCounts: {
+              counts: [
+                {
+                  count: 8,
+                  status: JobStatus.Succeeded
+                },
+                {
+                  count: 11,
+                  status: JobStatus.Failed
+                }
+              ]
+            }
+          }
+        ],
+      },
+
+    ],
+    summary: {
+      counts: [
+        {
+          count: 10,
+          status: JobStatus.Succeeded
+        },
+        {
+          count: 3,
+          status: JobStatus.Failed
+        }
+      ]
+    }
+  };
 
 describe('DashboardComponent', () => {
-  let testComponent: DashboardComponent;
   let fixture: ComponentFixture<AppComponent>;
   let fakeJobService: FakeAggregationService;
-  let testJobListComponent: TestJobListComponent;
+  let de: DebugElement;
+
+  const TEST_PROJECT = 'test-project';
 
   beforeEach(async(() => {
-    fakeJobService = new FakeAggregationService();
+    fakeJobService = new FakeAggregationService(TEST_AGGREGATION_RESPONSE);
 
     TestBed.configureTestingModule({
       declarations: [
@@ -55,54 +149,73 @@ describe('DashboardComponent', () => {
 
   beforeEach(fakeAsync(() => {
     fixture = TestBed.createComponent(AppComponent);
+    de = fixture.debugElement;
     const router: Router = TestBed.get(Router);
     router.initialNavigation();
-    router.navigate(['dashboard']);
+
+    router.navigate(['dashboard'], {
+      queryParams: {
+        projectId: TEST_PROJECT
+      }
+    });
+
     tick();
     fixture.detectChanges();
     tick();
-    testComponent = fixture.debugElement.query(By.css('jm-dashboard')).componentInstance;
+
   }));
 
   it('should create dashboard', fakeAsync(() => {
+    const testComponent = de.query(By.css('jm-dashboard')).componentInstance;
     fixture.detectChanges();
     tick();
     expect(testComponent).toBeTruthy();
   }));
 
   it("should create expected amount of cards", fakeAsync(() => {
-    let matCards = fixture.debugElement.queryAll(By.css('mat-card'));
-    expect(matCards.length).toEqual(CARD_NUM);
+    const matCardNum = de.queryAll(By.css('jm-total-summary mat-card')).length;
+    const groupedCardNum = de.queryAll(By.css('jm-grouped-summary')).length;
+
+    expect(matCardNum).toEqual(TEST_AGGREGATION_RESPONSE.summary.counts.length);
+    expect(groupedCardNum).toEqual(TEST_AGGREGATION_RESPONSE.aggregations.length);
   }));
 
   it('should navigate to job-list page (fake) when status counts are clicked', fakeAsync(() => {
-    let countAnchor = fixture.debugElement.query(By.css("jm-dashboard a")).nativeElement;
+    const countAnchor = de.query(By.css("jm-dashboard a")).nativeElement;
     countAnchor.click();
     fixture.detectChanges();
     tick();
-    expect(fixture.debugElement.query(By.css("div")).nativeElement.textContent).toEqual("fake job-list page");
+    expect(de.query(By.css("div")).nativeElement.textContent).toEqual("fake job-list page");
   }));
 
-  it('should has status as url param when totalSummaryComponent links are clicked', fakeAsync(() => {
-    let totalSummaryAnchor = fixture.debugElement.query(By.css("jm-total-summary .count a")).nativeElement;
-    let status = fixture.debugElement.query(By.css("jm-total-summary .status")).nativeElement.textContent.trim();
+  it('should have status as url param when totalSummaryComponent links are clicked', fakeAsync(() => {
+    const totalSummaryAnchor = de.query(By.css("jm-total-summary .count a")).nativeElement;
+    const status: JobStatus= JobStatus.Succeeded;
 
     totalSummaryAnchor.click();
     fixture.detectChanges();
     tick();
-    testJobListComponent = fixture.debugElement.query(By.css("jm-test-job-list-component")).componentInstance;
-    expect(testJobListComponent.route.snapshot.queryParams['q'].indexOf(status)).toBeGreaterThan(-1);
+    const testJobListComponent = de.query(By.css("jm-test-job-list-component")).componentInstance;
+    const queryJobRequest = URLSearchParamsUtils.unpackURLSearchParams(testJobListComponent.activatedRoute.snapshot.queryParams['q']);
+    expect(queryJobRequest.statuses).toContain(status);
+    expect(queryJobRequest.extensions['projectId']).toEqual(TEST_PROJECT);
   }));
 
-  it("should has status and label as url params when groupedSummaryComponent links are clicked", fakeAsync(() => {
-    let groupedSummaryAnchor = fixture.debugElement.query(By.css("jm-grouped-summary tr td.count a")).nativeElement;
+  it("should have status and label as url params when groupedSummaryComponent links are clicked", fakeAsync(() => {
+    const groupedSummaryAnchor = de.query(By.css("jm-grouped-summary tr td.count a")).nativeElement;
+    const status: JobStatus= JobStatus.Succeeded;
+    const labelKey = TEST_AGGREGATION_RESPONSE.aggregations[0].key;
+    const labelValue = TEST_AGGREGATION_RESPONSE.aggregations[0].entries[0].label;
+
     groupedSummaryAnchor.click();
     tick();
-    testJobListComponent = fixture.debugElement.query(By.css("jm-test-job-list-component")).componentInstance;
-    let q = testJobListComponent.route.snapshot.queryParams['q'];
+
+    const testJobListComponent = de.query(By.css("jm-test-job-list-component")).componentInstance;
+    const queryJobRequest = URLSearchParamsUtils.unpackURLSearchParams(testJobListComponent.activatedRoute.snapshot.queryParams['q']);
     // this test is based on the hard-coded aggregation response
-    expect(q.indexOf(TEST_AGGREGATION_RESPONSE.aggregations[0].key)).toBeGreaterThan(-1);
-    expect(q.indexOf(TEST_AGGREGATION_RESPONSE.aggregations[0].entries[0].statusCounts.counts[0].status)).toBeGreaterThan(-1);
+    expect(queryJobRequest.statuses).toContain(status);
+    expect(queryJobRequest.labels[labelKey]).toEqual(labelValue);
+    expect(queryJobRequest.extensions['projectId']).toEqual(TEST_PROJECT);
   }));
 
   @Component({
@@ -116,9 +229,6 @@ describe('DashboardComponent', () => {
     template: '<div>fake job-list page</div>'
   })
   class TestJobListComponent {
-    public route: ActivatedRoute;
-      constructor(activatedRoute : ActivatedRoute) {
-        this.route = activatedRoute;
-      }
+      constructor(public activatedRoute : ActivatedRoute) {}
   }
 });
