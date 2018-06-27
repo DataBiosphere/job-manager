@@ -1,13 +1,14 @@
 import {AggregationResponse, JobStatus, TimeFrame} from "../shared/model/models";
 
-const aggregationResponse: AggregationResponse =
+export const TEST_AGGREGATION_RESPONSE: AggregationResponse =
   {
    aggregations: [
      {
-       key: "Owner",
+       key: "anotherLabel",
+       name: "AnotherLabel",
        entries: [
          {
-           label: "owner1",
+           label: "labelValue1",
            statusCounts: {
              counts: [
                {
@@ -22,7 +23,7 @@ const aggregationResponse: AggregationResponse =
            }
          },
          {
-           label: "owner2",
+           label: "labelValue1",
            statusCounts: {
              counts: [
                {
@@ -39,7 +40,8 @@ const aggregationResponse: AggregationResponse =
        ]
      },
      {
-       key: "User",
+       key: "userId",
+       name: "User",
        entries: [
          {
            label: "user1",
@@ -89,9 +91,13 @@ const aggregationResponse: AggregationResponse =
    }
   };
 
+// This is the number of mat-card that would display on dashboard page,
+// remember to change the number if you change the aggregationResponse above
+export const CARD_NUM = 4;
+
 export class FakeAggregationService {
   queryAggregations(timeFrame: TimeFrame, projectId: string): Promise<AggregationResponse> {
-    return Promise.resolve(aggregationResponse);
+    return Promise.resolve(TEST_AGGREGATION_RESPONSE);
   }
 }
 

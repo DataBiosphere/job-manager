@@ -1,8 +1,8 @@
 <mat-card *ngFor="let statusCount of summary.counts">
-  <mat-card-title>
+  <mat-card-title class="status">
     {{ statusCount.status}}
   </mat-card-title>
-  <mat-card-content>
+  <mat-card-content class="count">
     <a [routerLink]="['/jobs']" [queryParams]="getUrlParams(statusCount)">
       {{ statusCount.count }}
     </a>

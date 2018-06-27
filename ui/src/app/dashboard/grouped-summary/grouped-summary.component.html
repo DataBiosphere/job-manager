@@ -13,13 +13,13 @@
       </tr>
 
       <tr *ngFor="let entry of aggregation.entries">
-        <td>
+        <td class="label">
           <a [routerLink]="['/jobs']" [queryParams]="getLabelUrlParams(entry)">
             {{ entry.label }}
           </a>
         </td>
         <ng-container *ngFor="let status of statusArray">
-          <td>
+          <td class="count">
             <a [routerLink]="['/jobs']" [queryParams]="getStatusUrlParams(entry, status)">
               {{ convertCountsToMap(entry).get(status) }}
             </a>
