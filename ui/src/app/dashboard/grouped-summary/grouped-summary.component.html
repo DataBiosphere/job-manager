@@ -1,21 +1,29 @@
 <mat-card>
   <mat-card-title>
-    {{ aggregation.key }}
+    {{ aggregation.name }}
   </mat-card-title>
 
   <mat-card-content>
     <table>
       <tr>
-        <th mat-sort-header="key">Key</th>
+        <th mat-sort-header="label">Label</th>
         <ng-container *ngFor="let status of statusArray">
           <th mat-sort-header="'status'">{{ status }}</th>
         </ng-container>
       </tr>
 
       <tr *ngFor="let entry of aggregation.entries">
-        <td>{{ entry.label }}</td>
+        <td class="label">
+          <a [routerLink]="['/jobs']" [queryParams]="getLabelUrlParams(entry)">
+            {{ entry.label }}
+          </a>
+        </td>
         <ng-container *ngFor="let status of statusArray">
-          <td>{{ convertCountsToMap(entry).get(status) }}</td>
+          <td class="count">
+            <a [routerLink]="['/jobs']" [queryParams]="getStatusUrlParams(entry, status)">
+              {{ convertCountsToMap(entry).get(status) }}
+            </a>
+          </td>
         </ng-container>
       </tr>
 
