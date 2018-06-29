@@ -177,7 +177,6 @@ describe('DashboardComponent', () => {
   }));
 
   it('should create dashboard', fakeAsync(() => {
-    // debugger;
     const testComponent = de.query(By.css('jm-dashboard')).componentInstance;
     fixture.detectChanges();
     tick();

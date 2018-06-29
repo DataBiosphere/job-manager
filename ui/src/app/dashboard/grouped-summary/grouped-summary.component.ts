@@ -38,7 +38,8 @@ export class GroupedSummaryComponent {
   getCommonUrlParamsMap(entry: AggregationEntry) {
     let map = new Map<string, string[]>();
 
-    const projectId = URLSearchParamsUtils.unpackURLSearchParams(this.activatedRoute.snapshot.queryParams['q']).extensions['projectId'];
+    const projectId = URLSearchParamsUtils.unpackURLSearchParams(this.activatedRoute.snapshot.queryParams['q'])
+      .extensions['projectId'];
 
     map.set('projectId', [projectId]);
     map.set(this.aggregation.key, [entry.label]);
