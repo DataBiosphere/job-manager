@@ -7,6 +7,7 @@ import {TotalSummaryComponent} from './total-summary/total-summary.component';
 import {DashboardResolver} from "./dashboard.resolver.service";
 import {MatCardModule, MatDividerModule, MatTableModule} from "@angular/material";
 import {GroupedSummaryComponent} from './grouped-summary/grouped-summary.component';
+import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import {GroupedSummaryComponent} from './grouped-summary/grouped-summary.compone
     MatDividerModule,
     MatTableModule,
     RouterModule,
+    SharedModule,
   ],
   providers: [DashboardResolver],
   exports: [],

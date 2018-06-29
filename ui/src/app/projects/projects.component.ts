@@ -95,21 +95,20 @@ export class ProjectsComponent implements OnInit {
   }
 
   navigateJobs() {
-    if (this.configLoader.getEnvironmentConfigSynchronous()['dashboardEnabled']) {
-      this.router.navigate(['dashboard'], {
-        queryParams: {projectId: this.projectsControl.value}
-      });
-    } else {
-      this.router.navigate(['jobs'],
+    const extras = {
+      queryParams:
         {
-          queryParams:
-            {
-              q: URLSearchParamsUtils.encodeURLSearchParams({
-                  extensions: {
-                    projectId: this.projectsControl.value
-                  }})
-            }
-        });
+          q: URLSearchParamsUtils.encodeURLSearchParams({
+            extensions: {
+              projectId: this.projectsControl.value
+            }})
+        }
+    };
+
+    if (this.configLoader.getEnvironmentConfigSynchronous()['dashboardEnabled']) {
+      this.router.navigate(['dashboard'], extras);
+    } else {
+      this.router.navigate(['jobs'], extras);
     }
   }
 }

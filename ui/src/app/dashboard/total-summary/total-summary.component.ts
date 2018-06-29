@@ -15,11 +15,8 @@ export class TotalSummaryComponent {
   constructor(private readonly activatedRoute: ActivatedRoute) {}
 
   getUrlParams(statusCount: StatusCount) {
-    let map = new Map<string, string[]>();
-    map.set('projectId', [this.activatedRoute.snapshot.queryParams['projectId']]);
-    map.set('statuses', [statusCount.status.toString()]);
-
-    return {q: URLSearchParamsUtils.encodeURLSearchParamsFromMap(map)};
+    let query = URLSearchParamsUtils.unpackURLSearchParams(this.activatedRoute.snapshot.queryParams['q']);
+    query.statuses = [statusCount.status];
+    return {q: URLSearchParamsUtils.encodeURLSearchParams(query)};
   }
-
 }
