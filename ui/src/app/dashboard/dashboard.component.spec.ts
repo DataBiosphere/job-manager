@@ -18,6 +18,9 @@ import {FakeAggregationService} from "../testing/fake-aggregation.service";
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 import {JobStatus} from "../shared/model/JobStatus";
 import {AggregationResponse} from "../shared/model/AggregationResponse";
+import {CapabilitiesResponse} from "../shared/model/CapabilitiesResponse";
+import {CapabilitiesService} from "../core/capabilities.service";
+import {FakeCapabilitiesService} from "../testing/fake-capabilities.service";
 
 const TEST_AGGREGATION_RESPONSE: AggregationResponse =
   {
@@ -119,6 +122,13 @@ describe('DashboardComponent', () => {
 
   beforeEach(async(() => {
     fakeJobService = new FakeAggregationService(TEST_AGGREGATION_RESPONSE);
+    const capabilities : CapabilitiesResponse = {
+      displayFields: [
+        {field: 'status', display: 'Status'},
+        {field: 'submission', display: 'Submitted'},
+        {field: 'extensions.userId', display: 'User ID'},
+      ]
+    };
 
     TestBed.configureTestingModule({
       declarations: [
@@ -141,6 +151,7 @@ describe('DashboardComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
+        {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
         DashboardResolver,
         RouteReuse
       ],
@@ -155,17 +166,17 @@ describe('DashboardComponent', () => {
 
     router.navigate(['dashboard'], {
       queryParams: {
-        projectId: TEST_PROJECT
+        q: 'projectId='+ TEST_PROJECT
       }
     });
 
     tick();
     fixture.detectChanges();
     tick();
-
   }));
 
   it('should create dashboard', fakeAsync(() => {
+    // debugger;
     const testComponent = de.query(By.css('jm-dashboard')).componentInstance;
     fixture.detectChanges();
     tick();

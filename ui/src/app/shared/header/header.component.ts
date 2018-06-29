@@ -40,7 +40,7 @@ import {FilterChipComponent} from "./chips/filter-chip.component";
 export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @Input() jobs: BehaviorSubject<JobListView>;
   @Input() pageSize: number;
-  @Input() showControls: boolean = false;
+  @Input() showControls: boolean = true;
   @ViewChildren(FilterChipComponent) chipElements: QueryList<FilterChipComponent>;
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator: MatPaginator;
