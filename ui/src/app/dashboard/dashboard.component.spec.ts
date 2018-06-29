@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/t
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement} from '@angular/core';
-import {MatCardModule, MatTableModule} from '@angular/material';
+import {MatCardModule} from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ActivatedRoute, Router} from "@angular/router";
@@ -18,6 +18,10 @@ import {FakeAggregationService} from "../testing/fake-aggregation.service";
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 import {JobStatus} from "../shared/model/JobStatus";
 import {AggregationResponse} from "../shared/model/AggregationResponse";
+import {CapabilitiesResponse} from "../shared/model/CapabilitiesResponse";
+import {CapabilitiesService} from "../core/capabilities.service";
+import {FakeCapabilitiesService} from "../testing/fake-capabilities.service";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 const TEST_AGGREGATION_RESPONSE: AggregationResponse =
   {
@@ -119,6 +123,13 @@ describe('DashboardComponent', () => {
 
   beforeEach(async(() => {
     fakeJobService = new FakeAggregationService(TEST_AGGREGATION_RESPONSE);
+    const capabilities : CapabilitiesResponse = {
+      displayFields: [
+        {field: 'status', display: 'Status'},
+        {field: 'submission', display: 'Submitted'},
+        {field: 'extensions.userId', display: 'User ID'},
+      ]
+    };
 
     TestBed.configureTestingModule({
       declarations: [
@@ -130,9 +141,9 @@ describe('DashboardComponent', () => {
       ],
       imports: [
         CommonModule,
+        BrowserAnimationsModule,
         MatCardModule,
         MatDividerModule,
-        MatTableModule,
         RouterTestingModule.withRoutes([
           {path: 'dashboard', component: DashboardComponent, resolve: {aggregations: DashboardResolver}},
           {path: 'jobs', component: TestJobListComponent}
@@ -141,6 +152,7 @@ describe('DashboardComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
+        {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
         DashboardResolver,
         RouteReuse
       ],
@@ -155,14 +167,13 @@ describe('DashboardComponent', () => {
 
     router.navigate(['dashboard'], {
       queryParams: {
-        projectId: TEST_PROJECT
+        q: 'projectId='+ TEST_PROJECT
       }
     });
 
     tick();
     fixture.detectChanges();
     tick();
-
   }));
 
   it('should create dashboard', fakeAsync(() => {
