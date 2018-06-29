@@ -9,6 +9,7 @@ import {MatCardModule, MatDividerModule, MatTableModule} from "@angular/material
 import {GroupedSummaryComponent} from './grouped-summary/grouped-summary.component';
 import {SharedModule} from "../shared/shared.module";
 
+
 @NgModule({
   declarations: [
     DashboardComponent,
