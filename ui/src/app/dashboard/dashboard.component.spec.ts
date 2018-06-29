@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/t
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement} from '@angular/core';
-import {MatCardModule, MatTableModule} from '@angular/material';
+import {MatCardModule} from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ActivatedRoute, Router} from "@angular/router";
@@ -21,6 +21,7 @@ import {AggregationResponse} from "../shared/model/AggregationResponse";
 import {CapabilitiesResponse} from "../shared/model/CapabilitiesResponse";
 import {CapabilitiesService} from "../core/capabilities.service";
 import {FakeCapabilitiesService} from "../testing/fake-capabilities.service";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 const TEST_AGGREGATION_RESPONSE: AggregationResponse =
   {
@@ -140,9 +141,9 @@ describe('DashboardComponent', () => {
       ],
       imports: [
         CommonModule,
+        BrowserAnimationsModule,
         MatCardModule,
         MatDividerModule,
-        MatTableModule,
         RouterTestingModule.withRoutes([
           {path: 'dashboard', component: DashboardComponent, resolve: {aggregations: DashboardResolver}},
           {path: 'jobs', component: TestJobListComponent}
