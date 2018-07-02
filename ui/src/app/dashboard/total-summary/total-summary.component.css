@@ -1,7 +1,3 @@
-* {
-  font-family: 'Roboto', sans-serif;
-}
-
 .mat-card {
   float: left;
   margin: 1rem;
@@ -18,6 +14,6 @@
 }
 
 /*TODO(zachx): change this to adapt more complex layout*/
-:host {
+.card-container {
   display: inline-flex;
 }
