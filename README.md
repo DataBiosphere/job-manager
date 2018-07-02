@@ -53,7 +53,7 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
 
   Download the git-secrets tool. If you are on a mac, run:
   ```
-    brew install git-secrets
+  brew install git-secrets
   ```
 
   If you are on Linux, run:
