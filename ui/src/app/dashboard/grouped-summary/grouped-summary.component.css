@@ -1,0 +1,18 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+.mat-card {
+  margin: 1rem;
+}
+
+table a {
+  text-decoration: none;
+  color: #000000;
+}
+
+.mat-card-title {
+  font-size: 1.2rem;
+  color: gray
+}
+

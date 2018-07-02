@@ -1,0 +1,23 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+.mat-card {
+  float: left;
+  margin: 1rem;
+}
+
+.count a {
+  text-decoration: none;
+  color: #000000;
+}
+
+.mat-card-title {
+  font-size: 1.2rem;
+  color: gray
+}
+
+/*TODO(zachx): change this to adapt more complex layout*/
+:host {
+  display: inline-flex;
+}
