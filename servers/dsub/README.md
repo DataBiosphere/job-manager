@@ -61,3 +61,14 @@ deactivate
 
 The sed command above replaces jm-utils=x.y.z with ../jm_utils, which is required
 to allow pip to install from the local jm_utils directory.
+
+
+## Gunicorn workers
+
+By default, the shim layer uses **5** `sync` [Gunicorn workers](http://docs.gunicorn.org/en/stable/settings.html#worker-class), the number of workers is **5**. 
+Job Manager also comes with `gevent` workers, you can override the default worker type and use dynamic number of workers(based on the number of CPU cores) by:
+    
+```
+export GUNICORN_CMD_ARGS="--workers=$(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 5) --worker-class gevent"
+```
+before you run the shim container.
