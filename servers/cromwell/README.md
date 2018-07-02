@@ -19,7 +19,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     Job Manager also comes with `gevent` workers, you can override the default worker type and use dynamic number of workers(based on the number of CPU cores) by:
     
     ```
-    export GUNICORN_CMD_ARGS="--workers=$(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 5) --worker-class gevent"
+    export GUNICORN_CMD_ARGS="--workers=$((2 * $(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 2) + 1)) --worker-class gevent"
     ```
     
 3. Add a file named `config.json` to `job-manager/servers/cromwell/jobs` that contains the username and password for the specified cromwell instance (You may want to skip this step if the Cromwell instance does not have HTTP Basic Authentication):

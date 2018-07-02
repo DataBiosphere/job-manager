@@ -69,6 +69,6 @@ By default, the shim layer uses **5** `sync` [Gunicorn workers](http://docs.guni
 Job Manager also comes with `gevent` workers, you can override the default worker type and use dynamic number of workers(based on the number of CPU cores) by:
     
 ```
-export GUNICORN_CMD_ARGS="--workers=$(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 5) --worker-class gevent"
+export GUNICORN_CMD_ARGS="--workers=$((2 * $(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 2) + 1)) --worker-class gevent"
 ```
 before you run the shim container.
