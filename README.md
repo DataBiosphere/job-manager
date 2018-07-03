@@ -49,14 +49,18 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
 ### Prerequisites
 
 - Install docker and docker-compose
-- Setup git-secrets:
-
-  Download the git-secrets tool. If you are on a mac, run:
+- Check out the repository and navigate to the directory:
+  ```sh
+    git clone https://github.com/DataBiosphere/job-manager.git
+    cd job-manager
+  ```
+- Setup git-secrets on the repository:
+  - On Mac:
   ```
   brew install git-secrets
   ```
 
-  If you are on Linux, run:
+  - On Linux:
   ```
   rm -rf git-secrets
   git clone https://github.com/awslabs/git-secrets.git
@@ -64,12 +68,6 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
   sudo make install && sudo chmod o+rx /usr/local/bin/git-secrets
   cd ..
   rm -rf git-secrets
-  ```
-
-- Check out and navigate to the job manager directory:
-  ```sh
-    git clone https://github.com/DataBiosphere/job-manager.git
-    cd job-manager
   ```
 
 - Configure the `git secrets` hook:
@@ -88,9 +86,9 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
 
   - Cromwell (local): `ln -sf cromwell-local-compose.yml docker-compose.yml`
   - Cromwell (CaaS): `ln -sf cromwell-caas-compose.yml docker-compose.yml`
-- Set up the server for development with [`cromwell`](https://github.com/broadinstitute/cromwell): details in [servers/cromwell](servers/cromwell/README.md#Development).
+- Follow [servers/cromwell](servers/cromwell/README.md#Development) for Cromwell server setup then return here to continue.
 
-#### Dsub
+#### dsub
 
 - Link the dsub docker compose file as `docker-compose.yml`:
 ```sh
@@ -104,8 +102,14 @@ docker-compose -f dsub-google-compose.yml CMD
 
 
 ### Run Locally
-1. Run `docker-compose up` from the root of the repository:
-2. Navigate to http://localhost:4200.
+- Run `docker-compose up` from the root of the repository:
+  - If this is the first time running `docker-compose up`  this might take a few minutes.
+  - Eventually you should see a compilation success message like this: 
+  ```
+  jmui_1        | webpack: Compiled successfully.
+  ```
+- Make sure that your backend (eg the Cromwell service or dsub) is ready to receive query requests. 
+- Navigate to http://localhost:4200.
 
 #### Notes
 1. Websocket reload on code change does not work in docker-compose (see
