@@ -1,6 +1,18 @@
 <jm-header [showControls]="false"></jm-header>
-<jm-total-summary [summary]="aggregationResponse.summary"></jm-total-summary>
-<mat-divider></mat-divider>
-<jm-grouped-summary *ngFor="let aggregation of aggregationResponse.aggregations"
-                    [statusArray]="statusArray"
-                    [aggregation]="aggregation"></jm-grouped-summary>
+
+<!--TODO(zachx): improve the grid layout-->
+<mat-grid-list cols="6" rowHeight="200px">
+  <mat-grid-tile
+    [colspan]="3"
+    [rowspan]="2">
+    <jm-total-summary [summary]="aggregationResponse.summary"></jm-total-summary>
+  </mat-grid-tile>
+
+  <mat-grid-tile
+    [colspan]="3"
+    [rowspan]="2">
+    <jm-grouped-summary *ngFor="let aggregation of aggregationResponse.aggregations"
+                        [statusArray]="statusArray"
+                        [aggregation]="aggregation"></jm-grouped-summary>
+  </mat-grid-tile>
+</mat-grid-list>

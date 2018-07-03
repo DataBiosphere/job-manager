@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/t
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement} from '@angular/core';
-import {MatCardModule} from '@angular/material';
+import {MatCardModule, MatGridListModule} from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ActivatedRoute, Router} from "@angular/router";
@@ -144,6 +144,7 @@ describe('DashboardComponent', () => {
         BrowserAnimationsModule,
         MatCardModule,
         MatDividerModule,
+        MatGridListModule,
         RouterTestingModule.withRoutes([
           {path: 'dashboard', component: DashboardComponent, resolve: {aggregations: DashboardResolver}},
           {path: 'jobs', component: TestJobListComponent}
