@@ -48,119 +48,118 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     ```
 
 1. (Optional) If you want to change either the predefined view or the default behavior of UI to some extent, e.g. display more columns in the job list view such as labels of the jobs, or make more columns to be popped up by the query builder, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should **strictly** follow the following structure:
-```
-{
-  "displayFields": [
+    ```
     {
-      "field": "status",
-      "display": "Status"
-    },
-    {
-      "field": "submission",
-      "display": "Submitted"
-    },
-    {
-      "field": "labels.cromwell-workflow-id",
-      "display": "Workflow ID"
-    },
-    {
-      "field": "labels.flag",
-      "display": "Flag",
-      "editable": true,
-      "bulkEditable": true,
-      "fieldType": "list",
-      "validFieldValues": [
-        "archive",
-        "follow-up"
-      ]
-    },
-    {
-      "field": "labels.label",
-      "display": "Label",
-      "fieldType": "text",
-      "editable": true,
-      "bulkEditable": true
-    },
-    {
-      "field": "labels.comment",
-      "display": "Comment",
-      "fieldType": "text",
-      "editable": true
+      "displayFields": [
+        {
+          "field": "status",
+          "display": "Status"
+        },
+        {
+          "field": "submission",
+          "display": "Submitted"
+        },
+        {
+          "field": "labels.cromwell-workflow-id",
+          "display": "Workflow ID"
+        },
+        {
+          "field": "labels.flag",
+          "display": "Flag",
+          "editable": true,
+          "bulkEditable": true,
+          "fieldType": "list",
+          "validFieldValues": [
+            "archive",
+            "follow-up"
+          ]
+        },
+        {
+          "field": "labels.label",
+          "display": "Label",
+          "fieldType": "text",
+          "editable": true,
+          "bulkEditable": true
+        },
+        {
+          "field": "labels.comment",
+          "display": "Comment",
+          "fieldType": "text",
+          "editable": true
+        }
+      ],
+      "commonLabels": [
+        "cromwell-workflow-id",
+        "workflow-name",
+        "label",
+        "comment,
+        "flag"
+      ],
+      "queryExtensions": []
     }
-  ],
-  "commonLabels": [
-    "cromwell-workflow-id",
-    "workflow-name",
-    "label",
-    "comment,
-    "flag"
-  ],
-  "queryExtensions": []
-}
-```
-Both "editable" and "bulkEditable" will be treated as `false` unless explicity set to `true`; if the field is editable, then "fieldType" is required.
+    ```
+    Both "editable" and "bulkEditable" will be treated as `false` unless explicity set to `true`; if the field is editable, then "fieldType" is required.
 
-   **Note:** If you want to use use Job Manager against Cromwell-as-a-Service, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
- ```
- {
-   "displayFields": [
+    **Note:** If you want to use use Job Manager against Cromwell-as-a-Service, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
+     ```
      {
-       "field": "status",
-       "display": "Status"
+       "displayFields": [
+         {
+           "field": "status",
+           "display": "Status"
+         },
+         {
+           "field": "submission",
+           "display": "Submitted"
+         },
+         {
+           "field": "labels.cromwell-workflow-id",
+           "display": "Workflow ID"
+         },
+         {
+           "field": "labels.flag",
+           "display": "Flag",
+           "editable": true,
+           "bulkEditable": true,
+           "fieldType": "list",
+           "validFieldValues": [
+             "archive",
+             "follow-up"
+           ]
+         },
+         {
+           "field": "labels.label",
+           "display": "Label",
+           "fieldType": "text",
+           "editable": true,
+           "bulkEditable": true
+         },
+         {
+           "field": "labels.comment",
+           "display": "Comment",
+           "fieldType": "text",
+           "editable": true
+         }
+       ],
+       "commonLabels": [
+         "cromwell-workflow-id",
+         "workflow-name",
+         "flag",
+         "label",
+         "comment
+       ],
+       "queryExtensions": []
      },
-     {
-       "field": "submission",
-       "display": "Submitted"
-     },
-     {
-       "field": "labels.cromwell-workflow-id",
-       "display": "Workflow ID"
-     },
-     {
-       "field": "labels.flag",
-       "display": "Flag",
-       "editable": true,
-       "bulkEditable": true,
-       "fieldType": "list",
-       "validFieldValues": [
-         "archive",
-         "follow-up"
-       ]
-     },
-     {
-       "field": "labels.label",
-       "display": "Label",
-       "fieldType": "text",
-       "editable": true,
-       "bulkEditable": true
-     },
-     {
-       "field": "labels.comment",
-       "display": "Comment",
-       "fieldType": "text",
-       "editable": true
+       "authentication": {
+           "isRequired": true, 
+           "scopes": [
+             "openid", 
+             "email", 
+             "profile"
+           ]
+        },
      }
-   ],
-   "commonLabels": [
-     "cromwell-workflow-id",
-     "workflow-name",
-     "flag",
-     "label",
-     "comment
-   ],
-   "queryExtensions": []
- },
-   "authentication": {
-       "isRequired": true, 
-       "scopes": [
-         "openid", 
-         "email", 
-         "profile"
-       ]
-    },
- }
- ```
-
+     ```
 1. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For Cromwell-as-a-Service, e.g. `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-caas-compose.yaml` otherwise use `cromwell-instance-compose.yaml`, e.g:
     ```
     ln -sf cromwell-instance-compose.yml docker-compose.yml
