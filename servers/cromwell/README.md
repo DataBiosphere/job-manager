@@ -178,7 +178,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     ln -sf cromwell-instance-compose.yml docker-compose.yml
     ```
 
-- [Return](../../README.md#Development) to the main Job Manager Development instructions to continue.
+- [Return](../../README.md#run-locally) to the main Job Manager Development instructions to continue.
 
 
 ## Starting Jobs
