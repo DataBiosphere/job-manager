@@ -15,14 +15,31 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     export CROMWELL_URL=http://192.168.0.106:8000/api/workflows/v1
     ```
 
-2. (Optional) By default, the shim layer uses **5** `sync` [Gunicorn workers](http://docs.gunicorn.org/en/stable/settings.html#worker-class), the number of workers is **5**. 
-    Job Manager also comes with `gevent` workers, you can override the default worker type and use dynamic number of workers(based on the number of CPU cores) by:
+1. (Optional) Fine-tune the parameters of Gunicorn server.
+    - By default, the shim layer uses **5** [Gunicorn workers](http://docs.gunicorn.org/en/stable/settings.html#worker-class). You can override the default number of workers by:
+
+        ```
+        export GUNICORN_CMD_ARGS="--workers=$NUMBER_OF_WORKERS"
+        ``` 
+        You can even use dynamic number of workers(based on the number of CPU cores), which is recommended, by:
+        ```
+        export GUNICORN_CMD_ARGS="--workers=$((2 * $(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 2) + 1))"
+        ```
+
+    - By default, the shim layer uses **sync** [Gunicorn worker type](http://docs.gunicorn.org/en/stable/design.html#sync-workers). Since Job Manager also comes with `gevent` workers, you can override the default worker type by:
     
-    ```
-    export GUNICORN_CMD_ARGS="--workers=$((2 * $(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 2) + 1)) --worker-class gevent"
-    ```
+        ```
+        export --worker-class gevent"
+        ```
+       
+    - For convenience, you can consolidate the parameters in one command:
     
-3. Add a file named `config.json` to `job-manager/servers/cromwell/jobs` that contains the username and password for the specified cromwell instance (You may want to skip this step if the Cromwell instance does not have HTTP Basic Authentication):
+        ```
+        export GUNICORN_CMD_ARGS="--workers=$((2 * $(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 2) + 1)) --worker-class gevent"        
+        ```
+        before you run the shim container.
+    
+1. Add a file named `config.json` to `job-manager/servers/cromwell/jobs` that contains the username and password for the specified cromwell instance (You may want to skip this step if the Cromwell instance does not have HTTP Basic Authentication):
     ```
     {
       "cromwell_user" : "USERNAME",
@@ -30,7 +47,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     }
     ```
 
-4. (Optional) If you want to change either the predefined view or the default behavior of UI to some extent, e.g. display more columns in the job list view such as labels of the jobs, or make more columns to be popped up by the query builder, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should **strictly** follow the following structure:
+1. (Optional) If you want to change either the predefined view or the default behavior of UI to some extent, e.g. display more columns in the job list view such as labels of the jobs, or make more columns to be popped up by the query builder, you can add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations. The `capabilities_config.json` should **strictly** follow the following structure:
 ```
 {
   "displayFields": [
@@ -144,12 +161,12 @@ Both "editable" and "bulkEditable" will be treated as `false` unless explicity s
  }
  ```
 
-5. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For Cromwell-as-a-Service, e.g. `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-caas-compose.yaml` otherwise use `cromwell-instance-compose.yaml`, e.g:
+1. Symbolically link the cromwell docker compose file depending on your `CROMWELL_URL`. For Cromwell-as-a-Service, e.g. `https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1`, use `cromwell-caas-compose.yaml` otherwise use `cromwell-instance-compose.yaml`, e.g:
     ```
     ln -sf cromwell-instance-compose.yml docker-compose.yml
     ```
 
-6. From the root directory of the repository, run `docker-compose up` and navigate to http://localhost:4200.
+1. From the root directory of the repository, run `docker-compose up` and navigate to http://localhost:4200.
 
 
 ## Starting Jobs
