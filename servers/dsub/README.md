@@ -61,3 +61,30 @@ deactivate
 
 The sed command above replaces jm-utils=x.y.z with ../jm_utils, which is required
 to allow pip to install from the local jm_utils directory.
+
+
+## Fine-tune Gunicorn parameters
+
+
+- By default, the shim layer uses **5** [Gunicorn workers](http://docs.gunicorn.org/en/stable/settings.html#worker-class). You can override the default number of workers by:
+
+    ```
+    export GUNICORN_CMD_ARGS="--workers=$NUMBER_OF_WORKERS"
+    ``` 
+    You can even use dynamic number of workers(based on the number of CPU cores), which is recommended, by:
+    ```
+    export GUNICORN_CMD_ARGS="--workers=$((2 * $(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 2) + 1))"
+    ```
+
+- By default, the shim layer uses **sync** [Gunicorn worker type](http://docs.gunicorn.org/en/stable/design.html#sync-workers). Since Job Manager also comes with `gevent` workers, you can override the default worker type by:
+
+    ```
+    export --worker-class gevent"
+    ```
+   
+- For convenience, you can consolidate the parameters in one command:
+
+    ```
+    export GUNICORN_CMD_ARGS="--workers=$((2 * $(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 2) + 1)) --worker-class gevent"        
+    ```
+before you run the shim container.
