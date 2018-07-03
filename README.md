@@ -66,28 +66,41 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
   rm -rf git-secrets
   ```
 
-  Then configure the hook:
-  ```
-  git secrets --install
-  ```
-
-- The following commands assume you have symbolically linked your preferred local API backend docker compose file as `docker-compose.yml`, e.g.:
-
-  ```
-  ln -sf dsub-local-compose.yml docker-compose.yml
+- Check out and navigate to the job manager directory:
+  ```sh
+    git clone https://github.com/DataBiosphere/job-manager.git
+    cd job-manager
   ```
 
-  If you prefer not to create a symbolic link, use:
-  ```
-  docker-compose -f dsub-google-compose.yml CMD
+- Configure the `git secrets` hook:
+  ```sh
+    git secrets --install
   ```
 
 ### Server Setup
-For setting up development with [`dsub`](https://github.com/googlegenomics/dsub)
-see [servers/dsub](servers/dsub/README.md#Development).
 
-For setting up development with [`cromwell`](https://github.com/broadinstitute/cromwell)
-see [servers/cromwell](servers/cromwell/README.md#Development).
+- Choose your own adventure: `cromwell` (local or CaaS) or `dsub`!
+
+
+#### Cromwell
+
+- Link your preferred backend docker compose file as `docker-compose.yml`:
+
+  - Cromwell (local): `ln -sf cromwell-local-compose.yml docker-compose.yml`
+  - Cromwell (CaaS): `ln -sf cromwell-caas-compose.yml docker-compose.yml`
+- Set up the server for development with [`cromwell`](https://github.com/broadinstitute/cromwell): details in [servers/cromwell](servers/cromwell/README.md#Development).
+
+#### Dsub
+
+- Link the dsub docker compose file as `docker-compose.yml`:
+```sh
+ln -sf dsub-local-compose.yml docker-compose.yml
+```
+  - If you prefer not to create a symbolic link, use:
+```sh
+docker-compose -f dsub-google-compose.yml CMD
+```
+- Set up the server for development with [`dsub`](https://github.com/googlegenomics/dsub): details in [servers/dsub](servers/dsub/README.md#Development).
 
 
 ### Run Locally
