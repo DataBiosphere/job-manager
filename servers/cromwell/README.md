@@ -56,6 +56,8 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     - Make more columns to be popped up by the query builder
   - Add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations.
   - The `capabilities_config.json` should **strictly** follow the following structure:
+  - Both `editable` and `bulkEditable` will be treated as `false` unless explicity set to `true`
+    - And if the field is `editable`, then `fieldType` is required.
 ```json
 {
   "displayFields": [
@@ -106,7 +108,6 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
   "queryExtensions": []
 }
 ```
-  - Both "editable" and "bulkEditable" will be treated as `false` unless explicity set to `true`; if the field is editable, then "fieldType" is required.
 
 - (Required for CaaS) Configure fields to display
   - **Note:** If you want to use use Job Manager against Cromwell-as-a-Service, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
