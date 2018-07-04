@@ -29,7 +29,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     - By default, the shim layer uses **sync** [Gunicorn worker type](http://docs.gunicorn.org/en/stable/design.html#sync-workers). Since Job Manager also comes with `gevent` workers, you can override the default worker type by:
     
         ```
-        export --worker-class gevent"
+        export GUNICORN_CMD_ARGS="--worker-class gevent"
         ```
        
     - For convenience, you can consolidate the parameters in one command:
