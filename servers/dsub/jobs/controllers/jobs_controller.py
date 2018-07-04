@@ -22,6 +22,7 @@ from jobs.models.query_jobs_result import QueryJobsResult
 
 _DEFAULT_PAGE_SIZE = 32
 _MAX_PAGE_SIZE = 256
+_MAX_PENDING_TIME_DAYS = 7
 
 
 def abort_job(id):
@@ -177,20 +178,28 @@ def _auth_token():
 
 def _generate_jobs(provider, query, create_time_max=None, offset_id=None):
     proj_id = query.extensions.project_id if query.extensions else None
+    dstat_params = query_parameters.api_to_dsub(query)
+
     # If create_time_max is not set, but we have to client-side filter by
     # end-time, set create_time_max = query.end because all the jobs with
     # create_time >= query.end cannot possibly match the query.
     if not create_time_max and query.end:
         create_time_max = query.end
 
-    dstat_params = query_parameters.api_to_dsub(query)
+    # If submission time is not specified, set the create_time_min to (start time - 7days)
+    # to avoid iterating through the whole job list.
+    create_time_min = dstat_params.get('create_time')
+    if not create_time_min and query.start:
+        create_time_min = query.start - datetime.timedelta(
+            days=_MAX_PENDING_TIME_DAYS)
+
     jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
         provider=provider,
         statuses=dstat_params['statuses'],
         user_ids=dstat_params.get('user_ids'),
         job_ids=dstat_params.get('job_ids'),
         task_ids=dstat_params.get('task_ids'),
-        create_time_min=dstat_params.get('create_time'),
+        create_time_min=create_time_min,
         create_time_max=create_time_max,
         job_names=dstat_params.get('job_names'),
         labels=dstat_params.get('labels')))
