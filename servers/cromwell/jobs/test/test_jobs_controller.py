@@ -511,6 +511,8 @@ class TestJobsController(BaseTestCase):
                 'additionalQueryResultFields': 'parentWorkflowId'
             }, {
                 'additionalQueryResultFields': 'labels'
+            }, {
+                'includeSubworkflows': 'true'
             }]))
 
     def test_cromwell_query_params(self):
