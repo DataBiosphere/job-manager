@@ -18,6 +18,7 @@ from jobs.controllers.utils import task_statuses
 
 _DEFAULT_PAGE_SIZE = 64
 
+
 @requires_auth
 def abort_job(id, **kwargs):
     """
