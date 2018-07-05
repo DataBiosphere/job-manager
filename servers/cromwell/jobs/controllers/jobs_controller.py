@@ -18,7 +18,6 @@ from jobs.controllers.utils import task_statuses
 
 _DEFAULT_PAGE_SIZE = 64
 
-
 @requires_auth
 def abort_job(id, **kwargs):
     """
@@ -171,21 +170,18 @@ def query_jobs(body, **kwargs):
     headers = kwargs.get('auth_headers')
     query = QueryJobsRequest.from_dict(body)
     query_page_size = query.page_size or _DEFAULT_PAGE_SIZE
-    # Request more than query.page_size from cromwell since subworkflows will get filtered out
-    page_size = query_page_size * 2
     total_results = get_total_results(query, auth, headers)
-
     results = []
     offset = page_tokens.decode_offset(query.page_token) or 0
-    page = page_from_offset(offset, page_size)
-    last_page = get_last_page(total_results, page_size)
+    page = page_from_offset(offset, query_page_size)
+    last_page = get_last_page(total_results, query_page_size)
 
     while len(results) < query_page_size and page <= last_page:
         page_from_end = last_page - page + 1
 
         response = requests.post(
             _get_base_url() + '/query',
-            json=cromwell_query_params(query, page_from_end, page_size),
+            json=cromwell_query_params(query, page_from_end, query_page_size),
             auth=auth,
             headers=headers)
 
@@ -203,8 +199,8 @@ def query_jobs(body, **kwargs):
         ]
         jobs_list.reverse()
         results.extend(jobs_list)
-        offset = offset + page_size
-        page = page_from_offset(offset, page_size)
+        offset = offset + query_page_size
+        page = page_from_offset(offset, query_page_size)
 
     next_page_token = page_tokens.encode_offset(offset)
     return QueryJobsResponse(results=results, next_page_token=next_page_token)
@@ -259,6 +255,7 @@ def cromwell_query_params(query, page, page_size):
     query_params.append({'page': str(page)})
     query_params.append({'additionalQueryResultFields': 'parentWorkflowId'})
     query_params.append({'additionalQueryResultFields': 'labels'})
+    query_params.append({'includeSubworkflows': 'true'})
     return query_params
 
 
