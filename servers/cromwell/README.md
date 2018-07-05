@@ -49,8 +49,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     }
     ```
 
-- (Optional for local Cromwell) Configure fields to display
-  - **Note**: CaaS-specific details follow in the next section. 
+- (Optional, local Cromwell instance) Configure fields to display
   - Optionally change either the predefined view or the default behavior of UI to some extent, eg
     - Display more columns in the job list view such as labels of the jobs
     - Make more columns to be popped up by the query builder
@@ -109,7 +108,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 }
 ```
 
-- (Required for CaaS) Configure fields to display
+- (Required, CaaS only) Configure fields to display
   - **Note:** If you want to use use Job Manager against Cromwell-as-a-Service, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
  ```json
  {
