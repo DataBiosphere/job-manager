@@ -49,7 +49,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     }
     ```
 
-- (Optional, local Cromwell instance) Configure fields to display
+- (Optional, standalone Cromwell instance) Configure fields to display
   - Optionally change either the predefined view or the default behavior of UI to some extent, eg
     - Display more columns in the job list view such as labels of the jobs
     - Make more columns to be popped up by the query builder
