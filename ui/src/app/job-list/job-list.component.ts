@@ -23,7 +23,7 @@ import {CapabilitiesService} from '../core/capabilities.service';
   styleUrls: ['./job-list.component.css'],
 })
 export class JobListComponent implements OnInit {
-  @Input() pageSize: number = 10;
+  @Input() pageSize: number = 50;
 
   @ViewChild(HeaderComponent) header: HeaderComponent;
   dataSource: DataSource<QueryJobsResult>;

@@ -191,17 +191,17 @@ def query_jobs(body, **kwargs):
             raise InternalServerError(response.json().get('message'))
         response.raise_for_status()
 
-        # Only list parent jobs
         now = datetime.utcnow()
         jobs_list = [
             format_job(job, now) for job in response.json()['results']
-            if _is_parent_workflow(job)
         ]
         jobs_list.reverse()
         results.extend(jobs_list)
         offset = offset + query_page_size
         page = page_from_offset(offset, query_page_size)
 
+    if page == last_page:
+        return QueryJobsResponse(results=results)
     next_page_token = page_tokens.encode_offset(offset)
     return QueryJobsResponse(results=results, next_page_token=next_page_token)
 
@@ -300,7 +300,3 @@ def _parse_datetime(date_string):
 
 def _get_base_url():
     return current_app.config['cromwell_url']
-
-
-def _is_parent_workflow(job):
-    return not job.get('parentWorkflowId')

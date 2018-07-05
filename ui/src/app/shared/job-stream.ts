@@ -8,7 +8,7 @@ import {QueryJobsRequest} from "./model/QueryJobsRequest";
 // An observable stream of the client's materialized jobs, where each update
 // contains all jobs that have been loaded so far.
 export class JobStream extends BehaviorSubject<JobListView> {
-  private static readonly minBackendPageSize = 10;
+  private static readonly minBackendPageSize = 100;
 
   // A backend query promise which represents the pending or most recent backend
   // response. All requests synchronize through this promise to avoid duplicate
