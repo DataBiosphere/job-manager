@@ -1,28 +1,21 @@
 import apiclient
-import bisect
-import connexion
-import copy
-import datetime
+import requests
+
+from flask import current_app, request
 from dateutil.tz import tzlocal
 from dsub.commands import ddel, dstat
 from dsub.providers import google, local, stub
-from dsub.lib import param_util, resources
-from flask import current_app, request
-import requests
 from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound, NotImplemented, PreconditionFailed, Unauthorized
 
 from jm_utils import page_tokens
 from jobs.common import execute_redirect_stdout
-from jobs.controllers.utils import extensions, failures, job_ids, job_statuses, labels, providers, query_parameters
-from jobs.models.failure_message import FailureMessage
-from jobs.models.job_metadata_response import JobMetadataResponse
+from jobs.controllers.utils import extensions, failures, job_ids, job_statuses, labels, providers, query_parameters, generator
 from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
-from jobs.models.query_jobs_result import QueryJobsResult
+from jobs.models.job_metadata_response import JobMetadataResponse
 
 _DEFAULT_PAGE_SIZE = 32
 _MAX_PAGE_SIZE = 256
-_MAX_PENDING_TIME_DAYS = 7
 
 
 def abort_job(id):
@@ -146,7 +139,8 @@ def query_jobs(body):
             raise BadRequest(
                 "Invalid query: submission date must precede end date.")
 
-    job_generator = _generate_jobs(provider, query, create_time_max, offset_id)
+    job_generator = generator.generate_jobs(provider, query, create_time_max,
+                                            offset_id)
     jobs = []
     try:
         for job in job_generator:
@@ -176,68 +170,6 @@ def _auth_token():
     return None
 
 
-def _generate_jobs(provider, query, create_time_max=None, offset_id=None):
-    proj_id = query.extensions.project_id if query.extensions else None
-    dstat_params = query_parameters.api_to_dsub(query)
-
-    # If create_time_max is not set, but we have to client-side filter by
-    # end-time, set create_time_max = query.end because all the jobs with
-    # create_time >= query.end cannot possibly match the query.
-    if not create_time_max and query.end:
-        create_time_max = query.end
-
-    # If submission time is not specified, set the create_time_min to (start time - 7days)
-    # to avoid iterating through the whole job list.
-    create_time_min = dstat_params.get('create_time')
-    if not create_time_min and query.start:
-        create_time_min = query.start - datetime.timedelta(
-            days=_MAX_PENDING_TIME_DAYS)
-
-    jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
-        provider=provider,
-        statuses=dstat_params['statuses'],
-        user_ids=dstat_params.get('user_ids'),
-        job_ids=dstat_params.get('job_ids'),
-        task_ids=dstat_params.get('task_ids'),
-        create_time_min=create_time_min,
-        create_time_max=create_time_max,
-        job_names=dstat_params.get('job_names'),
-        labels=dstat_params.get('labels')))
-
-    last_create_time = None
-    job_buffer = []
-    for j in jobs:
-        job = _query_jobs_result(j, proj_id)
-        # Filter pending vs. running jobs since dstat does not have
-        # a corresponding status (both RUNNING)
-        if query.statuses and job.status not in query.statuses:
-            continue
-        if query.start and (not job.start or job.start < query.start):
-            continue
-        if query.end and (not job.end or job.end > query.end):
-            continue
-
-        # If this job is from the last page, skip it and continue generating
-        if create_time_max and job.submission == create_time_max:
-            if offset_id and job.id < offset_id:
-                continue
-
-        # Build up a buffer of jobs with the same create time. Once we get a
-        # job with an older create time we yield all the jobs in the buffer
-        # sorted by job-id + task-id
-        job_buffer.append(job)
-        if job.submission != last_create_time:
-            for j in sorted(job_buffer, key=lambda j: j.id):
-                yield j
-            job_buffer = []
-        last_create_time = job.submission
-
-    # If we hit the end of the dstat job generator, ensure to yield the jobs
-    # stored in the buffer before returning
-    for j in sorted(job_buffer, key=lambda j: j.id):
-        yield j
-
-
 def _handle_http_error(error, proj_id):
     # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
     # provider-specific error translation down into dstat.
@@ -246,6 +178,10 @@ def _handle_http_error(error, proj_id):
     elif error.resp.status == requests.codes.forbidden:
         raise Forbidden('Permission denied for project "{}"'.format(proj_id))
     raise InternalServerError("Unexpected failure getting dsub jobs")
+
+
+def _provider_type():
+    return current_app.config['PROVIDER_TYPE']
 
 
 def _metadata_response(id, job):
@@ -260,23 +196,4 @@ def _metadata_response(id, job):
         outputs=job['outputs'],
         labels=labels.dsub_to_api(job),
         failures=failures.get_failures(job),
-        extensions=extensions.get_extensions(job))
-
-
-def _provider_type():
-    return current_app.config['PROVIDER_TYPE']
-
-
-def _query_jobs_result(job, project_id=None):
-    return QueryJobsResult(
-        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
-        name=job['job-name'],
-        status=job_statuses.dsub_to_api(job),
-        # The LocalJobProvider returns create-time with milliescond granularity.
-        # For consistency with the GoogleJobProvider, truncate to second
-        # granularity.
-        submission=job['create-time'].replace(microsecond=0),
-        start=job.get('start-time'),
-        end=job['end-time'],
-        labels=labels.dsub_to_api(job),
         extensions=extensions.get_extensions(job))
