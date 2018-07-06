@@ -192,9 +192,6 @@ def query_jobs(body, **kwargs):
     now = datetime.utcnow()
     jobs_list = [format_job(job, now) for job in response.json()['results']]
     jobs_list.reverse()
-    results.extend(jobs_list)
-    offset = offset + query_page_size
-    page = page_from_offset(offset, query_page_size)
 
     if page == last_page:
         return QueryJobsResponse(results=jobs_list)

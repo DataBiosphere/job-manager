@@ -84,6 +84,19 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     // The @ViewChild property may not be initialized until after view init.
     if (this.paginator) {
       this.pageSubscription = this.paginator.page.subscribe(this.pageSubject);
+      // Template-bound properties should not be modified during this lifecycle
+      // hook, so we set a timeout to make that change asynchronous.
+      // https://angular.io/guide/lifecycle-hooks#abide-by-the-unidirectional-data-flow-rule
+      setTimeout(() => {
+        // Our paginator details depend on the state of backend pagination,
+        // therefore we cannot simply inject an alternate MatPaginatorIntl, as
+        // recommended by the paginator documentation. _intl is public, and
+        // overwriting it seems preferable to providing our own version of
+        // MatPaginator.
+        this.paginator._intl = new JobsPaginatorIntl(
+          this.jobs, this.paginator._intl.changes);
+        this.paginator._intl.changes.next();
+      }, 0);
     }
   }
 
@@ -233,3 +246,39 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   }
 }
 
+/**
+ * Paginator details for the jobs table. Accounts for the case where we haven't
+ * loaded all jobs (matching the query) onto the client; we need to indicate
+ * this rather than showing a misleading count for the number of jobs that have
+ * been loaded onto the client so far.
+ */
+@Injectable()
+export class JobsPaginatorIntl extends MatPaginatorIntl {
+  private defaultIntl = new MatPaginatorIntl();
+
+  constructor(private backendJobs: BehaviorSubject<JobListView>,
+              public changes: Subject<void>) {
+    super();
+    backendJobs.subscribe((jobList: JobListView) => {
+      // Ensure that the paginator component is redrawn once we transition to an
+      // exhaustive list of jobs.
+      if (jobList.exhaustive) {
+        changes.next();
+      }
+    });
+  }
+
+  getRangeLabel = (page: number, pageSize: number, length: number) => {
+    if (this.backendJobs.value.exhaustive) {
+      // Can't use proper inheritance here, since MatPaginatorIntl only defines
+      // properties, rather than class methods.
+      return this.defaultIntl.getRangeLabel(page, pageSize, length);
+    }
+    // Ported from MatPaginatorIntl - boundary checks likely unneeded.
+    const startIndex = page * pageSize;
+    const endIndex = startIndex < length ?
+        Math.min(startIndex + pageSize, length) :
+        startIndex + pageSize;
+    return `${startIndex + 1} - ${endIndex} of many`;
+  }
+}
