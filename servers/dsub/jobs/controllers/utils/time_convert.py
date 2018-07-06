@@ -1,5 +1,5 @@
 import datetime
-
+from dateutil.tz import tzlocal
 TIME_FRAME_MAP = {
     'HOURS_1': datetime.timedelta(minutes=60),
     'HOURS_8': datetime.timedelta(minutes=60 * 8),
@@ -7,6 +7,7 @@ TIME_FRAME_MAP = {
     'DAYS_7': datetime.timedelta(days=7),
     'DAYS_30': datetime.timedelta(days=30)
 }
+
 
 def time_frame_to_start_time(time_frame):
     """
@@ -23,4 +24,4 @@ def time_frame_to_start_time(time_frame):
     if (time_frame == 'ALL_TIME'):
         return None
 
-    return datetime.now() - TIME_FRAME_MAP[time_frame]
+    return datetime.datetime.now(tz=tzlocal()) - TIME_FRAME_MAP[time_frame]

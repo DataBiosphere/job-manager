@@ -1,7 +1,6 @@
 import apiclient
 import requests
 
-from flask import current_app, request
 from dateutil.tz import tzlocal
 from dsub.commands import ddel, dstat
 from dsub.providers import google, local, stub
@@ -26,8 +25,10 @@ def abort_job(id):
 
     Returns: None
     """
-    proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
-    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
+    proj_id, job_id, task_id = job_ids.api_to_dsub(id,
+                                                   generator.provider_type())
+    provider = providers.get_provider(generator.provider_type(), proj_id,
+                                      generator.auth_token())
     # If task-id is not specified, pass None instead of [None]
     task_ids = {task_id} if task_id else None
 
@@ -73,8 +74,10 @@ def get_job(id):
     Returns:
         JobMetadataResponse: Response containing relevant metadata
     """
-    proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
-    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
+    proj_id, job_id, task_id = job_ids.api_to_dsub(id,
+                                                   generator.provider_type())
+    provider = providers.get_provider(generator.provider_type(), proj_id,
+                                      generator.auth_token())
 
     jobs = []
     try:
@@ -108,9 +111,12 @@ def query_jobs(body):
     Returns:
         QueryJobsResponse: Response containing results from query
     """
+    print(body)
     query = QueryJobsRequest.from_dict(body)
+    print(query.start)
     proj_id = query.extensions.project_id if query.extensions else None
-    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
+    provider = providers.get_provider(generator.provider_type(), proj_id,
+                                      generator.auth_token())
     create_time_max, offset_id = page_tokens.decode_create_time_max(
         query.page_token) or (None, None)
     query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE,
@@ -161,15 +167,6 @@ def query_jobs(body):
         return QueryJobsResponse(results=jobs)
 
 
-def _auth_token():
-    auth_header = request.headers.get('Authentication')
-    if auth_header:
-        components = auth_header.split(' ')
-        if len(components) == 2 and components[0] == 'Bearer':
-            return components[1]
-    return None
-
-
 def _handle_http_error(error, proj_id):
     # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
     # provider-specific error translation down into dstat.
@@ -178,10 +175,6 @@ def _handle_http_error(error, proj_id):
     elif error.resp.status == requests.codes.forbidden:
         raise Forbidden('Permission denied for project "{}"'.format(proj_id))
     raise InternalServerError("Unexpected failure getting dsub jobs")
-
-
-def _provider_type():
-    return current_app.config['PROVIDER_TYPE']
 
 
 def _metadata_response(id, job):

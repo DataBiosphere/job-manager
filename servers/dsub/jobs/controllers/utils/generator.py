@@ -1,5 +1,6 @@
 import datetime
 
+from flask import current_app, request
 from dsub.commands import ddel, dstat
 
 from jobs.common import execute_redirect_stdout
@@ -69,6 +70,35 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
     # stored in the buffer before returning
     for j in sorted(job_buffer, key=lambda j: j.id):
         yield j
+
+
+def auth_token():
+    """(description)
+
+        Args:
+            a (type): x
+
+        Returns:
+            Type: des
+    """
+    auth_header = request.headers.get('Authentication')
+    if auth_header:
+        components = auth_header.split(' ')
+        if len(components) == 2 and components[0] == 'Bearer':
+            return components[1]
+    return None
+
+
+def provider_type():
+    """(description)
+
+        Args:
+            a (type): x
+
+        Returns:
+            Type: des
+    """
+    return current_app.config['PROVIDER_TYPE']
 
 
 def _query_jobs_result(job, project_id=None):
