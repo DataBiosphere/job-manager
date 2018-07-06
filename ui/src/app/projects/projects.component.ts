@@ -19,6 +19,7 @@ import {AuthService} from '../core/auth.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {ProjectsService} from './projects.service'
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
+import {ConfigLoaderService} from "../../environments/config-loader.service";
 
 @Component({
   selector: 'jm-projects',
@@ -36,7 +37,8 @@ export class ProjectsComponent implements OnInit {
     private readonly projectsService: ProjectsService,
     private readonly router: Router,
     private readonly viewContainer: ViewContainerRef,
-    private errorBar: MatSnackBar) {}
+    private errorBar: MatSnackBar,
+    private configLoader:ConfigLoaderService) {}
 
   private validProject(projectId: string): boolean {
     if (this.projects) {
@@ -93,7 +95,20 @@ export class ProjectsComponent implements OnInit {
   }
 
   navigateJobs() {
-    let extras = {queryParams: {q: URLSearchParamsUtils.encodeURLSearchParams({extensions: {projectId: this.projectsControl.value}})}};
-    this.router.navigate(['jobs'], extras);
+    const extras = {
+      queryParams:
+        {
+          q: URLSearchParamsUtils.encodeURLSearchParams({
+            extensions: {
+              projectId: this.projectsControl.value
+            }})
+        }
+    };
+
+    if (this.configLoader.getEnvironmentConfigSynchronous()['dashboardEnabled']) {
+      this.router.navigate(['dashboard'], extras);
+    } else {
+      this.router.navigate(['jobs'], extras);
+    }
   }
 }

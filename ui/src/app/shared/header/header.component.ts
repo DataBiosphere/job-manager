@@ -28,7 +28,6 @@ import {
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
 import {JobStatus} from '../model/JobStatus';
-import {QueryJobsRequest} from '../model/QueryJobsRequest';
 import {FieldDataType} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
@@ -41,6 +40,7 @@ import {FilterChipComponent} from "./chips/filter-chip.component";
 export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @Input() jobs: BehaviorSubject<JobListView>;
   @Input() pageSize: number;
+  @Input() showControls: boolean = true;
   @ViewChildren(FilterChipComponent) chipElements: QueryList<FilterChipComponent>;
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator: MatPaginator;

@@ -6,7 +6,9 @@ import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
+  MatDialogModule,
   MatMenuModule,
+  MatSelectModule,
   MatSortModule,
   MatTableModule,
   MatPaginatorModule,
@@ -21,6 +23,7 @@ import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {CapabilitiesService} from '../core/capabilities.service';
 import {JobListComponent} from "./job-list.component"
+import {JobsBulkEditComponent} from "./table/bulk-edit/bulk-edit.component";
 import {JobsTableComponent} from "./table/table.component"
 import {JobManagerService} from '../core/job-manager.service';
 import {JobListResolver} from './job-list-resolver.service';
@@ -31,7 +34,8 @@ import {Router} from "@angular/router";
 import 'rxjs/add/observable/of';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
-import {JobStatus} from "../shared/model/JobStatus";
+import {JobStatus} from '../shared/model/JobStatus';
+import {RouteReuse} from '../route-reuse.service';
 
 describe('JobListComponent', () => {
 
@@ -40,6 +44,8 @@ describe('JobListComponent', () => {
     const base = {
       status: JobStatus.Running,
       submission: new Date('2015-04-20T20:00:00'),
+      start: new Date('2015-04-20T20:00:01'),
+      end: new Date('2015-04-20T20:01:00'),
       extensions: {userId: 'test-user-id'}
     };
     return (new Array(count)).fill(null).map((_, i) => {
@@ -69,6 +75,7 @@ describe('JobListComponent', () => {
       declarations: [
         AppComponent,
         FakeProjectsComponent,
+        JobsBulkEditComponent,
         JobListComponent,
         TestJobListComponent,
         JobsTableComponent
@@ -81,11 +88,13 @@ describe('JobListComponent', () => {
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
+        MatDialogModule,
         MatDividerModule,
         MatMenuModule,
         MatPaginatorModule,
         MatProgressSpinnerModule,
         MatSnackBarModule,
+        MatSelectModule,
         MatSortModule,
         MatTableModule,
         MatTooltipModule,
@@ -98,7 +107,8 @@ describe('JobListComponent', () => {
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
         {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
-        JobListResolver
+        JobListResolver,
+        RouteReuse
       ],
     }).compileComponents();
   }));
@@ -119,7 +129,7 @@ describe('JobListComponent', () => {
 
   function expectJobsRendered(jobs: QueryJobsResult[]) {
     const de: DebugElement = fixture.debugElement;
-    const rows = de.queryAll(By.css('.mat-row'))
+    const rows = de.queryAll(By.css('.mat-row'));
     expect(rows.length).toEqual(jobs.length);
     rows.forEach((row, i) => {
       expect(row.nativeElement.textContent).toContain(jobs[i].name);
@@ -238,6 +248,25 @@ describe('JobListComponent', () => {
       // Jobs 3 and 4 should be the only jobs displayed, as they are the only
       // remaining active jobs.
       expectJobsRendered(jobs.slice(3, 5));
+    });
+  }));
+
+  it('reloads properly with stale data', fakeAsync(() => {
+    tick();
+    fixture.detectChanges();
+
+    const freshJobs = testJobs(10);
+    freshJobs[0].name = "updated";
+    freshJobs[1].name = "new";
+    fakeJobService.jobs = freshJobs;
+    testComponent.jobStream.setStale();
+
+    fixture.detectChanges();
+    tick(1000);
+
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      expectJobsRendered(freshJobs.slice(0, 3));
     });
   }));
 

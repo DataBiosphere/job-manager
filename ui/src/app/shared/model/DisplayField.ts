@@ -22,6 +22,8 @@ export interface DisplayField {
 
     editable?: boolean;
 
+    bulkEditable?: boolean;
+
     fieldType?: models.FieldType;
 
     /**

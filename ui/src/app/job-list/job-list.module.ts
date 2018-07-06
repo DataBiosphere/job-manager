@@ -3,12 +3,18 @@ import {
   MatButtonModule,
   MatCardModule,
   MatCheckboxModule,
+  MatDialogModule,
+  MatFormFieldModule,
+  MatIconModule,
+  MatInputModule,
   MatMenuModule,
+  MatOptionModule,
   MatPaginatorModule,
   MatSnackBarModule,
+  MatSelectModule,
   MatSortModule,
   MatTableModule,
-  MatTooltipModule,
+  MatTooltipModule
 } from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -16,8 +22,8 @@ import {NgModule} from '@angular/core';
 import {RouterModule} from '@angular/router';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
-import {JobDetailsResolver} from '../job-details/job-details-resolver.service';
 import {JobListComponent} from './job-list.component';
+import {JobsBulkEditComponent} from "./table/bulk-edit/bulk-edit.component";
 import {JobsTableComponent} from './table/table.component';
 import {SharedModule} from '../shared/shared.module';
 
@@ -29,10 +35,16 @@ import {SharedModule} from '../shared/shared.module';
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
+    MatDialogModule,
     MatDividerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatOptionModule,
     MatMenuModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatSelectModule,
     MatSnackBarModule,
     MatSortModule,
     MatTableModule,
@@ -40,11 +52,14 @@ import {SharedModule} from '../shared/shared.module';
     RouterModule,
     SharedModule,
   ],
+  entryComponents: [
+    JobsBulkEditComponent
+  ],
   declarations: [
     JobListComponent,
+    JobsBulkEditComponent,
     JobsTableComponent,
   ],
-  providers: [JobDetailsResolver],
   exports: []
 })
 export class JobListModule {}

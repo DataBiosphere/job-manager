@@ -13,9 +13,11 @@ def get_extensions(job):
     """
     envs = job['envs']
     script = None
-    if envs and envs['_SCRIPT']:
+    if envs and '_SCRIPT' in envs:
         script = envs['_SCRIPT']
         del envs['_SCRIPT']
+
+    # TODO: Plumb dstat events.
 
     return ExtendedFields(
         user_id=job['user-id'],

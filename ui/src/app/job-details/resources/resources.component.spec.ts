@@ -41,7 +41,34 @@ describe('JobResourcesComponent', () => {
       outputs: {'output': 'gs://output/url/', 'output_file': 'gs://output/url/outputs.txt'},
       labels: {'user-id': 'user-1', 'project': 'test-pipeline'},
       extensions: {
-        sourceFile: 'TEST_SCRIPT'
+        sourceFile: 'TEST_SCRIPT',
+
+      }
+    };
+
+  let eventDetailsJob: JobMetadataResponse =
+    {
+      id: 'JOB1',
+      status: JobStatus.Aborted,
+      submission: new Date('1994-03-29T20:30:00'),
+      name: 'Job 1 name',
+      start: new Date('1994-03-29T21:00:00'),
+      end: new Date('1994-03-29T22:00:00'),
+      inputs: {'input': 'gs://input/url/', 'input_file': 'gs://input/url/inputs.txt'},
+      outputs: {'output': 'gs://output/url/', 'output_file': 'gs://output/url/outputs.txt'},
+      labels: {'user-id': 'user-1', 'project': 'test-pipeline'},
+      extensions: {
+        sourceFile: 'TEST_SCRIPT',
+        events: [
+          {
+            content: 'start',
+            time: new Date('2018-05-24T21:42:49.699649148Z')
+          },
+          {
+            content: 'pulling-image',
+            time: new Date('2018-05-24T21:42:49.699699675Z')
+          }
+        ]
       }
     };
 
@@ -114,6 +141,13 @@ describe('JobResourcesComponent', () => {
     fixture.detectChanges();
     let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(3);
+  }));
+
+  it('should show inputs, outputs, source file and event details tabs', async(() => {
+    testComponent.job = eventDetailsJob;
+    fixture.detectChanges();
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    expect(tabGroup.componentInstance._tabs.length).toBe(4);
   }));
 
   it('should switch content when tabs switch', fakeAsync(() => {

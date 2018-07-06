@@ -135,6 +135,44 @@ paths:
         500:
           description: "Internal server error"
       x-swagger-router-controller: "jobs.controllers.jobs_controller"
+  /aggregations:
+    get:
+      tags:
+      - "Aggregation"
+      summary: "Query for aggregated jobs in the given time frame."
+      operationId: "get_job_aggregations"
+      parameters:
+      - name: "timeFrame"
+        in: "query"
+        description: "Time Frame to aggregate over."
+        required: true
+        type: "string"
+        enum:
+        - "HOURS_1"
+        - "HOURS_8"
+        - "HOURS_24"
+        - "DAYS_7"
+        - "DAYS_30"
+        - "ALL_TIME"
+      - name: "projectId"
+        in: "query"
+        description: "The ID of the project to query."
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/AggregationResponse"
+        400:
+          description: "Bad request"
+        401:
+          description: "Unauthorized"
+        404:
+          description: "Job not found"
+        500:
+          description: "Internal server error"
+      x-swagger-router-controller: "jobs.controllers.aggregation_controller"
 securityDefinitions:
   google_id_token:
     description: "Bearer token authorization"
@@ -169,6 +207,9 @@ definitions:
       editable:
         type: "boolean"
         default: false
+      bulkEditable:
+        type: "boolean"
+        default: false
       fieldType:
         $ref: "#/definitions/FieldType"
       validFieldValues:
@@ -199,6 +240,11 @@ definitions:
         description: "Fields on ExtendedQueryFields which are queryable"
         items:
           type: "string"
+      aggregationTimeFrames:
+        type: "array"
+        description: "Time frames supported by the /aggregations endpoint."
+        items:
+          $ref: "#/definitions/TimeFrame"
     description: "Specification of the backend's capabilities"
   JobMetadataResponse:
     required:
@@ -261,6 +307,58 @@ definitions:
         description: "All job labels, after the update has been applied."
         properties: {}
     description: "Response to an update labels request"
+  AggregationResponse:
+    properties:
+      summary:
+        $ref: "#/definitions/StatusCounts"
+      aggregations:
+        type: "array"
+        items:
+          $ref: "#/definitions/Aggregation"
+    description: "Jobs aggregated by label and status within the specified time frame."
+  Aggregation:
+    properties:
+      name:
+        type: "string"
+      key:
+        type: "string"
+      entries:
+        type: "array"
+        items:
+          $ref: "#/definitions/AggregationEntry"
+    description: "Aggregation of jobs by statuses for a given label, within a specified\
+      \ time frame."
+  AggregationEntry:
+    properties:
+      label:
+        type: "string"
+        description: "The label value for this aggregation entry."
+      statusCounts:
+        $ref: "#/definitions/StatusCounts"
+    description: "An aggregation entry for a given label value."
+  StatusCounts:
+    properties:
+      counts:
+        type: "array"
+        items:
+          $ref: "#/definitions/StatusCount"
+    description: "A collection of StatusCount"
+  StatusCount:
+    properties:
+      status:
+        $ref: "#/definitions/JobStatus"
+      count:
+        type: "integer"
+    description: "A mapping of JobStatus to number of jobs with that status."
+  TimeFrame:
+    type: "string"
+    enum:
+    - "HOURS_1"
+    - "HOURS_8"
+    - "HOURS_24"
+    - "DAYS_7"
+    - "DAYS_30"
+    - "ALL_TIME"
   QueryJobsRequest:
     properties:
       start:
@@ -410,8 +508,20 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/TaskMetadata"
+      events:
+        type: "array"
+        items:
+          $ref: "#/definitions/EventDetail"
     description: "Extended fields on jobs which may not be populated by all backends.\
       \ See the /capabilities endpoint for more details.\n"
+  EventDetail:
+    properties:
+      time:
+        type: "string"
+        format: "date-time"
+      content:
+        type: "string"
+    description: "Event with timestamp."
   TaskMetadata:
     properties:
       inputs:
@@ -479,6 +589,15 @@ definitions:
     - "text"
     - "list"
     default: "text"
+  BulkLabelField:
+    required:
+    - "displayField"
+    properties:
+      default:
+        type: "string"
+      displayField:
+        $ref: "#/definitions/DisplayField"
+    description: "a DisplayField that can be bulk-editable via the UI"
 responses:
   BadRequest:
     description: "Bad request"

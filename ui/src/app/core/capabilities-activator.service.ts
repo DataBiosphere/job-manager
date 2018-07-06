@@ -5,7 +5,6 @@ import {Injectable} from '@angular/core';
 import {AuthService} from './auth.service';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from './capabilities.service';
-import {environment} from '../../environments/environment';
 import {URLSearchParamsUtils} from '../shared/utils/url-search-params.utils'
 
 /** Service wrapper for routing based on current authentication state. */
@@ -64,7 +63,7 @@ export class CapabilitiesActivator implements CanActivate {
       // If we do not already have a project specified in the URL query
       // params, navigate to the projects page.
       let queryRequest = URLSearchParamsUtils.unpackURLSearchParams(route.queryParams['q']);
-      if (!queryRequest.extensions.projectId && !['projects', 'sign_in'].includes(route.routeConfig.path)) {
+      if (!queryRequest.extensions.projectId && !['projects', 'sign_in', 'dashboard'].includes(route.routeConfig.path)) {
         this.router.navigate(['projects']);
         throw CapabilitiesActivator.notActivatedError;
       }

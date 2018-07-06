@@ -1,5 +1,5 @@
 from dateutil.tz import tzutc
-from dsub.lib import param_util
+from dsub.lib import job_model, param_util
 
 import job_statuses
 
@@ -29,7 +29,7 @@ def api_to_dsub(query):
         if query.labels.get('task-id'):
             dstat_params['task_ids'] = {query.labels['task-id']}
         dstat_params['labels'] = {
-            param_util.LabelParam(k, v)
+            job_model.LabelParam(k, v)
             for (k, v) in query.labels.items()
             if k not in ['job-id', 'task-id']
         }

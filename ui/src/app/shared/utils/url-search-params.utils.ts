@@ -6,7 +6,7 @@ import {JobStatus} from "../model/JobStatus";
 import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from "../common";
 
 /** Utilities for working with URLSearchParams*/
-export class URLSearchParamsUtils {
+  export class URLSearchParamsUtils {
 
   /** Accepts a QueryJobsRequest, and translates it reversibly into a string
    *  that can be passed as a QueryParam. */

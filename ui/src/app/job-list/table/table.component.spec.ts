@@ -8,14 +8,16 @@ import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
+  MatDialogModule,
+  MatInputModule,
   MatMenuModule,
+  MatSelectModule,
   MatSortModule,
   MatTableModule,
   MatTabsModule,
   MatPaginatorModule,
   MatSnackBarModule,
   MatTooltipModule,
-  MatInputModule,
   MatCheckboxModule
 } from '@angular/material';
 import {DataSource} from '@angular/cdk/collections';
@@ -25,11 +27,13 @@ import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {JobManagerService} from '../../core/job-manager.service';
+import {JobsBulkEditComponent} from "./bulk-edit/bulk-edit.component";
 import {JobsTableComponent} from './table.component';
 import {CapabilitiesResponse} from '../../shared/model/CapabilitiesResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {FakeJobManagerService} from '../../testing/fake-job-manager.service';
 import {FakeCapabilitiesService} from '../../testing/fake-capabilities.service';
+import {FieldType} from "../../shared/model/FieldType";
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {SharedModule} from '../../shared/shared.module';
 import {JobStatusIcon} from "../../shared/common";
@@ -47,9 +51,25 @@ describe('JobsTableComponent', () => {
         {field: 'status', display: 'Status'},
         {field: 'submission', display: 'Submitted'},
         {field: 'extensions.userId', display: 'User ID'},
-        {field: 'labels.status-detail', display: 'Status Detail'}
+        {field: 'labels.status-detail', display: 'Status Detail'},
+        {field: 'labels.label', display: 'Label', fieldType: FieldType.Text, editable: true, bulkEditable: true},
+        {field: 'labels.comment', display: 'Comment', fieldType: FieldType.Text, editable: true}
       ]
     };
+
+  const shiftClick = new MouseEvent('click', {
+    'button' : 0,
+    'buttons' : 0,
+    'bubbles': true,
+    'cancelable' : false,
+    'shiftKey': true
+  });
+
+  function getJobCheckboxes(): DebugElement[] {
+    let jobCheckboxes = fixture.debugElement.queryAll(By.css('.mat-checkbox-input'));
+    jobCheckboxes.shift();
+    return jobCheckboxes;
+  }
 
   function testJobs(): QueryJobsResult[] {
     return [{
@@ -74,7 +94,7 @@ describe('JobsTableComponent', () => {
       submission: new Date('2015-04-20T20:00:00'),
       start: new Date('2015-04-20T21:00:00'),
       end: new Date('2015-04-20T22:00:00'),
-      labels: {'status-detail': 'status-detail-3'},
+      labels: {'status-detail': 'status-detail-3', 'comment': 'this was aborted for reasons'},
       extensions: {userId: 'user-3'}
     }, {
       id: 'JOB4',
@@ -100,6 +120,7 @@ describe('JobsTableComponent', () => {
     fakeJobService = new FakeJobManagerService(jobs)
     TestBed.configureTestingModule({
       declarations: [
+        JobsBulkEditComponent,
         JobsTableComponent,
         TestTableComponent
       ],
@@ -111,9 +132,11 @@ describe('JobsTableComponent', () => {
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
+        MatDialogModule,
         MatInputModule,
         MatMenuModule,
         MatPaginatorModule,
+        MatSelectModule,
         MatSnackBarModule,
         MatSortModule,
         MatTableModule,
@@ -145,7 +168,12 @@ describe('JobsTableComponent', () => {
 
   function isGroupAbortIsEnabled(): boolean {
     const abortButton = fixture.debugElement.queryAll(By.css('.group-abort'))[0];
-    return abortButton.componentInstance.disabled == false;
+    return !abortButton.componentInstance.disabled;
+  }
+
+  function isBulkLabelEditIsEnabled(): boolean {
+    const bulkLabelEditButton = fixture.debugElement.queryAll(By.css('.group-update-label'))[0];
+    return !bulkLabelEditButton.componentInstance.disabled;
   }
 
   it('should display a row for each job', async(() => {
@@ -178,7 +206,7 @@ describe('JobsTableComponent', () => {
     fixture.detectChanges();
 
     let dsubColumns = de.queryAll(By.css('.additional-column'));
-    expect(dsubColumns.length).toEqual(4);
+    expect(dsubColumns.length).toEqual(6);
     // Unwrap image tag to verify the reflect message
     expect((dsubColumns[0].children[0].childNodes[2]['attributes']['shape']))
       .toEqual(JobStatusIcon[jobs[0].status]);
@@ -188,12 +216,47 @@ describe('JobsTableComponent', () => {
       .toEqual(jobs[0].extensions.userId);
     expect(dsubColumns[3].nativeElement.textContent.trim())
       .toEqual(jobs[0].labels['status-detail']);
+  }))
+
+  it('should not display editable field for job label if config has not explicitly said it is editable', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('.cdk-column-labels-status-detail .edit-field')).length)
+      .toEqual(0);
+  }))
+
+  it('should display editable field for job label if config has explicitly said it is editable', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    const numOfEditableLabelsPerField = 5;
+    expect(de.queryAll(By.css('.cdk-column-labels-comment .edit-field')).length)
+      .toEqual(numOfEditableLabelsPerField);
+    expect(de.queryAll(By.css('.cdk-column-labels-label .edit-field')).length)
+      .toEqual(numOfEditableLabelsPerField);
+  }))
+
+  it('should not display editable field for job label if config has not explicitly said it is editable', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+
+    // because status-detail isn't editable, there shouldn't be any edit-field blocks within that column's fields
+    expect(de.queryAll(By.css('.cdk-column-labels-status-detail .edit-field')).length)
+      .toEqual(0);
+  }));
+
+  it('should display editable field for job label if config has explicitly said it is editable', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+
+    // because comment is editable, there should be one edit-field block within that column's fields per row (except header row)
+    expect(de.queryAll(By.css('.cdk-column-labels-comment .edit-field')).length)
+      .toEqual(de.queryAll(By.css('.cdk-column-labels-comment')).length - 1);
   }));
 
   it('hides the group selection on 0 selection', async(() => {
     fixture.detectChanges();
     expect(isGroupSelectionRendered()).toBeFalsy();
-  }))
+  }));
 
   it('disables the abort button for non-abortable selection', async(() => {
     fixture.detectChanges();
@@ -227,6 +290,14 @@ describe('JobsTableComponent', () => {
     fixture.detectChanges();
     expect(isGroupSelectionRendered()).toBeTruthy();
     expect(isGroupAbortIsEnabled()).toBeTruthy();
+  }))
+
+  it('enables the bulk edit button when there is a bulkEditable field and at least one job selected', async(() => {
+    fixture.detectChanges();
+    const jobCheckboxes = getJobCheckboxes();
+    jobCheckboxes[1].nativeElement.click();
+    fixture.detectChanges();
+    expect(isBulkLabelEditIsEnabled()).toBeTruthy();
   }))
 
   it('displays error message bar', async(() => {
@@ -277,6 +348,66 @@ describe('JobsTableComponent', () => {
       expect(snackTexts.find(
         s => s.includes('Failed to abort 3 of 5 requested jobs'))).toBeTruthy();
     });
+  }))
+
+  it('should select multiple jobs on shift-click', async(() => {
+    fixture.detectChanges();
+    const jobCheckboxes = getJobCheckboxes();
+    jobCheckboxes[1].nativeElement.click();
+    testComponent.jobsTableComponent.updateCheckBoxSelection(jobs[3], shiftClick);
+    fixture.detectChanges();
+
+    expect(jobCheckboxes.map(c => c.nativeElement.checked))
+      .toEqual([false, true, true, true, false]);
+  }))
+
+  it('should select multiple jobs on shift-click (reverse order)', async(() => {
+    fixture.detectChanges();
+    const jobCheckboxes = getJobCheckboxes();
+    jobCheckboxes[4].nativeElement.click();
+    testComponent.jobsTableComponent.updateCheckBoxSelection(jobs[2], shiftClick);
+    fixture.detectChanges();
+
+    expect(jobCheckboxes.map(c => c.nativeElement.checked))
+      .toEqual([false, false, true, true, true]);
+  }))
+
+  it('should select multiple jobs on shift-click (with an already-checked job within the range)', async(() => {
+    fixture.detectChanges();
+    const jobCheckboxes = getJobCheckboxes();
+    jobCheckboxes[1].nativeElement.click();
+    jobCheckboxes[0].nativeElement.click();
+    testComponent.jobsTableComponent.updateCheckBoxSelection(jobs[3], shiftClick);
+    fixture.detectChanges();
+
+    expect(jobCheckboxes.map(c => c.nativeElement.checked))
+      .toEqual([true, true, true, true, false]);
+  }))
+
+  it('should select multiple jobs on shift-click (if you check/uncheck a job within the range)', async(() => {
+    fixture.detectChanges();
+    const jobCheckboxes = getJobCheckboxes();
+    jobCheckboxes[0].nativeElement.click();
+    jobCheckboxes[2].nativeElement.click();
+    fixture.detectChanges();
+    jobCheckboxes[2].nativeElement.click();
+    fixture.detectChanges();
+    testComponent.jobsTableComponent.updateCheckBoxSelection(jobs[4], shiftClick);
+    fixture.detectChanges();
+
+    expect(testComponent.jobsTableComponent.allSelected()).toEqual(true);
+  }))
+
+  it('should select multiple jobs on shift-click (if one of the boundaries is already selected)', async(() => {
+    fixture.detectChanges();
+    const jobCheckboxes = getJobCheckboxes();
+    jobCheckboxes[0].nativeElement.click();
+    jobCheckboxes[4].nativeElement.click();
+    fixture.detectChanges();
+    testComponent.jobsTableComponent.updateCheckBoxSelection(jobs[0], shiftClick);
+    fixture.detectChanges();
+
+    expect(testComponent.jobsTableComponent.allSelected()).toEqual(true);
   }))
 
   @Component({
