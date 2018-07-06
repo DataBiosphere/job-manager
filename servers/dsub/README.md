@@ -17,7 +17,7 @@ and logged into [gcloud](https://cloud.google.com/sdk/docs/quickstarts).
 1. [Install Docker](https://docs.docker.com/engine/installation/)
 1. Create a local tmp directory for the `local` provider to store job data:
 1. See [Getting Started With The Local Provider](https://github.com/googlegenomics/dsub#getting-started-with-the-local-provider) for examples on how to start local jobs.
-```
+```sh
 mkdir /tmp/dsub-local
 ```
 
