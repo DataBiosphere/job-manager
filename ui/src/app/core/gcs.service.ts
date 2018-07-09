@@ -48,7 +48,10 @@ export class GcsService {
   }
 
   private handleError(response: any): Promise<string> {
-    if (response.status == 404) {
+    // If we get a 404 (object no found) or 416 (range not satisfiable) from GCS
+    // we can assume this log file does not exist or is a 0 byte file (given
+    // that our byte range is open-ended starting at 0), respectively.
+    if (response.status == 404 || response.status == 416) {
       return Promise.resolve("");
     }
     return Promise.reject({
