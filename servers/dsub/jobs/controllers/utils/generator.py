@@ -11,6 +11,17 @@ _MAX_PENDING_TIME_DAYS = 7
 
 
 def generate_jobs(provider, query, create_time_max=None, offset_id=None):
+    """Get the generator of jobs according to the specified filters.
+
+        Args:
+            provider (string): type of provider
+            query (QueryJobsRequest): query body
+            create_time_max (datetime): the earliest job create time
+            offset_id (): paginator offset id
+
+        Returns:
+            generator: Retrieved jobs
+    """
     proj_id = query.extensions.project_id if query.extensions else None
     dstat_params = query_parameters.api_to_dsub(query)
 
@@ -73,13 +84,10 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
 
 
 def auth_token():
-    """(description)
-
-        Args:
-            a (type): x
+    """Get the authentication token from the request header.
 
         Returns:
-            Type: des
+            string: authentication token in header
     """
     auth_header = request.headers.get('Authentication')
     if auth_header:
@@ -90,13 +98,10 @@ def auth_token():
 
 
 def provider_type():
-    """(description)
-
-        Args:
-            a (type): x
+    """Get the provider type.
 
         Returns:
-            Type: des
+            string: provider type defined in current_app.config file
     """
     return current_app.config['PROVIDER_TYPE']
 

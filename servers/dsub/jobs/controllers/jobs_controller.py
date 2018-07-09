@@ -111,9 +111,7 @@ def query_jobs(body):
     Returns:
         QueryJobsResponse: Response containing results from query
     """
-    print(body)
     query = QueryJobsRequest.from_dict(body)
-    print(query.start)
     proj_id = query.extensions.project_id if query.extensions else None
     provider = providers.get_provider(generator.provider_type(), proj_id,
                                       generator.auth_token())
