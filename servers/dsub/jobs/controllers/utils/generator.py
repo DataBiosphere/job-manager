@@ -88,6 +88,17 @@ def generate_jobs_count(provider,
                         project_id,
                         window_min,
                         window_max=datetime.datetime.now(tz=tzlocal())):
+    """Get the generator of jobs for aggregation.
+
+            Args:
+                provider (string): type of provider
+                project_id (string): the project id
+                window_min (datetime): the earliest time of aggregation time window
+                window_max (datatime): the latest time of aggregation time window
+
+            Returns:
+                generator: Retrieved jobs
+    """
     create_time_min = window_min - datetime.timedelta(
         days=_MAX_PENDING_TIME_DAYS)
 
