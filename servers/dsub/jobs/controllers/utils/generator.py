@@ -2,6 +2,7 @@ import datetime
 
 from flask import current_app, request
 from dsub.commands import ddel, dstat
+from dateutil.tz import tzlocal
 
 from jobs.common import execute_redirect_stdout
 from jobs.controllers.utils import extensions, failures, job_ids, job_statuses, labels, providers, query_parameters
@@ -16,7 +17,7 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
         Args:
             provider (string): type of provider
             query (QueryJobsRequest): query body
-            create_time_max (datetime): the earliest job create time
+            create_time_max (datetime): the latest job create time
             offset_id (): paginator offset id
 
         Returns:
@@ -81,6 +82,33 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
     # stored in the buffer before returning
     for j in sorted(job_buffer, key=lambda j: j.id):
         yield j
+
+
+def generate_jobs_count(provider, project_id, window_min, window_max=datetime.datetime.now(tz=tzlocal())):
+    create_time_min = window_min - datetime.timedelta(days=_MAX_PENDING_TIME_DAYS)
+
+    jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
+        provider=provider,
+        statuses=None,
+        user_ids=None,
+        job_ids=None,
+        task_ids=None,
+        create_time_min=create_time_min,
+        create_time_max=window_max,
+        job_names=None,
+        labels=None))
+
+    jobs_buffer = []
+    for j in jobs:
+        job = _query_jobs_result(j, project_id)
+        # Filter jobs that do no end within the time window
+        if job.end and (job.end < window_min or job.end > window_max):
+            continue
+
+        jobs_buffer.append(job)
+
+    for job in jobs_buffer:
+        yield job
 
 
 def auth_token():
