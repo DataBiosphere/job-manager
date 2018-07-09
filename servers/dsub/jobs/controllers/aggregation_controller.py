@@ -20,7 +20,8 @@ def get_job_aggregations(timeFrame, projectId=None):
     provider = providers.get_provider(generator.provider_type(), projectId,
                                       generator.auth_token())
 
-    job_generator = generator.generate_jobs_count(provider, projectId, window_min)
+    job_generator = generator.generate_jobs_count(provider, projectId,
+                                                  window_min)
 
     total_summary = {}
     user_summary = {}
@@ -29,7 +30,9 @@ def get_job_aggregations(timeFrame, projectId=None):
         _count_total_summary(job, total_summary)
         _count_user_summary(job, user_summary)
 
-    return _get_stub_data(_to_summary_counts(total_summary), _to_user_aggregation_entry(user_summary))
+    return _get_stub_data(
+        _to_summary_counts(total_summary),
+        _to_user_aggregation_entry(user_summary))
 
 
 def _count_total_summary(job, total_summary):
@@ -66,16 +69,11 @@ def _to_user_aggregation_entry(user_summary):
         for status, count in countsDict.items():
             countsList.append(StatusCount(status=status, count=count))
 
-        entries.append(AggregationEntry(
-            label=user_id,
-            status_counts=StatusCounts(countsList)
-        ))
+        entries.append(
+            AggregationEntry(
+                label=user_id, status_counts=StatusCounts(countsList)))
 
-    return Aggregation(
-            name='UserId',
-            key='userId',
-            entries=entries
-        )
+    return Aggregation(name='UserId', key='userId', entries=entries)
 
 
 def _get_stub_data(summaryCounts, user_aggregation):

@@ -84,8 +84,12 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
         yield j
 
 
-def generate_jobs_count(provider, project_id, window_min, window_max=datetime.datetime.now(tz=tzlocal())):
-    create_time_min = window_min - datetime.timedelta(days=_MAX_PENDING_TIME_DAYS)
+def generate_jobs_count(provider,
+                        project_id,
+                        window_min,
+                        window_max=datetime.datetime.now(tz=tzlocal())):
+    create_time_min = window_min - datetime.timedelta(
+        days=_MAX_PENDING_TIME_DAYS)
 
     jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
         provider=provider,
