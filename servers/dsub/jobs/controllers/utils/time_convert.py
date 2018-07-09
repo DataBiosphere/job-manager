@@ -26,4 +26,6 @@ def time_frame_to_start_time(time_frame):
     if (time_frame == 'ALL_TIME'):
         return None
 
-    return datetime.datetime.now(tz=tzlocal()) - TIME_FRAME_MAP[time_frame]- datetime.timedelta(days=_MAX_PENDING_TIME_DAYS)
+    return datetime.datetime.now(
+        tz=tzlocal()) - TIME_FRAME_MAP[time_frame] - datetime.timedelta(
+            days=_MAX_PENDING_TIME_DAYS)

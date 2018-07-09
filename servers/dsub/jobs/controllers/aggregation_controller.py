@@ -44,7 +44,9 @@ def _count_summary(job, summary_counts):
 
 
 def _to_summary_counts(summary_counts):
-    return StatusCounts([StatusCount(status, count) for status, count in summary_counts.items()])
+    return StatusCounts([
+        StatusCount(status, count) for status, count in summary_counts.items()
+    ])
 
 
 def _get_stub_data(summaryCounts):
