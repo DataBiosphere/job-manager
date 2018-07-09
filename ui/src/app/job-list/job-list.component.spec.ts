@@ -192,6 +192,10 @@ describe('JobListComponent', () => {
 
     // Page 2.
     expectJobsRendered(fakeJobService.jobs.slice(3, 5));
+
+    // the prev page button should be enabled and the next page button should be disabled
+    expect(de.query(By.css('.mat-paginator-navigation-previous')).attributes['ng-reflect-disabled']).toEqual('false');
+    expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('true');
   }));
 
   it('paginates backwards', fakeAsync(() => {
@@ -207,6 +211,10 @@ describe('JobListComponent', () => {
     fixture.detectChanges();
     tick();
     expectJobsRendered(fakeJobService.jobs.slice(0, 3));
+
+    // the prev page button should be disabled and the next page button should be enabled
+    expect(de.query(By.css('.mat-paginator-navigation-previous')).attributes['ng-reflect-disabled']).toEqual('true');
+    expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('false');
   }));
 
   it('reloads properly on filter', fakeAsync(() => {
