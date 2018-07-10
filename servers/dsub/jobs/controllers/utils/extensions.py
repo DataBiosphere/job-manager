@@ -18,7 +18,9 @@ def get_extensions(job):
         script = envs['_SCRIPT']
         del envs['_SCRIPT']
 
-    events = [EventDetail(e['start-time'], e['name']) for e in job.get('events', [])]
+    events = [
+        EventDetail(e['start-time'], e['name']) for e in job.get('events', [])
+    ]
 
     return ExtendedFields(
         user_id=job['user-id'],
