@@ -20,19 +20,23 @@ def get_job_aggregations(timeFrame, projectId=None):
     provider = providers.get_provider(generator.provider_type(), projectId,
                                       generator.auth_token())
 
-    job_generator = generator.generate_jobs_count(provider, projectId,
-                                                  window_min)
+    jobs = generator.generate_jobs_by_window(provider, projectId, window_min)
 
     total_summary = {}
     user_summary = {}
+    job_name_summary = {}
 
-    for job in job_generator:
+    for job in jobs:
         _count_total_summary(job, total_summary)
         _count_user_summary(job, user_summary)
+        _count_job_name_summary(job, job_name_summary)
+        _count_labels_summary(job, labels_summary)
+
 
     return _get_stub_data(
         _to_summary_counts(total_summary),
-        _to_user_aggregation_entry(user_summary))
+        _to_user_aggregation_entry(user_summary),
+        _to_job_name_aggregation_entry(job_name_summary))
 
 
 def _count_total_summary(job, total_summary):
@@ -73,28 +77,41 @@ def _to_user_aggregation_entry(user_summary):
             AggregationEntry(
                 label=user_id, status_counts=StatusCounts(countsList)))
 
-    return Aggregation(name='UserId', key='userId', entries=entries)
+    return Aggregation(name='User Id', key='userId', entries=entries)
 
 
-def _get_stub_data(summaryCounts, user_aggregation):
-    # temporary fake data for testing front-end.
-    entry1 = AggregationEntry(
-        label='labelValue1',
-        status_counts=StatusCounts(counts=[
-            StatusCount(status='Succeeded', count=2),
-            StatusCount(status='Failed', count=1)
-        ]))
+def _count_job_name_summary(job, job_name_summary):
+    job_name = job.name
+    status = job.status
 
-    entry2 = AggregationEntry(
-        label='labelValue2',
-        status_counts=StatusCounts(counts=[
-            StatusCount(status='Succeeded', count=4),
-            StatusCount(status='Failed', count=6)
-        ]))
+    user_count = job_name_summary.get(job_name, {})
 
-    ownerAggregation = Aggregation(
-        name='AnotherLabel', key='job-id', entries=[entry1, entry2])
+    if status not in user_count:
+        user_count[status] = 0
+    user_count[status] += 1
 
+    job_name_summary[job_name] = user_count
+
+
+def _to_job_name_aggregation_entry(job_name_summary):
+    entries = []
+
+    for user_id, countsDict in job_name_summary.items():
+        countsList = []
+
+        for status, count in countsDict.items():
+            countsList.append(StatusCount(status=status, count=count))
+
+        entries.append(
+            AggregationEntry(
+                label=user_id, status_counts=StatusCounts(countsList)))
+
+    return Aggregation(name='Job Name', key='name', entries=entries)
+
+
+
+
+def _get_stub_data(summaryCounts, user_aggregation, job_name_aggregation):
     return AggregationResponse(
         summary=summaryCounts,
-        aggregations=[ownerAggregation, user_aggregation])
+        aggregations=[user_aggregation, job_name_aggregation])

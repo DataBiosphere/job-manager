@@ -2,26 +2,25 @@ import datetime
 
 from flask import current_app, request
 from dsub.commands import ddel, dstat
-from dateutil.tz import tzlocal
 
 from jobs.common import execute_redirect_stdout
 from jobs.controllers.utils import extensions, failures, job_ids, job_statuses, labels, providers, query_parameters
 from jobs.models.query_jobs_result import QueryJobsResult
 
-_MAX_PENDING_TIME_DAYS = 7
+_MAX_RUNTIME_DAYS = 7
 
 
 def generate_jobs(provider, query, create_time_max=None, offset_id=None):
     """Get the generator of jobs according to the specified filters.
 
-        Args:
-            provider (string): type of provider
-            query (QueryJobsRequest): query body
-            create_time_max (datetime): the latest job create time
-            offset_id (): paginator offset id
+    Args:
+        provider (str): type of provider
+        query (QueryJobsRequest): query body
+        create_time_max (datetime): the latest job create time
+        offset_id (str): paginator offset id
 
-        Returns:
-            generator: Retrieved jobs
+    Returns:
+        generator: Retrieved jobs
     """
     proj_id = query.extensions.project_id if query.extensions else None
     dstat_params = query_parameters.api_to_dsub(query)
@@ -37,7 +36,7 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
     create_time_min = dstat_params.get('create_time')
     if not create_time_min and query.start:
         create_time_min = query.start - datetime.timedelta(
-            days=_MAX_PENDING_TIME_DAYS)
+            days=_MAX_RUNTIME_DAYS)
 
     jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
         provider=provider,
@@ -84,23 +83,19 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
         yield j
 
 
-def generate_jobs_count(provider,
-                        project_id,
-                        window_min,
-                        window_max=datetime.datetime.now(tz=tzlocal())):
+def generate_jobs_by_window(provider, project_id, window_min, window_max=None):
     """Get the generator of jobs for aggregation.
 
-            Args:
-                provider (string): type of provider
-                project_id (string): the project id
-                window_min (datetime): the earliest time of aggregation time window
-                window_max (datatime): the latest time of aggregation time window
+    Args:
+        provider (str): type of provider
+        project_id (str): the project id
+        window_min (datetime): the earliest time of aggregation time window
+        window_max (datetime): the latest time of aggregation time window
 
-            Returns:
-                generator: Retrieved jobs
+    Returns:
+        generator: Retrieved jobs
     """
-    create_time_min = window_min - datetime.timedelta(
-        days=_MAX_PENDING_TIME_DAYS)
+    create_time_min = window_min - datetime.timedelta(days=_MAX_RUNTIME_DAYS)
 
     jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
         provider=provider,
@@ -113,16 +108,13 @@ def generate_jobs_count(provider,
         job_names=None,
         labels=None))
 
-    jobs_buffer = []
     for j in jobs:
         job = _query_jobs_result(j, project_id)
         # Filter jobs that do no end within the time window
-        if job.end and (job.end < window_min or job.end > window_max):
+        if job.end and (job.end < window_min
+                        or window_max and job.end > window_max):
             continue
 
-        jobs_buffer.append(job)
-
-    for job in jobs_buffer:
         yield job
 
 
