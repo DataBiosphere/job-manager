@@ -458,7 +458,7 @@ definitions:
       - Failed
       - Succeeded
       - Aborted
-      - On Hold
+      - Queued
   ExtendedFields:
     description: >
       Extended fields on jobs which may not be populated by all backends. See

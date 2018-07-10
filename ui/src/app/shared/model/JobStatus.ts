@@ -19,5 +19,5 @@ export enum JobStatus {
     Failed = <any> 'Failed',
     Succeeded = <any> 'Succeeded',
     Aborted = <any> 'Aborted',
-    OnHold = <any> 'On Hold'
+    Queued = <any> 'Queued'
 }
