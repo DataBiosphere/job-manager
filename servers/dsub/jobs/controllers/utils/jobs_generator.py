@@ -84,6 +84,7 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
 
 def generate_jobs_by_window(provider, project_id, window_min, window_max=None):
     """Get the generator of jobs for aggregation.
+    If the window_max is specified, running jobs will not be returned.
 
     Args:
         provider (str): type of provider
