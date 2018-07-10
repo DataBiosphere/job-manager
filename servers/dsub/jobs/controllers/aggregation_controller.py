@@ -6,6 +6,8 @@ from jobs.models.aggregation_response import AggregationResponse
 from jobs.models.status_count import StatusCount
 from jobs.models.status_counts import StatusCounts
 
+_NUM_TOP_LABEL = 3
+
 
 def get_job_aggregations(timeFrame, projectId=None):
     """Query for aggregated jobs in the given time frame.
@@ -27,18 +29,24 @@ def get_job_aggregations(timeFrame, projectId=None):
     total_summary = {}
     user_summary = {}
     job_name_summary = {}
+    label_summaries = {}
+    label_freq = {}
 
     for job in jobs:
         _count_total_summary(job, total_summary)
         _count_for_key(job, user_summary, lambda j: j.extensions.user_id)
         _count_for_key(job, job_name_summary, lambda j: j.name)
+        _count_top_labels(label_summaries, job, label_freq)
+
+    aggregations = [
+        _to_aggregation('User Id', 'userId', user_summary),
+        _to_aggregation('Job Name', 'name', job_name_summary)
+    ]
+
+    _to_top_labels_aggregations(label_freq, label_summaries, aggregations)
 
     return AggregationResponse(
-        summary=_to_summary_counts(total_summary),
-        aggregations=[
-            _to_aggregation('User Id', 'userId', user_summary),
-            _to_aggregation('Job Name', 'name', job_name_summary)
-        ])
+        summary=_to_summary_counts(total_summary), aggregations=aggregations)
 
 
 def _count_total_summary(job, total_summary):
@@ -57,6 +65,15 @@ def _count_for_key(job, summary, key_lambda):
     count[job.status] += 1
 
     summary[key] = count
+
+
+def _count_top_labels(label_summaries, job, label_freq):
+    for label in job.labels:
+        label_freq[label] = label_freq.get(label, 0) + 1
+
+        label_summary = label_summaries.get(label, {})
+        _count_for_key(job, label_summary, lambda j: j.labels[label])
+        label_summaries[label] = label_summary
 
 
 def _to_summary_counts(summary_counts):
@@ -81,9 +98,16 @@ def _to_aggregation(name, key, summary):
     return Aggregation(name=name, key=key, entries=entries)
 
 
-def _get_stub_data(summaryCounts, user_aggregation, job_name_aggregation):
+def _to_top_labels_aggregations(label_freq, label_summaries, aggregations):
+    num_label = min(len(label_freq), _NUM_TOP_LABEL)
+    for k, v in sorted(
+            label_freq.items(), key=lambda x: x[1], reverse=True)[0:num_label]:
+        aggregations.append(_to_aggregation(k, k, label_summaries[k]))
+
+
+def _get_stub_data(summary_counts, user_aggregation, job_name_aggregation):
     return AggregationResponse(
-        summary=summaryCounts,
+        summary=summary_counts,
         aggregations=[user_aggregation, job_name_aggregation])
 
 
