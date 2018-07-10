@@ -30,8 +30,6 @@ def get_job_aggregations(timeFrame, projectId=None):
         _count_total_summary(job, total_summary)
         _count_user_summary(job, user_summary)
         _count_job_name_summary(job, job_name_summary)
-        _count_labels_summary(job, labels_summary)
-
 
     return _get_stub_data(
         _to_summary_counts(total_summary),
@@ -107,8 +105,6 @@ def _to_job_name_aggregation_entry(job_name_summary):
                 label=user_id, status_counts=StatusCounts(countsList)))
 
     return Aggregation(name='Job Name', key='name', entries=entries)
-
-
 
 
 def _get_stub_data(summaryCounts, user_aggregation, job_name_aggregation):
