@@ -139,11 +139,11 @@ def query_jobs(body):
             raise BadRequest(
                 "Invalid query: submission date must precede end date.")
 
-    job_jobs_generator = jobs_generator.generate_jobs(
+    generator = jobs_generator.generate_jobs(
         provider, query, create_time_max, offset_id)
     jobs = []
     try:
-        for job in job_jobs_generator:
+        for job in generator:
             jobs.append(job)
             if len(jobs) == query.page_size:
                 break
@@ -151,7 +151,7 @@ def query_jobs(body):
         _handle_http_error(error, proj_id)
 
     try:
-        next_job = job_jobs_generator.next()
+        next_job = generator.next()
         next_ct = next_job.submission
         last_ct = jobs[-1].submission
         offset_id = next_job.id if next_ct == last_ct else None

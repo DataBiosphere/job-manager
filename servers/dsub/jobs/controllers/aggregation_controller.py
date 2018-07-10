@@ -105,12 +105,6 @@ def _to_top_labels_aggregations(label_freq, label_summaries, aggregations):
         aggregations.append(_to_aggregation(k, k, label_summaries[k]))
 
 
-def _get_stub_data(summary_counts, user_aggregation, job_name_aggregation):
-    return AggregationResponse(
-        summary=summary_counts,
-        aggregations=[user_aggregation, job_name_aggregation])
-
-
 def _auth_token():
     """Get the authentication token from the request header.
 
