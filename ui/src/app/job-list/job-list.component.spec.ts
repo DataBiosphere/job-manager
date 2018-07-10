@@ -217,14 +217,18 @@ describe('JobListComponent', () => {
     expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('false');
   }));
 
-  it('pagination is disabled when number of jobs equals the page length', async(() => {
-    fakeJobService.jobs = testJobs(3);
-    tick();
+  it('next pagination is disabled on last page when number of jobs equals the page length', fakeAsync(() => {
+    fakeJobService.jobs = testJobs(6);
+    testComponent.jobStream.setStale();
+    fixture.detectChanges();
+    tick(100);
+
+    const de: DebugElement = fixture.debugElement;
+    de.query(By.css('.mat-paginator-increment')).nativeElement.click();
     fixture.detectChanges();
 
-    // the prev and next page buttons should be disabled
-    const de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.mat-paginator-navigation-previous')).attributes['ng-reflect-disabled']).toEqual('true');
+    // the last three jobs should be displayed and next page button should be disabled
+    expectJobsRendered(fakeJobService.jobs.slice(3, 6));
     expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('true');
   }));
 
