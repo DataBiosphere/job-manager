@@ -1,4 +1,5 @@
-from jobs.controllers.utils import generator, time_convert, providers
+from flask import current_app, request
+from jobs.controllers.utils import jobs_generator, time_frame, providers
 from jobs.models.aggregation import Aggregation
 from jobs.models.aggregation_entry import AggregationEntry
 from jobs.models.aggregation_response import AggregationResponse
@@ -16,11 +17,12 @@ def get_job_aggregations(timeFrame, projectId=None):
     Returns:
         AggregationResponse: Response contains aggregation of jobs
     """
-    window_min = time_convert.time_frame_to_start_time(timeFrame)
-    provider = providers.get_provider(generator.provider_type(), projectId,
-                                      generator.auth_token())
+    window_min = time_frame.time_frame_to_start_time(timeFrame)
+    provider = providers.get_provider(_provider_type(), projectId,
+                                      _auth_token())
 
-    jobs = generator.generate_jobs_by_window(provider, projectId, window_min)
+    jobs = jobs_generator.generate_jobs_by_window(provider, projectId,
+                                                  window_min)
 
     total_summary = {}
     user_summary = {}
@@ -28,13 +30,15 @@ def get_job_aggregations(timeFrame, projectId=None):
 
     for job in jobs:
         _count_total_summary(job, total_summary)
-        _count_user_summary(job, user_summary)
-        _count_job_name_summary(job, job_name_summary)
+        _count_for_key(job, user_summary, lambda j: j.extensions.user_id)
+        _count_for_key(job, job_name_summary, lambda j: j.name)
 
-    return _get_stub_data(
-        _to_summary_counts(total_summary),
-        _to_user_aggregation_entry(user_summary),
-        _to_job_name_aggregation_entry(job_name_summary))
+    return AggregationResponse(
+        summary=_to_summary_counts(total_summary),
+        aggregations=[
+            _to_aggregation('User Id', 'userId', user_summary),
+            _to_aggregation('Job Name', 'name', job_name_summary)
+        ])
 
 
 def _count_total_summary(job, total_summary):
@@ -43,71 +47,64 @@ def _count_total_summary(job, total_summary):
     total_summary[job.status] += 1
 
 
+def _count_for_key(job, summary, key_lambda):
+    key = key_lambda(job)
+
+    count = summary.get(key, {})
+
+    if job.status not in count:
+        count[job.status] = 0
+    count[job.status] += 1
+
+    summary[key] = count
+
+
 def _to_summary_counts(summary_counts):
     return StatusCounts([
         StatusCount(status, count) for status, count in summary_counts.items()
     ])
 
 
-def _count_user_summary(job, user_summary):
-    user_id = job.extensions.user_id
-    status = job.status
-
-    user_count = user_summary.get(user_id, {})
-
-    if status not in user_count:
-        user_count[status] = 0
-    user_count[status] += 1
-
-    user_summary[user_id] = user_count
-
-
-def _to_user_aggregation_entry(user_summary):
+def _to_aggregation(name, key, summary):
     entries = []
 
-    for user_id, countsDict in user_summary.items():
-        countsList = []
+    for item, counts_dict in summary.items():
+        counts_list = []
 
-        for status, count in countsDict.items():
-            countsList.append(StatusCount(status=status, count=count))
+        for status, count in counts_dict.items():
+            counts_list.append(StatusCount(status=status, count=count))
 
         entries.append(
             AggregationEntry(
-                label=user_id, status_counts=StatusCounts(countsList)))
+                label=item, status_counts=StatusCounts(counts_list)))
 
-    return Aggregation(name='User Id', key='userId', entries=entries)
-
-
-def _count_job_name_summary(job, job_name_summary):
-    job_name = job.name
-    status = job.status
-
-    user_count = job_name_summary.get(job_name, {})
-
-    if status not in user_count:
-        user_count[status] = 0
-    user_count[status] += 1
-
-    job_name_summary[job_name] = user_count
-
-
-def _to_job_name_aggregation_entry(job_name_summary):
-    entries = []
-
-    for user_id, countsDict in job_name_summary.items():
-        countsList = []
-
-        for status, count in countsDict.items():
-            countsList.append(StatusCount(status=status, count=count))
-
-        entries.append(
-            AggregationEntry(
-                label=user_id, status_counts=StatusCounts(countsList)))
-
-    return Aggregation(name='Job Name', key='name', entries=entries)
+    return Aggregation(name=name, key=key, entries=entries)
 
 
 def _get_stub_data(summaryCounts, user_aggregation, job_name_aggregation):
     return AggregationResponse(
         summary=summaryCounts,
         aggregations=[user_aggregation, job_name_aggregation])
+
+
+def _auth_token():
+    """Get the authentication token from the request header.
+
+        Returns:
+            string: authentication token in header
+    """
+    auth_header = request.headers.get('Authentication')
+    if auth_header:
+        components = auth_header.split(' ')
+        if len(components) == 2 and components[0] == 'Bearer':
+            return components[1]
+    return None
+
+
+def _provider_type():
+    """Get the provider type.
+
+        Returns:
+            string: provider type defined in current_app.config file
+    """
+    return current_app.config['PROVIDER_TYPE']

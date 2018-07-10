@@ -1,6 +1,5 @@
 import datetime
 
-from flask import current_app, request
 from dsub.commands import ddel, dstat
 
 from jobs.common import execute_redirect_stdout
@@ -116,29 +115,6 @@ def generate_jobs_by_window(provider, project_id, window_min, window_max=None):
             continue
 
         yield job
-
-
-def auth_token():
-    """Get the authentication token from the request header.
-
-        Returns:
-            string: authentication token in header
-    """
-    auth_header = request.headers.get('Authentication')
-    if auth_header:
-        components = auth_header.split(' ')
-        if len(components) == 2 and components[0] == 'Bearer':
-            return components[1]
-    return None
-
-
-def provider_type():
-    """Get the provider type.
-
-        Returns:
-            string: provider type defined in current_app.config file
-    """
-    return current_app.config['PROVIDER_TYPE']
 
 
 def _query_jobs_result(job, project_id=None):

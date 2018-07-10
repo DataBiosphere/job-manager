@@ -1,6 +1,7 @@
 import apiclient
 import requests
 
+from flask import current_app, request
 from dateutil.tz import tzlocal
 from dsub.commands import ddel, dstat
 from dsub.providers import google, local, stub
@@ -8,7 +9,7 @@ from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotF
 
 from jm_utils import page_tokens
 from jobs.common import execute_redirect_stdout
-from jobs.controllers.utils import extensions, failures, job_ids, job_statuses, labels, providers, query_parameters, generator
+from jobs.controllers.utils import extensions, failures, job_ids, job_statuses, labels, providers, query_parameters, jobs_generator
 from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.job_metadata_response import JobMetadataResponse
@@ -25,10 +26,8 @@ def abort_job(id):
 
     Returns: None
     """
-    proj_id, job_id, task_id = job_ids.api_to_dsub(id,
-                                                   generator.provider_type())
-    provider = providers.get_provider(generator.provider_type(), proj_id,
-                                      generator.auth_token())
+    proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
+    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
     # If task-id is not specified, pass None instead of [None]
     task_ids = {task_id} if task_id else None
 
@@ -74,10 +73,8 @@ def get_job(id):
     Returns:
         JobMetadataResponse: Response containing relevant metadata
     """
-    proj_id, job_id, task_id = job_ids.api_to_dsub(id,
-                                                   generator.provider_type())
-    provider = providers.get_provider(generator.provider_type(), proj_id,
-                                      generator.auth_token())
+    proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
+    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
 
     jobs = []
     try:
@@ -113,8 +110,7 @@ def query_jobs(body):
     """
     query = QueryJobsRequest.from_dict(body)
     proj_id = query.extensions.project_id if query.extensions else None
-    provider = providers.get_provider(generator.provider_type(), proj_id,
-                                      generator.auth_token())
+    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
     create_time_max, offset_id = page_tokens.decode_create_time_max(
         query.page_token) or (None, None)
     query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE,
@@ -143,11 +139,11 @@ def query_jobs(body):
             raise BadRequest(
                 "Invalid query: submission date must precede end date.")
 
-    job_generator = generator.generate_jobs(provider, query, create_time_max,
-                                            offset_id)
+    job_jobs_generator = jobs_generator.generate_jobs(
+        provider, query, create_time_max, offset_id)
     jobs = []
     try:
-        for job in job_generator:
+        for job in job_jobs_generator:
             jobs.append(job)
             if len(jobs) == query.page_size:
                 break
@@ -155,7 +151,7 @@ def query_jobs(body):
         _handle_http_error(error, proj_id)
 
     try:
-        next_job = job_generator.next()
+        next_job = job_jobs_generator.next()
         next_ct = next_job.submission
         last_ct = jobs[-1].submission
         offset_id = next_job.id if next_ct == last_ct else None
@@ -188,3 +184,26 @@ def _metadata_response(id, job):
         labels=labels.dsub_to_api(job),
         failures=failures.get_failures(job),
         extensions=extensions.get_extensions(job))
+
+
+def _auth_token():
+    """Get the authentication token from the request header.
+
+        Returns:
+            string: authentication token in header
+    """
+    auth_header = request.headers.get('Authentication')
+    if auth_header:
+        components = auth_header.split(' ')
+        if len(components) == 2 and components[0] == 'Bearer':
+            return components[1]
+    return None
+
+
+def _provider_type():
+    """Get the provider type.
+
+        Returns:
+            string: provider type defined in current_app.config file
+    """
+    return current_app.config['PROVIDER_TYPE']
