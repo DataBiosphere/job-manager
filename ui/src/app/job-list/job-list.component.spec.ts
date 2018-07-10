@@ -217,6 +217,17 @@ describe('JobListComponent', () => {
     expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('false');
   }));
 
+  it('pagination is disabled when number of jobs equals the page length', async(() => {
+    fakeJobService.jobs = testJobs(3);
+    tick();
+    fixture.detectChanges();
+
+    // the prev and next page buttons should be disabled
+    const de: DebugElement = fixture.debugElement;
+    expect(de.query(By.css('.mat-paginator-navigation-previous')).attributes['ng-reflect-disabled']).toEqual('true');
+    expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('true');
+  }));
+
   it('reloads properly on filter', fakeAsync(() => {
     const jobs: QueryJobsResult[] = testJobs(5);
     jobs[1].status = JobStatus.Succeeded;
