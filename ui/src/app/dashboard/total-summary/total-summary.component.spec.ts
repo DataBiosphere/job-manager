@@ -7,6 +7,8 @@ import {MatCardModule, MatTableModule} from "@angular/material";
 import {TotalSummaryComponent} from './total-summary.component';
 import {JobStatus} from "../../shared/model/JobStatus";
 import {StatusCounts} from "../../shared/model/StatusCounts";
+import {ActivatedRoute, RouterModule} from "@angular/router";
+import {RouterTestingModule} from "@angular/router/testing";
 
 const testSummary: StatusCounts = {
   counts: [
@@ -36,7 +38,14 @@ describe('TotalSummaryComponent', () => {
         CommonModule,
         MatCardModule,
         MatTableModule,
+        RouterTestingModule,
       ],
+      providers: [{provide: ActivatedRoute, useValue: {
+          snapshot: {
+            queryParams: {projectId: 'bvdp-jmui-testing'}
+          }
+        }},
+      ]
     })
     .compileComponents();
   }));

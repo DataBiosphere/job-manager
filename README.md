@@ -20,6 +20,7 @@ The Job Manager aspires to bring ease and efficiency to developing and debugging
 * Dynamic grouping, filtering, and drill-down
 * Re-launching workflows
 * Simplified troubleshooting of failed workflows
+* Improved UI design
 
 ## Roadmap
 
@@ -49,14 +50,18 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
 ### Prerequisites
 
 - Install docker and docker-compose
-- Setup git-secrets:
-
-  Download the git-secrets tool. If you are on a mac, run:
+- Check out the repository and navigate to the directory:
+  ```sh
+    git clone https://github.com/DataBiosphere/job-manager.git
+    cd job-manager
   ```
-    brew install git-secrets
+- Setup git-secrets on the repository:
+  - On Mac:
+  ```
+  brew install git-secrets
   ```
 
-  If you are on Linux, run:
+  - On Linux:
   ```
   rm -rf git-secrets
   git clone https://github.com/awslabs/git-secrets.git
@@ -66,33 +71,46 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
   rm -rf git-secrets
   ```
 
-  Then configure the hook:
-  ```
-  git secrets --install
-  ```
-
-- The following commands assume you have symbolically linked your preferred local API backend docker compose file as `docker-compose.yml`, e.g.:
-
-  ```
-  ln -sf dsub-local-compose.yml docker-compose.yml
-  ```
-
-  If you prefer not to create a symbolic link, use:
-  ```
-  docker-compose -f dsub-google-compose.yml CMD
+- Configure the `git secrets` hook:
+  ```sh
+    git secrets --install
   ```
 
 ### Server Setup
-For setting up development with [`dsub`](https://github.com/googlegenomics/dsub)
-see [servers/dsub](servers/dsub/README.md#Development).
 
-For setting up development with [`cromwell`](https://github.com/broadinstitute/cromwell)
-see [servers/cromwell](servers/cromwell/README.md#Development).
+- Choose your own adventure: `cromwell` (local or CaaS) or `dsub`!
+
+
+#### Cromwell
+
+- Link your preferred backend docker compose file as `docker-compose.yml`:
+
+  - Cromwell (local): `ln -sf cromwell-local-compose.yml docker-compose.yml`
+  - Cromwell (CaaS): `ln -sf cromwell-caas-compose.yml docker-compose.yml`
+- Follow [servers/cromwell](servers/cromwell/README.md#Development) for Cromwell server setup then return here to continue.
+
+#### dsub
+
+- Link the dsub docker compose file as `docker-compose.yml`:
+```sh
+ln -sf dsub-local-compose.yml docker-compose.yml
+```
+  - If you prefer not to create a symbolic link, use:
+```sh
+docker-compose -f dsub-google-compose.yml CMD
+```
+- Set up the server for development with [`dsub`](https://github.com/googlegenomics/dsub): details in [servers/dsub](servers/dsub/README.md#Development).
 
 
 ### Run Locally
-1. Run `docker-compose up` from the root of the repository:
-2. Navigate to http://localhost:4200.
+- Run `docker-compose up` from the root of the repository:
+  - If this is the first time running `docker-compose up`  this might take a few minutes.
+  - Eventually you should see a compilation success message like this: 
+  ```
+  jmui_1        | webpack: Compiled successfully.
+  ```
+- Make sure that your backend (eg the Cromwell service or dsub) is ready to receive query requests. 
+- Navigate to http://localhost:4200.
 
 #### Notes
 1. Websocket reload on code change does not work in docker-compose (see

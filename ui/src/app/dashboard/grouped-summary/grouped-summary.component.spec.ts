@@ -7,6 +7,10 @@ import {Component} from "@angular/core";
 import {GroupedSummaryComponent} from './grouped-summary.component';
 import {JobStatus} from "../../shared/model/JobStatus";
 import {Aggregation} from "../../shared/model/Aggregation";
+import {ActivatedRoute, RouterModule} from "@angular/router";
+import {RouteReuse} from "../../route-reuse.service";
+import {JobListResolver} from "../../job-list/job-list-resolver.service";
+import {RouterTestingModule} from "@angular/router/testing";
 
 const testStatusArray = [JobStatus.Succeeded, JobStatus.Failed];
 const testAggregation: Aggregation = {
@@ -45,7 +49,14 @@ describe('GroupedSummaryComponent', () => {
         MatCardModule,
         MatDividerModule,
         MatTableModule,
+        RouterTestingModule,
       ],
+      providers: [{provide: ActivatedRoute, useValue: {
+          snapshot: {
+            queryParams: {projectId: 'bvdp-jmui-testing'}
+          }
+        }},
+      ]
     })
     .compileComponents();
   }));
