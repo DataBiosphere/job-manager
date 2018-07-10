@@ -139,8 +139,8 @@ def query_jobs(body):
             raise BadRequest(
                 "Invalid query: submission date must precede end date.")
 
-    generator = jobs_generator.generate_jobs(
-        provider, query, create_time_max, offset_id)
+    generator = jobs_generator.generate_jobs(provider, query, create_time_max,
+                                             offset_id)
     jobs = []
     try:
         for job in generator:
