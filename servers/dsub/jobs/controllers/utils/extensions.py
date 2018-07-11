@@ -1,4 +1,5 @@
 from jobs.controllers.utils import logs
+from jobs.models.event_detail import EventDetail
 from jobs.models.extended_fields import ExtendedFields
 
 
@@ -17,7 +18,9 @@ def get_extensions(job):
         script = envs['_SCRIPT']
         del envs['_SCRIPT']
 
-    # TODO: Plumb dstat events.
+    events = [
+        EventDetail(e['start-time'], e['name']) for e in job.get('events', [])
+    ]
 
     return ExtendedFields(
         user_id=job['user-id'],
@@ -25,4 +28,5 @@ def get_extensions(job):
         logs=logs.dsub_to_api(job),
         last_update=job.get('last-update'),
         envs=job['envs'],
-        source_file=script)
+        source_file=script,
+        events=events)
