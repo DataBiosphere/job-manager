@@ -196,7 +196,8 @@ def query_jobs(body, **kwargs):
     if page == last_page:
         return QueryJobsResponse(results=jobs_list)
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
-    return QueryJobsResponse(results=jobs_list, next_page_token=next_page_token)
+    return QueryJobsResponse(
+        results=jobs_list, next_page_token=next_page_token)
 
 
 def get_total_results(query, auth, headers):
