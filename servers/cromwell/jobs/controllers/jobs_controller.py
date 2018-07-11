@@ -172,14 +172,16 @@ def query_jobs(body, **kwargs):
     query = QueryJobsRequest.from_dict(body)
     query_page_size = query.page_size or _DEFAULT_PAGE_SIZE
     total_results = get_total_results(query, auth, headers)
-    offset = page_tokens.decode_offset(query.page_token) or 0
+    if query.page_token is None:
+        offset = 0
+    else:
+        offset = page_tokens.decode_offset(query.page_token)
     page = page_from_offset(offset, query_page_size)
     last_page = get_last_page(total_results, query_page_size)
-    page_from_end = last_page - page + 1
 
     response = requests.post(
         _get_base_url() + '/query',
-        json=cromwell_query_params(query, page_from_end, query_page_size),
+        json=cromwell_query_params(query, page, query_page_size),
         auth=auth,
         headers=headers)
 
@@ -191,12 +193,10 @@ def query_jobs(body, **kwargs):
 
     now = datetime.utcnow()
     jobs_list = [format_job(job, now) for job in response.json()['results']]
-    jobs_list.reverse()
-
     if page == last_page:
         return QueryJobsResponse(results=jobs_list)
-    next_page_token = page_tokens.encode_offset(offset)
-    return QueryJobsResponse(results=results, next_page_token=next_page_token)
+    next_page_token = page_tokens.encode_offset(offset + query_page_size)
+    return QueryJobsResponse(results=jobs_list, next_page_token=next_page_token)
 
 
 def get_total_results(query, auth, headers):
@@ -224,7 +224,10 @@ def get_last_page(total_results, page_size):
 
 
 def page_from_offset(offset, page_size):
-    return 1 + offset / page_size
+    if offset == 0:
+        return 1
+    else:
+        return 1 + (offset / page_size)
 
 
 def cromwell_query_params(query, page, page_size):

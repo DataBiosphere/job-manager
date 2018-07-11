@@ -36,7 +36,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
         return prevResp;
       }
       let pageSize = Math.max(
-        JobStream.minBackendPageSize, this.value.results.length - atLeast);
+        JobStream.minBackendPageSize, Math.abs(this.value.results.length - atLeast));
       return this.queryJobs(pageSize, prevResp.nextPageToken).then(resp => {
         this.next({
           results: this.value.results.concat(resp.results),
