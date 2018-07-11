@@ -36,7 +36,7 @@ export class JobResourcesComponent implements OnInit {
     ['inputs', 'Inputs'],
     ['outputs', 'Outputs'],
     ['source-file', 'Source File'],
-    ['event-detail', 'Event Detail']
+    ['events', 'Events']
   ]);
   currentTabId: string;
   constructor(
@@ -78,7 +78,7 @@ export class JobResourcesComponent implements OnInit {
 
       if (this.job.extensions.events) {
         this.eventDetails = this.job.extensions.events;
-        this.tabIds.push('event-detail');
+        this.tabIds.push('events');
       }
     }
 
