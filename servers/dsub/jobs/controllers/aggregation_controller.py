@@ -7,7 +7,7 @@ from jobs.models.status_count import StatusCount
 from jobs.models.status_counts import StatusCounts
 
 _NUM_TOP_LABEL = 3
-_LABEL_VALID_MIN = 10
+_LABEL_MIN_COUNT_FOR_RANK = 10
 
 
 def get_job_aggregations(timeFrame, projectId=None):
@@ -41,7 +41,7 @@ def get_job_aggregations(timeFrame, projectId=None):
     aggregations = [
         _to_aggregation('User Id', 'userId', user_summary),
         _to_aggregation('Job Name', 'name', job_name_summary)
-    ] + (_to_top_labels_aggregations(label_summaries))
+    ] + _to_top_labels_aggregations(label_summaries)
 
     return AggregationResponse(
         summary=_to_summary_counts(total_summary), aggregations=aggregations)
@@ -94,13 +94,13 @@ def _to_aggregation(name, key, summary):
 
 def _to_top_labels_aggregations(label_summaries):
     # Rank the label summaries by the sum of valid item,
-    # where valid means a label has jobs more than _LABEL_VALID_MIN.
+    # where valid means a label has jobs more than _LABEL_MIN_COUNT_FOR_RANK.
     label_freq = {}
     for label, item in label_summaries.items():
         total_count = 0
         for label_value, counts in item.items():
             total_count += sum(
-                v for _, v in counts.items() if v > _LABEL_VALID_MIN)
+                v for v in counts.values() if v > _LABEL_MIN_COUNT_FOR_RANK)
         label_freq[label] = total_count
 
     aggregations = []
