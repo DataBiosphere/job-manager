@@ -59,7 +59,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   private readonly activeStatuses = [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
   private readonly completedStatuses = [JobStatus.Succeeded, JobStatus.Aborted];
   private readonly failedStatuses = [JobStatus.Failed];
-  private readonly queuedStatuses = [JobStatus.Queued];
+  private readonly queuedStatuses = [JobStatus.OnHold];
 
   constructor(
     private readonly route: ActivatedRoute,
