@@ -65,8 +65,6 @@ def _count_for_key(job, summary, key):
 
 def _count_top_labels(job, label_summaries):
     for label in job.labels:
-        # label_freq[label] = label_freq.get(label, 0) + 1
-
         label_summary = label_summaries.get(label, {})
         _count_for_key(job, label_summary, job.labels[label])
         label_summaries[label] = label_summary
