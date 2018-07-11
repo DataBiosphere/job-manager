@@ -38,6 +38,7 @@ services:
       - CAPABILITIES_CONFIG=/app/jobs/capabilities_config.json
       - CROMWELL_URL=${CROMWELL_URL}
       - GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS:-"--workers=5"}
+      - PYTHONDONTWRITEBYTECODE=1
     volumes:
       - ./servers/cromwell/jobs:/app/jobs
     ports:
