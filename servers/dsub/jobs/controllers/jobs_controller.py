@@ -187,11 +187,6 @@ def _metadata_response(id, job):
 
 
 def _auth_token():
-    """Get the authentication token from the request header.
-
-        Returns:
-            string: authentication token in header
-    """
     auth_header = request.headers.get('Authentication')
     if auth_header:
         components = auth_header.split(' ')
@@ -201,9 +196,4 @@ def _auth_token():
 
 
 def _provider_type():
-    """Get the provider type.
-
-        Returns:
-            string: provider type defined in current_app.config file
-    """
     return current_app.config['PROVIDER_TYPE']
