@@ -101,7 +101,8 @@ def _to_top_labels_aggregations(label_summaries):
     for label, item in label_summaries.items():
         total_count = 0
         for label_value, counts in item.items():
-            total_count += sum(v for _, v in counts.items() if v > _LABEL_VALID_MIN)
+            total_count += sum(
+                v for _, v in counts.items() if v > _LABEL_VALID_MIN)
         label_freq[label] = total_count
 
     aggregations = []
