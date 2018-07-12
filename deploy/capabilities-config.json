@@ -1,0 +1,50 @@
+{
+  "displayFields": [
+    {
+      "field": "status",
+      "display": "Status"
+    },
+    {
+      "field": "submission",
+      "display": "Submitted"
+    },
+    {
+      "field": "end",
+      "display": "End Time"
+    },
+    {
+      "field": "labels.cromwell-workflow-id",
+      "display": "Workflow ID"
+    },
+    {
+      "field": "labels.comment",
+      "display": "Comment",
+      "fieldType": "text",
+      "editable": true,
+      "bulkEditable": true
+    },
+    {
+      "field": "labels.flag",
+      "display": "Flag",
+      "editable": true,
+      "bulk_editable": true,
+      "field_type": "list",
+      "valid_field_values": ["archive", "follow-up"]
+    }
+  ],
+  "commonLabels": [
+    "cromwell-workflow-id",
+    "workflow-name",
+    "comment",
+    "flag"
+  ],
+  "queryExtensions": [],
+  "authentication": {
+    "isRequired": true,
+    "scopes": [
+      "openid",
+      "email",
+      "profile"
+    ]
+  }
+}
