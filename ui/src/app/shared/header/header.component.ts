@@ -59,7 +59,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   private readonly activeStatuses = [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
   private readonly completedStatuses = [JobStatus.Succeeded, JobStatus.Aborted];
   private readonly failedStatuses = [JobStatus.Failed];
-  private readonly queuedStatuses = [JobStatus.OnHold];
+  private readonly onHoldStatuses = [JobStatus.OnHold];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -221,8 +221,8 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     this.navigateWithStatus(this.failedStatuses.slice());
   }
 
-  showQueuedJobs(): void {
-    this.navigateWithStatus(this.queuedStatuses.slice());
+  showOnHoldJobs(): void {
+    this.navigateWithStatus(this.onHoldStatuses.slice());
   }
 
   getActiveCount(): number {
@@ -240,9 +240,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
       j => this.completedStatuses.includes(j.status)).length;
   }
 
-  getQueuedCount(): number {
+  getOnHoldCount(): number {
     return this.jobs.value.results.filter(
-      j => this.queuedStatuses.includes(j.status)).length;
+      j => this.onHoldStatuses.includes(j.status)).length;
   }
 
   private refreshChips(query: string): void {

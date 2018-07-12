@@ -49,8 +49,8 @@
         <button mat-raised-button class="status-button completed-button" (click)="showCompletedJobs()">
           Completed <span *ngIf="shouldDisplayStatusCounts()">({{ getCompletedCount() }})</span>
         </button>
-        <button mat-raised-button class="status-button queued-button" (click)="showQueuedJobs()">
-          Queued <span *ngIf="shouldDisplayStatusCounts()">({{ getQueuedCount() }})</span>
+          <button mat-raised-button class="status-button onhold-button" (click)="showOnHoldJobs()">
+          On Hold <span *ngIf="shouldDisplayStatusCounts()">({{ getOnHoldCount() }})</span>
         </button>
       </ng-container>
    </div>
