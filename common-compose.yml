@@ -23,6 +23,7 @@ services:
       # Avoid writing .pyc files back to the volume. Files generated this way
       # have restricted permissions set which cause errors on subsequent docker
       # builds.
+      - GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS:-"--workers=5"}
       - PYTHONDONTWRITEBYTECODE=1
     volumes:
       # Mount the python source so that code changes don't require rebuilding
