@@ -28,8 +28,8 @@
       "display": "Flag",
       "editable": true,
       "bulk_editable": true,
-      "field_type": "list",
-      "valid_field_values": ["archive", "follow-up"]
+      "fieldType": "list",
+      "validFieldValues": ["archive", "follow-up"]
     }
   ],
   "commonLabels": [
