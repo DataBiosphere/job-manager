@@ -20,8 +20,8 @@
         {{ logFileData.get(logFile) }}
       </div>
     </div>
-    <div *ngIf="currentTabId == 'event-detail'" class="inline-text">
-      <div *ngFor="let eventDetail of eventDetails" class="event-detail">
+    <div *ngIf="currentTabId == 'events'" class="inline-text">
+      <div *ngFor="let eventDetail of eventDetails" class="events">
           {{ eventDetail.time + ' ' + eventDetail.content }}
       </div>
     </div>
