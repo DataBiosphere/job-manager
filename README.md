@@ -1,4 +1,7 @@
 # Job Manager
+
+[![CircleCI](https://circleci.com/gh/DataBiosphere/job-manager/tree/master.svg?style=svg)](https://circleci.com/gh/DataBiosphere/job-manager/tree/master)
+
 _This product is in Alpha and not yet ready for production use. We welcome all feedback!_
 
 See the [development guide](#development) below.
