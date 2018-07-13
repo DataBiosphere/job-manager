@@ -44,7 +44,7 @@ CROMWELL_EXECUTION_STATUS_MAP = {
 def cromwell_execution_to_api(execution_status):
     """ Map a Cromwell execution status to an API status.
 
-    :param str execution_status: 'NotStarted', 'QueuedInCromwell', 'Starting', 'Running', 'Aborting', 'Failed',
+    :param str execution_status: 'NotStarted', 'WaitingForQueueSpace', 'QueuedInCromwell', 'Starting', 'Running', 'Aborting', 'Failed',
      'RetryableFailure', 'Done', 'Bypassed', 'Aborted', or 'Unstartable'
     :return: Api status 'Submitted', 'Running', 'Aborting', 'Failed', 'Succeeded', or 'Aborted'
     """
