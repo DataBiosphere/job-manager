@@ -570,6 +570,10 @@ definitions:
         description: "Id of the job corresponding to this task, if this task is a\
           \ nested child job. Expresses a child:parent relationship between this job\
           \ and the job containing this task.\n"
+      shardStatuses:
+        type: "array"
+        items:
+          $ref: "#/definitions/ShardStatusCount"
     description: "Task level metadata"
   FailureMessage:
     required:
@@ -598,6 +602,13 @@ definitions:
       displayField:
         $ref: "#/definitions/DisplayField"
     description: "a DisplayField that can be bulk-editable via the UI"
+  ShardStatusCount:
+    properties:
+      status:
+        $ref: "#/definitions/JobStatus"
+      count:
+        type: "integer"
+    description: "a total of the number of shards for a task with a certain status"
 responses:
   BadRequest:
     description: "Bad request"

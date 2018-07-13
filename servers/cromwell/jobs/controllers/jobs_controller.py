@@ -98,9 +98,10 @@ def get_job(id, **kwargs):
         failures = [
             FailureMessage(failure=f['message']) for f in job['failures']
         ]
+
     # Get the most recent run of each task in task_metadata
     tasks = [
-        format_task(task_name, task_metadata[-1])
+        format_task(task_name, task_metadata)
         for task_name, task_metadata in job.get('calls', {}).items()
     ]
     sorted_tasks = sorted(tasks, key=lambda t: t.start)
@@ -127,30 +128,48 @@ def get_job(id, **kwargs):
 
 
 def format_task(task_name, task_metadata):
+    shardStatuses = {}
+
+    # if task is scattered, collect shard statuses and remove inputs and outputs, as they are intermediary
+    if len(task_metadata) > 1:
+        for shard in task_metadata:
+            status = _get_shard_status(shard.get('executionStatus'))
+            oldValue = status in shardStatuses or 0
+            shardStatuses[status] = [oldValue + 1]
+            shard['inputs'] = {}
+            shard['outputs'] = {}
+    else:
+        shardStatuses = None
+
+    # for the rest of the metadata, grab from the first (and possibly only) task
+    metadata_to_return = task_metadata[0]
+
     return TaskMetadata(
         name=remove_workflow_name(task_name),
-        execution_id=task_metadata.get('jobId'),
+        execution_id=metadata_to_return.get('jobId'),
         execution_status=task_statuses.cromwell_execution_to_api(
-            task_metadata.get('executionStatus')),
-        start=_parse_datetime(task_metadata.get('start')),
-        end=_parse_datetime(task_metadata.get('end')),
-        stderr=task_metadata.get('stderr'),
-        stdout=task_metadata.get('stdout'),
-        inputs=update_key_names(task_metadata.get('inputs', {})),
-        return_code=task_metadata.get('returnCode'),
-        attempts=task_metadata.get('attempt'),
-        call_root=task_metadata.get('callRoot'),
-        job_id=task_metadata.get('subWorkflowId'))
+            metadata_to_return.get('executionStatus')),
+        start=_parse_datetime(metadata_to_return.get('start')),
+        end=_parse_datetime(metadata_to_return.get('end')),
+        stderr=metadata_to_return.get('stderr'),
+        stdout=metadata_to_return.get('stdout'),
+        inputs=update_key_names(metadata_to_return.get('inputs', {})),
+        return_code=metadata_to_return.get('returnCode'),
+        attempts=metadata_to_return.get('attempt'),
+        call_root=metadata_to_return.get('callRoot'),
+        job_id=metadata_to_return.get('subWorkflowId'),
+        shard_statuses=shardStatuses)
 
 
 def remove_workflow_name(name):
-    """ Remove the workflow name from the beginning of task, input and output names.
+    """ Remove the workflow name from the beginning of task, input and output names (if it's there).
     E.g. Task names {workflowName}.{taskName} => taskName
          Input names {workflowName}.{inputName} => inputName
          Output names {workflowName}.{taskName}.{outputName} => taskName.outputName
     """
-    return '.'.join(name.split('.')[1:])
-
+    if "." in name:
+        return '.'.join(name.split('.')[1:])
+    return name
 
 def update_key_names(metadata):
     return {remove_workflow_name(k): v for k, v in metadata.items()}
@@ -307,3 +326,20 @@ def _get_base_url():
 
 def _is_parent_workflow(job):
     return not job.get('parentWorkflowId')
+
+def _get_shard_status(status):
+    statusConverter = {
+        'NotStarted' : 'Submitted',
+        'WaitingForQueueSpace' : 'Submitted',
+        'QueuedInCromwell' : 'Submitted',
+        'Starting' : 'Submitted',
+        'Running' : 'Running',
+        'Aborting' : 'Aborting',
+        'Unstartable' : 'Failed',
+        'Aborted' : 'Aborted',
+        'Bypassed' : 'Aborted',
+        'RetryableFailure' : 'Running',
+        'Failed' : 'Failed',
+        'Done' : 'Succeeded'
+    }
+    return statusConverter.get(status)

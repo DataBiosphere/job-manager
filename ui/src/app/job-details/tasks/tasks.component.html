@@ -19,10 +19,24 @@
       <!-- Task name column -->
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-        <mat-cell *matCellDef="let t">
+        <mat-cell *matCellDef="let t" class="task-title">
           <a class="title-link" *ngIf="t.jobId" href="{{ '/jobs/' + t.jobId }}">{{ t.name }}</a>
-          <p *ngIf="!t.jobId">{{ t.name }}</p>
+          <p *ngIf="!t.jobId" class="title-nolink">{{ t.name }}</p>
+          <button *ngIf="isScattered(t)" mat-icon-button class="shard-icon" [matMenuTriggerFor]="shardMenu">
+            <clr-tooltip>
+              <clr-icon clrTooltipTrigger shape="layers" size="24"  class="is-solid"></clr-icon>
+              <clr-tooltip-content clrPosition="right"  clrSize="xs" *clrIfOpen>
+                <span>task shards</span>
+              </clr-tooltip-content>
+            </clr-tooltip>
+          </button>
         </mat-cell>
+        <mat-menu #shardMenu="matMenu" class="wide-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+          <div class="status-container">
+            <div class="status-name"></div>
+            <div class="status-count"></div>
+          </div>
+        </mat-menu>
       </ng-container>
 
       <!-- Status column -->

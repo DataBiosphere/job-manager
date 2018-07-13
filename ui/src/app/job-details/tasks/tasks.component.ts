@@ -66,6 +66,10 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
   tabChanged(event: MatTabChangeEvent) {
     event.tab.isActive = false;
   }
+
+  isScattered(task: TaskMetadata): boolean {
+    return task.shardStatuses != null;
+  }
 }
 
 /** Simple database with an observable list of jobs to be subscribed to by the
