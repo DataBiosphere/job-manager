@@ -13,6 +13,7 @@ ApiStatus = enum(
     FAILED='Failed')
 CromwellExecutionStatus = enum(
     NOTSTARTED='NotStarted',
+    WAITINGFORQUEUESPACE='WaitingForQueueSpace',
     QUEUEDINCROMWELL='QueuedInCromwell',
     STARTING='Starting',
     RUNNING='Running',
@@ -26,6 +27,7 @@ CromwellExecutionStatus = enum(
 
 CROMWELL_EXECUTION_STATUS_MAP = {
     CromwellExecutionStatus.NOTSTARTED: ApiStatus.SUBMITTED,
+    CromwellExecutionStatus.WAITINGFORQUEUESPACE: ApiStatus.SUBMITTED,
     CromwellExecutionStatus.QUEUEDINCROMWELL: ApiStatus.SUBMITTED,
     CromwellExecutionStatus.STARTING: ApiStatus.SUBMITTED,
     CromwellExecutionStatus.RUNNING: ApiStatus.RUNNING,
