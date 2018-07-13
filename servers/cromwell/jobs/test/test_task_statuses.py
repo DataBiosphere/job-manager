@@ -8,6 +8,7 @@ from jobs.controllers.utils import task_statuses
 
 
 class TestTaskStatuses(BaseTestCase):
+    # yapf: disable
     def test_cromwell_execution_to_api_maps_all_execution_statuses_correctly(self):
         self.assertEqual(task_statuses.cromwell_execution_to_api('NotStarted'), 'Submitted')
         self.assertEqual(task_statuses.cromwell_execution_to_api('WaitingForQueueSpace'), 'Submitted')
@@ -21,6 +22,7 @@ class TestTaskStatuses(BaseTestCase):
         self.assertEqual(task_statuses.cromwell_execution_to_api('RetryableFailure'), 'Running')
         self.assertEqual(task_statuses.cromwell_execution_to_api('Failed'), 'Failed')
         self.assertEqual(task_statuses.cromwell_execution_to_api('Done'), 'Succeeded')
+    # yapf: enable
 
     def test_unrecognized_status_causes_exception(self):
         with self.assertRaises(ValueError):
