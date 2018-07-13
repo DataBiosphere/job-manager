@@ -172,3 +172,17 @@ For `dsub` server documentation, see [servers/dsub](servers/dsub/README.md).
 
 ## Job Manager `cromwell` Server
 For `cromwell` server documentation, see [servers/cromwell](servers/cromwell/README.md).
+
+## Build docker images and releases
+From v0.2.0, Job Manager starts to release stock docker images on [DockerHub](https://hub.docker.com/u/databiosphere)
+
+- To build the `job-manager-ui` image with `$TAG` from the root of this Github repository:
+    ```
+    cd ui && docker build -t job-manager-ui:$TAG . -f Dockerfile
+    ```
+    
+- To build the `job-manager-api` image with `$TAG` from the root of this Github repository:
+    ```
+    docker build -t job-manager-api:v0.2.0 . -f servers/cromwell/Dockerfile
+    ```
+ 
