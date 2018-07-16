@@ -21,6 +21,7 @@ venv/
 /ui/dist
 /ui/tmp
 /ui/out-tsc
+/ui/src/assets
 
 # dependencies
 /ui/node_modules
