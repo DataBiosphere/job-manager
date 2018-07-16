@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: job-manager-api
-        image: job-manager-api:v0.2.0  # Set the version number based on your requirements
+        image: job-manager-api-cromwell:v0.2.0  # Set the version number based on your requirements
         imagePullPolicy: Always  # Set this field based on your requirements
         args: ["-b", ":8190", "-t", "60"]  # Set the port number and timeout based on your requirements
         ports:

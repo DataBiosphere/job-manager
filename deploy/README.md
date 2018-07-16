@@ -8,19 +8,18 @@
 ```
 deploy/
 ├── README.md
-├── api-config.json
-├── capabilities-config.json
-├── ui-config.json
-├── cromwell
-│   ├── README.md
-│   ├── app-engine
-│   ├── docker-compose
-│   └── kubernetes
-└── dsub
-    ├── README.md
-    ├── app-engine
-    ├── docker-compose
-    └── kubernetes
+├── cromwell/
+│   ├── api-config.json
+│   ├── capabilities-config.json
+│   ├── app-engine/
+│   ├── docker-compose/
+│   └── kubernetes/
+├── dsub/
+│   ├── app-engine/
+│   ├── docker-compose/
+│   └── kubernetes/
+└── ui-config.json
+
 ```
 
 The above structure shows how the deployment instructions are organized, Cromwell and dsub have their own set of
@@ -33,7 +32,7 @@ or different servers, depends on your preferred infrastructure.
 In order to deploy Job Manager properly, you have to provide a set of config files.
 
 ### UI config
-As the `ui-config.json` shows, this file contains the information required by the Job Manager UI layer:
+As the [`ui-config.json`](./ui-config.json) shows, this file contains the information required by the Job Manager UI layer:
 
 - `apiUrl` indicates the path to the API(shim) layer. If UI and API are deployed separately, this will become the 
 url to the API.
@@ -45,10 +44,10 @@ valid client ID within the Google cloud project which the Job Manager is deploye
 **Note:** This file has to be mounted as `/ui/dist/assets/environments/environment.json` in the Job Manager UI docker
  container during the deployment.
 
-### Capabilities config (required by Cromwell) <a id="capabilities-anchor"></a>
+### Capabilities config <a id="capabilities-anchor"></a>
 
-dsub is using hard-coded predefined capabilities configuration for now, so this is only configurable for Cromwell. 
-As the `capabilities-config.json` shows, this file contains the information that UI can fetch from the capabilities
+#### Cromwell 
+As the [`capabilities-config.json`](./cromwell/capabilities-config.json) shows, this file contains the information that UI can fetch from the capabilities
 endpoint of the API, which in turn controls a few behaviors of the UI layer:
 
 - `displayFields` controls which fields would be displayed as columns in the job list view. 
@@ -63,7 +62,8 @@ default value should be fine.
 - `authentication` is optional. You should set the `isRequired` to `true` if you want to enable the Google OAuth 
 Sign-In ability.
 
-For Cromwell, the default config looks like:
+Note: if you don't provide the `capabilities-config.json` to override the default value, Job Manager will try to use the
+following values:
 ```JSON
 {
   "displayFields": [
@@ -110,7 +110,10 @@ For Cromwell, the default config looks like:
 }
 ```
 
-For dsub, depends on the value of the environment variable `PROVIDER_TYPE`, the full version default config looks like:
+#### dsub
+dsub is using hard-coded predefined capabilities configuration for now, so this file is only configurable for Cromwell.
+To provide a better visibility of the default values, depends on the value of the environment variable `PROVIDER_TYPE`, 
+the full version default config can be translated into the following JSON format:
 ```JSON
 {
   "displayFields": [
@@ -159,9 +162,10 @@ For dsub, depends on the value of the environment variable `PROVIDER_TYPE`, the 
 variable `CAPABILITIES_CONFIG`, otherwise Job Manager will try to use the default capabilities config, which might not
 be able to handle all of your use cases, so we don't recommend you use the default capabilities configuration.
 
-### API config (optional, required by Cromwell) <a id="credentials-anchor"></a>
-This is an optional config file. As the `api-config.json` shows, this file is Cromwell-specific and contains 
-HTTPBasicAuth credentials to access to a Cromwell instance. You don't need to provide this file if:
+### API config (optional, only required by Cromwell) <a id="credentials-anchor"></a>
+This is an optional config file. As the [`api-config.json`](./cromwell/api-config.json) shows, 
+ this file is Cromwell-specific and contains HTTPBasicAuth credentials to access to a Cromwell instance.
+ You don't need to provide this file if:
 
 - Your Cromwell backend does not use HTTPBasicAuth.
 - Your Cromwell is using OAuth.
