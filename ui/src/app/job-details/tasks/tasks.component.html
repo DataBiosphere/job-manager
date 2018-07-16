@@ -30,13 +30,16 @@
               </clr-tooltip-content>
             </clr-tooltip>
           </button>
+          <mat-menu #shardMenu="matMenu" class="wide-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+            <div class="shards-header">
+              {{ getScatteredCount(t) }} Shards
+            </div>
+            <div class="shards-container" *ngFor="let scatterStatus of t.shardStatuses">
+              <div class="shards-status">{{ getShardStatus(scatterStatus) }}</div>
+              <div class="shards-count">{{ getShardCount(scatterStatus) }}</div>
+            </div>
+          </mat-menu>
         </mat-cell>
-        <mat-menu #shardMenu="matMenu" class="wide-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
-          <div class="status-container">
-            <div class="status-name"></div>
-            <div class="status-count"></div>
-          </div>
-        </mat-menu>
       </ng-container>
 
       <!-- Status column -->

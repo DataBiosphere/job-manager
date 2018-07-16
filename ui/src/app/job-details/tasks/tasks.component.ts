@@ -15,6 +15,7 @@ import {JobStatusIcon} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {MatTabChangeEvent} from '@angular/material';
+import {StatusCount} from "../../shared/model/StatusCount";
 
 @Component({
   selector: 'jm-tasks',
@@ -69,6 +70,14 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   isScattered(task: TaskMetadata): boolean {
     return task.shardStatuses != null;
+  }
+
+  getShardStatus(status:StatusCount): JobStatus {
+    return status.status;
+  }
+
+  getShardCount(status:StatusCount): number {
+    return status.count;
   }
 }
 
