@@ -13,11 +13,13 @@ import time
 from jobs.common import execute_redirect_stdout
 from jobs.controllers.utils import job_ids
 from jobs.controllers.utils.job_statuses import ApiStatus
+from jobs.controllers.aggregation_controller import _LABEL_MIN_COUNT_FOR_RANK
 from jobs.encoder import JSONEncoder
 from jobs.models.extended_query_fields import ExtendedQueryFields
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
+from jobs.models.aggregation_response import AggregationResponse
 
 DOCKER_IMAGE = 'ubuntu:14.04'
 
@@ -100,6 +102,14 @@ class BaseTestCases:
                 content_type='application/json')
             self.assert_status(resp, 200)
             return QueryJobsResponse.from_dict(resp.json)
+
+        def must_aggregate_job(self, time_frame, project_id):
+            resp = self.client.open(
+                '/aggregations?projectId={}&timeFrame={}'.format(
+                    project_id, time_frame),
+                method='GET')
+            self.assert_status(resp, 200)
+            return AggregationResponse.from_dict(resp.json)
 
         def start_job(self,
                       command,
@@ -438,3 +448,45 @@ class BaseTestCases:
                     page_token=response.next_page_token,
                     extensions=ExtendedQueryFields(submission=min_time)),
                 [job2])
+
+        def test_aggregtion_jobs_invalid_project_id(self):
+            time_frame = 'DAYS_7'
+            project_id = 'should-be-an-invalid-id'
+            resp = self.client.open(
+                '/aggregations?projectId={}&timeFrame={}'.format(
+                    project_id, time_frame),
+                method='GET')
+            self.assert_status(resp, 500)
+
+        def test_aggregtion_jobs(self):
+            labels = {
+                'creator': 'developer',
+                'test_for': 'aggregation',
+                'overlap_key': 'overlap_value'
+            }
+
+            job_list = []
+            # Create jobs with specified labels above times that are large enough to
+            # be ranked top and thus appear in the Aggregation
+            for i in xrange(_LABEL_MIN_COUNT_FOR_RANK):
+                job_list.append(
+                    self.start_job(
+                        'echo LABEL',
+                        labels=labels,
+                        name='aggregation-testing'))
+
+            aggregationResponse = self.must_aggregate_job(
+                'HOURS_1', self.testing_project)
+
+            # Should have _LABEL_MIN_COUNT_FOR_RANK amount of jobs with specified name
+            for aggregation in aggregationResponse.aggregations:
+                if aggregation.key == 'name':
+                    for aggregationEntry in aggregation.entries:
+                        if aggregationEntry.label == 'aggregation-testing':
+                            status_counts = aggregationEntry.status_counts
+                            for status_count in status_counts.counts:
+                                if status_count.status == ApiStatus.SUBMITTED:
+                                    num_submitted_jobs_with_name = status_count.count
+
+            self.assertEqual(num_submitted_jobs_with_name,
+                             _LABEL_MIN_COUNT_FOR_RANK)
