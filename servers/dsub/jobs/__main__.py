@@ -64,6 +64,7 @@ else:
 app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=False)
 app.app.config['PROVIDER_TYPE'] = args.provider_type
 app.app.config['REQUIRES_AUTH'] = bool(args.requires_auth)
+app.app.config['LABEL_MIN_COUNT_FOR_RANK'] = 10
 if args.allow_origins:
     prefix = args.path_prefix or ''
     CORS(

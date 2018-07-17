@@ -13,7 +13,6 @@ import time
 from jobs.common import execute_redirect_stdout
 from jobs.controllers.utils import job_ids
 from jobs.controllers.utils.job_statuses import ApiStatus
-from jobs.controllers.aggregation_controller import _LABEL_MIN_COUNT_FOR_RANK
 from jobs.encoder import JSONEncoder
 from jobs.models.extended_query_fields import ExtendedQueryFields
 from jobs.models.job_metadata_response import JobMetadataResponse
@@ -22,6 +21,7 @@ from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.aggregation_response import AggregationResponse
 
 DOCKER_IMAGE = 'ubuntu:14.04'
+_LABEL_MIN_COUNT_FOR_RANK = 3
 
 
 class BaseTestCases:
@@ -66,6 +66,8 @@ class BaseTestCases:
             app = connexion.App(__name__, specification_dir='../swagger/')
             app.app.json_encoder = JSONEncoder
             app.add_api('swagger.yaml')
+            app.app.config[
+                'LABEL_MIN_COUNT_FOR_RANK'] = _LABEL_MIN_COUNT_FOR_RANK
             return app.app
 
         def expected_log_files(self, job_id):
@@ -103,11 +105,14 @@ class BaseTestCases:
             self.assert_status(resp, 200)
             return QueryJobsResponse.from_dict(resp.json)
 
-        def must_aggregate_job(self, time_frame, project_id):
-            resp = self.client.open(
-                '/aggregations?projectId={}&timeFrame={}'.format(
-                    project_id, time_frame),
-                method='GET')
+        def must_aggregate_job(self, time_frame):
+            if self.testing_project:
+                url = '/aggregations?projectId={}&timeFrame={}'.format(
+                    self.testing_project, time_frame)
+            else:
+                url = '/aggregations?timeFrame={}'.format(time_frame)
+
+            resp = self.client.open(url, method='GET')
             self.assert_status(resp, 200)
             return AggregationResponse.from_dict(resp.json)
 
@@ -449,44 +454,65 @@ class BaseTestCases:
                     extensions=ExtendedQueryFields(submission=min_time)),
                 [job2])
 
-        def test_aggregtion_jobs_invalid_project_id(self):
-            time_frame = 'DAYS_7'
-            project_id = 'should-be-an-invalid-id'
-            resp = self.client.open(
-                '/aggregations?projectId={}&timeFrame={}'.format(
-                    project_id, time_frame),
-                method='GET')
-            self.assert_status(resp, 500)
-
         def test_aggregtion_jobs(self):
             labels = {
-                'creator': 'developer',
-                'test_for': 'aggregation',
-                'overlap_key': 'overlap_value'
+                'aggregation-testing-unique-1': 'testing-rocks',
+                'aggregation-testing-unique-2': 'debugging-bad',
+                'aggregation-testing-unique-3': 'yeah'
             }
 
-            job_list = []
+            # Add timestamp to distinguish from old test jobs
+            name = 'aggregation-testing' + str(datetime.datetime.now().minute)
+
+            # Create an aborted job
+            job_aborted = self.api_job_id(
+                self.start_job('sleep 30', labels=labels, name=name))
+            time.sleep(10)
+            self.wait_status(job_aborted, ApiStatus.RUNNING)
+            self.must_abort_job(job_aborted)
+            self.wait_status(job_aborted, ApiStatus.ABORTED)
+
+            # Create a failed job
+            job_failed = self.api_job_id(
+                self.start_job('not_a_command', labels=labels, name=name))
+            self.wait_status(job_failed, ApiStatus.FAILED)
+
+            # Created a succeeded job
+            job_failed = self.api_job_id(
+                self.start_job('echo SUCCEEDED', labels=labels, name=name))
+            self.wait_status(job_failed, ApiStatus.SUCCEEDED)
+
             # Create jobs with specified labels above times that are large enough to
             # be ranked top and thus appear in the Aggregation
             for i in xrange(_LABEL_MIN_COUNT_FOR_RANK):
-                job_list.append(
-                    self.start_job(
-                        'echo LABEL',
-                        labels=labels,
-                        name='aggregation-testing'))
+                self.start_job('echo LABEL', labels=labels, name=name)
 
-            aggregationResponse = self.must_aggregate_job(
-                'HOURS_1', self.testing_project)
+            aggregationResponse = self.must_aggregate_job('HOURS_1')
 
-            # Should have _LABEL_MIN_COUNT_FOR_RANK amount of jobs with specified name
             for aggregation in aggregationResponse.aggregations:
                 if aggregation.key == 'name':
                     for aggregationEntry in aggregation.entries:
-                        if aggregationEntry.label == 'aggregation-testing':
+                        if aggregationEntry.label == name:
                             status_counts = aggregationEntry.status_counts
                             for status_count in status_counts.counts:
-                                if status_count.status == ApiStatus.SUBMITTED:
-                                    num_submitted_jobs_with_name = status_count.count
+                                # Should have LABEL_MIN_COUNT_FOR_RANK amount of jobs submitted/running with specified name
+                                if status_count.status == ApiStatus.SUBMITTED or status_count.status == ApiStatus.RUNNING:
+                                    self.assertEqual(
+                                        status_count.count,
+                                        _LABEL_MIN_COUNT_FOR_RANK)
+                                # Should have exactly 1 job with the other status
+                                elif status_count.status == ApiStatus.ABORTED:
+                                    self.assertEqual(status_count.count, 1)
+                                elif status_count.status == ApiStatus.FAILED:
+                                    self.assertEqual(status_count.count, 1)
+                                elif status_count.status == ApiStatus.SUCCEEDED:
+                                    self.assertEqual(status_count.count, 1)
 
-            self.assertEqual(num_submitted_jobs_with_name,
-                             _LABEL_MIN_COUNT_FOR_RANK)
+            # Should have labels above presented in the aggregation response
+            labels = [
+                aggregation.key
+                for aggregation in aggregationResponse.aggregations
+            ]
+            self.assertEqual('aggregation-testing-unique-1' in labels, True)
+            self.assertEqual('aggregation-testing-unique-2' in labels, True)
+            self.assertEqual('aggregation-testing-unique-3' in labels, True)
