@@ -17,6 +17,7 @@ CromwellWorkflowStatus = enum(
     ON_HOLD='On Hold',
     RUNNING='Running',
     ABORTING='Aborting',
+    ABORTED='Aborted',
     FAILED='Failed',
     SUCCEEDED='Succeeded')
 
@@ -25,7 +26,7 @@ API_STATUS_MAP = {
     ApiStatus.ON_HOLD: CromwellWorkflowStatus.ON_HOLD,
     ApiStatus.RUNNING: CromwellWorkflowStatus.RUNNING,
     ApiStatus.ABORTING: CromwellWorkflowStatus.ABORTING,
-    ApiStatus.ABORTED: CromwellWorkflowStatus.FAILED,
+    ApiStatus.ABORTED: CromwellWorkflowStatus.ABORTED,
     ApiStatus.FAILED: CromwellWorkflowStatus.FAILED,
     ApiStatus.SUCCEEDED: CromwellWorkflowStatus.SUCCEEDED
 }
