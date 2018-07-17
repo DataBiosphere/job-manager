@@ -1,0 +1,85 @@
+apiVersion: apps/v1 # Requires v1.9+ K8s node versions
+kind: Deployment
+metadata:
+  name: job-manager-deployment
+  labels:
+    app: job-manager
+spec:
+  replicas: 1 # Set this number based on your requirements
+  revisionHistoryLimit: 1 # Set this number based on your requirements
+  selector:
+    matchLabels:
+      app: job-manager
+  template:
+    metadata:
+      labels:
+        app: job-manager
+    spec:
+      containers:
+      - name: job-manager-api
+        image: job-manager-api-cromwell:v0.2.0  # Set the version number based on your requirements
+        imagePullPolicy: Always  # Set this field based on your requirements
+        args: ["-b", ":8190", "-t", "60"]  # Set the port number and timeout based on your requirements
+        ports:
+        - containerPort: 8190  # Set the port number based on your requirements
+        volumeMounts:
+        - name: jm-api-config
+          mountPath: /etc/job-manager/api  # should be consistent with the env CROMWELL_CREDENTIALS
+          readOnly: true
+        - name: jm-capabilities-config
+          mountPath: /etc/job-manager/capabilities/capabilities-config.json  # should be consistent with the env CAPABILITIES_CONFIG
+          subPath: capabilities-config
+          readOnly: true
+        env:
+        - name: PATH_PREFIX
+          value: /api/v1  # the path prefix of the API to serve from
+        - name: CROMWELL_CREDENTIALS
+          value: CROMWELL_CREDENTIALS_PATH  # path to the volume that stores the api-config.json if applicable
+        - name: CROMWELL_URL
+          value: CROMWELL_URL  # the cromwell url e.g. https://example-cromwell.broadinstitute.org/api/workflows/v1
+        - name: CAPABILITIES_CONFIG
+          value: CAPABILITIES_CONFIG_PATH  # path to the volume that stores the capabilities-config.json
+        - name: USE_CAAS
+          value: true  # whether the cromwell is using cromwell-as-a-service(including Cromwell that uses OAuth2)
+        - name: GUNICORN_CMD_ARGS  # tweak the Gunicorn parameters based on your requirements
+          value: "--workers=$((2 * $(getconf _NPROCESSORS_ONLN 2>/dev/null || getconf NPROCESSORS_ONLN 2>/dev/null || echo 2) + 1)) --worker-class gevent"
+        - name: PYTHONDONTWRITEBYTECODE
+          value: 1
+      - name: job-manager-ui
+        image: job-manager-ui:v0.2.0 # Set the version number based on your requirements
+        imagePullPolicy: Always # Set this field based on your requirements
+        ports:
+        - containerPort: 80 # Set the port number based on your requirements
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf  # this path should NOT be changed!
+          subPath: nginx-config
+          readOnly: true
+        - name: jm-ui-config
+          mountPath: /ui/dist/assets/environments/environment.json  # this path should NOT be changed!
+          subPath: jm-ui-config
+          readOnly: true
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 10
+      terminationGracePeriodSeconds: 0
+      volumes:
+      - name: jm-api-config
+        secret:
+          secretName: API_CONFIG_OBJECT  # the name of the secret object that stores the api-config.json
+          items:
+          - key: config
+            path: api-config.json
+      - name: nginx-config
+        configMap:
+          name: NGINX_CONFIG_OBJECT
+      - name: jm-ui-config
+        configMap:
+          name: UI_CONFIG_OBJECT
+      - name: jm-capabilities-config  # the name of the configMap object that stores the capabilities-config.json
+        configMap:
+          name: CAPABILITIES_CONFIG_OBJECT
