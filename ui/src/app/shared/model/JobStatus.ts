@@ -14,10 +14,10 @@ import * as models from './models';
 
 export enum JobStatus {
     Submitted = <any> 'Submitted',
+    OnHold = <any> 'OnHold',
     Running = <any> 'Running',
     Aborting = <any> 'Aborting',
     Failed = <any> 'Failed',
     Succeeded = <any> 'Succeeded',
-    Aborted = <any> 'Aborted',
-    OnHold = <any> 'On Hold'
+    Aborted = <any> 'Aborted'
 }

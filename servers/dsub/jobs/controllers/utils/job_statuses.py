@@ -9,6 +9,7 @@ from werkzeug.exceptions import BadRequest
 
 ApiStatus = enum(
     SUBMITTED='Submitted',
+    ONHOLD='OnHold',
     RUNNING='Running',
     ABORTING='Aborting',
     ABORTED='Aborted',
@@ -22,6 +23,7 @@ DsubStatus = enum(
 
 API_STATUS_MAP = {
     ApiStatus.SUBMITTED: DsubStatus.RUNNING,
+    ApiStatus.ONHOLD: DsubStatus.RUNNING,
     ApiStatus.RUNNING: DsubStatus.RUNNING,
     ApiStatus.ABORTING: DsubStatus.RUNNING,
     ApiStatus.ABORTED: DsubStatus.CANCELED,
@@ -61,7 +63,7 @@ def api_to_dsub(api_status):
     """Map an API status to a dsub status
 
         Args:
-            api_status (str): 'Submitted', 'Running', 'Aborting', 'Aborted',
+            api_status (str): 'Submitted', 'OnHold', 'Running', 'Aborting', 'Aborted',
                 'Succeeded', or 'Failed'
 
         Returns:

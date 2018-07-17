@@ -453,12 +453,12 @@ definitions:
     type: string
     enum:
       - Submitted
+      - OnHold
       - Running
       - Aborting
       - Failed
       - Succeeded
       - Aborted
-      - On Hold
   ExtendedFields:
     description: >
       Extended fields on jobs which may not be populated by all backends. See

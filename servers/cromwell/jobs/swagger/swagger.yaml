@@ -470,12 +470,12 @@ definitions:
     type: "string"
     enum:
     - "Submitted"
+    - "OnHold"
     - "Running"
     - "Aborting"
     - "Failed"
     - "Succeeded"
     - "Aborted"
-    - "On Hold"
   ExtendedFields:
     properties:
       userId:
