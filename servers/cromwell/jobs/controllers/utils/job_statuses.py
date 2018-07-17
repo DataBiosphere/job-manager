@@ -6,7 +6,7 @@ from jobs.common import enum
 
 ApiStatus = enum(
     SUBMITTED='Submitted',
-    ONHOLD='OnHold',
+    ON_HOLD='OnHold',
     RUNNING='Running',
     ABORTING='Aborting',
     ABORTED='Aborted',
@@ -14,20 +14,29 @@ ApiStatus = enum(
     SUCCEEDED='Succeeded')
 CromwellWorkflowStatus = enum(
     SUBMITTED='Submitted',
-    ONHOLD='On Hold',
+    ON_HOLD='On Hold',
     RUNNING='Running',
     ABORTING='Aborting',
     FAILED='Failed',
     SUCCEEDED='Succeeded')
 
-API_WORKFLOW_STATUS_MAP = {
+API_STATUS_MAP = {
     ApiStatus.SUBMITTED: CromwellWorkflowStatus.SUBMITTED,
-    ApiStatus.ONHOLD: CromwellWorkflowStatus.ONHOLD,
+    ApiStatus.ON_HOLD: CromwellWorkflowStatus.ON_HOLD,
     ApiStatus.RUNNING: CromwellWorkflowStatus.RUNNING,
     ApiStatus.ABORTING: CromwellWorkflowStatus.ABORTING,
     ApiStatus.ABORTED: CromwellWorkflowStatus.FAILED,
     ApiStatus.FAILED: CromwellWorkflowStatus.FAILED,
     ApiStatus.SUCCEEDED: CromwellWorkflowStatus.SUCCEEDED
+}
+
+CROMWELL_STATUS_MAP = {
+    CromwellWorkflowStatus.SUBMITTED: ApiStatus.SUBMITTED,
+    CromwellWorkflowStatus.ON_HOLD: ApiStatus.ON_HOLD,
+    CromwellWorkflowStatus.RUNNING: ApiStatus.RUNNING,
+    CromwellWorkflowStatus.ABORTING: ApiStatus.ABORTING,
+    CromwellWorkflowStatus.FAILED: ApiStatus.FAILED,
+    CromwellWorkflowStatus.SUCCEEDED: ApiStatus.SUCCEEDED
 }
 
 
@@ -37,7 +46,19 @@ def api_workflow_status_to_cromwell(api_status):
   :param str api_status: 'Submitted', 'On Hold', 'Running', 'Aborting', 'Failed', 'Succeeded'
   :return: Cromwell status 'Submitted', 'OnHold', 'Aborting', 'Failed' or 'Succeeded'
   """
-    if api_status not in API_WORKFLOW_STATUS_MAP:
+    if api_status not in API_STATUS_MAP:
         raise ValueError(
             'Unrecognized API execution status: {}'.format(api_status))
-    return API_WORKFLOW_STATUS_MAP[api_status]
+    return API_STATUS_MAP[api_status]
+
+
+def cromwell_workflow_status_to_api(cromwell_status):
+    """ Map an API workflow status to a Cromwell status.
+
+  :param str cromwell_status: 'Submitted', 'OnHold', 'Aborting', 'Failed', 'Succeeded'
+  :return:  API status 'Submitted', 'On Hold', 'Running', 'Aborting', 'Failed' or 'Succeeded'
+  """
+    if cromwell_status not in CROMWELL_STATUS_MAP:
+        raise ValueError('Unrecognized Cromwell execution status: {}'.format(
+            cromwell_status))
+    return CROMWELL_STATUS_MAP[cromwell_status]

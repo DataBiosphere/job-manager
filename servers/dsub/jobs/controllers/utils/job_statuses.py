@@ -9,7 +9,7 @@ from werkzeug.exceptions import BadRequest
 
 ApiStatus = enum(
     SUBMITTED='Submitted',
-    ONHOLD='OnHold',
+    ON_HOLD='OnHold',
     RUNNING='Running',
     ABORTING='Aborting',
     ABORTED='Aborted',
@@ -23,7 +23,7 @@ DsubStatus = enum(
 
 API_STATUS_MAP = {
     ApiStatus.SUBMITTED: DsubStatus.RUNNING,
-    ApiStatus.ONHOLD: DsubStatus.RUNNING,
+    ApiStatus.ON_HOLD: DsubStatus.RUNNING,
     ApiStatus.RUNNING: DsubStatus.RUNNING,
     ApiStatus.ABORTING: DsubStatus.RUNNING,
     ApiStatus.ABORTED: DsubStatus.CANCELED,

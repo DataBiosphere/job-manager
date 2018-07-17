@@ -116,7 +116,8 @@ def get_job(id, **kwargs):
     return JobMetadataResponse(
         id=id,
         name=job.get('workflowName'),
-        status=job.get('status'),
+        status=task_statuses.cromwell_workflow_status_to_api(
+            job.get('status')),
         submission=submission,
         start=start,
         end=_parse_datetime(job.get('end')),
@@ -279,7 +280,7 @@ def format_job(job, now):
     return QueryJobsResult(
         id=job.get('id'),
         name=job.get('name'),
-        status=job.get('status'),
+        status=job_statuses.cromwell_workflow_status_to_api(job.get('status')),
         submission=submission,
         start=start,
         end=end,
