@@ -40,7 +40,7 @@
   ],
   "queryExtensions": [],
   "authentication": {
-    "isRequired": false,
+    "isRequired": true,
     "scopes": [
       "openid",
       "email",
