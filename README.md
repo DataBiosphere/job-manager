@@ -1,4 +1,7 @@
 # Job Manager
+
+[![CircleCI](https://circleci.com/gh/DataBiosphere/job-manager/tree/master.svg?style=svg)](https://circleci.com/gh/DataBiosphere/job-manager/tree/master)
+
 _This product is in Alpha and not yet ready for production use. We welcome all feedback!_
 
 See the [development guide](#development) below.
@@ -169,3 +172,34 @@ For `dsub` server documentation, see [servers/dsub](servers/dsub/README.md).
 
 ## Job Manager `cromwell` Server
 For `cromwell` server documentation, see [servers/cromwell](servers/cromwell/README.md).
+
+## Build docker images and releases
+
+### How to build
+
+From v0.2.0, Job Manager starts to release stock docker images on [DockerHub](https://hub.docker.com/u/databiosphere)
+
+- To build the `job-manager-ui` image with `$TAG` from the root of this Github repository:
+    ```
+    cd ui && docker build -t job-manager-ui:$TAG . -f Dockerfile
+    ```
+    
+- **Cromwell:** To build the `job-manager-api-cromwell` image with `$TAG` from the root of this Github repository:
+    ```
+    docker build -t job-manager-api-cromwell:v0.2.0 . -f servers/cromwell/Dockerfile
+    ```
+    
+- **dsub:** To build the `job-manager-api-dsub` image with `$TAG` from the root of this Github repository:
+    ```
+    cd servers && docker build -t job-manager-api-dsub:v0.2.0 . -f dsub/Dockerfile
+    ```
+
+### Add a github release pointing to the dockerhub images
+
+From v0.2.0, each release in Github will also release 3 corresponding docker images on Docker Hub:
+
+- [job-manager-ui](https://hub.docker.com/r/databiosphere/job-manager-ui/)
+- [job-manager-api-cromwell](https://hub.docker.com/r/databiosphere/job-manager-api-cromwell/)
+- [job-manager-api-dsub](https://hub.docker.com/r/databiosphere/job-manager-api-dsub/)
+
+For a long-term plan, we will set up a docker build hook so the release process can be more automated.
