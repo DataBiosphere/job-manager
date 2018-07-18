@@ -1,0 +1,51 @@
+version: '2.1'
+services:
+  jmui:
+    image: databiosphere/job-manager-ui:v0.2.0
+    volumes:
+      # Only mount a whitelist of top-level /ui files/directories; specifically
+      # node_modules must not be included here. Mount only files required to run
+      # the dev server. Anything required to install dependencies (npm install)
+      # should instead be added via the Dockerfile. Updating dependencies
+      # requires use of the slower docker-compose build.
+      - ./ui/src:/ui/src
+      - ./ui/tsconfig.json:/ui/tsconfig.json
+      - ./ui/tslint.json:/ui/tslint.json
+      - ./ui/.angular-cli.json:/ui/.angular-cli.json
+  dsub:
+    # Flags to gunicorn:
+    # http://docs.gunicorn.org/en/stable/run.html#commonly-used-arguments
+    command: ["-b", ":8190", "--reload"]
+    environment:
+      - PATH_PREFIX=/api/v1
+      # Avoid writing .pyc files back to the volume. Files generated this way
+      # have restricted permissions set which cause errors on subsequent docker
+      # builds.
+      - GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS:-"--workers=5"}
+      - PYTHONDONTWRITEBYTECODE=1
+    volumes:
+      # Mount the python source so that code changes don't require rebuilding
+      # the image. Changes to requirements.txt will still require rebuilds.
+      - ./servers/dsub/jobs:/app/jobs
+    ports:
+      - 8190:8190
+  cromwell:
+    command: ["-b", ":8190", "-t", "60"]
+    environment:
+      - PATH_PREFIX=/api/v1
+      - CROMWELL_CREDENTIALS=/app/jobs/config.json
+      - CAPABILITIES_CONFIG=/app/jobs/capabilities_config.json
+      - CROMWELL_URL=${CROMWELL_URL}
+      - GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS:-"--workers=5"}
+      - PYTHONDONTWRITEBYTECODE=1
+    volumes:
+      - ./servers/cromwell/jobs:/app/jobs
+    ports:
+      - 8190:8190
+  jobs-proxy:
+    # Child services must have links named "jmui", "jmapi".
+    image: nginx
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf
+    ports:
+      - 4200:4200

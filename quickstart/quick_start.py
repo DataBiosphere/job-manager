@@ -1,32 +1,55 @@
 import os
 from os import path
 import urllib.request
+from subprocess import call
+import subprocess
 
 
 def quick_start():
+    version = request_input_from_list("Select a version to install", ["v0.2.0"], "v0.2.0")
+    pull_docker("databiosphere/job-manager-ui", version)
+
     home = os.getenv("HOME")
-    install_dir = request_input_path("Select an installation directory", home + "/jmui/")
+    install_dir = request_input_path("Select an installation directory", home + "/jmui")
     os.chdir(install_dir)
-    shim_type = request_input_from_list("Select a shim to use", ["Cromwell", "dsub"], "Cromwell")
+    print("Downloading JMUI...")
+    checkout_dir = install_dir + "/job-manager"
+    call(["git", "clone", "https://github.com/DataBiosphere/job-manager.git"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    print("Downloaded JMUI to " + checkout_dir + " !")
+    os.chdir(checkout_dir)
+    call(["git", "fetch", "--tags"], stdout=subprocess.DEVNULL)
+    call(["git", "checkout", "cjl_quick_start"], stdout=subprocess.DEVNULL)
+
+    service_type = request_input_from_list("Select a shim to use", ["Cromwell", "dsub"], "Cromwell")
     options = {
         "Cromwell": quick_start_cromwell
     }
-    options[shim_type](home)
+    options[service_type](version, checkout_dir)
 
 
-def quick_start_cromwell(home):
+def quick_start_cromwell(version, checkout_dir):
+    os.chdir(checkout_dir)
+
+    pull_docker("databiosphere/job-manager-api-cromwell", version)
+
+    print("Linking quickstart/quickstart-common-compose to quickstart-common-compose.yml")
+    call(["ln", "-s", checkout_dir + "/quickstart/quickstart-common-compose.yml", checkout_dir + "/quickstart-common-compose.yml"])
     shim_type = request_input_from_list("Setting up for single-instance or against Caas?", ["instance", "caas"], "instance")
-
-    docker_compose_target = home + "/docker-compose.yml"
     if shim_type == "instance":
-        urllib.request.urlretrieve("https://raw.githubusercontent.com/DataBiosphere/job-manager/master/deploy/cromwell/docker-compose/cromwell-compose-template.yml", docker_compose_target)
-        print("Downloaded docker-compose.yml as " + docker_compose_target)
+        call(["ln", "-s", checkout_dir + "/quickstart/quickstart-cromwell-instance-compose.yml", checkout_dir + "/docker-compose.yml"])
     else:
         print("Sorry, not yet implemented! Please raise this issue at https://github.com/DataBiosphere/job-manager/issues")
 
 
 def quick_start_dsub():
     print("Sorry, not yet implemented! Please raise this issue at https://github.com/DataBiosphere/job-manager/issues")
+
+
+def pull_docker(name, version):
+    docker_image = name + ":" + version
+    print("Pulling docker image " + docker_image)
+    call(["docker", "pull", docker_image], stdout=subprocess.DEVNULL)
+    return docker_image
 
 
 def request_input_from_list(message, options, default):
