@@ -67,8 +67,8 @@ class BaseTestCases:
             app.app.json_encoder = JSONEncoder
             app.add_api('swagger.yaml')
             app.app.config[
-                'AGGREGATION_FILTER_LABEL'] = "aggregation-testing-unique:" + datetime.datetime.now(
-                ).strftime('%Y%m%d_%H%M')
+                'AGGREGATION_JOB_NAME_FILTER'] = "aggregation-testing-unique:" + datetime.datetime.now(
+                ).strftime('%Y%m%d_%H%M%S')
             return app.app
 
         def expected_log_files(self, job_id):
@@ -455,7 +455,7 @@ class BaseTestCases:
                     extensions=ExtendedQueryFields(submission=min_time)),
                 [job2])
 
-        def status_counts_equal(self, counts1, counts2):
+        def assert_status_counts_equal(self, counts1, counts2):
             counts1Dict = {}
             for status_count in counts1.counts:
                 counts1Dict[status_count.status] = status_count.count
@@ -464,15 +464,27 @@ class BaseTestCases:
             for status_count in counts2.counts:
                 counts2Dict[status_count.status] = status_count.count
 
-            return counts1Dict == counts2Dict
+            return self.assertEqual(counts1Dict, counts2Dict)
 
         def test_get_job_aggregations(self):
-            name = flask.current_app.config['AGGREGATION_FILTER_LABEL']
+            name = flask.current_app.config['AGGREGATION_JOB_NAME_FILTER']
 
             labels = {
                 'aggregation-testing-unique-1': 'testing-rocks',
-                'aggregation-testing-unique-2': 'debugging-bad',
-                'aggregation-testing-unique-3': 'whatever-additional'
+                'aggregation-testing-unique-2': 'debugging-bad'
+            }
+
+            other_values_labels = {
+                'aggregation-testing-unique-1': 'different-value',
+                'aggregation-testing-unique-2': 'also-different-value'
+            }
+
+            different_labels = {
+                'different-label': 'different-value'
+            }
+
+            labels_no_show = {
+                'no-show': 'cannot-see-me'
             }
 
             # Create an aborted job
@@ -498,7 +510,43 @@ class BaseTestCases:
                 self.start_job('sleep 30', labels=labels, name=name))
             self.wait_status(job_running, ApiStatus.RUNNING)
 
-            status_counts = StatusCounts.from_dict({
+            # Create a running job that has same label but no filter name 
+            job_running = self.api_job_id(
+                self.start_job('sleep 30', labels=labels))
+            self.wait_status(job_running, ApiStatus.RUNNING)
+
+            # Create a running job that has different label and no filter name 
+            job_running = self.api_job_id(
+                self.start_job('sleep 30', labels=labels_no_show))
+            self.wait_status(job_running, ApiStatus.RUNNING)
+
+            # Create a running job that has different label values
+            job_running = self.api_job_id(
+                self.start_job('sleep 30', labels=other_values_labels, name=name))
+            self.wait_status(job_running, ApiStatus.RUNNING)
+
+            # Create a running job that has different labels
+            job_running = self.api_job_id(
+                self.start_job('sleep 30', labels=different_labels, name=name))
+            self.wait_status(job_running, ApiStatus.RUNNING)
+
+            status_counts_total = StatusCounts.from_dict({
+                'counts': [{
+                    'status': u'Running',
+                    'count': 3
+                }, {
+                    'status': u'Failed',
+                    'count': 1
+                }, {
+                    'status': u'Succeeded',
+                    'count': 1
+                }, {
+                    'status': u'Aborted',
+                    'count': 1
+                }]
+            })
+
+            status_counts_group = StatusCounts.from_dict({
                 'counts': [{
                     'status': u'Running',
                     'count': 1
@@ -514,23 +562,37 @@ class BaseTestCases:
                 }]
             })
 
-            aggregation_resp = self.must_get_job_aggregations('HOURS_1')
+            status_counts_single = StatusCounts.from_dict({
+                'counts': [{
+                    'status': u'Running',
+                    'count': 1
+                }]
+            })
 
-            self.assertEqual(
-                self.status_counts_equal(aggregation_resp.summary,
-                                         status_counts), True)
+            aggregation_resp = self.must_get_job_aggregations('HOURS_1')
+            self.assert_status_counts_equal(aggregation_resp.summary, status_counts_total)
 
             for aggregation in aggregation_resp.aggregations:
+                if aggregation.key == 'name' or aggregation.key == 'userId':
+                    expected_counts = status_counts_total
+                else:
+                    expected_counts = status_counts_group
+                
                 for entry in aggregation.entries:
-                    self.assertEqual(
-                        self.status_counts_equal(entry.status_counts,
-                                                 status_counts), True)
+                    # print(entry.label)
+                    if entry.label == 'different-value' or entry.label == 'also-different-value':
+                        self.assert_status_counts_equal(entry.status_counts,
+                                                 status_counts_single)
+                    else:
+                        self.assert_status_counts_equal(entry.status_counts,
+                                                 expected_counts)
 
             # Should have labels above presented in the aggregation response
             labels = [
                 aggregation.key
                 for aggregation in aggregation_resp.aggregations
             ]
-            self.assertEqual('aggregation-testing-unique-1' in labels, True)
-            self.assertEqual('aggregation-testing-unique-2' in labels, True)
-            self.assertEqual('aggregation-testing-unique-3' in labels, True)
+
+            expected_labels = ['name', 'userId', 'aggregation-testing-unique-1', 'aggregation-testing-unique-2', 'different-label']
+            
+            self.assertItemsEqual(labels, expected_labels)

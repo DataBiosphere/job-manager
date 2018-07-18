@@ -1,3 +1,6 @@
+import apiclient
+import requests
+
 from flask import current_app, request
 from jobs.controllers.utils import jobs_generator, time_frame, providers
 from jobs.models.aggregation import Aggregation
@@ -5,7 +8,7 @@ from jobs.models.aggregation_entry import AggregationEntry
 from jobs.models.aggregation_response import AggregationResponse
 from jobs.models.status_count import StatusCount
 from jobs.models.status_counts import StatusCounts
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, NotFound, Forbidden, InternalServerError
 
 _NUM_TOP_LABEL = 3
 _LABEL_MIN_COUNT_FOR_RANK = 10
@@ -21,10 +24,6 @@ def get_job_aggregations(timeFrame, projectId=None):
     Returns:
         AggregationResponse: Response contains aggregation of jobs
     """
-    if _provider_type == providers.ProviderType.GOOGLE and projectId is None:
-        raise BadRequest('Provider {} needs project_id.'.format(
-            ProviderType.GOOGLE))
-
     window_min = time_frame.time_frame_to_start_time(timeFrame)
     provider = providers.get_provider(_provider_type(), projectId,
                                       _auth_token())
@@ -37,17 +36,20 @@ def get_job_aggregations(timeFrame, projectId=None):
     job_name_summary = {}
     label_summaries = {}
 
-    for job in jobs:
-        # AGGREGATION_FILTER_LABEL is a global config parameter only set for aggregation testing
-        # and jobs that do not have this label is discarded when testing
-        if 'AGGREGATION_FILTER_LABEL' in current_app.config and job.name.find(
-                current_app.config['AGGREGATION_FILTER_LABEL']) < 0:
-            continue
+    try:
+        for job in jobs:
+            # AGGREGATION_FILTER_LABEL is a global config parameter only set for aggregation testing
+            # and jobs that do not have this label are discarded when testing
+            if 'AGGREGATION_JOB_NAME_FILTER' in current_app.config and job.name.find(
+                    current_app.config['AGGREGATION_JOB_NAME_FILTER']) < 0:
+                continue
 
-        _count_total_summary(job, total_summary)
-        _count_for_key(job, user_summary, job.extensions.user_id)
-        _count_for_key(job, job_name_summary, job.name)
-        _count_top_labels(job, label_summaries)
+            _count_total_summary(job, total_summary)
+            _count_for_key(job, user_summary, job.extensions.user_id)
+            _count_for_key(job, job_name_summary, job.name)
+            _count_top_labels(job, label_summaries)
+    except apiclient.errors.HttpError as error:
+        _handle_http_error(error, projectId)
 
     aggregations = [
         _to_aggregation('User Id', 'userId', user_summary),
@@ -138,3 +140,12 @@ def _auth_token():
 
 def _provider_type():
     return current_app.config['PROVIDER_TYPE']
+
+def _handle_http_error(error, proj_id):
+    # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
+    # provider-specific error translation down into dstat.
+    if error.resp.status == requests.codes.not_found:
+        raise NotFound('Project "{}" not found'.format(proj_id))
+    elif error.resp.status == requests.codes.forbidden:
+        raise Forbidden('Permission denied for project "{}"'.format(proj_id))
+    raise InternalServerError("Unexpected failure getting dsub jobs")

@@ -115,14 +115,21 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         self.wait_status(self.api_job_id(job), ApiStatus.RUNNING)
         self.assert_query_matches(QueryJobsRequest(start=date), [job])
 
-    def test_aggregtion_jobs_invalid_project_id(self):
+    def test_aggregation_jobs_without_project_id(self):
+        time_frame = 'DAYS_7'
+        resp = self.client.open(
+            '/aggregations?timeFrame={}'.format(time_frame),
+            method='GET')
+        self.assert_status(resp, 400)
+
+    def test_aggregation_jobs_invalid_project_id(self):
         time_frame = 'DAYS_7'
         project_id = 'should-be-an-invalid-id'
         resp = self.client.open(
             '/aggregations?projectId={}&timeFrame={}'.format(
                 project_id, time_frame),
             method='GET')
-        self.assert_status(resp, 400)
+        self.assert_status(resp, 404)
 
 
 if __name__ == '__main__':
