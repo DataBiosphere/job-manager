@@ -67,8 +67,8 @@ class BaseTestCases:
             app.app.json_encoder = JSONEncoder
             app.add_api('swagger.yaml')
             app.app.config[
-                'AGGREGATION_FILTER_LABEL'] = "aggregation-testing-unique:" 
-                + datetime.datetime.now().strftime('%Y%m%d_%H%M')
+                'AGGREGATION_FILTER_LABEL'] = "aggregation-testing-unique:" + datetime.datetime.now(
+                ).strftime('%Y%m%d_%H%M')
             return app.app
 
         def expected_log_files(self, job_id):
