@@ -101,7 +101,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     "cromwell-workflow-id",
     "workflow-name",
     "label",
-    "comment,
+    "comment",
     "flag"
   ],
   "queryExtensions": []
@@ -155,10 +155,9 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
      "workflow-name",
      "flag",
      "label",
-     "comment
+     "comment"
    ],
-   "queryExtensions": []
- },
+   "queryExtensions": [],
    "authentication": {
        "isRequired": true, 
        "scopes": [
@@ -166,7 +165,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
          "email", 
          "profile"
        ]
-    },
+    }
  }
  ```
 
