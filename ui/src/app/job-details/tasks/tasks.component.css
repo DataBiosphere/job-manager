@@ -85,3 +85,18 @@ button.shard-icon {
   display: inline-flex;
   margin-left: 1.5rem;
 }
+
+.shards-container {
+  display: inline-flex;
+  flex-direction: row;
+}
+
+.shards-header {
+  font-size: 0.8rem;
+  line-height: 1.5rem;
+}
+
+.shards-statuses {
+  font-size: 0.65rem;
+  margin-right: 0.5rem;
+}

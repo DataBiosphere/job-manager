@@ -15,7 +15,7 @@ import {JobStatusIcon} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {MatTabChangeEvent} from '@angular/material';
-import {StatusCount} from "../../shared/model/StatusCount";
+import {ShardStatusCount} from "../../shared/model/ShardStatusCount";
 
 @Component({
   selector: 'jm-tasks',
@@ -72,12 +72,33 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     return task.shardStatuses != null;
   }
 
-  getShardStatus(status:StatusCount): JobStatus {
-    return status.status;
+  getScatteredCountTotal(task: TaskMetadata): number {
+    if (this.isScattered(task)) {
+      let count = 0;
+      task.shardStatuses.forEach((status) => {
+        count += status.count;
+      });
+      return count;
+    }
   }
 
-  getShardCount(status:StatusCount): number {
-    return status.count;
+  getPossibleStatuses(): string[] {
+     let statuses:string[] = [];
+     Object.keys(JobStatus).forEach(index => {
+       statuses.push(index);
+     });
+     return statuses;
+   }
+
+  getShardCountByStatus(task:TaskMetadata, status:string): number {
+    if (this.isScattered(task)) {
+      task.shardStatuses.forEach((thisStatus) => {
+        if (JobStatus[status] == thisStatus.status) {
+          return thisStatus.count;
+        }
+      });
+    }
+    return 0;
   }
 }
 
