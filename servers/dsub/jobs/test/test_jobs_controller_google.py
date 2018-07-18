@@ -122,7 +122,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
             '/aggregations?projectId={}&timeFrame={}'.format(
                 project_id, time_frame),
             method='GET')
-        self.assert_status(resp, 500)
+        self.assert_status(resp, 400)
 
 
 if __name__ == '__main__':

@@ -5,8 +5,10 @@ from jobs.models.aggregation_entry import AggregationEntry
 from jobs.models.aggregation_response import AggregationResponse
 from jobs.models.status_count import StatusCount
 from jobs.models.status_counts import StatusCounts
+from werkzeug.exceptions import BadRequest
 
 _NUM_TOP_LABEL = 3
+_LABEL_MIN_COUNT_FOR_RANK = 10
 
 
 def get_job_aggregations(timeFrame, projectId=None):
@@ -19,6 +21,10 @@ def get_job_aggregations(timeFrame, projectId=None):
     Returns:
         AggregationResponse: Response contains aggregation of jobs
     """
+    if _provider_type == providers.ProviderType.GOOGLE and projectId is None:
+        raise BadRequest('Provider {} needs project_id.'.format(
+            ProviderType.GOOGLE))
+
     window_min = time_frame.time_frame_to_start_time(timeFrame)
     provider = providers.get_provider(_provider_type(), projectId,
                                       _auth_token())
@@ -32,6 +38,12 @@ def get_job_aggregations(timeFrame, projectId=None):
     label_summaries = {}
 
     for job in jobs:
+        # AGGREGATION_FILTER_LABEL is a global config parameter only set for aggregation testing
+        # and jobs that do not have this label is discarded when testing
+        if 'AGGREGATION_FILTER_LABEL' in current_app.config and job.name.find(
+                current_app.config['AGGREGATION_FILTER_LABEL']) < 0:
+            continue
+
         _count_total_summary(job, total_summary)
         _count_for_key(job, user_summary, job.extensions.user_id)
         _count_for_key(job, job_name_summary, job.name)
@@ -93,31 +105,23 @@ def _to_aggregation(name, key, summary):
 
 def _to_top_labels_aggregations(label_summaries):
     # Rank the label summaries by the sum of valid item,
-    # where valid means a label has jobs more than _min_count_for_rank().
+    # where valid means a label has jobs more than _LABEL_MIN_COUNT_FOR_RANK.
     label_freq = {}
     for label, item in label_summaries.items():
+        # job-id label contains one job per label value, filter it out
+        if label == 'job-id':
+            continue
         total_count = 0
         for _, counts in item.items():
             total_count += sum(
-                v for v in counts.values() if v > _min_count_for_rank())
+                v for v in counts.values() if v > _LABEL_MIN_COUNT_FOR_RANK)
         label_freq[label] = total_count
 
     aggregations = []
-
-    # Jobs with aggregation-testing-unique has higher priority
-    for label_key in label_summaries.keys():
-        if label_key.find('aggregation-testing-unique') >= 0:
-            aggregations.append(
-                _to_aggregation(label_key, label_key,
-                                label_summaries[label_key]))
-
-    # To avoid messy look of dashboard, instead of returning all the aggregations by label,
-    # we only return the top _NUM_TOP_LABEL result.
-    num_label_remain = min(len(label_freq), _NUM_TOP_LABEL) - len(aggregations)
+    num_label = min(len(label_freq), _NUM_TOP_LABEL)
 
     for k, _ in sorted(
-            label_freq.items(), key=lambda x: x[1],
-            reverse=True)[0:num_label_remain]:
+            label_freq.items(), key=lambda x: x[1], reverse=True)[0:num_label]:
         aggregations.append(_to_aggregation(k, k, label_summaries[k]))
 
     return aggregations
@@ -134,7 +138,3 @@ def _auth_token():
 
 def _provider_type():
     return current_app.config['PROVIDER_TYPE']
-
-
-def _min_count_for_rank():
-    return current_app.config['LABEL_MIN_COUNT_FOR_RANK']
