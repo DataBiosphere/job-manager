@@ -479,13 +479,9 @@ class BaseTestCases:
                 'aggregation-testing-unique-2': 'also-different-value'
             }
 
-            different_labels = {
-                'different-label': 'different-value'
-            }
+            different_labels = {'different-label': 'different-value'}
 
-            labels_no_show = {
-                'no-show': 'cannot-see-me'
-            }
+            labels_no_show = {'no-show': 'cannot-see-me'}
 
             # Create an aborted job
             job_aborted = self.api_job_id(
@@ -510,19 +506,20 @@ class BaseTestCases:
                 self.start_job('sleep 30', labels=labels, name=name))
             self.wait_status(job_running, ApiStatus.RUNNING)
 
-            # Create a running job that has same label but no filter name 
+            # Create a running job that has same label but no filter name
             job_running = self.api_job_id(
                 self.start_job('sleep 30', labels=labels))
             self.wait_status(job_running, ApiStatus.RUNNING)
 
-            # Create a running job that has different label and no filter name 
+            # Create a running job that has different label and no filter name
             job_running = self.api_job_id(
                 self.start_job('sleep 30', labels=labels_no_show))
             self.wait_status(job_running, ApiStatus.RUNNING)
 
             # Create a running job that has different label values
             job_running = self.api_job_id(
-                self.start_job('sleep 30', labels=other_values_labels, name=name))
+                self.start_job(
+                    'sleep 30', labels=other_values_labels, name=name))
             self.wait_status(job_running, ApiStatus.RUNNING)
 
             # Create a running job that has different labels
@@ -570,22 +567,23 @@ class BaseTestCases:
             })
 
             aggregation_resp = self.must_get_job_aggregations('HOURS_1')
-            self.assert_status_counts_equal(aggregation_resp.summary, status_counts_total)
+            self.assert_status_counts_equal(aggregation_resp.summary,
+                                            status_counts_total)
 
             for aggregation in aggregation_resp.aggregations:
                 if aggregation.key == 'name' or aggregation.key == 'userId':
                     expected_counts = status_counts_total
                 else:
                     expected_counts = status_counts_group
-                
+
                 for entry in aggregation.entries:
                     # print(entry.label)
                     if entry.label == 'different-value' or entry.label == 'also-different-value':
-                        self.assert_status_counts_equal(entry.status_counts,
-                                                 status_counts_single)
+                        self.assert_status_counts_equal(
+                            entry.status_counts, status_counts_single)
                     else:
-                        self.assert_status_counts_equal(entry.status_counts,
-                                                 expected_counts)
+                        self.assert_status_counts_equal(
+                            entry.status_counts, expected_counts)
 
             # Should have labels above presented in the aggregation response
             labels = [
@@ -593,6 +591,9 @@ class BaseTestCases:
                 for aggregation in aggregation_resp.aggregations
             ]
 
-            expected_labels = ['name', 'userId', 'aggregation-testing-unique-1', 'aggregation-testing-unique-2', 'different-label']
-            
+            expected_labels = [
+                'name', 'userId', 'aggregation-testing-unique-1',
+                'aggregation-testing-unique-2', 'different-label'
+            ]
+
             self.assertItemsEqual(labels, expected_labels)

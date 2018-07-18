@@ -118,8 +118,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
     def test_aggregation_jobs_without_project_id(self):
         time_frame = 'DAYS_7'
         resp = self.client.open(
-            '/aggregations?timeFrame={}'.format(time_frame),
-            method='GET')
+            '/aggregations?timeFrame={}'.format(time_frame), method='GET')
         self.assert_status(resp, 400)
 
     def test_aggregation_jobs_invalid_project_id(self):

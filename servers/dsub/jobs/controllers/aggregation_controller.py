@@ -141,6 +141,7 @@ def _auth_token():
 def _provider_type():
     return current_app.config['PROVIDER_TYPE']
 
+
 def _handle_http_error(error, proj_id):
     # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
     # provider-specific error translation down into dstat.
