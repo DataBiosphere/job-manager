@@ -134,26 +134,29 @@ def request_input_from_list(message, options, default):
 
 def request_input_path(message, default, clear_existing):
     valid = False
-    provided = default
+    absolute_path = path.abspath(default)
     while not valid:
-        provided = input(">> " + message + " [ " + default + " ] > ") or default
+        provided = input(">> " + message + " [ " + absolute_path + " ] > ") or absolute_path
+        absolute_path = path.abspath(provided)
+        print("Using: " + provided)
+
         if path.isdir(provided):
-            print("Directory exists: " + provided)
             if clear_existing:
-                call(["rm", "-rf", provided])
-                os.mkdir(provided)
+                print("Directory exists: " + absolute_path + ". If necessary, delete this directory before starting to get a clean install.")
+            else:
+                print("Directory exists: " + absolute_path)
             valid = True
         else:
             try:
-                print("Making directory: " + provided)
+                print("Making directory: " + absolute_path)
                 os.mkdir(provided)
                 valid = True
             except OSError:
-                print("Unable to create directory: " + provided)
+                print("Unable to create directory: " + absolute_path)
                 valid = False
-    print("Using: " + provided)
+
     print()
-    return provided
+    return absolute_path
 
 
 def request_input_with_help(message, clue):
@@ -161,9 +164,6 @@ def request_input_with_help(message, clue):
     provided = None
     while not valid:
         provided = input(">> " + message + " (type 'clue' or leave empty for help) > ") or "clue"
-        if provided is None:
-            print("You can't avoid answering this one, sorry!")
-            continue
         if provided == "clue":
             clue()
             provided = ""
