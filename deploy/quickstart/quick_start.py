@@ -133,12 +133,12 @@ def request_input_from_list(message, options, default):
     return provided
 
 
-def make_or_replace_or_reuse_directory(path):
+def make_or_replace_or_reuse_directory(path_to_make):
     valid = False
     time_to_exit = False
     while not time_to_exit:
-        if path.isdir(path):
-            print("Directory " + path + " already exists. I can...")
+        if path.isdir(path_to_make):
+            print("Directory " + path_to_make + " already exists. I can...")
             print("1. Default: Re-use the existing directory which might leave behind some old files")
             print("2. Delete the entire directory and all of its contents - and then remake it, completely empty")
             provided = input("Replace or re-use? (1/2) [ 1 ] > ") or "1"
@@ -161,7 +161,7 @@ def make_or_replace_or_reuse_directory(path):
                 time_to_exit = False
         else:
             try:
-                os.mkdir(path)
+                os.mkdir(path_to_make)
                 valid = True
             except OSError as e:
                 print("OS error: " + e)
@@ -171,6 +171,7 @@ def make_or_replace_or_reuse_directory(path):
     if not valid:
         print("Cannot continue. Exiting")
         exit(1)
+
 
 def request_input_path(message, default):
     valid = False
