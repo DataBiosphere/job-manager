@@ -34,7 +34,7 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
 
     os.chdir(config_dir)
     api_config = download_file(version, "deploy/cromwell/api-config.json", "api-config.json")
-    cromwell_url = request_input_with_help("Enter the Cromwell URL", cromwell_service_clue)
+    cromwell_url = request_input_with_help("Enter the raw Cromwell IP address, eg '10.1.10.100' (DO NOT USE LOCALHOST or 127.0.0.1)!", cromwell_service_clue)
 
     os.chdir(install_dir)
     start_script_file= install_dir + "/jmui_start.sh"
