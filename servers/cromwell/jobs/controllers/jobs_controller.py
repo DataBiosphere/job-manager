@@ -129,42 +129,55 @@ def get_job(id, **kwargs):
 
 def format_task(task_name, task_metadata):
     # check to see if task is scattered
-    # need to make more sophisticated to distinguish between multiple shards and multiple attempts
-    if len(task_metadata) > 1:
+    is_scattered_task = len(
+        set([item.get('shardIndex') for item in task_metadata])) > 1
+    if is_scattered_task:
         return format_scattered_task(task_name, task_metadata)
     else:
+        latest_attempt = task_metadata[-1]
         return TaskMetadata(
             name=remove_workflow_name(task_name),
-            execution_id=task_metadata[-1].get('jobId'),
+            execution_id=latest_attempt.get('jobId'),
             execution_status=task_statuses.cromwell_execution_to_api(
-                task_metadata[-1].get('executionStatus')),
-            start=_parse_datetime(task_metadata[-1].get('start')),
-            end=_parse_datetime(task_metadata[-1].get('end')),
-            stderr=task_metadata[-1].get('stderr'),
-            stdout=task_metadata[-1].get('stdout'),
-            inputs=update_key_names(task_metadata[-1].get('inputs', {})),
-            return_code=task_metadata[-1].get('returnCode'),
-            attempts=task_metadata[-1].get('attempt'),
-            call_root=task_metadata[-1].get('callRoot'),
-            job_id=task_metadata[-1].get('subWorkflowId'),
+                latest_attempt.get('executionStatus')),
+            start=_parse_datetime(latest_attempt.get('start')),
+            end=_parse_datetime(latest_attempt.get('end')),
+            stderr=latest_attempt.get('stderr'),
+            stdout=latest_attempt.get('stdout'),
+            inputs=update_key_names(latest_attempt.get('inputs', {})),
+            return_code=latest_attempt.get('returnCode'),
+            attempts=latest_attempt.get('attempt'),
+            call_root=latest_attempt.get('callRoot'),
+            job_id=latest_attempt.get('subWorkflowId'),
             shard_statuses=None)
+
 
 def format_scattered_task(task_name, task_metadata):
     temp_status_collection = {}
-    for shard in task_metadata:
-        status = task_statuses.cromwell_execution_to_api(shard.get('executionStatus'))
-        if status not in temp_status_collection:
-            temp_status_collection[status] = 1
-        else:
-            temp_status_collection[status] = temp_status_collection[status] + 1
+    current_shard = ''
+
+    # go through calls in reverse to grab the latest attempt if there are many
+    for shard in task_metadata[::-1]:
+        if current_shard != shard.get('shardIndex'):
+            status = task_statuses.cromwell_execution_to_api(
+                shard.get('executionStatus'))
+            if status not in temp_status_collection:
+                temp_status_collection[status] = 1
+            else:
+                temp_status_collection[
+                    status] = temp_status_collection[status] + 1
+        current_shard = shard.get('shardIndex')
 
     shard_status_counts = [
-        ShardStatusCount(status=status, count=temp_status_collection[status]) for status in temp_status_collection
+        ShardStatusCount(status=status, count=temp_status_collection[status])
+        for status in temp_status_collection
     ]
 
     # grab attempts, path and subWorkflowId from last call
     return TaskMetadata(
         name=remove_workflow_name(task_name),
+        execution_status=task_statuses.cromwell_execution_to_api(
+            task_metadata[-1].get('executionStatus')),
         attempts=task_metadata[-1].get('attempt'),
         call_root=remove_shard_path(task_metadata[-1].get('callRoot')),
         job_id=task_metadata[-1].get('subWorkflowId'),
@@ -181,6 +194,7 @@ def remove_workflow_name(name):
         return '.'.join(name.split('.')[1:])
     return name
 
+
 def remove_shard_path(path):
     """ Remove the workflow name from the beginning of task, input and output names (if it's there).
     E.g. Task names {..}/{taskName}/shard-0 => {..}/{taskName}/
@@ -188,6 +202,7 @@ def remove_shard_path(path):
     if "/shard-" in path:
         return path.split('/shard-')[0]
     return path
+
 
 def update_key_names(metadata):
     return {remove_workflow_name(k): v for k, v in metadata.items()}

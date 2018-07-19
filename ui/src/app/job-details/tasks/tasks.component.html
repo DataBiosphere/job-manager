@@ -34,10 +34,10 @@
             <div class="shards-header">
               {{ getScatteredCountTotal(t) }} Shards
             </div>
-            <div class="shards-container" *ngFor="let scatterStatus of getPossibleStatuses()">
-              <div class="shards-statuses">
-                <span class="shards-status">{{ scatterStatus }}: </span>
-                <span class="shards-count">{{ getShardCountByStatus(t, scatterStatus) }}</span>
+            <div class="shards-container" *ngIf="isScattered(t)">
+              <div class="shards-statuses" *ngFor="let shardStatus of t.shardStatuses">
+                <span class="shards-status">{{ shardStatus.status }}: </span>
+                <span class="shards-count">{{ shardStatus.count }}</span>
               </div>
             </div>
           </mat-menu>
