@@ -55,7 +55,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     - Make more columns to be popped up by the query builder
   - Add a `capabilities_config.json` file to `job-manager/servers/cromwell/jobs` to override the pre-defined configurations.
   - The `capabilities_config.json` should **strictly** follow the following structure:
-  - Both `editable` and `bulkEditable` will be treated as `false` unless explicity set to `true`
+  - Both `editable` and `bulkEditable` will be treated as `false` unless explicitly set to `true`
     - And if the field is `editable`, then `fieldType` is required.
 ```json
 {
@@ -101,7 +101,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     "cromwell-workflow-id",
     "workflow-name",
     "label",
-    "comment,
+    "comment",
     "flag"
   ],
   "queryExtensions": []
@@ -155,10 +155,9 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
      "workflow-name",
      "flag",
      "label",
-     "comment
+     "comment"
    ],
-   "queryExtensions": []
- },
+   "queryExtensions": [],
    "authentication": {
        "isRequired": true, 
        "scopes": [
@@ -166,7 +165,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
          "email", 
          "profile"
        ]
-    },
+    }
  }
  ```
 

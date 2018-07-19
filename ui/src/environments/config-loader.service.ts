@@ -20,7 +20,7 @@ export class ConfigLoaderService {
       this.environmentConfigPromise = new Promise<any>((resolve, reject) => {
         const xmr = new XMLHttpRequest(),
           method = 'GET',
-          url = '../../../assets/environments/environment.json';
+          url = 'assets/environments/environment.json';
 
         xmr.open(method, url, true);
 

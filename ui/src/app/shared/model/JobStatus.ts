@@ -14,6 +14,7 @@ import * as models from './models';
 
 export enum JobStatus {
     Submitted = <any> 'Submitted',
+    OnHold = <any> 'OnHold',
     Running = <any> 'Running',
     Aborting = <any> 'Aborting',
     Failed = <any> 'Failed',

@@ -1,0 +1,29 @@
+version: '2.1'
+services:
+  jm-api:
+    image: job-manager-api-cromwell:v0.2.0  # Set the version number based on your requirements
+    restart: always
+    command: ["-b", ":8190", "-t", "60"]  # Set the port number and timeout based on your requirements
+    environment:
+      - PATH_PREFIX=/api/v1
+      - CROMWELL_CREDENTIALS=/etc/job-manager/api/api-config.json
+      - CAPABILITIES_CONFIG=/etc/job-manager/capabilities/capabilities-config.json
+      - CROMWELL_URL=${CROMWELL_URL}
+      - GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS:-"--workers=5"}  # tweak the Gunicorn parameters based on your requirements
+      - PYTHONDONTWRITEBYTECODE=1  # Avoid writing .pyc files back to the volume.
+      - USE_CAAS=True  # whether the cromwell is using cromwell-as-a-service(including Cromwell that uses OAuth2)
+    volumes:
+      - ../api-config.json:/etc/job-manager/api/api-config.json
+      - ../capabilities-config.json:/etc/job-manager/capabilities/capabilities-config.json
+    ports:
+      - 8190:8190  # HOST:CONTAINER, Set this mapping based on your requirements
+  jm-ui:
+    image: job-manager-ui:v0.2.0  # Set the version number based on your requirements
+    restart: always
+    volumes:
+      - ../../ui-config.json:/ui/dist/assets/environments/environment.json
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 4200:80  # HOST:CONTAINER, Set this mapping based on your requirements
+    depends_on:
+      - jm-api
