@@ -9,13 +9,15 @@ def quick_start():
     version = "v0.2.0"
 
     home = os.getenv("HOME")
-    install_dir = request_input_path("Select an installation directory", home + "/jmui", clear_existing=True)
+    install_dir = request_input_path("Select an installation directory", home + "/jmui")
+
+    bin_dir = install_dir + "/bin"
+    make_or_replace_or_reuse_directory(bin_dir)
+
+    config_dir = install_dir + "/config"
+    make_or_replace_or_reuse_directory(config_dir)
 
     os.chdir(install_dir)
-    bin_dir = install_dir + "/bin"
-    os.mkdir(bin_dir)
-    config_dir = install_dir + "/config"
-    os.mkdir(config_dir)
 
     service_type = request_input_from_list("Select a shim to use", ["Cromwell", "dsub"], "Cromwell")
     options = {
@@ -70,7 +72,6 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
     else:
         print("Sorry, not yet implemented! Please raise this issue at https://github.com/DataBiosphere/job-manager/issues")
         exit(1)
-
 
 
 def quick_start_dsub():
@@ -132,7 +133,46 @@ def request_input_from_list(message, options, default):
     return provided
 
 
-def request_input_path(message, default, clear_existing):
+def make_or_replace_or_reuse_directory(path):
+    valid = False
+    time_to_exit = False
+    while not time_to_exit:
+        if path.isdir(path):
+            print("Directory " + path + " already exists. I can...")
+            print("1. Default: Re-use the existing directory which might leave behind some old files")
+            print("2. Delete the entire directory and all of its contents - and then remake it, completely empty")
+            provided = input("Replace or re-use? (1/2) [ 1 ] > ") or "1"
+            if provided is 1:
+                valid = True
+                time_to_exit = True
+            elif provided is 2:
+                try:
+                    call(["rm", "-rf", provided])
+                    os.mkdir(provided)
+                    valid = True
+                    time_to_exit = True
+                except OSError as e:
+                    print("OS error: " + e)
+                    valid = False
+                    time_to_exit = True
+            else:
+                print("Invalid input: got " + provided + " but expected one of (1/2)")
+                valid = False
+                time_to_exit = False
+        else:
+            try:
+                os.mkdir(path)
+                valid = True
+            except OSError as e:
+                print("OS error: " + e)
+                valid = False
+                time_to_exit = False
+
+    if not valid:
+        print("Cannot continue. Exiting")
+        exit(1)
+
+def request_input_path(message, default):
     valid = False
     absolute_path = path.abspath(default)
     while not valid:
@@ -140,22 +180,8 @@ def request_input_path(message, default, clear_existing):
         absolute_path = path.abspath(provided)
         print("Using: " + provided)
 
-        if path.isdir(provided):
-            if clear_existing:
-                print("Directory exists: " + absolute_path + ". If necessary, delete this directory before starting to get a clean install.")
-            else:
-                print("Directory exists: " + absolute_path)
-            valid = True
-        else:
-            try:
-                print("Making directory: " + absolute_path)
-                os.mkdir(provided)
-                valid = True
-            except OSError:
-                print("Unable to create directory: " + absolute_path)
-                valid = False
+        make_or_replace_or_reuse_directory(provided)
 
-    print()
     return absolute_path
 
 
