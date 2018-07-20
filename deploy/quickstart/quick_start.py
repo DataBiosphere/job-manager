@@ -9,19 +9,20 @@ def quick_start():
     version = "v0.2.0"
 
     home = os.getenv("HOME")
-    install_dir = request_input_path("Select an installation directory", home + "/jmui")
+    install_dir = request_input_path("Select an installation directory", "{0}/jmui".format(home))
 
-    bin_dir = install_dir + "/bin"
-    make_or_replace_or_reuse_directory(bin_dir)
+    bin_dir = "{0}/bin".format(install_dir)
+    make_or_replace_or_reuse_directory(bin_dir, exit_if_invalid=True)
 
-    config_dir = install_dir + "/config"
-    make_or_replace_or_reuse_directory(config_dir)
+    config_dir = "{0}/config".format(install_dir)
+    make_or_replace_or_reuse_directory(config_dir, exit_if_invalid=True)
 
     os.chdir(install_dir)
 
     service_type = request_input_from_list("Select a shim to use", ["Cromwell", "dsub"], "Cromwell")
     options = {
-        "Cromwell": quick_start_cromwell
+        "Cromwell": quick_start_cromwell,
+        "dsub": quick_start_dsub
     }
     options[service_type](version, install_dir, bin_dir, config_dir)
 
@@ -39,15 +40,15 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
     cromwell_url = request_input_with_help("Enter the raw Cromwell IP address, eg '10.1.10.100' (DO NOT USE LOCALHOST or 127.0.0.1)!", cromwell_service_clue)
 
     os.chdir(install_dir)
-    start_script_file= install_dir + "/jmui_start.sh"
+    start_script_file= "{0}/jmui_start.sh".format(bin_dir)
     start_script_contents = [
         "if docker ps | grep job-manager",
         "then",
         "echo \"Stopping current instance(s)\"",
         "docker stop $(docker ps | grep \"job-manager\" | awk '{ print $1 }')",
         "fi",
-        "export CROMWELL_URL=http://" + cromwell_url + ":8000/api/workflows/v1",
-        "docker-compose -f " + docker_compose + " up"
+        "export CROMWELL_URL=http://{0}:8000/api/workflows/v1".format(cromwell_url),
+        "docker-compose -f {0} up".format(docker_compose)
     ]
     write_string(start_script_file, start_script_contents)
     call(["chmod", "+x", start_script_file])
@@ -74,13 +75,14 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
         exit(1)
 
 
-def quick_start_dsub():
+def quick_start_dsub(version, install_dir, bin_dir, config_dir):
     print("Sorry, not yet implemented! Please raise this issue at https://github.com/DataBiosphere/job-manager/issues")
+    exit(1)
 
 
 def download_file(version, file, to_path):
     abs_to_path = path.abspath(to_path)
-    from_url = "https://raw.githubusercontent.com/DataBiosphere/job-manager/" + version + "/" + file
+    from_url = "https://raw.githubusercontent.com/DataBiosphere/job-manager/{0}/{1}".format(version, file)
     urllib.request.urlretrieve(from_url, abs_to_path)
     return abs_to_path
 
@@ -102,7 +104,7 @@ def write_string(file, lines):
 
 def pull_docker(name, version):
     docker_image = name + ":" + version
-    print("Pulling docker image " + docker_image)
+    print("Pulling docker image {0}".format(docker_image))
     call(["docker", "pull", docker_image], stdout=subprocess.DEVNULL)
     return docker_image
 
@@ -110,78 +112,79 @@ def pull_docker(name, version):
 def request_input_from_list(message, options, default):
     valid = False
     provided = default
-    if not default in options:
-        printable_option_list = options.copy()
+    if default not in options:
         all_options = options.copy()
         all_options = all_options + default
     else:
         all_options = options
-        printable_option_list = options.copy()
-        printable_option_list.remove(default)
 
-    printed_options_list = "(" + "/".join(str(e) for e in all_options) + ")"
+    printed_options_list = "({0})".format("/".join(str(e) for e in all_options))
 
     while not valid:
-        provided = input(">> " + message + " " + printed_options_list + " [ " + default + " ] > ") or default
+        provided = input(">> {0} {1} [ {2} ] >".format(message, printed_options_list, default)) or default
         if provided in all_options:
             valid = True
         else:
-            print("Invalid option. Expected one of: " + printed_options_list + " but got: " + provided)
+            print("Invalid option. Expected one of: {0} but got: {1}".format(printed_options_list, provided))
             valid = False
     print("Using: " + provided)
     print()
     return provided
 
 
-def make_or_replace_or_reuse_directory(path_to_make):
+def make_or_replace_or_reuse_directory(path_to_make, exit_if_invalid):
     valid = False
     time_to_exit = False
     while not time_to_exit:
         if path.isdir(path_to_make):
-            print("Directory " + path_to_make + " already exists. I can...")
+            print("Directory {0} already exists. I can...".format(path_to_make))
             print("1. Default: Re-use the existing directory which might leave behind some old files")
             print("2. Delete the entire directory and all of its contents - and then remake it, completely empty")
-            provided = input("Replace or re-use? (1/2) [ 1 ] > ") or "1"
-            if provided is 1:
+            provided = input("Re-use or replace? (1/2) [ 1 ] > ") or "1"
+            if provided == "1":
                 valid = True
                 time_to_exit = True
-            elif provided is 2:
+            elif provided == "2":
                 try:
+                    print("Removing {0} and its subdirectories".format(provided))
                     call(["rm", "-rf", provided])
+                    print("Creating a new directory at {0}".format(provided))
                     os.mkdir(provided)
                     valid = True
                     time_to_exit = True
-                except OSError as e:
-                    print("OS error: " + e)
+                except OSError:
+                    print("OS error clearing or remaking directory")
                     valid = False
                     time_to_exit = True
             else:
-                print("Invalid input: got " + provided + " but expected one of (1/2)")
+                print("Invalid input: got {0} but expected one of (1/2)".format(provided))
                 valid = False
                 time_to_exit = False
         else:
             try:
                 os.mkdir(path_to_make)
                 valid = True
-            except OSError as e:
-                print("OS error: " + e)
+            except OSError:
+                print("OS error making directory")
                 valid = False
-                time_to_exit = False
+                time_to_exit = True
 
-    if not valid:
+    if not valid and exit_if_invalid:
         print("Cannot continue. Exiting")
         exit(1)
+
+    return valid
 
 
 def request_input_path(message, default):
     valid = False
     absolute_path = path.abspath(default)
     while not valid:
-        provided = input(">> " + message + " [ " + absolute_path + " ] > ") or absolute_path
+        provided = input(">> {0} [ {1} ] > ".format(message, absolute_path)) or absolute_path
         absolute_path = path.abspath(provided)
-        print("Using: " + provided)
+        print("Using: {0}".format(provided))
 
-        make_or_replace_or_reuse_directory(provided)
+        valid = make_or_replace_or_reuse_directory(provided, exit_if_invalid=False)
 
     return absolute_path
 
@@ -190,14 +193,14 @@ def request_input_with_help(message, clue):
     valid = False
     provided = None
     while not valid:
-        provided = input(">> " + message + " (type 'clue' or leave empty for help) > ") or "clue"
+        provided = input(">> {0} (or 'clue' for help) [ clue ] > ".format(message)) or "clue"
         if provided == "clue":
             clue()
             provided = ""
             continue
         else:
             valid = True
-    print("Using: " + provided)
+    print("Using: {0}".format(provided))
     return provided
 
 
