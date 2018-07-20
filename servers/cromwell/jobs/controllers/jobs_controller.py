@@ -157,7 +157,7 @@ def format_scattered_task(task_name, task_metadata):
     temp_status_collection = {}
     current_shard = ''
 
-    # go through calls in reverse to grab the latest attempt if there are many
+    # go through calls in reverse to grab the latest attempt if there are multiple
     for shard in task_metadata[::-1]:
         if current_shard != shard.get('shardIndex'):
             status = task_statuses.cromwell_execution_to_api(
