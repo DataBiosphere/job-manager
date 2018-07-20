@@ -20,8 +20,7 @@ def get_capabilities():
             DisplayField(field='labels.job-id', display='Job ID'),
             DisplayField(field='labels.task-id', display='Task ID'),
             DisplayField(field='extensions.userId', display='User ID'),
-            DisplayField(
-                field='extensions.statusDetail', display='Status Detail'),
+            DisplayField(field='extensions.statusDetail', display='Status Detail'),
         ],
         common_labels=['job-id', 'task-id'],
         query_extensions=['userId', 'submission'])

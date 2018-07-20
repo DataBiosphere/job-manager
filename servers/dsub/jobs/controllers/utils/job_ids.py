@@ -31,8 +31,7 @@ def api_to_dsub(api_id, provider_type):
         elif len(id_split) == 3:
             project, job, task = id_split
         else:
-            raise BadRequest('Job ID format for google provider is: ' +
-                             '<project-id>+<job-id>[+<task-id>]?')
+            raise BadRequest('Job ID format for google provider is: ' + '<project-id>+<job-id>[+<task-id>]?')
     else:
         # Otherwise, the id format should be: <job-id>+<task-id> or <job-id> if
         # there is no task ID
@@ -41,8 +40,7 @@ def api_to_dsub(api_id, provider_type):
         elif len(id_split) == 2:
             job, task = id_split
         else:
-            raise BadRequest('Job ID format for non-google provider is: ' +
-                             '<job-id>[+<task-id>]?')
+            raise BadRequest('Job ID format for non-google provider is: ' + '<job-id>[+<task-id>]?')
 
     return project, job, task
 

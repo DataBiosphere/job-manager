@@ -18,28 +18,13 @@ logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
 parser = argparse.ArgumentParser()
+parser.add_argument('--cromwell_url', type=str, help='Url for fetching data from cromwell', default=os.environ.get('CROMWELL_URL'))
 parser.add_argument(
-    '--cromwell_url',
-    type=str,
-    help='Url for fetching data from cromwell',
-    default=os.environ.get('CROMWELL_URL'))
-parser.add_argument(
-    '--use_caas',
-    type=str,
-    help='Whether the cromwell backend is using cromwell-as-a-service',
-    default=os.environ.get('USE_CAAS'))
-parser.add_argument(
-    '--path_prefix',
-    type=str,
-    help='Path prefix, e.g. /api/v1, to serve from',
-    default=os.environ.get('PATH_PREFIX'))
+    '--use_caas', type=str, help='Whether the cromwell backend is using cromwell-as-a-service', default=os.environ.get('USE_CAAS'))
+parser.add_argument('--path_prefix', type=str, help='Path prefix, e.g. /api/v1, to serve from', default=os.environ.get('PATH_PREFIX'))
 
 if __name__ == '__main__':
-    parser.add_argument(
-        '--port',
-        type=int,
-        default=8190,
-        help='The port on which to serve HTTP requests')
+    parser.add_argument('--port', type=int, default=8190, help='The port on which to serve HTTP requests')
     args = parser.parse_args()
 else:
     # Allow unknown args if we aren't the main program, these include flags to
@@ -60,9 +45,7 @@ try:
     with open(config_path) as f:
         config = json.load(f)
 except (IOError, TypeError):
-    logger.warning(
-        'Failed to load credentials file, using the default config: {}'.format(
-            DEFAULT_CROMWELL_CREDENTIALS))
+    logger.warning('Failed to load credentials file, using the default config: {}'.format(DEFAULT_CROMWELL_CREDENTIALS))
     config = DEFAULT_CROMWELL_CREDENTIALS
 finally:
     app.app.config.update(config)
@@ -73,17 +56,12 @@ try:
         capabilities_config = json.load(f)
     for settings in capabilities_config['displayFields']:
         if settings['field'].startswith(LABELS_PREFIX):
-            if len(settings['field']) == len(LABELS_PREFIX) or len(
-                    settings['field']
-            ) > len(LABELS_PREFIX) + CROMWELL_LABEL_MAX_LENGTH:
-                raise ValueError(
-                    'Custom capabilities config contained invalid label key')
+            if len(settings['field']) == len(LABELS_PREFIX) or len(settings['field']) > len(LABELS_PREFIX) + CROMWELL_LABEL_MAX_LENGTH:
+                raise ValueError('Custom capabilities config contained invalid label key')
     logger.info('Successfully loaded the custom capabilities config.')
-    app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
-        capabilities_config)
+    app.app.config['capabilities'] = CapabilitiesResponse.from_dict(capabilities_config)
 except (IOError, TypeError):
-    logger.warning(
-        'Failed to load capabilities config, using default display fields.')
+    logger.warning('Failed to load capabilities config, using default display fields.')
 
 app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'
@@ -96,18 +74,12 @@ def run():
     if not app.app.config['use_caas']:
         try:
             response = requests.head(
-                args.cromwell_url,
-                auth=HTTPBasicAuth(app.app.config['cromwell_user'],
-                                   app.app.config['cromwell_password']),
-                timeout=5)
+                args.cromwell_url, auth=HTTPBasicAuth(app.app.config['cromwell_user'], app.app.config['cromwell_password']), timeout=5)
             if response.status_code == 401:
-                raise requests.exceptions.HTTPError(
-                    'Invalid credentials for the Cromwell: {}'.format(
-                        args.cromwell_url))
+                raise requests.exceptions.HTTPError('Invalid credentials for the Cromwell: {}'.format(args.cromwell_url))
         except KeyError:
             logger.error('Invalid config.json file provided.')
         except requests.exceptions.RequestException as err:
             logger.critical(err)
-            logger.critical('Failed to connect to Cromwell: {}'.format(
-                args.cromwell_url))
+            logger.critical('Failed to connect to Cromwell: {}'.format(args.cromwell_url))
     return app.app

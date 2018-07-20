@@ -15,11 +15,7 @@ ApiStatus = enum(
     ABORTED='Aborted',
     SUCCEEDED='Succeeded',
     FAILED='Failed')
-DsubStatus = enum(
-    RUNNING='RUNNING',
-    CANCELED='CANCELED',
-    SUCCESS='SUCCESS',
-    FAILURE='FAILURE')
+DsubStatus = enum(RUNNING='RUNNING', CANCELED='CANCELED', SUCCESS='SUCCESS', FAILURE='FAILURE')
 
 API_STATUS_MAP = {
     ApiStatus.SUBMITTED: DsubStatus.RUNNING,
