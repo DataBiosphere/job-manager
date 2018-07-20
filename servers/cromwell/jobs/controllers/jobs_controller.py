@@ -201,6 +201,7 @@ def query_jobs(body, **kwargs):
     return QueryJobsResponse(
         results=jobs_list, next_page_token=next_page_token)
 
+
 def get_last_page(total_results, page_size):
     if total_results == 0:
         return 1
