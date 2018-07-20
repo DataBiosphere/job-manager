@@ -7,7 +7,7 @@ from ..util import deserialize_date, deserialize_datetime
 from werkzeug.exceptions import NotImplemented
 
 
-def get_job_aggregations(timeFrame, projectId=None):
+def get_job_aggregations(timeFrame, projectId = None):
     """
     Query for aggregated jobs in the given time frame.
 

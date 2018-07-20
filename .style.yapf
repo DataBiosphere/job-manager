@@ -9,10 +9,10 @@ align_closing_bracket_with_visual_indent=True
 #        'this is the second element of a tuple'):
 #            value,
 #   }
-allow_multiline_dictionary_keys=False
+allow_multiline_dictionary_keys=True
 
 # Allow lambdas to be formatted on more than one line.
-allow_multiline_lambdas=False
+allow_multiline_lambdas=True
 
 # Allow splits before the dictionary value.
 allow_split_before_dict_value=True
@@ -92,7 +92,7 @@ continuation_indent_width=4
 #       start_ts=now()-timedelta(days=3),
 #       end_ts=now(),
 #   )        # <--- this bracket is dedented and on a separate line
-dedent_closing_brackets=False
+dedent_closing_brackets=True
 
 # Place each dictionary entry onto its own line.
 each_dict_entry_on_separate_line=True
@@ -116,7 +116,7 @@ i18n_function_call=
 #       'key2': value1 +
 #               value2,
 #   }
-indent_dictionary_value=False
+indent_dictionary_value=True
 
 # The number of columns to use for indentation.
 indent_width=4
@@ -135,7 +135,7 @@ join_multiple_lines=True
 no_spaces_around_selected_binary_operators=set([])
 
 # Use spaces around default or named assigns.
-spaces_around_default_or_named_assign=False
+spaces_around_default_or_named_assign=True
 
 # Use spaces around the power operator.
 spaces_around_power_operator=False
@@ -177,7 +177,7 @@ split_before_expression_after_opening_paren=False
 
 # If an argument / parameter list is going to be split, then split before
 # the first argument.
-split_before_first_argument=False
+split_before_first_argument=True
 
 # Set to True to prefer splitting before 'and' or 'or' rather than
 # after.
@@ -200,7 +200,7 @@ split_before_named_assigns=True
 #       a_long_var + 100
 #       for a_long_var in xrange(1000)
 #       if a_long_var % 10]
-split_complex_comprehension=False
+split_complex_comprehension=True
 
 # The penalty for splitting right after the opening bracket.
 split_penalty_after_opening_bracket=30

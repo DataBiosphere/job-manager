@@ -4,20 +4,23 @@ from jobs.common import enum
 # https://github.com/broadinstitute/cromwell/blob/710c1931a6745a187ffd026f2cdafea2ffaaf2dc/core/src/main/scala/cromwell/core/ExecutionStatus.scala#L5
 # It provided a reasonable mapping in this file, but may need to be changed in the future on demand
 
-ApiStatus = enum(SUBMITTED='Submitted', RUNNING='Running', ABORTING='Aborting', ABORTED='Aborted', SUCCEEDED='Succeeded', FAILED='Failed')
+ApiStatus = enum(
+    SUBMITTED = 'Submitted', RUNNING = 'Running', ABORTING = 'Aborting', ABORTED = 'Aborted', SUCCEEDED = 'Succeeded', FAILED = 'Failed'
+)
 CromwellExecutionStatus = enum(
-    NOTSTARTED='NotStarted',
-    WAITINGFORQUEUESPACE='WaitingForQueueSpace',
-    QUEUEDINCROMWELL='QueuedInCromwell',
-    STARTING='Starting',
-    RUNNING='Running',
-    ABORTING='Aborting',
-    UNSTARTABLE='Unstartable',
-    ABORTED='Aborted',
-    BYPASSED='Bypassed',
-    RETRYABLEFAILURE='RetryableFailure',
-    FAILED='Failed',
-    DONE='Done')
+    NOTSTARTED = 'NotStarted',
+    WAITINGFORQUEUESPACE = 'WaitingForQueueSpace',
+    QUEUEDINCROMWELL = 'QueuedInCromwell',
+    STARTING = 'Starting',
+    RUNNING = 'Running',
+    ABORTING = 'Aborting',
+    UNSTARTABLE = 'Unstartable',
+    ABORTED = 'Aborted',
+    BYPASSED = 'Bypassed',
+    RETRYABLEFAILURE = 'RetryableFailure',
+    FAILED = 'Failed',
+    DONE = 'Done'
+)
 
 CROMWELL_EXECUTION_STATUS_MAP = {
     CromwellExecutionStatus.NOTSTARTED: ApiStatus.SUBMITTED,

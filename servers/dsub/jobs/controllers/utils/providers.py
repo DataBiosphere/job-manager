@@ -7,10 +7,10 @@ import requests
 
 from jobs.common import enum
 
-ProviderType = enum(GOOGLE='google', LOCAL='local', STUB='stub')
+ProviderType = enum(GOOGLE = 'google', LOCAL = 'local', STUB = 'stub')
 
 
-def get_provider(provider_type, project_id=None, auth_token=None):
+def get_provider(provider_type, project_id = None, auth_token = None):
     """Construct the dsub provider for the given parameters.
 
         Args:
@@ -44,16 +44,17 @@ def _get_google_provider(project_id, auth_token):
         return google.GoogleJobProvider(False, False, project_id)
 
     resp = requests.post(
-        'https://www.googleapis.com/oauth2/v2/tokeninfo', params={
+        'https://www.googleapis.com/oauth2/v2/tokeninfo', params = {
             'access_token': auth_token,
-        })
+        }
+    )
     if resp.status_code != 200:
         raise Unauthorized('failed to validate auth token')
     current_app.logger.info('user "%s" signed in', resp.json().get('email'))
 
     try:
         credentials = AccessTokenCredentials(auth_token, 'user-agent')
-        return google.GoogleJobProvider(False, False, project_id, credentials=credentials)
+        return google.GoogleJobProvider(False, False, project_id, credentials = credentials)
     except AccessTokenCredentialsError as e:
         raise Unauthorized('Invalid authentication token:{}.'.format(e))
 

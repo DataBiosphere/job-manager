@@ -8,14 +8,15 @@ from werkzeug.exceptions import BadRequest
 # https://github.com/swagger-api/swagger-codegen/issues/6529
 
 ApiStatus = enum(
-    SUBMITTED='Submitted',
-    ON_HOLD='OnHold',
-    RUNNING='Running',
-    ABORTING='Aborting',
-    ABORTED='Aborted',
-    SUCCEEDED='Succeeded',
-    FAILED='Failed')
-DsubStatus = enum(RUNNING='RUNNING', CANCELED='CANCELED', SUCCESS='SUCCESS', FAILURE='FAILURE')
+    SUBMITTED = 'Submitted',
+    ON_HOLD = 'OnHold',
+    RUNNING = 'Running',
+    ABORTING = 'Aborting',
+    ABORTED = 'Aborted',
+    SUCCEEDED = 'Succeeded',
+    FAILED = 'Failed'
+)
+DsubStatus = enum(RUNNING = 'RUNNING', CANCELED = 'CANCELED', SUCCESS = 'SUCCESS', FAILURE = 'FAILURE')
 
 API_STATUS_MAP = {
     ApiStatus.SUBMITTED: DsubStatus.RUNNING,
