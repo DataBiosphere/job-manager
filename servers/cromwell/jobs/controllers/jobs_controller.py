@@ -172,19 +172,20 @@ def query_jobs(body, **kwargs):
     headers = kwargs.get('auth_headers')
     query = QueryJobsRequest.from_dict(body)
     query_page_size = query.page_size or _DEFAULT_PAGE_SIZE
-    total_results = get_total_results(query, auth, headers)
     if query.page_token is None:
         offset = 0
     else:
         offset = page_tokens.decode_offset(query.page_token)
     page = page_from_offset(offset, query_page_size)
-    last_page = get_last_page(total_results, query_page_size)
 
     response = requests.post(
         _get_base_url() + '/query',
         json=cromwell_query_params(query, page, query_page_size),
         auth=auth,
         headers=headers)
+
+    total_results = response.json()['totalResultsCount']
+    last_page = get_last_page(total_results, query_page_size)
 
     if response.status_code == BadRequest.code:
         raise BadRequest(response.json().get('message'))
@@ -199,23 +200,6 @@ def query_jobs(body, **kwargs):
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
     return QueryJobsResponse(
         results=jobs_list, next_page_token=next_page_token)
-
-
-def get_total_results(query, auth, headers):
-    params_for_cromwell = cromwell_query_params(query, page=1, page_size=1)
-    response = requests.post(
-        _get_base_url() + '/query',
-        json=params_for_cromwell,
-        auth=auth,
-        headers=headers)
-    if response.status_code == BadRequest.code:
-        raise BadRequest(response.json().get('message'))
-    elif response.status_code == InternalServerError.code:
-        raise InternalServerError(response.json().get('message'))
-    response.raise_for_status()
-
-    return response.json()['totalResultsCount']
-
 
 def get_last_page(total_results, page_size):
     if total_results == 0:
