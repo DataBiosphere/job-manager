@@ -36,10 +36,7 @@ parser.add_argument(
 
 if __name__ == '__main__':
     parser.add_argument(
-        '--port',
-        type=int,
-        default=8190,
-        help='The port on which to serve HTTP requests')
+        '--port', type=int, default=8190, help='The port on which to serve HTTP requests')
     args = parser.parse_args()
 else:
     # Allow unknown args if we aren't the main program, these include flags to
@@ -60,9 +57,8 @@ try:
     with open(config_path) as f:
         config = json.load(f)
 except (IOError, TypeError):
-    logger.warning(
-        'Failed to load credentials file, using the default config: {}'.format(
-            DEFAULT_CROMWELL_CREDENTIALS))
+    logger.warning('Failed to load credentials file, using the default config: {}'.format(
+        DEFAULT_CROMWELL_CREDENTIALS))
     config = DEFAULT_CROMWELL_CREDENTIALS
 finally:
     app.app.config.update(config)
@@ -74,16 +70,12 @@ try:
     for settings in capabilities_config['displayFields']:
         if settings['field'].startswith(LABELS_PREFIX):
             if len(settings['field']) == len(LABELS_PREFIX) or len(
-                    settings['field']
-            ) > len(LABELS_PREFIX) + CROMWELL_LABEL_MAX_LENGTH:
-                raise ValueError(
-                    'Custom capabilities config contained invalid label key')
+                    settings['field']) > len(LABELS_PREFIX) + CROMWELL_LABEL_MAX_LENGTH:
+                raise ValueError('Custom capabilities config contained invalid label key')
     logger.info('Successfully loaded the custom capabilities config.')
-    app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
-        capabilities_config)
+    app.app.config['capabilities'] = CapabilitiesResponse.from_dict(capabilities_config)
 except (IOError, TypeError):
-    logger.warning(
-        'Failed to load capabilities config, using default display fields.')
+    logger.warning('Failed to load capabilities config, using default display fields.')
 
 app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'
@@ -102,12 +94,10 @@ def run():
                 timeout=5)
             if response.status_code == 401:
                 raise requests.exceptions.HTTPError(
-                    'Invalid credentials for the Cromwell: {}'.format(
-                        args.cromwell_url))
+                    'Invalid credentials for the Cromwell: {}'.format(args.cromwell_url))
         except KeyError:
             logger.error('Invalid config.json file provided.')
         except requests.exceptions.RequestException as err:
             logger.critical(err)
-            logger.critical('Failed to connect to Cromwell: {}'.format(
-                args.cromwell_url))
+            logger.critical('Failed to connect to Cromwell: {}'.format(args.cromwell_url))
     return app.app

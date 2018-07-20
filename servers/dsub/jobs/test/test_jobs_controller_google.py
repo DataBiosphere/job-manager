@@ -20,8 +20,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         super(TestJobsControllerGoogle, cls).setUpClass()
         cls.testing_root = 'gs://bvdp-jmui-testing/google'
         cls.testing_project = 'bvdp-jmui-testing'
-        cls.provider = google.GoogleJobProvider(False, False,
-                                                cls.testing_project)
+        cls.provider = google.GoogleJobProvider(False, False, cls.testing_project)
         cls.wait_timeout = 360
         cls.poll_interval = 5
 
@@ -45,14 +44,12 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         if query_params.extensions:
             query_params.extensions.project_id = self.testing_project
         else:
-            query_params.extensions = ExtendedQueryFields(
-                project_id=self.testing_project)
+            query_params.extensions = ExtendedQueryFields(project_id=self.testing_project)
         if query_params.labels:
             query_params.labels.update(self.test_token_label)
         else:
             query_params.labels = self.test_token_label
-        return super(TestJobsControllerGoogle, self).assert_query_matches(
-            query_params, job_list)
+        return super(TestJobsControllerGoogle, self).assert_query_matches(query_params, job_list)
 
     def start_job(self,
                   command,
@@ -94,19 +91,15 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
             data=flask.json.dumps(params),
             content_type='application/json')
         self.assert_status(resp, 404)
-        self.assertEqual(resp.json['detail'],
-                         'Project \"some-bogus-project-id\" not found')
+        self.assertEqual(resp.json['detail'], 'Project \"some-bogus-project-id\" not found')
 
     def test_query_jobs_by_submitted_status(self):
         job1 = self.start_job('echo job1 && sleep 30', name='job1')
-        self.assert_query_matches(
-            QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [job1])
+        self.assert_query_matches(QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [job1])
         self.wait_status(self.api_job_id(job1), ApiStatus.RUNNING)
         job2 = self.start_job('echo job2 && sleep 30', name='job2')
-        self.assert_query_matches(
-            QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [job2])
-        self.assert_query_matches(
-            QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [job1])
+        self.assert_query_matches(QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [job2])
+        self.assert_query_matches(QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [job1])
 
     def test_query_jobs_by_start(self):
         date = datetime.datetime.now()

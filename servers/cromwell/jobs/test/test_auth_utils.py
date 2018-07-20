@@ -50,10 +50,7 @@ class TestAuthUtils(BaseTestCase):
         mock_request.post(query_url, json=_request_callback)
 
         response = self.client.open(
-            '/jobs/query',
-            method='POST',
-            data={},
-            content_type='application/json')
+            '/jobs/query', method='POST', data={}, content_type='application/json')
         self.assertStatus(response, 200)
 
     def test_no_auth_with_caas_returns_401(self):
@@ -64,10 +61,7 @@ class TestAuthUtils(BaseTestCase):
             'use_caas': True
         })
         response = self.client.open(
-            '/jobs/query',
-            method='POST',
-            data={},
-            content_type='application/json')
+            '/jobs/query', method='POST', data={}, content_type='application/json')
         self.assertStatus(response, 401)
 
 

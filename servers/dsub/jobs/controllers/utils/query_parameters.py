@@ -16,10 +16,8 @@ def api_to_dsub(query):
 
     dstat_params = {}
 
-    dstat_params['statuses'] = {
-        job_statuses.api_to_dsub(s)
-        for s in query.statuses
-    } if query.statuses else {'*'}
+    dstat_params['statuses'] = {job_statuses.api_to_dsub(s)
+                                for s in query.statuses} if query.statuses else {'*'}
 
     if query.name:
         dstat_params['job_names'] = {query.name}
@@ -30,8 +28,7 @@ def api_to_dsub(query):
             dstat_params['task_ids'] = {query.labels['task-id']}
         dstat_params['labels'] = {
             job_model.LabelParam(k, v)
-            for (k, v) in query.labels.items()
-            if k not in ['job-id', 'task-id']
+            for (k, v) in query.labels.items() if k not in ['job-id', 'task-id']
         }
 
     if query.extensions:

@@ -48,8 +48,7 @@ def api_workflow_status_to_cromwell(api_status):
   :return: Cromwell status 'Submitted', 'OnHold', 'Running', 'Aborting', 'Aborted', 'Failed' or 'Succeeded'
   """
     if api_status not in API_STATUS_MAP:
-        raise ValueError(
-            'Unrecognized API execution status: {}'.format(api_status))
+        raise ValueError('Unrecognized API execution status: {}'.format(api_status))
     return API_STATUS_MAP[api_status]
 
 
@@ -60,6 +59,5 @@ def cromwell_workflow_status_to_api(cromwell_status):
   :return:  API status 'Submitted', 'OnHold', 'Running', 'Aborting', 'Failed' or 'Succeeded'
   """
     if cromwell_status not in CROMWELL_STATUS_MAP:
-        raise ValueError('Unrecognized Cromwell execution status: {}'.format(
-            cromwell_status))
+        raise ValueError('Unrecognized Cromwell execution status: {}'.format(cromwell_status))
     return CROMWELL_STATUS_MAP[cromwell_status]

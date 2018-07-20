@@ -34,19 +34,21 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
     # to avoid iterating through the whole job list.
     create_time_min = dstat_params.get('create_time')
     if not create_time_min and query.start:
-        create_time_min = query.start - datetime.timedelta(
-            days=_MAX_RUNTIME_DAYS)
+        create_time_min = query.start - datetime.timedelta(days=_MAX_RUNTIME_DAYS)
 
-    jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
-        provider=provider,
-        statuses=dstat_params['statuses'],
-        user_ids=dstat_params.get('user_ids'),
-        job_ids=dstat_params.get('job_ids'),
-        task_ids=dstat_params.get('task_ids'),
-        create_time_min=create_time_min,
-        create_time_max=create_time_max,
-        job_names=dstat_params.get('job_names'),
-        labels=dstat_params.get('labels')))
+    jobs = execute_redirect_stdout(
+        lambda: dstat.lookup_job_tasks(
+            provider = provider,
+            statuses = dstat_params['statuses'],
+            user_ids = dstat_params.get('user_ids'),
+            job_ids = dstat_params.get('job_ids'),
+            task_ids = dstat_params.get('task_ids'),
+            create_time_min = create_time_min,
+            create_time_max = create_time_max,
+            job_names = dstat_params.get('job_names'),
+            labels = dstat_params.get('labels')
+        )
+    )
 
     last_create_time = None
     job_buffer = []
@@ -97,22 +99,24 @@ def generate_jobs_by_window(provider, project_id, window_min, window_max=None):
     """
     create_time_min = window_min - datetime.timedelta(days=_MAX_RUNTIME_DAYS)
 
-    jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
-        provider=provider,
-        statuses=None,
-        user_ids=None,
-        job_ids=None,
-        task_ids=None,
-        create_time_min=create_time_min,
-        create_time_max=window_max,
-        job_names=None,
-        labels=None))
+    jobs = execute_redirect_stdout(
+        lambda: dstat.lookup_job_tasks(
+            provider = provider,
+            statuses = None,
+            user_ids = None,
+            job_ids = None,
+            task_ids = None,
+            create_time_min = create_time_min,
+            create_time_max = window_max,
+            job_names = None,
+            labels = None
+        )
+    )
 
     for j in jobs:
         job = _query_jobs_result(j, project_id)
         # Filter jobs that do no end within the time window
-        if job.end and (job.end < window_min
-                        or window_max and job.end > window_max):
+        if job.end and (job.end < window_min or window_max and job.end > window_max):
             continue
 
         yield job

@@ -27,8 +27,7 @@ class BaseTestCases:
         def assert_status(self, response, want, desc=None):
             if not desc:
                 desc = 'Response body is : ' + response.data.decode('utf-8')
-            super(BaseTestCases.BaseTestCase, self).assertStatus(
-                response, want, desc)
+            super(BaseTestCases.BaseTestCase, self).assertStatus(response, want, desc)
 
     class JobsControllerTestCase(BaseTestCase):
         @classmethod
@@ -51,8 +50,7 @@ class BaseTestCases:
             """
             response = self.must_query_jobs(query_params)
             self.assertEqual(len(response.results), len(job_list))
-            sorted_results = sorted(
-                response.results, key=operator.attrgetter('id'))
+            sorted_results = sorted(response.results, key=operator.attrgetter('id'))
             sorted_job_list = sorted(job_list, key=self.api_job_id)
             for result, job in zip(sorted_results, sorted_job_list):
                 self.assertEqual(result.id, self.api_job_id(job))
@@ -74,8 +72,7 @@ class BaseTestCases:
             }
 
         def api_job_id(self, dsub_job):
-            return job_ids.dsub_to_api(self.testing_project,
-                                       dsub_job.get('job-id'),
+            return job_ids.dsub_to_api(self.testing_project, dsub_job.get('job-id'),
                                        dsub_job.get('task-id'))
 
         def job_has_status(self, job, status):
@@ -91,8 +88,7 @@ class BaseTestCases:
                 if parameters.extensions:
                     parameters.extensions.project_id = self.testing_project
                 else:
-                    parameters.extensions = ExtendedQueryFields(
-                        project_id=self.testing_project)
+                    parameters.extensions = ExtendedQueryFields(project_id=self.testing_project)
             resp = self.client.open(
                 '/jobs/query',
                 method='POST',
@@ -117,10 +113,7 @@ class BaseTestCases:
                 image=DOCKER_IMAGE, logging=logging, zones=['us-central1*'])
 
             env_data = {param_util.EnvParam(k, v) for (k, v) in envs.items()}
-            label_data = {
-                job_model.LabelParam(k, v)
-                for (k, v) in labels.items()
-            }
+            label_data = {job_model.LabelParam(k, v) for (k, v) in labels.items()}
 
             # This is mostly an extraction dsubs argument parsing here:
             # https://github.com/googlegenomics/dsub/blob/master/dsub/lib/param_util.py#L720
@@ -128,23 +121,18 @@ class BaseTestCases:
             # of the form 'key=val'
             input_file_param_util = param_util.InputFileParamUtil('input')
             input_data = set()
-            for (recursive, items) in ((False, inputs.items()),
-                                       (True, inputs_recursive.items())):
+            for (recursive, items) in ((False, inputs.items()), (True, inputs_recursive.items())):
                 for (name, value) in items:
                     name = input_file_param_util.get_variable_name(name)
-                    input_data.add(
-                        input_file_param_util.make_param(
-                            name, value, recursive))
+                    input_data.add(input_file_param_util.make_param(name, value, recursive))
 
             output_file_param_util = param_util.OutputFileParamUtil('output')
             output_data = set()
-            for (recursive, items) in ((False, outputs.items()),
-                                       (True, outputs_recursive.items())):
+            for (recursive, items) in ((False, outputs.items()), (True,
+                                                                  outputs_recursive.items())):
                 for (name, value) in items:
                     name = output_file_param_util.get_variable_name(name)
-                    output_data.add(
-                        output_file_param_util.make_param(
-                            name, value, recursive))
+                    output_data.add(output_file_param_util.make_param(name, value, recursive))
 
             job_params = {
                 'envs': env_data,
@@ -164,9 +152,7 @@ class BaseTestCases:
                         'labels': label_data,
                     }, job_model.Resources()) for i in xrange(task_count)
                 ]
-                all_task_data = [{
-                    'task-id': i + 1
-                } for i in xrange(task_count)]
+                all_task_data = [{'task-id': i + 1} for i in xrange(task_count)]
             else:
                 task_descriptors = [
                     job_model.TaskDescriptor({
@@ -179,20 +165,21 @@ class BaseTestCases:
                     }, job_model.Resources())
                 ]
 
-            return execute_redirect_stdout(lambda:
-                dsub.run(
+            return execute_redirect_stdout(
+                lambda: dsub.run(
                     self.provider,
                     resources,
                     job_params,
                     task_descriptors,
-                    name=name,
-                    command=command,
-                    wait=wait,
-                    disable_warning=True))
+                    name = name,
+                    command = command,
+                    wait = wait,
+                    disable_warning = True
+                )
+            )
 
         def must_abort_job(self, job_id):
-            resp = self.client.open(
-                '/jobs/{}/abort'.format(job_id), method='POST')
+            resp = self.client.open('/jobs/{}/abort'.format(job_id), method='POST')
             self.assert_status(resp, 200)
 
         def wait_status(self, job_id, status):
@@ -209,8 +196,8 @@ class BaseTestCases:
 
             if remaining <= 0:
                 raise Exception(
-                    'Wait for job \'{}\' to be \'{}\' timed out after {} seconds'
-                    .format(job_id, status, self.wait_timeout))
+                    'Wait for job \'{}\' to be \'{}\' timed out after {} seconds'.format(
+                        job_id, status, self.wait_timeout))
 
             return job
 
@@ -222,27 +209,19 @@ class BaseTestCases:
             started = self.start_job('echo FOO', wait=True)
             api_job_id = self.api_job_id(started)
             self.wait_status(api_job_id, ApiStatus.SUCCEEDED)
-            resp = self.client.open(
-                '/jobs/{}/abort'.format(api_job_id), method='POST')
+            resp = self.client.open('/jobs/{}/abort'.format(api_job_id), method='POST')
             self.assert_status(resp, 412)
 
         def test_abort_non_existent_job_fails(self):
             resp = self.client.open(
-                '/jobs/{}/abort'.format(
-                    self.api_job_id({
-                        'job-id': 'not-a-job'
-                    })),
-                method='POST')
+                '/jobs/{}/abort'.format(self.api_job_id({
+                    'job-id': 'not-a-job'
+                })), method='POST')
             self.assert_status(resp, 404)
 
         def test_get_succeeded_job(self):
-            inputs = {
-                'INPUT_KEY': '{}/inputs/test-input'.format(self.testing_root)
-            }
-            outputs = {
-                'OUTPUT_KEY':
-                '{}/outputs/test-output'.format(self.testing_root)
-            }
+            inputs = {'INPUT_KEY': '{}/inputs/test-input'.format(self.testing_root)}
+            outputs = {'OUTPUT_KEY': '{}/outputs/test-output'.format(self.testing_root)}
             started = self.start_job(
                 'echo -n >${OUTPUT_KEY}',
                 labels={'label': 'the_label_value'},
@@ -271,8 +250,7 @@ class BaseTestCases:
             resp = self.client.open(
                 '/jobs/{}'.format(self.api_job_id({
                     'job-id': 'not-a-job'
-                })),
-                method='GET')
+                })), method='GET')
             self.assert_status(resp, 404)
 
         # TODO(bryancrampton) Add tests around dsub job's with multiple tasks and
@@ -283,51 +261,40 @@ class BaseTestCases:
             name_job = self.start_job('echo NAME', name='named-job')
             other_name_job = self.start_job('echo OTHER', name='other-job')
             no_name_job = self.start_job('echo UNSPECIFIED')
-            self.assert_query_matches(
-                QueryJobsRequest(name='named-job'), [name_job])
+            self.assert_query_matches(QueryJobsRequest(name='named-job'), [name_job])
             self.assert_query_matches(QueryJobsRequest(name='job'), [])
 
         def test_query_jobs_by_status(self):
             succeeded = self.start_job('echo SUCCEEDED', name='succeeded')
             self.wait_status(self.api_job_id(succeeded), ApiStatus.SUCCEEDED)
-            running = self.start_job(
-                'echo RUNNING && sleep 30', name='running')
+            running = self.start_job('echo RUNNING && sleep 30', name='running')
             self.wait_status(self.api_job_id(running), ApiStatus.RUNNING)
             self.assert_query_matches(
                 QueryJobsRequest(statuses=[ApiStatus.SUCCEEDED]), [succeeded])
+            self.assert_query_matches(QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [running])
             self.assert_query_matches(
-                QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [running])
-            self.assert_query_matches(
-                QueryJobsRequest(
-                    statuses=[ApiStatus.RUNNING, ApiStatus.SUCCEEDED]),
+                QueryJobsRequest(statuses=[ApiStatus.RUNNING, ApiStatus.SUCCEEDED]),
                 [succeeded, running])
             self.assert_query_matches(
-                QueryJobsRequest(
-                    statuses=[ApiStatus.SUCCEEDED, ApiStatus.RUNNING]),
+                QueryJobsRequest(statuses=[ApiStatus.SUCCEEDED, ApiStatus.RUNNING]),
                 [succeeded, running])
 
         def test_query_jobs_by_label_job_id(self):
             job = self.start_job('echo BY_JOB_ID', name='by_job_id')
-            self.assert_query_matches(
-                QueryJobsRequest(labels={'job-id': job['job-id']}), [job])
+            self.assert_query_matches(QueryJobsRequest(labels={'job-id': job['job-id']}), [job])
 
         def test_query_jobs_by_label_task_id(self):
-            started = self.start_job(
-                'echo BY_TASK_ID', name='by_task_id', task_count=2)
-            jobs = self.must_query_jobs(
-                QueryJobsRequest(labels={'job-id': started['job-id']}))
+            started = self.start_job('echo BY_TASK_ID', name='by_task_id', task_count=2)
+            jobs = self.must_query_jobs(QueryJobsRequest(labels={'job-id': started['job-id']}))
             for task_id in started['task-id']:
                 task = started.copy()
                 task['task-id'] = task_id
-                self.assert_query_matches(
-                    QueryJobsRequest(labels={'task-id': task_id}), [task])
+                self.assert_query_matches(QueryJobsRequest(labels={'task-id': task_id}), [task])
 
         def test_query_jobs_by_label_user_id(self):
             job = self.start_job('echo BY_USER_ID', name='by_user_id')
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(user_id=job['user-id'])),
-                [job])
+                QueryJobsRequest(extensions=ExtendedQueryFields(user_id=job['user-id'])), [job])
 
         def test_query_jobs_by_label(self):
             labels = {
@@ -341,8 +308,7 @@ class BaseTestCases:
                 'overlap_key': 'overlap_value'
             }
 
-            label_job = self.start_job(
-                'echo LABEL', labels=labels, name='labeljob')
+            label_job = self.start_job('echo LABEL', labels=labels, name='labeljob')
             label_job_id = self.api_job_id(label_job)
             other_label_job = self.start_job(
                 'echo OTHER', labels=other_labels, name='otherlabeljob')
@@ -350,8 +316,7 @@ class BaseTestCases:
             no_label_job = self.start_job('echo NO_LABEL', name='nolabeljob')
             no_label_job_id = self.api_job_id(no_label_job)
 
-            self.assert_query_matches(
-                QueryJobsRequest(labels=labels), [label_job])
+            self.assert_query_matches(QueryJobsRequest(labels=labels), [label_job])
             self.assert_query_matches(
                 QueryJobsRequest(labels={'overlap_key': 'overlap_value'}),
                 [label_job, other_label_job])
@@ -366,28 +331,21 @@ class BaseTestCases:
             fourth_time = datetime.datetime.now()
 
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(submission=first_time)),
+                QueryJobsRequest(extensions=ExtendedQueryFields(submission=first_time)),
                 [first_job, second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(submission=second_time)),
+                QueryJobsRequest(extensions=ExtendedQueryFields(submission=second_time)),
                 [second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(submission=third_time)),
+                QueryJobsRequest(extensions=ExtendedQueryFields(submission=third_time)),
                 [third_job])
+            self.assert_query_matches(QueryJobsRequest(end=second_time), [first_job])
+            self.assert_query_matches(QueryJobsRequest(end=third_time), [first_job, second_job])
             self.assert_query_matches(
-                QueryJobsRequest(end=second_time), [first_job])
-            self.assert_query_matches(
-                QueryJobsRequest(end=third_time), [first_job, second_job])
-            self.assert_query_matches(
-                QueryJobsRequest(end=fourth_time),
-                [first_job, second_job, third_job])
+                QueryJobsRequest(end=fourth_time), [first_job, second_job, third_job])
             self.assert_query_matches(
                 QueryJobsRequest(
-                    end=fourth_time,
-                    extensions=ExtendedQueryFields(submission=second_time)),
+                    end=fourth_time, extensions=ExtendedQueryFields(submission=second_time)),
                 [second_job, third_job])
 
         def test_query_jobs_pagination(self):
@@ -401,15 +359,11 @@ class BaseTestCases:
             job4 = self.start_job('echo FOURTH_JOB', name='job_w')
             job5 = self.start_job('echo FIFTH_JOB', name='job_v')
 
+            response = self.assert_query_matches(QueryJobsRequest(page_size=2), [job4, job5])
             response = self.assert_query_matches(
-                QueryJobsRequest(page_size=2), [job4, job5])
+                QueryJobsRequest(page_size=2, page_token=response.next_page_token), [job2, job3])
             response = self.assert_query_matches(
-                QueryJobsRequest(
-                    page_size=2, page_token=response.next_page_token),
-                [job2, job3])
-            response = self.assert_query_matches(
-                QueryJobsRequest(
-                    page_size=2, page_token=response.next_page_token), [job1])
+                QueryJobsRequest(page_size=2, page_token=response.next_page_token), [job1])
 
         def test_query_jobs_submission_pagination(self):
             job1 = self.start_job('echo FIRST_JOB', name='job_z')
@@ -422,19 +376,15 @@ class BaseTestCases:
             job6 = self.start_job('echo SIXTH_JOB', name='job_u')
 
             response = self.assert_query_matches(
-                QueryJobsRequest(
-                    page_size=2,
-                    extensions=ExtendedQueryFields(submission=min_time)),
+                QueryJobsRequest(page_size=2, extensions=ExtendedQueryFields(submission=min_time)),
                 [job5, job6])
             response = self.assert_query_matches(
                 QueryJobsRequest(
                     page_size=2,
                     page_token=response.next_page_token,
-                    extensions=ExtendedQueryFields(submission=min_time)),
-                [job3, job4])
+                    extensions=ExtendedQueryFields(submission=min_time)), [job3, job4])
             response = self.assert_query_matches(
                 QueryJobsRequest(
                     page_size=2,
                     page_token=response.next_page_token,
-                    extensions=ExtendedQueryFields(submission=min_time)),
-                [job2])
+                    extensions=ExtendedQueryFields(submission=min_time)), [job2])

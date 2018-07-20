@@ -51,10 +51,7 @@ parser.add_argument(
 
 if __name__ == '__main__':
     parser.add_argument(
-        '--port',
-        type=int,
-        default=8190,
-        help='The port on which to serve HTTP requests')
+        '--port', type=int, default=8190, help='The port on which to serve HTTP requests')
     args = parser.parse_args()
 else:
     # Allow unknown args if we aren't the main program, these include flags to
@@ -67,8 +64,7 @@ app.app.config['REQUIRES_AUTH'] = bool(args.requires_auth)
 if args.allow_origins:
     prefix = args.path_prefix or ''
     CORS(
-        app.app,
-        resources={
+        app.app, resources={
             prefix + '/*': {
                 'origins': args.allow_origins,
             },

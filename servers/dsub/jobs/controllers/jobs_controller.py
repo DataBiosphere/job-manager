@@ -41,14 +41,12 @@ def abort_job(id):
         status = status[0]
 
     if status != job_statuses.ApiStatus.RUNNING:
-        raise PreconditionFailed(
-            'Job already in terminal status `{}`'.format(status))
+        raise PreconditionFailed('Job already in terminal status `{}`'.format(status))
 
     # TODO(https://github.com/googlegenomics/dsub/issues/92): Remove this
     # hacky re-routing of stdout once dsub removes it from the python API
-    deleted = execute_redirect_stdout(lambda:
-        ddel.ddel_tasks(
-            provider=provider, job_ids={job_id}, task_ids=task_ids))
+    deleted = execute_redirect_stdout(
+        lambda: ddel.ddel_tasks(provider=provider, job_ids={job_id}, task_ids=task_ids))
     if len(deleted) != 1:
         raise InternalServerError('Failed to abort dsub job')
 
@@ -78,22 +76,19 @@ def get_job(id):
 
     jobs = []
     try:
-        jobs = execute_redirect_stdout(lambda: dstat.dstat_job_producer(
-            provider=provider,
-            statuses={'*'},
-            job_ids={job_id},
-            task_ids={task_id} if task_id else None,
-            full_output=True).next())
+        jobs = execute_redirect_stdout(
+            lambda: dstat.dstat_job_producer(
+                provider = provider, statuses = {'*'}, job_ids = {job_id}, task_ids = {task_id} if task_id else None, full_output = True
+            ).next()
+        )
     except apiclient.errors.HttpError as error:
         _handle_http_error(error, proj_id)
 
     # A job_id and task_id define a unique job (should only be one)
     if len(jobs) > 1:
-        raise BadRequest('Found more than one job with ID {}+{}'.format(
-            job_id, task_id))
+        raise BadRequest('Found more than one job with ID {}+{}'.format(job_id, task_id))
     elif len(jobs) == 0:
-        raise NotFound('Could not find any jobs with ID {}+{}'.format(
-            job_id, task_id))
+        raise NotFound('Could not find any jobs with ID {}+{}'.format(job_id, task_id))
 
     return _metadata_response(id, jobs[0])
 
@@ -111,15 +106,13 @@ def query_jobs(body):
     query = QueryJobsRequest.from_dict(body)
     proj_id = query.extensions.project_id if query.extensions else None
     provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
-    create_time_max, offset_id = page_tokens.decode_create_time_max(
-        query.page_token) or (None, None)
-    query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE,
-                          _MAX_PAGE_SIZE)
+    create_time_max, offset_id = page_tokens.decode_create_time_max(query.page_token) or (None,
+                                                                                          None)
+    query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE, _MAX_PAGE_SIZE)
 
     query.start = query.start.replace(tzinfo=tzlocal()).replace(
         microsecond=0) if query.start else None
-    query.end = query.end.replace(tzinfo=tzlocal()).replace(
-        microsecond=0) if query.end else None
+    query.end = query.end.replace(tzinfo=tzlocal()).replace(microsecond=0) if query.end else None
     if query.extensions and query.extensions.submission:
         query.extensions.submission = query.extensions.submission.replace(
             tzinfo=tzlocal()).replace(microsecond=0)
@@ -129,18 +122,14 @@ def query_jobs(body):
     if query.start and query.end and query.start >= query.end:
         raise BadRequest("Invalid query: start date must precede end date.")
     if query.start and create_time_max and query.start > create_time_max:
-        raise BadRequest(
-            "Invalid query: start date is invalid with pagination token.")
+        raise BadRequest("Invalid query: start date is invalid with pagination token.")
     if query.extensions and query.extensions.submission:
         if query.start and query.extensions.submission > query.start:
-            raise BadRequest(
-                "Invalid query: submission date must be <= start date.")
+            raise BadRequest("Invalid query: submission date must be <= start date.")
         if query.end and query.extensions.submission >= query.end:
-            raise BadRequest(
-                "Invalid query: submission date must precede end date.")
+            raise BadRequest("Invalid query: submission date must precede end date.")
 
-    generator = jobs_generator.generate_jobs(provider, query, create_time_max,
-                                             offset_id)
+    generator = jobs_generator.generate_jobs(provider, query, create_time_max, offset_id)
     jobs = []
     try:
         for job in generator:

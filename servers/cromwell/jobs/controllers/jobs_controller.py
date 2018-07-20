@@ -30,10 +30,8 @@ def abort_job(id, **kwargs):
 
     :rtype: None
     """
-    url = '{cromwell_url}/{id}/abort'.format(
-        cromwell_url=_get_base_url(), id=id)
-    response = requests.post(
-        url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
+    url = '{cromwell_url}/{id}/abort'.format(cromwell_url=_get_base_url(), id=id)
+    response = requests.post(url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
     if response.status_code == NotFound.code:
         raise NotFound(response.json()['message'])
 
@@ -51,13 +49,9 @@ def update_job_labels(id, body, **kwargs):
     :rtype: UpdateJobLabelsResponse
     """
     payload = UpdateJobLabelsRequest.from_dict(body).labels
-    url = '{cromwell_url}/{id}/labels'.format(
-        cromwell_url=_get_base_url(), id=id)
+    url = '{cromwell_url}/{id}/labels'.format(cromwell_url=_get_base_url(), id=id)
     response = requests.patch(
-        url,
-        json=payload,
-        auth=kwargs.get('auth'),
-        headers=kwargs.get('auth_headers'))
+        url, json=payload, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
 
     if response.status_code == InternalServerError.code:
         raise InternalServerError(response.json().get('message'))
@@ -82,10 +76,8 @@ def get_job(id, **kwargs):
 
     :rtype: JobMetadataResponse
     """
-    url = '{cromwell_url}/{id}/metadata'.format(
-        cromwell_url=_get_base_url(), id=id)
-    response = requests.get(
-        url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
+    url = '{cromwell_url}/{id}/metadata'.format(cromwell_url=_get_base_url(), id=id)
+    response = requests.get(url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
     job = response.json()
     if response.status_code == BadRequest.code:
         raise BadRequest(job.get('message'))
@@ -96,9 +88,7 @@ def get_job(id, **kwargs):
 
     failures = None
     if job.get('failures'):
-        failures = [
-            FailureMessage(failure=f['message']) for f in job['failures']
-        ]
+        failures = [FailureMessage(failure=f['message']) for f in job['failures']]
     # Get the most recent run of each task in task_metadata
     tasks = [
         format_task(task_name, task_metadata[-1])
@@ -199,8 +189,7 @@ def query_jobs(body, **kwargs):
         # Only list parent jobs
         now = datetime.utcnow()
         jobs_list = [
-            format_job(job, now) for job in response.json()['results']
-            if _is_parent_workflow(job)
+            format_job(job, now) for job in response.json()['results'] if _is_parent_workflow(job)
         ]
         jobs_list.reverse()
         results.extend(jobs_list)
@@ -214,10 +203,7 @@ def query_jobs(body, **kwargs):
 def get_total_results(query, auth, headers):
     params_for_cromwell = cromwell_query_params(query, page=1, page_size=1)
     response = requests.post(
-        _get_base_url() + '/query',
-        json=params_for_cromwell,
-        auth=auth,
-        headers=headers)
+        _get_base_url() + '/query', json=params_for_cromwell, auth=auth, headers=headers)
     if response.status_code == BadRequest.code:
         raise BadRequest(response.json().get('message'))
     elif response.status_code == InternalServerError.code:
@@ -293,12 +279,10 @@ def _parse_datetime(date_string):
     if not date_string:
         return None
     try:
-        formatted_date = datetime.strptime(date_string,
-                                           '%Y-%m-%dT%H:%M:%S.%fZ')
+        formatted_date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S.%fZ')
     except ValueError:
         try:
-            formatted_date = datetime.strptime(date_string,
-                                               '%Y-%m-%dT%H:%M:%SZ')
+            formatted_date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
         except ValueError:
             return None
     return formatted_date

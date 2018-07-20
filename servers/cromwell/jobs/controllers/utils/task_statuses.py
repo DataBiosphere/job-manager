@@ -49,6 +49,5 @@ def cromwell_execution_to_api(execution_status):
     :return: Api status 'Submitted', 'Running', 'Aborting', 'Failed', 'Succeeded', or 'Aborted'
     """
     if execution_status not in CROMWELL_EXECUTION_STATUS_MAP:
-        raise ValueError('Unrecognized Cromwell execution status: {}'.format(
-            execution_status))
+        raise ValueError('Unrecognized Cromwell execution status: {}'.format(execution_status))
     return CROMWELL_EXECUTION_STATUS_MAP[execution_status]

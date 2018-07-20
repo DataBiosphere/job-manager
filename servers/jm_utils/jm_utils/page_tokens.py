@@ -76,11 +76,9 @@ def encode_create_time_max(create_time_max, offset_id=None):
         return None
 
     if not isinstance(create_time_max, datetime.datetime):
-        raise ValueError(
-            'Invalid create time must be datetime: {}'.format(create_time_max))
+        raise ValueError('Invalid create time must be datetime: {}'.format(create_time_max))
     if offset_id and not isinstance(offset_id, basestring):
-        raise ValueError(
-            'Invalid offset id must be string: {}'.format(offset_id))
+        raise ValueError('Invalid offset id must be string: {}'.format(offset_id))
 
     epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=pytz.utc)
     seconds_epoch = int((create_time_max - epoch).total_seconds())
@@ -129,14 +127,12 @@ def decode_create_time_max(token):
     offset_id = token_dict.get('oi')
 
     if create_time_max and isinstance(create_time_max, numbers.Number):
-        create_time_max = datetime.datetime.utcfromtimestamp(
-            create_time_max).replace(tzinfo=pytz.utc)
+        create_time_max = datetime.datetime.utcfromtimestamp(create_time_max).replace(
+            tzinfo=pytz.utc)
     else:
-        raise ValueError(
-            'Invalid created before in token JSON: {}'.format(token_dict))
+        raise ValueError('Invalid created before in token JSON: {}'.format(token_dict))
 
     if offset_id and not isinstance(offset_id, basestring):
-        raise ValueError(
-            'Invalid offset ID in token JSON: {}'.format(token_dict))
+        raise ValueError('Invalid offset ID in token JSON: {}'.format(token_dict))
 
     return create_time_max, offset_id
