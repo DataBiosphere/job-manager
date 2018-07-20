@@ -14,6 +14,7 @@ from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
+from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
 
 _DEFAULT_PAGE_SIZE = 64
@@ -115,7 +116,7 @@ def get_job(id, **kwargs):
     return JobMetadataResponse(
         id=id,
         name=job.get('workflowName'),
-        status=job.get('status'),
+        status=job_statuses.cromwell_workflow_status_to_api(job.get('status')),
         submission=submission,
         start=start,
         end=_parse_datetime(job.get('end')),
@@ -242,7 +243,9 @@ def cromwell_query_params(query, page, page_size):
     if query.name:
         query_params.append({'name': query.name})
     if query.statuses:
-        statuses = [{'status': s} for s in set(query.statuses)]
+        statuses = [{
+            'status': job_statuses.api_workflow_status_to_cromwell(s)
+        } for s in set(query.statuses)]
         query_params.extend(statuses)
     if query.labels:
         labels = [{'label': k + ':' + v} for k, v in query.labels.items()]
@@ -270,7 +273,7 @@ def format_job(job, now):
     return QueryJobsResult(
         id=job.get('id'),
         name=job.get('name'),
-        status=job.get('status'),
+        status=job_statuses.cromwell_workflow_status_to_api(job.get('status')),
         submission=submission,
         start=start,
         end=end,

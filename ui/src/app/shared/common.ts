@@ -7,7 +7,8 @@ export enum JobStatusIcon {
   Aborting = 'exclamation-triangle',
   Failed = 'times',
   Succeeded = 'check',
-  Aborted = 'exclamation-triangle'
+  Aborted = 'exclamation-triangle',
+  OnHold = 'pause'
 }
 
 // TODO(bryancrampton): We may want to move this to be part of

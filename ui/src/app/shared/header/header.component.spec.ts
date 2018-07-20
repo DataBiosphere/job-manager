@@ -130,7 +130,7 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(3);
+      expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(4);
     });
   }));
 
