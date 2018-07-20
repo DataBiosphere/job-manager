@@ -15,22 +15,26 @@ def get_capabilities():
 
     # Default capabilities configuration
     capabilities = CapabilitiesResponse(
-        display_fields = [
-            DisplayField(field = 'status', display = 'Status'),
-            DisplayField(field = 'submission', display = 'Submitted'),
-            DisplayField(field = 'labels.cromwell-workflow-id', display = 'Workflow ID'),
-            DisplayField(field = 'labels.label', display = 'Label', editable = True, bulk_editable = True, field_type = 'text'),
+        display_fields=[
+            DisplayField(field='status', display='Status'),
+            DisplayField(field='submission', display='Submitted'),
+            DisplayField(field='labels.cromwell-workflow-id', display='Workflow ID'),
             DisplayField(
-                field = 'labels.flag',
-                display = 'Flag',
-                editable = True,
-                bulk_editable = True,
-                field_type = 'list',
-                valid_field_values = ['archive', 'follow-up']
-            ),
-            DisplayField(field = 'labels.comment', display = 'Comment', editable = True, field_type = 'text')
+                field='labels.label',
+                display='Label',
+                editable=True,
+                bulk_editable=True,
+                field_type='text'),
+            DisplayField(
+                field='labels.flag',
+                display='Flag',
+                editable=True,
+                bulk_editable=True,
+                field_type='list',
+                valid_field_values=['archive', 'follow-up']),
+            DisplayField(
+                field='labels.comment', display='Comment', editable=True, field_type='text')
         ],
-        common_labels = ['cromwell-workflow-id', 'label', 'flag'],
-        query_extensions = []
-    )
+        common_labels=['cromwell-workflow-id', 'label', 'flag'],
+        query_extensions=[])
     return capabilities

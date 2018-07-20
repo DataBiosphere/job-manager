@@ -45,7 +45,8 @@ def abort_job(id):
 
     # TODO(https://github.com/googlegenomics/dsub/issues/92): Remove this
     # hacky re-routing of stdout once dsub removes it from the python API
-    deleted = execute_redirect_stdout(lambda: ddel.ddel_tasks(provider = provider, job_ids = {job_id}, task_ids = task_ids))
+    deleted = execute_redirect_stdout(
+        lambda: ddel.ddel_tasks(provider=provider, job_ids={job_id}, task_ids=task_ids))
     if len(deleted) != 1:
         raise InternalServerError('Failed to abort dsub job')
 
@@ -105,13 +106,16 @@ def query_jobs(body):
     query = QueryJobsRequest.from_dict(body)
     proj_id = query.extensions.project_id if query.extensions else None
     provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
-    create_time_max, offset_id = page_tokens.decode_create_time_max(query.page_token) or (None, None)
+    create_time_max, offset_id = page_tokens.decode_create_time_max(query.page_token) or (None,
+                                                                                          None)
     query.page_size = min(query.page_size or _DEFAULT_PAGE_SIZE, _MAX_PAGE_SIZE)
 
-    query.start = query.start.replace(tzinfo = tzlocal()).replace(microsecond = 0) if query.start else None
-    query.end = query.end.replace(tzinfo = tzlocal()).replace(microsecond = 0) if query.end else None
+    query.start = query.start.replace(tzinfo=tzlocal()).replace(
+        microsecond=0) if query.start else None
+    query.end = query.end.replace(tzinfo=tzlocal()).replace(microsecond=0) if query.end else None
     if query.extensions and query.extensions.submission:
-        query.extensions.submission = query.extensions.submission.replace(tzinfo = tzlocal()).replace(microsecond = 0)
+        query.extensions.submission = query.extensions.submission.replace(
+            tzinfo=tzlocal()).replace(microsecond=0)
 
     if query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
@@ -141,9 +145,9 @@ def query_jobs(body):
         last_ct = jobs[-1].submission
         offset_id = next_job.id if next_ct == last_ct else None
         token = page_tokens.encode_create_time_max(next_ct, offset_id)
-        return QueryJobsResponse(results = jobs, next_page_token = token)
+        return QueryJobsResponse(results=jobs, next_page_token=token)
     except StopIteration:
-        return QueryJobsResponse(results = jobs)
+        return QueryJobsResponse(results=jobs)
 
 
 def _handle_http_error(error, proj_id):
@@ -158,18 +162,17 @@ def _handle_http_error(error, proj_id):
 
 def _metadata_response(id, job):
     return JobMetadataResponse(
-        id = id,
-        status = job_statuses.dsub_to_api(job),
-        submission = job['create-time'],
-        name = job['job-name'],
-        start = job.get('start-time'),
-        end = job['end-time'],
-        inputs = job['inputs'],
-        outputs = job['outputs'],
-        labels = labels.dsub_to_api(job),
-        failures = failures.get_failures(job),
-        extensions = extensions.get_extensions(job)
-    )
+        id=id,
+        status=job_statuses.dsub_to_api(job),
+        submission=job['create-time'],
+        name=job['job-name'],
+        start=job.get('start-time'),
+        end=job['end-time'],
+        inputs=job['inputs'],
+        outputs=job['outputs'],
+        labels=labels.dsub_to_api(job),
+        failures=failures.get_failures(job),
+        extensions=extensions.get_extensions(job))
 
 
 def _auth_token():

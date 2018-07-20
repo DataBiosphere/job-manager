@@ -32,7 +32,7 @@ class TestJmUtils(unittest.TestCase):
         self.assertEqual(page_tokens.decode_offset(None), None)
 
     def test_encode_decode_create_time_max(self):
-        now = datetime.datetime.now().replace(microsecond = 0).replace(tzinfo = pytz.utc)
+        now = datetime.datetime.now().replace(microsecond=0).replace(tzinfo=pytz.utc)
         encoded = page_tokens.encode_create_time_max(now, 'offset-id')
         decoded_create_time, decoded_offset_id = page_tokens.decode_create_time_max(encoded)
         self.assertEqual(decoded_create_time, now)

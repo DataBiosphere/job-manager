@@ -9,7 +9,7 @@ from jobs.models.query_jobs_result import QueryJobsResult
 _MAX_RUNTIME_DAYS = 7
 
 
-def generate_jobs(provider, query, create_time_max = None, offset_id = None):
+def generate_jobs(provider, query, create_time_max=None, offset_id=None):
     """Get the generator of jobs according to the specified filters.
 
     Args:
@@ -34,7 +34,7 @@ def generate_jobs(provider, query, create_time_max = None, offset_id = None):
     # to avoid iterating through the whole job list.
     create_time_min = dstat_params.get('create_time')
     if not create_time_min and query.start:
-        create_time_min = query.start - datetime.timedelta(days = _MAX_RUNTIME_DAYS)
+        create_time_min = query.start - datetime.timedelta(days=_MAX_RUNTIME_DAYS)
 
     jobs = execute_redirect_stdout(
         lambda: dstat.lookup_job_tasks(
@@ -73,18 +73,18 @@ def generate_jobs(provider, query, create_time_max = None, offset_id = None):
         # sorted by job-id + task-id
         job_buffer.append(job)
         if job.submission != last_create_time:
-            for j in sorted(job_buffer, key = lambda j: j.id):
+            for j in sorted(job_buffer, key=lambda j: j.id):
                 yield j
             job_buffer = []
         last_create_time = job.submission
 
     # If we hit the end of the dstat job generator, ensure to yield the jobs
     # stored in the buffer before returning
-    for j in sorted(job_buffer, key = lambda j: j.id):
+    for j in sorted(job_buffer, key=lambda j: j.id):
         yield j
 
 
-def generate_jobs_by_window(provider, project_id, window_min, window_max = None):
+def generate_jobs_by_window(provider, project_id, window_min, window_max=None):
     """Get the generator of jobs for aggregation.
     If the window_max is specified, running jobs will not be returned.
 
@@ -97,7 +97,7 @@ def generate_jobs_by_window(provider, project_id, window_min, window_max = None)
     Returns:
         generator: Retrieved jobs
     """
-    create_time_min = window_min - datetime.timedelta(days = _MAX_RUNTIME_DAYS)
+    create_time_min = window_min - datetime.timedelta(days=_MAX_RUNTIME_DAYS)
 
     jobs = execute_redirect_stdout(
         lambda: dstat.lookup_job_tasks(
@@ -122,17 +122,16 @@ def generate_jobs_by_window(provider, project_id, window_min, window_max = None)
         yield job
 
 
-def _query_jobs_result(job, project_id = None):
+def _query_jobs_result(job, project_id=None):
     return QueryJobsResult(
-        id = job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
-        name = job['job-name'],
-        status = job_statuses.dsub_to_api(job),
+        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
+        name=job['job-name'],
+        status=job_statuses.dsub_to_api(job),
         # The LocalJobProvider returns create-time with millisecond granularity.
         # For consistency with the GoogleJobProvider, truncate to second
         # granularity.
-        submission = job['create-time'].replace(microsecond = 0),
-        start = job.get('start-time'),
-        end = job['end-time'],
-        labels = labels.dsub_to_api(job),
-        extensions = extensions.get_extensions(job)
-    )
+        submission=job['create-time'].replace(microsecond=0),
+        start=job.get('start-time'),
+        end=job['end-time'],
+        labels=labels.dsub_to_api(job),
+        extensions=extensions.get_extensions(job))

@@ -30,8 +30,8 @@ def abort_job(id, **kwargs):
 
     :rtype: None
     """
-    url = '{cromwell_url}/{id}/abort'.format(cromwell_url = _get_base_url(), id = id)
-    response = requests.post(url, auth = kwargs.get('auth'), headers = kwargs.get('auth_headers'))
+    url = '{cromwell_url}/{id}/abort'.format(cromwell_url=_get_base_url(), id=id)
+    response = requests.post(url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
     if response.status_code == NotFound.code:
         raise NotFound(response.json()['message'])
 
@@ -49,8 +49,9 @@ def update_job_labels(id, body, **kwargs):
     :rtype: UpdateJobLabelsResponse
     """
     payload = UpdateJobLabelsRequest.from_dict(body).labels
-    url = '{cromwell_url}/{id}/labels'.format(cromwell_url = _get_base_url(), id = id)
-    response = requests.patch(url, json = payload, auth = kwargs.get('auth'), headers = kwargs.get('auth_headers'))
+    url = '{cromwell_url}/{id}/labels'.format(cromwell_url=_get_base_url(), id=id)
+    response = requests.patch(
+        url, json=payload, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
 
     if response.status_code == InternalServerError.code:
         raise InternalServerError(response.json().get('message'))
@@ -62,7 +63,7 @@ def update_job_labels(id, body, **kwargs):
 
     # Follow API spec
     result = response.json()
-    return UpdateJobLabelsResponse(labels = result.get('labels'))
+    return UpdateJobLabelsResponse(labels=result.get('labels'))
 
 
 @requires_auth
@@ -75,8 +76,8 @@ def get_job(id, **kwargs):
 
     :rtype: JobMetadataResponse
     """
-    url = '{cromwell_url}/{id}/metadata'.format(cromwell_url = _get_base_url(), id = id)
-    response = requests.get(url, auth = kwargs.get('auth'), headers = kwargs.get('auth_headers'))
+    url = '{cromwell_url}/{id}/metadata'.format(cromwell_url=_get_base_url(), id=id)
+    response = requests.get(url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
     job = response.json()
     if response.status_code == BadRequest.code:
         raise BadRequest(job.get('message'))
@@ -87,10 +88,13 @@ def get_job(id, **kwargs):
 
     failures = None
     if job.get('failures'):
-        failures = [FailureMessage(failure = f['message']) for f in job['failures']]
+        failures = [FailureMessage(failure=f['message']) for f in job['failures']]
     # Get the most recent run of each task in task_metadata
-    tasks = [format_task(task_name, task_metadata[-1]) for task_name, task_metadata in job.get('calls', {}).items()]
-    sorted_tasks = sorted(tasks, key = lambda t: t.start)
+    tasks = [
+        format_task(task_name, task_metadata[-1])
+        for task_name, task_metadata in job.get('calls', {}).items()
+    ]
+    sorted_tasks = sorted(tasks, key=lambda t: t.start)
     start = _parse_datetime(job.get('start'))
     submission = _parse_datetime(job.get('submission'))
     if submission is None:
@@ -100,35 +104,34 @@ def get_job(id, **kwargs):
         # removed if/when Cromwell changes behavior per https://github.com/broadinstitute/cromwell/issues/2968.
         submission = start or datetime.utcnow()
     return JobMetadataResponse(
-        id = id,
-        name = job.get('workflowName'),
-        status = job_statuses.cromwell_workflow_status_to_api(job.get('status')),
-        submission = submission,
-        start = start,
-        end = _parse_datetime(job.get('end')),
-        inputs = update_key_names(job.get('inputs', {})),
-        outputs = update_key_names(job.get('outputs', {})),
-        labels = job.get('labels'),
-        failures = failures,
-        extensions = ExtendedFields(tasks = sorted_tasks)
-    )
+        id=id,
+        name=job.get('workflowName'),
+        status=job_statuses.cromwell_workflow_status_to_api(job.get('status')),
+        submission=submission,
+        start=start,
+        end=_parse_datetime(job.get('end')),
+        inputs=update_key_names(job.get('inputs', {})),
+        outputs=update_key_names(job.get('outputs', {})),
+        labels=job.get('labels'),
+        failures=failures,
+        extensions=ExtendedFields(tasks=sorted_tasks))
 
 
 def format_task(task_name, task_metadata):
     return TaskMetadata(
-        name = remove_workflow_name(task_name),
-        execution_id = task_metadata.get('jobId'),
-        execution_status = task_statuses.cromwell_execution_to_api(task_metadata.get('executionStatus')),
-        start = _parse_datetime(task_metadata.get('start')),
-        end = _parse_datetime(task_metadata.get('end')),
-        stderr = task_metadata.get('stderr'),
-        stdout = task_metadata.get('stdout'),
-        inputs = update_key_names(task_metadata.get('inputs', {})),
-        return_code = task_metadata.get('returnCode'),
-        attempts = task_metadata.get('attempt'),
-        call_root = task_metadata.get('callRoot'),
-        job_id = task_metadata.get('subWorkflowId')
-    )
+        name=remove_workflow_name(task_name),
+        execution_id=task_metadata.get('jobId'),
+        execution_status=task_statuses.cromwell_execution_to_api(
+            task_metadata.get('executionStatus')),
+        start=_parse_datetime(task_metadata.get('start')),
+        end=_parse_datetime(task_metadata.get('end')),
+        stderr=task_metadata.get('stderr'),
+        stdout=task_metadata.get('stdout'),
+        inputs=update_key_names(task_metadata.get('inputs', {})),
+        return_code=task_metadata.get('returnCode'),
+        attempts=task_metadata.get('attempt'),
+        call_root=task_metadata.get('callRoot'),
+        job_id=task_metadata.get('subWorkflowId'))
 
 
 def remove_workflow_name(name):
@@ -172,8 +175,10 @@ def query_jobs(body, **kwargs):
         page_from_end = last_page - page + 1
 
         response = requests.post(
-            _get_base_url() + '/query', json = cromwell_query_params(query, page_from_end, page_size), auth = auth, headers = headers
-        )
+            _get_base_url() + '/query',
+            json=cromwell_query_params(query, page_from_end, page_size),
+            auth=auth,
+            headers=headers)
 
         if response.status_code == BadRequest.code:
             raise BadRequest(response.json().get('message'))
@@ -183,19 +188,22 @@ def query_jobs(body, **kwargs):
 
         # Only list parent jobs
         now = datetime.utcnow()
-        jobs_list = [format_job(job, now) for job in response.json()['results'] if _is_parent_workflow(job)]
+        jobs_list = [
+            format_job(job, now) for job in response.json()['results'] if _is_parent_workflow(job)
+        ]
         jobs_list.reverse()
         results.extend(jobs_list)
         offset = offset + page_size
         page = page_from_offset(offset, page_size)
 
     next_page_token = page_tokens.encode_offset(offset)
-    return QueryJobsResponse(results = results, next_page_token = next_page_token)
+    return QueryJobsResponse(results=results, next_page_token=next_page_token)
 
 
 def get_total_results(query, auth, headers):
-    params_for_cromwell = cromwell_query_params(query, page = 1, page_size = 1)
-    response = requests.post(_get_base_url() + '/query', json = params_for_cromwell, auth = auth, headers = headers)
+    params_for_cromwell = cromwell_query_params(query, page=1, page_size=1)
+    response = requests.post(
+        _get_base_url() + '/query', json=params_for_cromwell, auth=auth, headers=headers)
     if response.status_code == BadRequest.code:
         raise BadRequest(response.json().get('message'))
     elif response.status_code == InternalServerError.code:
@@ -228,7 +236,9 @@ def cromwell_query_params(query, page, page_size):
     if query.name:
         query_params.append({'name': query.name})
     if query.statuses:
-        statuses = [{'status': job_statuses.api_workflow_status_to_cromwell(s)} for s in set(query.statuses)]
+        statuses = [{
+            'status': job_statuses.api_workflow_status_to_cromwell(s)
+        } for s in set(query.statuses)]
         query_params.extend(statuses)
     if query.labels:
         labels = [{'label': k + ':' + v} for k, v in query.labels.items()]
@@ -253,15 +263,14 @@ def format_job(job, now):
         submission = now
     end = _parse_datetime(job.get('end'))
     return QueryJobsResult(
-        id = job.get('id'),
-        name = job.get('name'),
-        status = job_statuses.cromwell_workflow_status_to_api(job.get('status')),
-        submission = submission,
-        start = start,
-        end = end,
-        labels = job.get('labels'),
-        extensions = ExtendedFields(parent_job_id = job.get('parentWorkflowId'))
-    )
+        id=job.get('id'),
+        name=job.get('name'),
+        status=job_statuses.cromwell_workflow_status_to_api(job.get('status')),
+        submission=submission,
+        start=start,
+        end=end,
+        labels=job.get('labels'),
+        extensions=ExtendedFields(parent_job_id=job.get('parentWorkflowId')))
 
 
 def _parse_datetime(date_string):

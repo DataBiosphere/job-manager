@@ -7,7 +7,7 @@ def enum(**enums):
     return type('Enum', (), enums)
 
 
-def execute_redirect_stdout(command, writer = os.devnull):
+def execute_redirect_stdout(command, writer=os.devnull):
     stdout = sys.stdout
     sys.stdout = open(writer, 'w')
     return_val = command()

@@ -5,23 +5,21 @@ from jobs.common import enum
 # It provided a reasonable mapping in this file, but may need to be changed in the future on demand
 
 ApiStatus = enum(
-    SUBMITTED = 'Submitted',
-    ON_HOLD = 'OnHold',
-    RUNNING = 'Running',
-    ABORTING = 'Aborting',
-    ABORTED = 'Aborted',
-    FAILED = 'Failed',
-    SUCCEEDED = 'Succeeded'
-)
+    SUBMITTED='Submitted',
+    ON_HOLD='OnHold',
+    RUNNING='Running',
+    ABORTING='Aborting',
+    ABORTED='Aborted',
+    FAILED='Failed',
+    SUCCEEDED='Succeeded')
 CromwellWorkflowStatus = enum(
-    SUBMITTED = 'Submitted',
-    ON_HOLD = 'On Hold',
-    RUNNING = 'Running',
-    ABORTING = 'Aborting',
-    ABORTED = 'Aborted',
-    FAILED = 'Failed',
-    SUCCEEDED = 'Succeeded'
-)
+    SUBMITTED='Submitted',
+    ON_HOLD='On Hold',
+    RUNNING='Running',
+    ABORTING='Aborting',
+    ABORTED='Aborted',
+    FAILED='Failed',
+    SUCCEEDED='Succeeded')
 
 API_STATUS_MAP = {
     ApiStatus.SUBMITTED: CromwellWorkflowStatus.SUBMITTED,

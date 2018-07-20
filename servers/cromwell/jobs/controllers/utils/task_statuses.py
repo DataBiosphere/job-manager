@@ -5,22 +5,25 @@ from jobs.common import enum
 # It provided a reasonable mapping in this file, but may need to be changed in the future on demand
 
 ApiStatus = enum(
-    SUBMITTED = 'Submitted', RUNNING = 'Running', ABORTING = 'Aborting', ABORTED = 'Aborted', SUCCEEDED = 'Succeeded', FAILED = 'Failed'
-)
+    SUBMITTED='Submitted',
+    RUNNING='Running',
+    ABORTING='Aborting',
+    ABORTED='Aborted',
+    SUCCEEDED='Succeeded',
+    FAILED='Failed')
 CromwellExecutionStatus = enum(
-    NOTSTARTED = 'NotStarted',
-    WAITINGFORQUEUESPACE = 'WaitingForQueueSpace',
-    QUEUEDINCROMWELL = 'QueuedInCromwell',
-    STARTING = 'Starting',
-    RUNNING = 'Running',
-    ABORTING = 'Aborting',
-    UNSTARTABLE = 'Unstartable',
-    ABORTED = 'Aborted',
-    BYPASSED = 'Bypassed',
-    RETRYABLEFAILURE = 'RetryableFailure',
-    FAILED = 'Failed',
-    DONE = 'Done'
-)
+    NOTSTARTED='NotStarted',
+    WAITINGFORQUEUESPACE='WaitingForQueueSpace',
+    QUEUEDINCROMWELL='QueuedInCromwell',
+    STARTING='Starting',
+    RUNNING='Running',
+    ABORTING='Aborting',
+    UNSTARTABLE='Unstartable',
+    ABORTED='Aborted',
+    BYPASSED='Bypassed',
+    RETRYABLEFAILURE='RetryableFailure',
+    FAILED='Failed',
+    DONE='Done')
 
 CROMWELL_EXECUTION_STATUS_MAP = {
     CromwellExecutionStatus.NOTSTARTED: ApiStatus.SUBMITTED,

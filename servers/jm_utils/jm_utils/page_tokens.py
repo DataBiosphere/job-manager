@@ -61,7 +61,7 @@ def encode_offset(offset):
     return _encode({'of': offset})
 
 
-def encode_create_time_max(create_time_max, offset_id = None):
+def encode_create_time_max(create_time_max, offset_id=None):
     """Encodes a create_time_max and optional offset ID into a pagination token.
 
     Args:
@@ -80,7 +80,7 @@ def encode_create_time_max(create_time_max, offset_id = None):
     if offset_id and not isinstance(offset_id, basestring):
         raise ValueError('Invalid offset id must be string: {}'.format(offset_id))
 
-    epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo = pytz.utc)
+    epoch = datetime.datetime.utcfromtimestamp(0).replace(tzinfo=pytz.utc)
     seconds_epoch = int((create_time_max - epoch).total_seconds())
     token_dict = {'cb': seconds_epoch}
     if offset_id:
@@ -127,7 +127,8 @@ def decode_create_time_max(token):
     offset_id = token_dict.get('oi')
 
     if create_time_max and isinstance(create_time_max, numbers.Number):
-        create_time_max = datetime.datetime.utcfromtimestamp(create_time_max).replace(tzinfo = pytz.utc)
+        create_time_max = datetime.datetime.utcfromtimestamp(create_time_max).replace(
+            tzinfo=pytz.utc)
     else:
         raise ValueError('Invalid created before in token JSON: {}'.format(token_dict))
 

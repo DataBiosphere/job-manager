@@ -20,14 +20,12 @@ class TestJobsController(BaseTestCase):
 
     def setUp(self):
         self.base_url = 'https://test-cromwell.org'
-        self.app.config.update(
-            {
-                'cromwell_url': self.base_url,
-                'cromwell_user': 'user',
-                'cromwell_password': 'password',
-                'use_caas': False
-            }
-        )
+        self.app.config.update({
+            'cromwell_url': self.base_url,
+            'cromwell_user': 'user',
+            'cromwell_password': 'password',
+            'use_caas': False
+        })
 
     @requests_mock.mock()
     def test_abort_job(self, mock_request):
@@ -41,10 +39,10 @@ class TestJobsController(BaseTestCase):
         def _request_callback(request, context):
             context.status_code = 200
 
-        abort_url = self.base_url + '/{id}/abort'.format(id = workflow_id)
-        mock_request.post(abort_url, json = _request_callback)
+        abort_url = self.base_url + '/{id}/abort'.format(id=workflow_id)
+        mock_request.post(abort_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}/abort'.format(id = workflow_id), method = 'POST')
+        response = self.client.open('/jobs/{id}/abort'.format(id=workflow_id), method='POST')
         self.assertStatus(response, 200)
 
     @requests_mock.mock()
@@ -54,12 +52,18 @@ class TestJobsController(BaseTestCase):
 
         def _request_callback(request, context):
             context.status_code = 404
-            return {'status': 'error', 'message': 'Couldn\'t abort {} because no workflow with that ID is in progress'.format(workflow_id)}
+            return {
+                'status':
+                'error',
+                'message':
+                'Couldn\'t abort {} because no workflow with that ID is in progress'.format(
+                    workflow_id)
+            }
 
-        abort_url = self.base_url + '/{id}/abort'.format(id = workflow_id)
-        mock_request.post(abort_url, json = _request_callback)
+        abort_url = self.base_url + '/{id}/abort'.format(id=workflow_id)
+        mock_request.post(abort_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}/abort'.format(id = workflow_id), method = 'POST')
+        response = self.client.open('/jobs/{id}/abort'.format(id=workflow_id), method='POST')
         self.assertStatus(response, 404)
 
     @requests_mock.mock()
@@ -119,19 +123,18 @@ class TestJobsController(BaseTestCase):
                 }]
             }  # yapf: disable
 
-        update_label_url = self.base_url + '/{id}/labels'.format(id = workflow_id)
-        cromwell_url = self.base_url + '/{id}/metadata'.format(id = workflow_id)
+        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
 
-        mock_request.patch(update_label_url, json = _request_callback_labels)
-        mock_request.get(cromwell_url, json = _request_callback_get_job)
+        mock_request.patch(update_label_url, json=_request_callback_labels)
+        mock_request.get(cromwell_url, json=_request_callback_get_job)
 
-        payload = UpdateJobLabelsRequest(labels = {"test_label": "test_label_value"})
+        payload = UpdateJobLabelsRequest(labels={"test_label": "test_label_value"})
         response = self.client.open(
-            '/jobs/{id}/updateLabels'.format(id = workflow_id),
-            method = 'POST',
-            data = json.dumps(payload),
-            content_type = 'application/json'
-        )
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json')
         self.assertStatus(response, 200)
         self.assertEquals(response.json, {"labels": {"test_label": "test_label_value"}})
 
@@ -145,7 +148,10 @@ class TestJobsController(BaseTestCase):
         response_timestamp = '2017-11-08T05:06:41.424000Z'
         inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
         outputs = {'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'}
-        labels = {"existing_test_label1": "existing_test_label_value1", "existing_test_label2": "existing_test_label_value2"}
+        labels = {
+            "existing_test_label1": "existing_test_label_value1",
+            "existing_test_label2": "existing_test_label_value2"
+        }
         job_id = 'operations/abcde'
         std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
         std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
@@ -155,12 +161,11 @@ class TestJobsController(BaseTestCase):
         def _request_callback_labels(request, context):
             context.status_code = 200
             return {
-                "labels":
-                    {
-                        "new_test_label": "new_test_label_value",
-                        "existing_test_label1": "existing_test_label_value1",
-                        "existing_test_label2": "existing_test_label_value2"
-                    }
+                "labels": {
+                    "new_test_label": "new_test_label_value",
+                    "existing_test_label1": "existing_test_label_value1",
+                    "existing_test_label2": "existing_test_label_value2"
+                }
             }
 
         def _request_callback_get_job(request, context):
@@ -194,29 +199,25 @@ class TestJobsController(BaseTestCase):
                 }]
             }  # yapf: disable
 
-        update_label_url = self.base_url + '/{id}/labels'.format(id = workflow_id)
-        cromwell_url = self.base_url + '/{id}/metadata'.format(id = workflow_id)
-        mock_request.patch(update_label_url, json = _request_callback_labels)
-        mock_request.get(cromwell_url, json = _request_callback_get_job)
+        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback_labels)
+        mock_request.get(cromwell_url, json=_request_callback_get_job)
 
-        payload = UpdateJobLabelsRequest(labels = {"new_test_label": "new_test_label_value"})
+        payload = UpdateJobLabelsRequest(labels={"new_test_label": "new_test_label_value"})
         response = self.client.open(
-            '/jobs/{id}/updateLabels'.format(id = workflow_id),
-            method = 'POST',
-            data = json.dumps(payload),
-            content_type = 'application/json'
-        )
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json')
 
-        expected_result = UpdateJobLabelsResponse.from_dict(
-            {
-                "labels":
-                    {
-                        "existing_test_label1": "existing_test_label_value1",
-                        "existing_test_label2": "existing_test_label_value2",
-                        "new_test_label": "new_test_label_value"
-                    }
+        expected_result = UpdateJobLabelsResponse.from_dict({
+            "labels": {
+                "existing_test_label1": "existing_test_label_value1",
+                "existing_test_label2": "existing_test_label_value2",
+                "new_test_label": "new_test_label_value"
             }
-        )
+        })
 
         result = UpdateJobLabelsResponse.from_dict(response.json)
 
@@ -232,16 +233,15 @@ class TestJobsController(BaseTestCase):
             context.status_code = 400
             return {"status": "fail", "message": error_message}
 
-        update_label_url = self.base_url + '/{id}/labels'.format(id = workflow_id)
-        mock_request.patch(update_label_url, json = _request_callback)
+        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback)
 
-        payload = UpdateJobLabelsRequest(labels = {"": "test_invalid_label"})
+        payload = UpdateJobLabelsRequest(labels={"": "test_invalid_label"})
         response = self.client.open(
-            '/jobs/{id}/updateLabels'.format(id = workflow_id),
-            method = 'POST',
-            data = json.dumps(payload),
-            content_type = 'application/json'
-        )
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json')
         self.assertStatus(response, 400)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -254,16 +254,15 @@ class TestJobsController(BaseTestCase):
             context.status_code = 500
             return {"status": "error", "message": error_message}
 
-        update_label_url = self.base_url + '/{id}/labels'.format(id = workflow_id)
-        mock_request.patch(update_label_url, json = _request_callback)
+        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback)
 
-        payload = UpdateJobLabelsRequest(labels = {"test_label": "test_label_value"})
+        payload = UpdateJobLabelsRequest(labels={"test_label": "test_label_value"})
         response = self.client.open(
-            '/jobs/{id}/updateLabels'.format(id = workflow_id),
-            method = 'POST',
-            data = json.dumps(payload),
-            content_type = 'application/json'
-        )
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json')
         self.assertStatus(response, 500)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -279,16 +278,15 @@ class TestJobsController(BaseTestCase):
             context.status_code = 404
             return {"status": "error", "message": error_message}
 
-        update_label_url = self.base_url + '/{id}/labels'.format(id = workflow_id)
-        mock_request.patch(update_label_url, json = _request_callback)
+        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback)
 
-        payload = UpdateJobLabelsRequest(labels = {"test_label": "test_label_value"})
+        payload = UpdateJobLabelsRequest(labels={"test_label": "test_label_value"})
         response = self.client.open(
-            '/jobs/{id}/updateLabels'.format(id = workflow_id),
-            method = 'POST',
-            data = json.dumps(payload),
-            content_type = 'application/json'
-        )
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            method='POST',
+            data=json.dumps(payload),
+            content_type='application/json')
         self.assertStatus(response, 404)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -301,16 +299,15 @@ class TestJobsController(BaseTestCase):
             context.status_code = 415
             return error_message
 
-        update_label_url = self.base_url + '/{id}/labels'.format(id = workflow_id)
-        mock_request.patch(update_label_url, json = _request_callback)
+        update_label_url = self.base_url + '/{id}/labels'.format(id=workflow_id)
+        mock_request.patch(update_label_url, json=_request_callback)
 
-        payload = UpdateJobLabelsRequest(labels = {"test_label": None})
+        payload = UpdateJobLabelsRequest(labels={"test_label": None})
         response = self.client.open(
-            '/jobs/{id}/updateLabels'.format(id = workflow_id),
-            headers = {'Accept': 'application/json'},
-            method = 'POST',
-            data = json.dumps(payload)
-        )
+            '/jobs/{id}/updateLabels'.format(id=workflow_id),
+            headers={'Accept': 'application/json'},
+            method='POST',
+            data=json.dumps(payload))
         self.assertStatus(response, 415)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -368,10 +365,10 @@ class TestJobsController(BaseTestCase):
                 }]
             }  # yapf: disable
 
-        cromwell_url = self.base_url + '/{id}/metadata'.format(id = workflow_id)
-        mock_request.get(cromwell_url, json = _request_callback)
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}'.format(id = workflow_id), method = 'GET')
+        response = self.client.open('/jobs/{id}'.format(id=workflow_id), method='GET')
         self.assertStatus(response, 200)
         response_data = json.loads(response.data)
         expected_data = {
@@ -414,10 +411,10 @@ class TestJobsController(BaseTestCase):
             context.status_code = 400
             return {'status': 'fail', 'message': error_message}
 
-        cromwell_url = self.base_url + '/{id}/metadata'.format(id = workflow_id)
-        mock_request.get(cromwell_url, json = _request_callback)
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}'.format(id = workflow_id), method = 'GET')
+        response = self.client.open('/jobs/{id}'.format(id=workflow_id), method='GET')
         self.assertStatus(response, 400)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -430,10 +427,10 @@ class TestJobsController(BaseTestCase):
             context.status_code = 404
             return {'status': 'fail', 'message': error_message}
 
-        cromwell_url = self.base_url + '/{id}/metadata'.format(id = workflow_id)
-        mock_request.get(cromwell_url, json = _request_callback)
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}'.format(id = workflow_id), method = 'GET')
+        response = self.client.open('/jobs/{id}'.format(id=workflow_id), method='GET')
         self.assertStatus(response, 404)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -446,10 +443,10 @@ class TestJobsController(BaseTestCase):
             context.status_code = 500
             return {'status': 'error', 'message': error_message}
 
-        cromwell_url = self.base_url + '/{id}/metadata'.format(id = workflow_id)
-        mock_request.get(cromwell_url, json = _request_callback)
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}'.format(id = workflow_id), method = 'GET')
+        response = self.client.open('/jobs/{id}'.format(id=workflow_id), method='GET')
         self.assertStatus(response, 500)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -466,81 +463,74 @@ class TestJobsController(BaseTestCase):
             return {'results': [], 'totalResultsCount': 0}
 
         query_url = self.base_url + '/query'
-        mock_request.post(query_url, json = _request_callback)
+        mock_request.post(query_url, json=_request_callback)
 
         query = QueryJobsRequest()
-        response = self.client.open('/jobs/query', method = 'POST', data = json.dumps(query), content_type = 'application/json')
+        response = self.client.open(
+            '/jobs/query', method='POST', data=json.dumps(query), content_type='application/json')
         self.assertStatus(response, 200)
 
     def test_empty_cromwell_query_params(self):
         query = QueryJobsRequest()
         self.assertEqual(
             sorted(jobs_controller.cromwell_query_params(query, 1, 64)),
-            sorted(
-                [
-                    {
-                        'page': '1'
-                    }, {
-                        'pageSize': '64'
-                    }, {
-                        'additionalQueryResultFields': 'parentWorkflowId'
-                    }, {
-                        'additionalQueryResultFields': 'labels'
-                    }
-                ]
-            )
-        )
-
-    def test_cromwell_query_params(self):
-        datetime_format = '%Y-%m-%dT%H:%M:%S.%fZ'
-        query = QueryJobsRequest(
-            name = 'test',
-            start = datetime.strptime('2017-10-30T18:04:47.271Z', datetime_format),
-            end = datetime.strptime('2017-10-31T18:04:47.271Z', datetime_format),
-            statuses = ['Submitted', 'Running', 'Succeeded'],
-            labels = {
-                'label-key-1': 'label-val-1',
-                'label-key-2': 'label-val-2'
-            },
-            page_size = 100
-        )
-        query_params = [
-            {
-                'name': query.name
+            sorted([{
+                'page': '1'
             }, {
-                'start': datetime.strftime(query.start, datetime_format)
-            }, {
-                'end': datetime.strftime(query.end, datetime_format)
-            }, {
-                'pageSize': '100'
-            }, {
-                'page': '23'
-            }, {
-                'label': 'label-key-1:label-val-1'
-            }, {
-                'label': 'label-key-2:label-val-2'
+                'pageSize': '64'
             }, {
                 'additionalQueryResultFields': 'parentWorkflowId'
             }, {
                 'additionalQueryResultFields': 'labels'
-            }
-        ]
+            }]))
+
+    def test_cromwell_query_params(self):
+        datetime_format = '%Y-%m-%dT%H:%M:%S.%fZ'
+        query = QueryJobsRequest(
+            name='test',
+            start=datetime.strptime('2017-10-30T18:04:47.271Z', datetime_format),
+            end=datetime.strptime('2017-10-31T18:04:47.271Z', datetime_format),
+            statuses=['Submitted', 'Running', 'Succeeded'],
+            labels={
+                'label-key-1': 'label-val-1',
+                'label-key-2': 'label-val-2'
+            },
+            page_size=100)
+        query_params = [{
+            'name': query.name
+        }, {
+            'start': datetime.strftime(query.start, datetime_format)
+        }, {
+            'end': datetime.strftime(query.end, datetime_format)
+        }, {
+            'pageSize': '100'
+        }, {
+            'page': '23'
+        }, {
+            'label': 'label-key-1:label-val-1'
+        }, {
+            'label': 'label-key-2:label-val-2'
+        }, {
+            'additionalQueryResultFields': 'parentWorkflowId'
+        }, {
+            'additionalQueryResultFields': 'labels'
+        }]
         query_params.extend([{'status': s} for s in query.statuses])
-        self.assertItemsEqual(sorted(query_params), sorted(jobs_controller.cromwell_query_params(query, 23, 100)))
+        self.assertItemsEqual(
+            sorted(query_params), sorted(jobs_controller.cromwell_query_params(query, 23, 100)))
 
     def test_format_job(self):
         time = '2017-10-27T18:04:47.271Z'
         job = {'id': '12345', 'name': 'TestJob', 'status': 'Failed', 'start': time, 'end': time}
         formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%S.%fZ')
         result = QueryJobsResult(
-            id = job.get('id'),
-            name = job.get('name'),
-            status = job.get('status'),
-            submission = formatted_time,
-            start = formatted_time,
-            end = formatted_time,
-            extensions = ExtendedFields()
-        )
+            id=job.get('id'),
+            name=job.get('name'),
+            status=job.get('status'),
+            submission=formatted_time,
+            start=formatted_time,
+            end=formatted_time,
+            extensions=ExtendedFields())
         self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
 
     def test_format_job_without_milliseconds(self):
@@ -548,14 +538,13 @@ class TestJobsController(BaseTestCase):
         job = {'id': '12345', 'name': 'TestJob', 'status': 'Failed', 'start': time, 'end': time}
         formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
         result = QueryJobsResult(
-            id = job.get('id'),
-            name = job.get('name'),
-            status = job.get('status'),
-            submission = formatted_time,
-            start = formatted_time,
-            end = formatted_time,
-            extensions = ExtendedFields()
-        )
+            id=job.get('id'),
+            name=job.get('name'),
+            status=job.get('status'),
+            submission=formatted_time,
+            start=formatted_time,
+            end=formatted_time,
+            extensions=ExtendedFields())
         self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
 
     def test_format_job_with_no_start_date(self):
@@ -563,12 +552,11 @@ class TestJobsController(BaseTestCase):
         job = {'id': '12345', 'name': 'TestJob', 'status': 'Failed'}
         formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
         result = QueryJobsResult(
-            id = job.get('id'),
-            name = job.get('name'),
-            status = job.get('status'),
-            submission = formatted_time,
-            extensions = ExtendedFields()
-        )
+            id=job.get('id'),
+            name=job.get('name'),
+            status=job.get('status'),
+            submission=formatted_time,
+            extensions=ExtendedFields())
         self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
 
     def test_format_job_with_no_end_date(self):
@@ -576,24 +564,23 @@ class TestJobsController(BaseTestCase):
         job = {'id': '12345', 'name': 'TestJob', 'status': 'Failed', 'start': time}
         formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
         result = QueryJobsResult(
-            id = job.get('id'),
-            name = job.get('name'),
-            status = job.get('status'),
-            submission = formatted_time,
-            start = formatted_time,
-            end = None,
-            extensions = ExtendedFields()
-        )
+            id=job.get('id'),
+            name=job.get('name'),
+            status=job.get('status'),
+            submission=formatted_time,
+            start=formatted_time,
+            end=None,
+            extensions=ExtendedFields())
         self.assertEqual(jobs_controller.format_job(job, formatted_time), result)
 
     def test_page_from_offset(self):
-        self.assertEqual(jobs_controller.page_from_offset(offset = 0, page_size = 1), 1)
-        self.assertEqual(jobs_controller.page_from_offset(offset = 1, page_size = 1), 2)
-        self.assertEqual(jobs_controller.page_from_offset(offset = 1, page_size = 10), 1)
-        self.assertEqual(jobs_controller.page_from_offset(offset = 0, page_size = 10), 1)
-        self.assertEqual(jobs_controller.page_from_offset(offset = 10, page_size = 10), 2)
-        self.assertEqual(jobs_controller.page_from_offset(offset = 11, page_size = 10), 2)
-        self.assertEqual(jobs_controller.page_from_offset(offset = 10, page_size = 1), 11)
+        self.assertEqual(jobs_controller.page_from_offset(offset=0, page_size=1), 1)
+        self.assertEqual(jobs_controller.page_from_offset(offset=1, page_size=1), 2)
+        self.assertEqual(jobs_controller.page_from_offset(offset=1, page_size=10), 1)
+        self.assertEqual(jobs_controller.page_from_offset(offset=0, page_size=10), 1)
+        self.assertEqual(jobs_controller.page_from_offset(offset=10, page_size=10), 2)
+        self.assertEqual(jobs_controller.page_from_offset(offset=11, page_size=10), 2)
+        self.assertEqual(jobs_controller.page_from_offset(offset=10, page_size=1), 11)
 
 
 if __name__ == '__main__':

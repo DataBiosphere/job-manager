@@ -17,7 +17,8 @@ def requires_auth(fn):
 
 
 def _get_user_auth():
-    return HTTPBasicAuth(current_app.config['cromwell_user'], current_app.config['cromwell_password'])
+    return HTTPBasicAuth(current_app.config['cromwell_user'],
+                         current_app.config['cromwell_password'])
 
 
 def _get_auth_header(auth_token):
