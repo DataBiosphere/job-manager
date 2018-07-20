@@ -156,6 +156,8 @@ def format_task(task_name, task_metadata):
 def format_scattered_task(task_name, task_metadata):
     temp_status_collection = {}
     current_shard = ''
+    minStart = _parse_datetime(task_metadata[0].get('start'))
+    maxEnd = _parse_datetime(task_metadata[0].get('end'))
 
     # go through calls in reverse to grab the latest attempt if there are multiple
     for shard in task_metadata[::-1]:
@@ -168,6 +170,10 @@ def format_scattered_task(task_name, task_metadata):
                 temp_status_collection[
                     status] = temp_status_collection[status] + 1
         current_shard = shard.get('shardIndex')
+        if minStart > _parse_datetime(shard.get('start')):
+            minStart = _parse_datetime(shard.get('start'))
+        if maxEnd < _parse_datetime(shard.get('end')):
+            maxEnd = _parse_datetime(shard.get('end'))
 
     shard_status_counts = [
         ShardStatusCount(status=status, count=temp_status_collection[status])
@@ -179,6 +185,8 @@ def format_scattered_task(task_name, task_metadata):
         name=remove_workflow_name(task_name),
         execution_status=task_statuses.cromwell_execution_to_api(
             task_metadata[-1].get('executionStatus')),
+        start=start,
+        end=end,
         attempts=task_metadata[-1].get('attempt'),
         call_root=remove_shard_path(task_metadata[-1].get('callRoot')),
         job_id=task_metadata[-1].get('subWorkflowId'),

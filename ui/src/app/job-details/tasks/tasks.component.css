@@ -94,9 +94,20 @@ button.shard-icon {
 .shards-header {
   font-size: 0.8rem;
   line-height: 1.5rem;
+  margin: 0 0.5rem 0 0.5rem;
+  font-weight: bold;
 }
 
 .shards-statuses {
-  font-size: 0.65rem;
-  margin-right: 0.5rem;
+  margin: 0.5rem;
+}
+
+.shard-count {
+  text-align: center;
+  font-size: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.shard-status clr-icon {
+  margin: 0 auto;
 }

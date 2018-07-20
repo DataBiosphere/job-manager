@@ -31,13 +31,11 @@
             </clr-tooltip>
           </button>
           <mat-menu #shardMenu="matMenu" class="wide-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
-            <div class="shards-header">
-              {{ getScatteredCountTotal(t) }} Shards
-            </div>
+            <div class="shards-header">Scattered: {{ getScatteredCountTotal(t) }} shards</div>
             <div class="shards-container" *ngIf="isScattered(t)">
-              <div class="shards-statuses" *ngFor="let shardStatus of t.shardStatuses">
-                <span class="shards-status">{{ shardStatus.status }}: </span>
-                <span class="shards-count">{{ shardStatus.count }}</span>
+              <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
+                <div class="shard-status"><clr-icon [attr.shape]="getStatusIcon(jobStatus)" size="18"></clr-icon></div>
+                <div class="shard-count">{{ getShardCountByStatus(t, jobStatus) }}</div>
               </div>
             </div>
           </mat-menu>
