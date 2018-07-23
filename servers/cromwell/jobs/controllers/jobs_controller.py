@@ -172,9 +172,8 @@ def query_jobs(body, **kwargs):
     headers = kwargs.get('auth_headers')
     query = QueryJobsRequest.from_dict(body)
     query_page_size = query.page_size or _DEFAULT_PAGE_SIZE
-    if query.page_token is None:
-        offset = 0
-    else:
+    offset = 0
+    if query.page_token is not None:
         offset = page_tokens.decode_offset(query.page_token)
     page = page_from_offset(offset, query_page_size)
 
@@ -195,7 +194,7 @@ def query_jobs(body, **kwargs):
 
     now = datetime.utcnow()
     jobs_list = [format_job(job, now) for job in response.json()['results']]
-    if page == last_page:
+    if page >= last_page:
         return QueryJobsResponse(results=jobs_list)
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
     return QueryJobsResponse(
