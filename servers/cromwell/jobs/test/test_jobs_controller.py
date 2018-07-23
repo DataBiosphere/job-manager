@@ -511,6 +511,8 @@ class TestJobsController(BaseTestCase):
                 'additionalQueryResultFields': 'parentWorkflowId'
             }, {
                 'additionalQueryResultFields': 'labels'
+            }, {
+                'includeSubworkflows': 'false'
             }]))
 
     def test_cromwell_query_params(self):
@@ -545,6 +547,8 @@ class TestJobsController(BaseTestCase):
             'additionalQueryResultFields': 'parentWorkflowId'
         }, {
             'additionalQueryResultFields': 'labels'
+        }, {
+            'includeSubworkflows': 'false'
         }]
         query_params.extend([{'status': s} for s in query.statuses])
         self.assertItemsEqual(

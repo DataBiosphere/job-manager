@@ -172,59 +172,33 @@ def query_jobs(body, **kwargs):
     headers = kwargs.get('auth_headers')
     query = QueryJobsRequest.from_dict(body)
     query_page_size = query.page_size or _DEFAULT_PAGE_SIZE
-    # Request more than query.page_size from cromwell since subworkflows will get filtered out
-    page_size = query_page_size * 2
-    total_results = get_total_results(query, auth, headers)
+    offset = 0
+    if query.page_token is not None:
+        offset = page_tokens.decode_offset(query.page_token)
+    page = page_from_offset(offset, query_page_size)
 
-    results = []
-    offset = page_tokens.decode_offset(query.page_token) or 0
-    page = page_from_offset(offset, page_size)
-    last_page = get_last_page(total_results, page_size)
-
-    while len(results) < query_page_size and page <= last_page:
-        page_from_end = last_page - page + 1
-
-        response = requests.post(
-            _get_base_url() + '/query',
-            json=cromwell_query_params(query, page_from_end, page_size),
-            auth=auth,
-            headers=headers)
-
-        if response.status_code == BadRequest.code:
-            raise BadRequest(response.json().get('message'))
-        elif response.status_code == InternalServerError.code:
-            raise InternalServerError(response.json().get('message'))
-        response.raise_for_status()
-
-        # Only list parent jobs
-        now = datetime.utcnow()
-        jobs_list = [
-            format_job(job, now) for job in response.json()['results']
-            if _is_parent_workflow(job)
-        ]
-        jobs_list.reverse()
-        results.extend(jobs_list)
-        offset = offset + page_size
-        page = page_from_offset(offset, page_size)
-
-    next_page_token = page_tokens.encode_offset(offset)
-    return QueryJobsResponse(results=results, next_page_token=next_page_token)
-
-
-def get_total_results(query, auth, headers):
-    params_for_cromwell = cromwell_query_params(query, page=1, page_size=1)
     response = requests.post(
         _get_base_url() + '/query',
-        json=params_for_cromwell,
+        json=cromwell_query_params(query, page, query_page_size),
         auth=auth,
         headers=headers)
+
+    total_results = response.json()['totalResultsCount']
+    last_page = get_last_page(total_results, query_page_size)
+
     if response.status_code == BadRequest.code:
         raise BadRequest(response.json().get('message'))
     elif response.status_code == InternalServerError.code:
         raise InternalServerError(response.json().get('message'))
     response.raise_for_status()
 
-    return response.json()['totalResultsCount']
+    now = datetime.utcnow()
+    jobs_list = [format_job(job, now) for job in response.json()['results']]
+    if page >= last_page:
+        return QueryJobsResponse(results=jobs_list)
+    next_page_token = page_tokens.encode_offset(offset + query_page_size)
+    return QueryJobsResponse(
+        results=jobs_list, next_page_token=next_page_token)
 
 
 def get_last_page(total_results, page_size):
@@ -236,7 +210,9 @@ def get_last_page(total_results, page_size):
 
 
 def page_from_offset(offset, page_size):
-    return 1 + offset / page_size
+    if offset == 0:
+        return 1
+    return 1 + (offset / page_size)
 
 
 def cromwell_query_params(query, page, page_size):
@@ -262,6 +238,7 @@ def cromwell_query_params(query, page, page_size):
     query_params.append({'page': str(page)})
     query_params.append({'additionalQueryResultFields': 'parentWorkflowId'})
     query_params.append({'additionalQueryResultFields': 'labels'})
+    query_params.append({'includeSubworkflows': 'false'})
     return query_params
 
 
@@ -306,7 +283,3 @@ def _parse_datetime(date_string):
 
 def _get_base_url():
     return current_app.config['cromwell_url']
-
-
-def _is_parent_workflow(job):
-    return not job.get('parentWorkflowId')

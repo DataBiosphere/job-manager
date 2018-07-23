@@ -175,7 +175,7 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
-      .toContain('of many');
+      .toContain('1 - 1 of many');
 
     // Transition to exhaustive, "of X" should now display length.
     testComponent.jobs.next({
@@ -185,7 +185,7 @@ describe('HeaderComponent', () => {
     });
     fixture.detectChanges();
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
-      .toContain('of 2');
+      .toContain('1 - 2 of 2');
   }));
 
   it('should maintain chip ordering', fakeAsync(() => {
