@@ -185,8 +185,8 @@ def format_scattered_task(task_name, task_metadata):
         name=remove_workflow_name(task_name),
         execution_status=task_statuses.cromwell_execution_to_api(
             task_metadata[-1].get('executionStatus')),
-        start=start,
-        end=end,
+        start=minStart,
+        end=maxEnd,
         attempts=task_metadata[-1].get('attempt'),
         call_root=remove_shard_path(task_metadata[-1].get('callRoot')),
         job_id=task_metadata[-1].get('subWorkflowId'),
