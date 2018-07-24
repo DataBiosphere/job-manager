@@ -139,6 +139,11 @@ From the base of the checked-out job-manager repository, run:
 scripts/rebuild_swagger.sh
 ```
 
+This will find and download `swagger-codegen-cli.jar`, remove the necessary build artifacts and use `swagger-codegen-cli.jar` to
+regenerate them. 
+
+If you prefer to do this manually you can fallow the instructions below.
+
 #### Manually
 
 If you prefer to perform the steps manually, you can:
