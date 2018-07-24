@@ -2,7 +2,16 @@ import {TestBed, async, ComponentFixture} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {Component, DebugElement, ViewChild} from '@angular/core';
-import {MatButtonModule, MatCardModule, MatGridListModule, MatMenuModule, MatTabsModule, MatTableModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatGridListModule,
+  MatListModule,
+  MatMenuModule,
+  MatTabsModule,
+  MatTableModule
+} from '@angular/material';
+import {ClrTooltipModule} from "@clr/angular";
 import {SharedModule} from '../../shared/shared.module';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
@@ -42,9 +51,11 @@ describe('JobPanelsComponent', () => {
       ],
       imports: [
         BrowserAnimationsModule,
+        ClrTooltipModule,
         MatButtonModule,
         MatCardModule,
         MatGridListModule,
+        MatListModule,
         MatMenuModule,
         MatTabsModule,
         MatTableModule,
