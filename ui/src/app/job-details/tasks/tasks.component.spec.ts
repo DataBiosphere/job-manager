@@ -5,6 +5,7 @@ import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
   MatButtonModule,
   MatExpansionModule,
+  MatMenuModule,
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
@@ -59,6 +60,7 @@ describe('TaskDetailsComponent', () => {
         CommonModule,
         MatButtonModule,
         MatExpansionModule,
+        MatMenuModule,
         MatTableModule,
         MatTabsModule,
         MatTooltipModule,
