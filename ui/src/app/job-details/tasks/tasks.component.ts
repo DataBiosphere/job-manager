@@ -86,19 +86,20 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     return [JobStatus.Succeeded,
             JobStatus.Failed,
             JobStatus.Running,
-            JobStatus.Succeeded,
             JobStatus.Submitted];
    }
 
   getShardCountByStatus(task:TaskMetadata, status:JobStatus): number {
+    let result = 0
     if(this.isScattered(task)) {
       task.shardStatuses.forEach((thisStatus) => {
         if (status == thisStatus.status) {
-          return thisStatus.count;
+          result = thisStatus.count;
+          return;
         }
       });
     }
-    return 0;
+    return result;
   }
 }
 
