@@ -128,9 +128,20 @@ https://github.com/angular/angular-cli/issues/6349).
   ```
 
 ### Updating the API using swagger-codegen
+
 We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to automatically implement the API, as defined in `api/jobs.yaml`, for all
-servers and the UI. Whenever the API is updated, follow these steps to
-update the server implementations:
+servers and the UI. Whenever the API is updated, follow these steps to update the server implementations:
+
+#### Scripted
+
+From the base of the checked-out job-manager repository, run:
+```sh
+scripts/rebuild_swagger.sh
+```
+
+#### Manually
+
+If you prefer to perform the steps manually, you can:
 
 1. If you do not already have the jar, you can download it here:
     ```
