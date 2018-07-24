@@ -38,7 +38,7 @@ export class JobPanelsComponent implements OnInit {
   numCompletedTasks: number = 0;
   numTasks: number = 0;
   errorNumLimit: number = 3;
-  errorCharLimit: number = 120;
+  errorCharLimit: number = 80;
 
   ngOnInit() {
     if (this.job.extensions) {

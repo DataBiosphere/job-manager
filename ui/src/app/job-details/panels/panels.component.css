@@ -56,7 +56,13 @@ p {
 
 .other-errors {
   font-size: 0.7rem;
-  color: gray
+  color: gray;
+}
+
+.errors-total {
+  font-size: 0.7rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
 ::ng-deep .card .mat-list {
@@ -70,7 +76,7 @@ p {
 ::ng-deep .card .mat-list .mat-list-item .mat-list-item-content {
   font-size: 0.7rem;
   padding-left: 0;
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.5rem;
   margin-top: 0;
   line-height: 0.8rem;
   cursor: pointer;
