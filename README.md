@@ -144,12 +144,15 @@ scripts/rebuild_swagger.sh
 If you prefer to perform the steps manually, you can:
 
 1. If you do not already have the jar, you can download it here:
+ 
     ```
-    # Linux
-    wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
-    # macOS
-    brew install swagger-codegen
+      # Using wget:
+      wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+      
+      # Or, using curl:
+      curl http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar > swagger-codegen-cli.jar
     ```
+    
 2. Clear out existing generated models:
     ```
     rm ui/src/app/shared/model/*
