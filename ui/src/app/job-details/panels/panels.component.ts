@@ -37,6 +37,8 @@ export class JobPanelsComponent implements OnInit {
   displayedExtensions: Array<string> = [];
   numCompletedTasks: number = 0;
   numTasks: number = 0;
+  errorNumLimit: number = 3;
+  errorCharLimit: number = 120;
 
   ngOnInit() {
     if (this.job.extensions) {
@@ -77,5 +79,12 @@ export class JobPanelsComponent implements OnInit {
 
   handleClose(): void {
     this.close.emit();
+  }
+
+  showErrorPreview(errorMessage: string): string {
+    if (errorMessage.length > this.errorCharLimit) {
+      return errorMessage.slice(0, this.errorCharLimit) + "...";
+    }
+    return errorMessage;
   }
 }

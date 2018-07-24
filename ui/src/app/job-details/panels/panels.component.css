@@ -54,3 +54,33 @@ p {
   display: inline-block;
 }
 
+.other-errors {
+  font-size: 0.7rem;
+  color: gray
+}
+
+::ng-deep .card .mat-list {
+  padding-top: 0;
+}
+
+::ng-deep .card .mat-list .mat-list-item {
+  height: auto;
+}
+
+::ng-deep .card .mat-list .mat-list-item .mat-list-item-content {
+  font-size: 0.7rem;
+  padding-left: 0;
+  margin-bottom: 0.9rem;
+  margin-top: 0;
+  line-height: 0.8rem;
+  cursor: pointer;
+}
+
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+  color: #fff;
+  display: block;
+  margin: -0.6rem 0.5rem 0 0;
+}

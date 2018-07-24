@@ -32,6 +32,23 @@
   </mat-card-content>
 </mat-card>
 
+<mat-card class="card" *ngIf="job.failures">
+  <mat-card-title>Errors</mat-card-title>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item *ngFor="let f of job.failures | slice:0:errorNumLimit">
+        <clr-tooltip>
+          <span clrTooltipTrigger>{{ showErrorPreview(f.failure) }}</span>
+          <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
+            <span>{{ f.failure }}</span>
+          </clr-tooltip-content>
+        </clr-tooltip>
+      </mat-list-item>
+    </mat-list>
+    <div class="other-errors" *ngIf="job.failures.length > errorNumLimit">and {{ job.failures.length - errorNumLimit }} others</div>
+  </mat-card-content>
+</mat-card>
+
 <mat-card class="card" *ngIf="whiteListedExtensions().length > 0">
   <mat-card-title>Details</mat-card-title>
   <mat-card-content>

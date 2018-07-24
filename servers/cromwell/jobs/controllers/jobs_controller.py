@@ -97,7 +97,7 @@ def get_job(id, **kwargs):
     failures = None
     if job.get('failures'):
         failures = [
-            FailureMessage(failure=f['message']) for f in job['failures']
+            FailureMessage(failure=c['message']) for f in job['failures'] for c in f['causedBy']
         ]
     # Get the most recent run of each task in task_metadata
     tasks = [
