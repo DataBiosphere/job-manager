@@ -14,9 +14,8 @@
   <mat-card-title>Status</mat-card-title>
   <mat-card-content>
     <p><b>
-      {{ job.status }}:
       <ng-container *ngIf="numTasks > 0">
-        {{ numCompletedTasks }} of {{ numTasks }} tasks completed
+        Tasks: {{ numSucceededTasks }} succeeded; {{ numRunningTasks }} running; {{ numFailedTasks }} failed
       </ng-container>
     </b></p>
     <p id="submitted" *ngIf="job.submission">

@@ -35,7 +35,9 @@ export class JobPanelsComponent implements OnInit {
   @Output() close: EventEmitter<any> = new EventEmitter();
   labels: Array<string> = [];
   displayedExtensions: Array<string> = [];
-  numCompletedTasks: number = 0;
+  numSucceededTasks: number = 0;
+  numRunningTasks: number = 0;
+  numFailedTasks: number = 0;
   numTasks: number = 0;
 
   ngOnInit() {
@@ -44,7 +46,11 @@ export class JobPanelsComponent implements OnInit {
         this.numTasks = this.job.extensions.tasks.length;
         for (let task of this.job.extensions.tasks) {
           if (task.executionStatus == JobStatus[JobStatus.Succeeded]) {
-            this.numCompletedTasks++;
+            this.numSucceededTasks++;
+          } else if (task.executionStatus == JobStatus[JobStatus.Running]) {
+            this.numRunningTasks++;
+          } else if (task.executionStatus == JobStatus[JobStatus.Failed]) {
+            this.numFailedTasks++;
           }
         }
       }
