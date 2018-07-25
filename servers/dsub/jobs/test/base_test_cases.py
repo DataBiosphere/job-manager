@@ -43,10 +43,10 @@ class BaseTestCases:
             cls.wait_timeout = 30
             cls.poll_interval = 1
             cls.test_token_label = {
-                'test_token': datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+                'test_token':
+                datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
             }
 
-        
         def assert_query_matches(self, query_params, job_list):
             """Executes query and asserts that the results match the given job_list
 
@@ -73,9 +73,10 @@ class BaseTestCases:
             app.app.json_encoder = JSONEncoder
             app.add_api('swagger.yaml')
             # Set the test_token value to globle config so that controller can filter jobs accordingly
+            app.app.config['TEST_TOKEN_VALUE'] = self.test_token_label[
+                'test_token']
             app.app.config[
-                'TEST_TOKEN_VALUE'] = self.test_token_label['test_token']
-            app.app.config['AGGREGATION_JOB_NAME_FILTER'] = "aggregation-testing-unique"
+                'AGGREGATION_JOB_NAME_FILTER'] = "aggregation-testing-unique"
             return app.app
 
         def expected_log_files(self, job_id):
@@ -243,7 +244,6 @@ class BaseTestCases:
                     .format(job_id, status, self.wait_timeout))
 
             return job
-
 
         def test_update_job_labels(self):
             resp = self.client.open('/jobs/asdf/updateLabels', method='POST')
@@ -469,32 +469,35 @@ class BaseTestCases:
                     page_token=response.next_page_token,
                     extensions=ExtendedQueryFields(submission=min_time)),
                 [job2])
-        
+
         def status_counts_to_dict(self, status_counts):
             status_counts_dict = {}
             for status_count in status_counts.counts:
                 status_counts_dict[status_count.status] = status_count.count
             return status_counts_dict
-         
+
         def aggregation_response_to_dict(self, aggregation_response):
             # Flatten the nested aggregation response to a dict that is easy to compare equality
             aggregation_response_dict = {}
-            aggregation_response_dict['summary'] = self.status_counts_to_dict(aggregation_response.summary)
+            aggregation_response_dict['summary'] = self.status_counts_to_dict(
+                aggregation_response.summary)
 
             for aggregation in aggregation_response.aggregations:
                 print(aggregation.key)
                 entry_dict = {}
 
                 for entry in aggregation.entries:
-                    entry_dict[entry.label] = self.status_counts_to_dict(entry.status_counts)
+                    entry_dict[entry.label] = self.status_counts_to_dict(
+                        entry.status_counts)
 
                 aggregation_response_dict[aggregation.key] = entry_dict
-                
+
             return aggregation_response_dict
 
-
-        def assert_aggregation_response_equal(self, aggregation_response, userId, name):
-            aggregation_response_dict = self.aggregation_response_to_dict(aggregation_response)
+        def assert_aggregation_response_equal(self, aggregation_response,
+                                              userId, name):
+            aggregation_response_dict = self.aggregation_response_to_dict(
+                aggregation_response)
             status_counts_total = {
                 'Running': 3,
                 'Failed': 1,
@@ -509,18 +512,16 @@ class BaseTestCases:
                 'Aborted': 1
             }
 
-            status_counts_single = {
-                'Running': 1
-            }
+            status_counts_single = {'Running': 1}
 
             expected_aggregations_response_dict = {
                 'summary': status_counts_total,
-                'userId':  {
+                'userId': {
                     userId: status_counts_total
                 },
                 'name': {
                     name: status_counts_total
-                }, 
+                },
                 'aggregation-testing-unique-1': {
                     'testing-rocks': status_counts_group,
                     'different-value': status_counts_single
@@ -541,7 +542,8 @@ class BaseTestCases:
             print(expected_aggregations_response_dict)
             print('original')
             print(aggregation_response_dict)
-            self.assertEqual(aggregation_response_dict, expected_aggregations_response_dict)
+            self.assertEqual(aggregation_response_dict,
+                             expected_aggregations_response_dict)
 
         def test_get_job_aggregations(self):
             name = flask.current_app.config['AGGREGATION_JOB_NAME_FILTER']
@@ -562,32 +564,60 @@ class BaseTestCases:
 
             # Create a running job that has same label but no test_token label
             job_running_no_token = self.api_job_id(
-                self.start_job('sleep 180', labels=labels, name=name, with_test_token=False))
+                self.start_job(
+                    'sleep 180',
+                    labels=labels,
+                    name=name,
+                    with_test_token=False))
             # Create an aborted job
             job_aborted = self.api_job_id(
-                self.start_job('sleep 180', labels=labels, name=name,with_test_token=True))
+                self.start_job(
+                    'sleep 180',
+                    labels=labels,
+                    name=name,
+                    with_test_token=True))
             # Create a failed job
             job_failed = self.api_job_id(
-                self.start_job('not_a_command', labels=labels, name=name, with_test_token=True))
+                self.start_job(
+                    'not_a_command',
+                    labels=labels,
+                    name=name,
+                    with_test_token=True))
             # Created a succeeded job
             job_succeeded = self.api_job_id(
-                self.start_job('echo SUCCEEDED', labels=labels, name=name, with_test_token=True))
+                self.start_job(
+                    'echo SUCCEEDED',
+                    labels=labels,
+                    name=name,
+                    with_test_token=True))
             # Created a running job
             job_running = self.api_job_id(
-                self.start_job('sleep 180', labels=labels, name=name, with_test_token=True))
+                self.start_job(
+                    'sleep 180',
+                    labels=labels,
+                    name=name,
+                    with_test_token=True))
 
             # Create a running job that has a different label and no test_token label
             job_running_no_token_diff_label = self.api_job_id(
                 self.start_job('sleep 180', labels=labels_no_show, name=name))
-            
+
             # Create a running job that has different label values
             job_running_diff_label_value = self.api_job_id(
-                self.start_job('sleep 180', labels=another_value, name=name, with_test_token=True))
+                self.start_job(
+                    'sleep 180',
+                    labels=another_value,
+                    name=name,
+                    with_test_token=True))
             # Create a running job that has different labels
             job_running_diff_labels = self.api_job_id(
-                self.start_job('sleep 180', labels=different_labels, name=name, with_test_token=True))
+                self.start_job(
+                    'sleep 180',
+                    labels=different_labels,
+                    name=name,
+                    with_test_token=True))
 
-            # wait_status need 10ms on local provider 
+            # wait_status need 10ms on local provider
             if self.provider == local.LocalJobProvider(resources):
                 sleep(10)
 
@@ -602,7 +632,8 @@ class BaseTestCases:
 
             self.wait_status(job_running, ApiStatus.RUNNING)
             self.wait_status(job_running_no_token, ApiStatus.RUNNING)
-            self.wait_status(job_running_no_token_diff_label, ApiStatus.RUNNING)
+            self.wait_status(job_running_no_token_diff_label,
+                             ApiStatus.RUNNING)
             self.wait_status(job_running_diff_label_value, ApiStatus.RUNNING)
             self.wait_status(job_running_diff_labels, ApiStatus.RUNNING)
 
@@ -611,12 +642,12 @@ class BaseTestCases:
 
             print('original response')
             print(aggregation_resp.to_dict())
-            self.assert_aggregation_response_equal(aggregation_resp, userId, name)
-            
+            self.assert_aggregation_response_equal(aggregation_resp, userId,
+                                                   name)
+
             # Cancel jobs for testing
             self.must_abort_job(job_running)
             self.must_abort_job(job_running_no_token)
             self.must_abort_job(job_running_diff_labels)
             self.must_abort_job(job_running_diff_label_value)
             self.must_abort_job(job_running_no_token_diff_label)
-            

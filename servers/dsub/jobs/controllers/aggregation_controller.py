@@ -38,10 +38,10 @@ def get_job_aggregations(timeFrame, projectId=None):
 
     num = 0
     # is_testing = False
-    
+
     try:
         for job in jobs:
-            
+
             # AGGREGATION_FILTER_LABEL is a global config parameter only set for aggregation testing
             # and jobs that do not have this label are discarded when testing
             # if 'TEST_TOKEN_VALUE' in current_app.config:
@@ -54,7 +54,9 @@ def get_job_aggregations(timeFrame, projectId=None):
             #         print(job.labels['test_token'] == current_app.config['TEST_TOKEN_VALUE'])
 
             # print(job)
-            if 'TEST_TOKEN_VALUE' in current_app.config and ('test_token' not in job.labels or job.labels['test_token'] != current_app.config['TEST_TOKEN_VALUE']):
+            if 'TEST_TOKEN_VALUE' in current_app.config and (
+                    'test_token' not in job.labels or job.labels['test_token']
+                    != current_app.config['TEST_TOKEN_VALUE']):
                 # print('continue')
                 continue
 
