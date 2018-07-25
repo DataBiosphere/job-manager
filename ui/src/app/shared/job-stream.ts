@@ -20,6 +20,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
               private request: QueryJobsRequest) {
     super({
       results: [],
+      totalKnownResults: 0,
       exhaustive: false,
       stale: false
     });
@@ -38,11 +39,14 @@ export class JobStream extends BehaviorSubject<JobListView> {
       let pageSize = Math.max(
         JobStream.minBackendPageSize, atLeast - this.value.results.length);
       return this.queryJobs(pageSize, prevResp.nextPageToken).then(resp => {
+        console.log(resp);
         this.next({
           results: this.value.results.concat(resp.results),
+          totalKnownResults: this.value.totalKnownResults,
           exhaustive: !resp.nextPageToken,
           stale: false
         });
+        console.log(this.value);
         return resp;
       });
     });
@@ -52,6 +56,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
   public setStale(): void {
     this.next({
       results: this.value.results,
+      totalKnownResults: this.value.totalKnownResults,
       exhaustive: this.value.exhaustive,
       stale: true
     });
@@ -70,6 +75,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
 // by the exhaustive flag.
 export type JobListView = {
   results: QueryJobsResult[];
+  totalKnownResults: number;
   exhaustive: boolean;
   stale: boolean;
 }

@@ -426,6 +426,10 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/QueryJobsResult"
+      totalKnownResults:
+        type: "number"
+        description: "The total number of results which matched the query. Can be\
+          \ empty if the backend cannot calculate this total."
       nextPageToken:
         type: "string"
         description: "The continuation token, which is used to page through large\

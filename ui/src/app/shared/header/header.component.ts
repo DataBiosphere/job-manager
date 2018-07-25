@@ -279,16 +279,31 @@ export class JobsPaginatorIntl extends MatPaginatorIntl {
   }
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
-    if (this.backendJobs.value.exhaustive) {
+
+    let knownLength = null;
+
+    if (this.backendJobs.value.totalKnownResults != null) {
+      knownLength = this.backendJobs.value.totalKnownResults;
+    } else if (this.backendJobs.value.exhaustive) {
+      knownLength = length;
+    } else {
+      knownLength = null;
+    }
+
+    if (knownLength != null) {
       // Can't use proper inheritance here, since MatPaginatorIntl only defines
       // properties, rather than class methods.
-      return this.defaultIntl.getRangeLabel(page, pageSize, length);
+
+
+      console.log(page, pageSize, knownLength)
+      return this.defaultIntl.getRangeLabel(page, pageSize, knownLength);
+    } else {
+      // Ported from MatPaginatorIntl - boundary checks likely unneeded.
+      const startIndex = page * pageSize;
+      const endIndex = startIndex < length ?
+          Math.min(startIndex + pageSize, length) :
+          startIndex + pageSize;
+      return `${startIndex + 1} - ${endIndex} of many`;
     }
-    // Ported from MatPaginatorIntl - boundary checks likely unneeded.
-    const startIndex = page * pageSize;
-    const endIndex = startIndex < length ?
-        Math.min(startIndex + pageSize, length) :
-        startIndex + pageSize;
-    return `${startIndex + 1} - ${endIndex} of many`;
   }
 }
