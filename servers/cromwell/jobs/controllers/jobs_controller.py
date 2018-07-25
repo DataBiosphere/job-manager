@@ -197,8 +197,7 @@ def query_jobs(body, **kwargs):
     total_known_results = int(response.json()['totalResultsCount'])
     if page >= last_page:
         return QueryJobsResponse(
-            results=jobs_list,
-            total_known_results=total_known_results)
+            results=jobs_list, total_known_results=total_known_results)
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
     return QueryJobsResponse(
         results=jobs_list,
