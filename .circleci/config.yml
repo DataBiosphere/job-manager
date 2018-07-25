@@ -25,7 +25,7 @@ jobs:
       - run:
           name: Rebuild swagger
           command: |
-            sh ./scripts/rebuild_swagger.sh
+            /bin/bash ./scripts/rebuild_swagger.sh
       - run:
           name: Lint angular code with ng lint
           command: |
@@ -66,7 +66,7 @@ jobs:
       - run:
           name: Rebuild swagger
           command: |
-            sh ./scripts/rebuild_swagger.sh
+            /bin/bash ./scripts/rebuild_swagger.sh
       - run:
           name: Install detox and yapf
           command: |
