@@ -27,11 +27,6 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
 
     def setUp(self):
         self.log_path = '{}/logging'.format(self.testing_root)
-        # Because all these tests are being run in the same project, add a
-        # unique test_token to scope all jobs to this test
-        # self.test_token_label = {
-        #     'test_token': datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
-        # }
 
     def create_app(self):
         app = super(TestJobsControllerGoogle, self).create_app()
@@ -53,33 +48,6 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
             query_params.labels = self.test_token_label
         return super(TestJobsControllerGoogle, self).assert_query_matches(
             query_params, job_list)
-
-    # def start_job(self,
-    #               command,
-    #               name=None,
-    #               envs={},
-    #               labels={},
-    #               inputs={},
-    #               inputs_recursive={},
-    #               outputs={},
-    #               outputs_recursive={},
-    #               task_count=1,
-    #               wait=False,
-    #               with_label=False):
-    #     if with_label:
-    #         labels.update(self.test_token_label)
-
-    #     return super(TestJobsControllerGoogle, self).start_job(
-    #         command,
-    #         name=name,
-    #         envs=envs,
-    #         labels=labels,
-    #         inputs=inputs,
-    #         inputs_recursive=inputs_recursive,
-    #         outputs=outputs,
-    #         outputs_recursive=outputs_recursive,
-    #         task_count=task_count,
-    #         wait=wait)
 
     def test_abort_job(self):
         started = self.start_job('sleep 30', with_test_token=True)

@@ -72,9 +72,11 @@ class BaseTestCases:
             app = connexion.App(__name__, specification_dir='../swagger/')
             app.app.json_encoder = JSONEncoder
             app.add_api('swagger.yaml')
-            # Set the test_token value to globle config so that controller can filter jobs accordingly
+
+            # TEST_TOKEN_VALIE is a global config value used to distinguish testing jobs from batch to batch by timestemp
             app.app.config['TEST_TOKEN_VALUE'] = self.test_token_label[
                 'test_token']
+            # AGGREGATION_JOB_NAME_FILTER is a global config value used to distinguish aggregation testing jobs from others
             app.app.config[
                 'AGGREGATION_JOB_NAME_FILTER'] = "aggregation-testing-unique"
             return app.app
@@ -137,10 +139,7 @@ class BaseTestCases:
                       task_count=1,
                       wait=False,
                       with_test_token=False):
-            # print(name)
-            # print(labels)
             if with_test_token:
-                # print('updated')
                 labels.update(self.test_token_label)
 
             logging = param_util.build_logging_param(self.log_path)
@@ -483,7 +482,6 @@ class BaseTestCases:
                 aggregation_response.summary)
 
             for aggregation in aggregation_response.aggregations:
-                print(aggregation.key)
                 entry_dict = {}
 
                 for entry in aggregation.entries:
@@ -526,10 +524,6 @@ class BaseTestCases:
                     'testing-rocks': status_counts_group,
                     'different-value': status_counts_single
                 },
-                # 'aggregation-testing-unique-2': {
-                #     'debugging-bad': status_counts_group,
-                #     'also-different-value': status_counts_single
-                # },
                 'test_token': {
                     self.test_token_label['test_token']: status_counts_total,
                 },
@@ -537,11 +531,7 @@ class BaseTestCases:
                     'different-value': status_counts_single
                 }
             }
-            self.maxDiff = None
-            print('expected')
-            print(expected_aggregations_response_dict)
-            print('original')
-            print(aggregation_response_dict)
+
             self.assertEqual(aggregation_response_dict,
                              expected_aggregations_response_dict)
 
@@ -560,7 +550,7 @@ class BaseTestCases:
 
             labels_no_show = {'no-show': 'cannot-see-me'}
 
-            # Do not change the order of creating jobs since label is updated
+            # Do not change the order of creating jobs since the labels are updated
 
             # Create a running job that has same label but no test_token label
             job_running_no_token = self.api_job_id(
@@ -640,8 +630,6 @@ class BaseTestCases:
             userId = self.must_get_job(job_running).extensions.user_id
             aggregation_resp = self.must_get_job_aggregations('HOURS_1')
 
-            print('original response')
-            print(aggregation_resp.to_dict())
             self.assert_aggregation_response_equal(aggregation_resp, userId,
                                                    name)
 
