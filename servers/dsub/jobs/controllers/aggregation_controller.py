@@ -36,20 +36,45 @@ def get_job_aggregations(timeFrame, projectId=None):
     job_name_summary = {}
     label_summaries = {}
 
+    num = 0
+    # is_testing = False
+    
     try:
         for job in jobs:
+            
             # AGGREGATION_FILTER_LABEL is a global config parameter only set for aggregation testing
             # and jobs that do not have this label are discarded when testing
-            if 'AGGREGATION_JOB_NAME_FILTER' in current_app.config and job.name.find(
-                    current_app.config['AGGREGATION_JOB_NAME_FILTER']) < 0:
+            # if 'TEST_TOKEN_VALUE' in current_app.config:
+            #     print('filter name=', current_app.config['TEST_TOKEN_VALUE'])
+            #     print('job labels', job.labels)
+            #     print(type(job.labels))
+            #     print('test_token' in job.labels)
+            #     if 'test_token' in job.labels:
+            #         print(job.labels['test_token'] is current_app.config['TEST_TOKEN_VALUE'])
+            #         print(job.labels['test_token'] == current_app.config['TEST_TOKEN_VALUE'])
+
+            # print(job)
+            if 'TEST_TOKEN_VALUE' in current_app.config and ('test_token' not in job.labels or job.labels['test_token'] != current_app.config['TEST_TOKEN_VALUE']):
+                # print('continue')
                 continue
 
+            if 'AGGREGATION_JOB_NAME_FILTER' in current_app.config and job.name != current_app.config['AGGREGATION_JOB_NAME_FILTER']:
+                continue
+            # if not is_testing and 'test_token' in job.labels:
+            #     is_testing = True
+
+            # if is_testing and 'test_token' not in job.labels:
+            #     continue
+
+            num += 1
             _count_total_summary(job, total_summary)
             _count_for_key(job, user_summary, job.extensions.user_id)
             _count_for_key(job, job_name_summary, job.name)
             _count_top_labels(job, label_summaries)
     except apiclient.errors.HttpError as error:
         _handle_http_error(error, projectId)
+
+    print('jobs num: ', num)
 
     aggregations = [
         _to_aggregation('User Id', 'userId', user_summary),
@@ -110,8 +135,8 @@ def _to_top_labels_aggregations(label_summaries):
     # where valid means a label has jobs more than _LABEL_MIN_COUNT_FOR_RANK.
     label_freq = {}
     for label, item in label_summaries.items():
-        # job-id label contains one job per label value, filter it out
-        if label == 'job-id':
+        # Do not use the job-id or task-id label as aggregation key
+        if label == 'job-id' or label == 'task-id':
             continue
         total_count = 0
         for _, counts in item.items():

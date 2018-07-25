@@ -72,6 +72,5 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
         os.mknod(input_file_path)
         super(TestJobsControllerLocal, self).test_get_succeeded_job()
 
-
 if __name__ == '__main__':
     unittest.main()

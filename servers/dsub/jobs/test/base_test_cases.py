@@ -2,6 +2,8 @@ import connexion
 import datetime
 from dsub.commands import dsub
 from dsub.lib import job_model, param_util
+from dsub.providers import local
+from dsub.lib import resources
 import flask
 import flask_testing
 import logging
@@ -40,7 +42,11 @@ class BaseTestCases:
             cls.provider = None
             cls.wait_timeout = 30
             cls.poll_interval = 1
+            cls.test_token_label = {
+                'test_token': datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+            }
 
+        
         def assert_query_matches(self, query_params, job_list):
             """Executes query and asserts that the results match the given job_list
 
@@ -66,9 +72,10 @@ class BaseTestCases:
             app = connexion.App(__name__, specification_dir='../swagger/')
             app.app.json_encoder = JSONEncoder
             app.add_api('swagger.yaml')
+            # Set the test_token value to globle config so that controller can filter jobs accordingly
             app.app.config[
-                'AGGREGATION_JOB_NAME_FILTER'] = "aggregation-testing-unique:" + datetime.datetime.now(
-                ).strftime('%Y%m%d_%H%M%S')
+                'TEST_TOKEN_VALUE'] = self.test_token_label['test_token']
+            app.app.config['AGGREGATION_JOB_NAME_FILTER'] = "aggregation-testing-unique"
             return app.app
 
         def expected_log_files(self, job_id):
@@ -127,7 +134,14 @@ class BaseTestCases:
                       outputs={},
                       outputs_recursive={},
                       task_count=1,
-                      wait=False):
+                      wait=False,
+                      with_test_token=False):
+            # print(name)
+            # print(labels)
+            if with_test_token:
+                # print('updated')
+                labels.update(self.test_token_label)
+
             logging = param_util.build_logging_param(self.log_path)
             resources = job_model.Resources(
                 image=DOCKER_IMAGE, logging=logging, zones=['us-central1*'])
@@ -229,6 +243,7 @@ class BaseTestCases:
                     .format(job_id, status, self.wait_timeout))
 
             return job
+
 
         def test_update_job_labels(self):
             resp = self.client.open('/jobs/asdf/updateLabels', method='POST')
@@ -454,146 +469,154 @@ class BaseTestCases:
                     page_token=response.next_page_token,
                     extensions=ExtendedQueryFields(submission=min_time)),
                 [job2])
+        
+        def status_counts_to_dict(self, status_counts):
+            status_counts_dict = {}
+            for status_count in status_counts.counts:
+                status_counts_dict[status_count.status] = status_count.count
+            return status_counts_dict
+         
+        def aggregation_response_to_dict(self, aggregation_response):
+            # Flatten the nested aggregation response to a dict that is easy to compare equality
+            aggregation_response_dict = {}
+            aggregation_response_dict['summary'] = self.status_counts_to_dict(aggregation_response.summary)
 
-        def assert_status_counts_equal(self, counts1, counts2):
-            counts1Dict = {}
-            for status_count in counts1.counts:
-                counts1Dict[status_count.status] = status_count.count
+            for aggregation in aggregation_response.aggregations:
+                print(aggregation.key)
+                entry_dict = {}
 
-            counts2Dict = {}
-            for status_count in counts2.counts:
-                counts2Dict[status_count.status] = status_count.count
+                for entry in aggregation.entries:
+                    entry_dict[entry.label] = self.status_counts_to_dict(entry.status_counts)
 
-            return self.assertEqual(counts1Dict, counts2Dict)
+                aggregation_response_dict[aggregation.key] = entry_dict
+                
+            return aggregation_response_dict
+
+
+        def assert_aggregation_response_equal(self, aggregation_response, userId, name):
+            aggregation_response_dict = self.aggregation_response_to_dict(aggregation_response)
+            status_counts_total = {
+                'Running': 3,
+                'Failed': 1,
+                'Succeeded': 1,
+                'Aborted': 1
+            }
+
+            status_counts_group = {
+                'Running': 1,
+                'Failed': 1,
+                'Succeeded': 1,
+                'Aborted': 1
+            }
+
+            status_counts_single = {
+                'Running': 1
+            }
+
+            expected_aggregations_response_dict = {
+                'summary': status_counts_total,
+                'userId':  {
+                    userId: status_counts_total
+                },
+                'name': {
+                    name: status_counts_total
+                }, 
+                'aggregation-testing-unique-1': {
+                    'testing-rocks': status_counts_group,
+                    'different-value': status_counts_single
+                },
+                # 'aggregation-testing-unique-2': {
+                #     'debugging-bad': status_counts_group,
+                #     'also-different-value': status_counts_single
+                # },
+                'test_token': {
+                    self.test_token_label['test_token']: status_counts_total,
+                },
+                'different-label': {
+                    'different-value': status_counts_single
+                }
+            }
+            self.maxDiff = None
+            print('expected')
+            print(expected_aggregations_response_dict)
+            print('original')
+            print(aggregation_response_dict)
+            self.assertEqual(aggregation_response_dict, expected_aggregations_response_dict)
 
         def test_get_job_aggregations(self):
             name = flask.current_app.config['AGGREGATION_JOB_NAME_FILTER']
 
             labels = {
                 'aggregation-testing-unique-1': 'testing-rocks',
-                'aggregation-testing-unique-2': 'debugging-bad'
             }
 
-            other_values_labels = {
+            another_value = {
                 'aggregation-testing-unique-1': 'different-value',
-                'aggregation-testing-unique-2': 'also-different-value'
             }
 
             different_labels = {'different-label': 'different-value'}
 
             labels_no_show = {'no-show': 'cannot-see-me'}
 
+            # Do not change the order of creating jobs since label is updated
+
+            # Create a running job that has same label but no test_token label
+            job_running_no_token = self.api_job_id(
+                self.start_job('sleep 180', labels=labels, name=name, with_test_token=False))
             # Create an aborted job
             job_aborted = self.api_job_id(
-                self.start_job('sleep 30', labels=labels, name=name))
-            time.sleep(10)
-            self.wait_status(job_aborted, ApiStatus.RUNNING)
-            self.must_abort_job(job_aborted)
-            self.wait_status(job_aborted, ApiStatus.ABORTED)
-
+                self.start_job('sleep 180', labels=labels, name=name,with_test_token=True))
             # Create a failed job
             job_failed = self.api_job_id(
-                self.start_job('not_a_command', labels=labels, name=name))
-            self.wait_status(job_failed, ApiStatus.FAILED)
-
+                self.start_job('not_a_command', labels=labels, name=name, with_test_token=True))
             # Created a succeeded job
-            job_failed = self.api_job_id(
-                self.start_job('echo SUCCEEDED', labels=labels, name=name))
-            self.wait_status(job_failed, ApiStatus.SUCCEEDED)
-
+            job_succeeded = self.api_job_id(
+                self.start_job('echo SUCCEEDED', labels=labels, name=name, with_test_token=True))
             # Created a running job
             job_running = self.api_job_id(
-                self.start_job('sleep 30', labels=labels, name=name))
-            self.wait_status(job_running, ApiStatus.RUNNING)
+                self.start_job('sleep 180', labels=labels, name=name, with_test_token=True))
 
-            # Create a running job that has same label but no filter name
-            job_running = self.api_job_id(
-                self.start_job('sleep 30', labels=labels))
-            self.wait_status(job_running, ApiStatus.RUNNING)
-
-            # Create a running job that has different label and no filter name
-            job_running = self.api_job_id(
-                self.start_job('sleep 30', labels=labels_no_show))
-            self.wait_status(job_running, ApiStatus.RUNNING)
-
+            # Create a running job that has a different label and no test_token label
+            job_running_no_token_diff_label = self.api_job_id(
+                self.start_job('sleep 180', labels=labels_no_show, name=name))
+            
             # Create a running job that has different label values
-            job_running = self.api_job_id(
-                self.start_job(
-                    'sleep 30', labels=other_values_labels, name=name))
-            self.wait_status(job_running, ApiStatus.RUNNING)
-
+            job_running_diff_label_value = self.api_job_id(
+                self.start_job('sleep 180', labels=another_value, name=name, with_test_token=True))
             # Create a running job that has different labels
-            job_running = self.api_job_id(
-                self.start_job('sleep 30', labels=different_labels, name=name))
+            job_running_diff_labels = self.api_job_id(
+                self.start_job('sleep 180', labels=different_labels, name=name, with_test_token=True))
+
+            # wait_status need 10ms on local provider 
+            if self.provider == local.LocalJobProvider(resources):
+                sleep(10)
+
+            self.wait_status(job_aborted, ApiStatus.RUNNING)
+            self.must_abort_job(job_aborted)
+
+            self.wait_status(job_aborted, ApiStatus.ABORTED)
+
+            self.wait_status(job_failed, ApiStatus.FAILED)
+
+            self.wait_status(job_succeeded, ApiStatus.SUCCEEDED)
+
             self.wait_status(job_running, ApiStatus.RUNNING)
+            self.wait_status(job_running_no_token, ApiStatus.RUNNING)
+            self.wait_status(job_running_no_token_diff_label, ApiStatus.RUNNING)
+            self.wait_status(job_running_diff_label_value, ApiStatus.RUNNING)
+            self.wait_status(job_running_diff_labels, ApiStatus.RUNNING)
 
-            status_counts_total = StatusCounts.from_dict({
-                'counts': [{
-                    'status': u'Running',
-                    'count': 3
-                }, {
-                    'status': u'Failed',
-                    'count': 1
-                }, {
-                    'status': u'Succeeded',
-                    'count': 1
-                }, {
-                    'status': u'Aborted',
-                    'count': 1
-                }]
-            })
-
-            status_counts_group = StatusCounts.from_dict({
-                'counts': [{
-                    'status': u'Running',
-                    'count': 1
-                }, {
-                    'status': u'Failed',
-                    'count': 1
-                }, {
-                    'status': u'Succeeded',
-                    'count': 1
-                }, {
-                    'status': u'Aborted',
-                    'count': 1
-                }]
-            })
-
-            status_counts_single = StatusCounts.from_dict({
-                'counts': [{
-                    'status': u'Running',
-                    'count': 1
-                }]
-            })
-
+            userId = self.must_get_job(job_running).extensions.user_id
             aggregation_resp = self.must_get_job_aggregations('HOURS_1')
-            self.assert_status_counts_equal(aggregation_resp.summary,
-                                            status_counts_total)
 
-            for aggregation in aggregation_resp.aggregations:
-                if aggregation.key == 'name' or aggregation.key == 'userId':
-                    expected_counts = status_counts_total
-                else:
-                    expected_counts = status_counts_group
-
-                for entry in aggregation.entries:
-                    # print(entry.label)
-                    if entry.label == 'different-value' or entry.label == 'also-different-value':
-                        self.assert_status_counts_equal(
-                            entry.status_counts, status_counts_single)
-                    else:
-                        self.assert_status_counts_equal(
-                            entry.status_counts, expected_counts)
-
-            # Should have labels above presented in the aggregation response
-            labels = [
-                aggregation.key
-                for aggregation in aggregation_resp.aggregations
-            ]
-
-            expected_labels = [
-                'name', 'userId', 'aggregation-testing-unique-1',
-                'aggregation-testing-unique-2', 'different-label'
-            ]
-
-            self.assertItemsEqual(labels, expected_labels)
+            print('original response')
+            print(aggregation_resp.to_dict())
+            self.assert_aggregation_response_equal(aggregation_resp, userId, name)
+            
+            # Cancel jobs for testing
+            self.must_abort_job(job_running)
+            self.must_abort_job(job_running_no_token)
+            self.must_abort_job(job_running_diff_labels)
+            self.must_abort_job(job_running_diff_label_value)
+            self.must_abort_job(job_running_no_token_diff_label)
+            
