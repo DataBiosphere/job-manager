@@ -410,15 +410,13 @@ definitions:
         required: true
         items:
           $ref: '#/definitions/QueryJobsResult'
-      totalKnownResults:
+      totalSize:
         type: number
-        required: false
         description:
           The total number of results which matched the query. Can be empty
           if the backend cannot calculate this total.
       nextPageToken:
         type: string
-        required: false
         description: |
           The continuation token, which is used to page through large result
           sets. Provide this value in a subsequent request to return the next

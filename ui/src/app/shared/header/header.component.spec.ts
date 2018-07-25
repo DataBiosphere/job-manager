@@ -39,7 +39,7 @@ describe('HeaderComponent', () => {
 
   const initJobs: JobListView = {
     results: [testJob1, testJob2, testJob3],
-    totalKnownResults: null,
+    totalSize: null,
     exhaustive: false,
     stale: false
   };
@@ -139,7 +139,7 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
-      totalKnownResults: null,
+      totalSize: null,
       exhaustive: true,
       stale: false
     });
@@ -156,7 +156,7 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
-      totalKnownResults: null,
+      totalSize: null,
       exhaustive: false,
       stale: false
     });
@@ -172,7 +172,7 @@ describe('HeaderComponent', () => {
   it('should not show length of inexhaustive job streams of unknown length', async(() => {
     testComponent.jobs.next({
       results: [testJob1],
-      totalKnownResults: null,
+      totalSize: null,
       exhaustive: false,
       stale: false
     });
@@ -181,10 +181,10 @@ describe('HeaderComponent', () => {
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
       .toContain('1 - 1 of many');
 
-    // Transition to exhaustive, "of X" should now display length (even though totalKnownResults is still null).
+    // Transition to exhaustive, "of X" should now display length (even though totalSize is still null).
     testComponent.jobs.next({
       results: [testJob1, testJob2],
-      totalKnownResults: null,
+      totalSize: null,
       exhaustive: true,
       stale: false
     });
@@ -196,7 +196,7 @@ describe('HeaderComponent', () => {
   it('should show length of inexhaustive job streams of known length', async(() => {
     testComponent.jobs.next({
       results: [testJob1, testJob2],
-      totalKnownResults: 25,
+      totalSize: 25,
       exhaustive: false,
       stale: false
     });
