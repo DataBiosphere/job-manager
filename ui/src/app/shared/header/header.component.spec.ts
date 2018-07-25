@@ -138,6 +138,7 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
+      totalKnownResults: null,
       exhaustive: true,
       stale: false
     });
@@ -154,6 +155,7 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
+      totalKnownResults: null,
       exhaustive: false,
       stale: false
     });
@@ -169,6 +171,7 @@ describe('HeaderComponent', () => {
   it('should only show length for exhaustive job streams', async(() => {
     testComponent.jobs.next({
       results: [testJob1],
+      totalKnownResults: null,
       exhaustive: false,
       stale: false
     });
@@ -177,9 +180,10 @@ describe('HeaderComponent', () => {
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
       .toContain('1 - 1 of many');
 
-    // Transition to exhaustive, "of X" should now display length.
+    // Transition to exhaustive, "of X" should now display length (even if total known is None).
     testComponent.jobs.next({
       results: [testJob1, testJob2],
+      totalKnownResults: null,
       exhaustive: true,
       stale: false
     });
