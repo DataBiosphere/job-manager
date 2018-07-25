@@ -168,7 +168,7 @@ describe('HeaderComponent', () => {
     });
   }));
 
-  it('should only show length for exhaustive job streams', async(() => {
+  it('should not show length of inexhaustive job streams of unknown length', async(() => {
     testComponent.jobs.next({
       results: [testJob1],
       totalKnownResults: null,
@@ -180,7 +180,7 @@ describe('HeaderComponent', () => {
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
       .toContain('1 - 1 of many');
 
-    // Transition to exhaustive, "of X" should now display length (even if total known is None).
+    // Transition to exhaustive, "of X" should now display length (even though totalKnownResults is still null).
     testComponent.jobs.next({
       results: [testJob1, testJob2],
       totalKnownResults: null,
@@ -191,6 +191,19 @@ describe('HeaderComponent', () => {
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
       .toContain('1 - 2 of 2');
   }));
+
+  it('should show length of inexhaustive job streams of known length', async(() => {
+    testComponent.jobs.next({
+      results: [testJob1],
+      totalKnownResults: 25,
+      exhaustive: false,
+      stale: false
+    });
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+      .toContain('1 - 1 of 25');
+  });
 
   it('should maintain chip ordering', fakeAsync(() => {
     testComponent.chips.delete('statuses');
