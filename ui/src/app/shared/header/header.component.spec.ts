@@ -203,7 +203,7 @@ describe('HeaderComponent', () => {
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
       .toContain('1 - 1 of 25');
-  });
+  }));
 
   it('should maintain chip ordering', fakeAsync(() => {
     testComponent.chips.delete('statuses');
