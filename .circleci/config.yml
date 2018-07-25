@@ -23,6 +23,10 @@ jobs:
           paths:
             - "ui/node_modules"
       - run:
+          name: Rebuild swagger
+          command: |
+            sh ./scripts/rebuild_swagger.sh
+      - run:
           name: Lint angular code with ng lint
           command: |
             /opt/circleci/.nvm/nvm.sh use 8.5.0
@@ -59,6 +63,10 @@ jobs:
           key: node-modules-{{ .Branch }}--{{ checksum "servers/cromwell/requirements.txt" }}
       - restore_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "servers/jm_utils/requirements.txt" }}
+      - run:
+          name: Rebuild swagger
+          command: |
+            sh ./scripts/rebuild_swagger.sh
       - run:
           name: Install detox and yapf
           command: |

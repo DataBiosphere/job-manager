@@ -18,12 +18,13 @@ then
   else
     "Cannot download 'http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar' automatically (no curl or wget found on PATH)"
     "You can download it manually into this directory to continue"
+    exit 1
   fi
 fi
 
-[[ -d "ui/src/app/shared/model" ]] || rm ui/src/app/shared/model/*
-[[ -d "servers/dsub/jobs/models" ]] || rm servers/dsub/jobs/models/*
-[[ -d "servers/cromwell/jobs/models" ]] || rm servers/cromwell/jobs/models/*
+[[ -d "ui/src/app/shared/model" ]] && rm ui/src/app/shared/model/*
+[[ -d "servers/dsub/jobs/models" ]] && rm servers/dsub/jobs/models/*
+[[ -d "servers/cromwell/jobs/models" ]] && rm servers/cromwell/jobs/models/*
 
 java -jar swagger-codegen-cli.jar generate \
   -i api/jobs.yaml \
