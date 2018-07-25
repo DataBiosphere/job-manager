@@ -39,6 +39,7 @@ describe('HeaderComponent', () => {
 
   const initJobs: JobListView = {
     results: [testJob1, testJob2, testJob3],
+    totalKnownResults: null,
     exhaustive: false,
     stale: false
   };
