@@ -131,7 +131,7 @@ def format_task(task_name, task_metadata):
     return TaskMetadata(
         name=remove_workflow_name(task_name),
         execution_id=task_metadata.get('jobId'),
-        execution_status=task_statuses.cromwell_workflow_status_to_api(
+        execution_status=task_statuses.cromwell_execution_to_api(
             task_metadata.get('executionStatus')),
         start=_parse_datetime(task_metadata.get('start')),
         end=_parse_datetime(task_metadata.get('end')),
