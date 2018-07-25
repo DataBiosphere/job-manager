@@ -470,6 +470,7 @@ definitions:
     type: "string"
     enum:
     - "Submitted"
+    - "OnHold"
     - "Running"
     - "Aborting"
     - "Failed"
