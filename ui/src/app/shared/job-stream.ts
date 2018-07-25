@@ -42,7 +42,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
         console.log(resp);
         this.next({
           results: this.value.results.concat(resp.results),
-          totalKnownResults: this.value.totalKnownResults,
+          totalKnownResults: resp.totalKnownResults,
           exhaustive: !resp.nextPageToken,
           stale: false
         });
