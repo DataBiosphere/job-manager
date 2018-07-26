@@ -490,12 +490,10 @@ class BaseTestCases:
 
         def test_get_job_aggregations(self):
             # Set the current test_token as global config parameter
-            # so that the aggregation_controller can filter out jobs do not need
+            # so that the aggregation_controller can filter out unrelated jobs
             current_app.config[
-                'AGGREGATION_JOB_LABEL_FILTER'] = self.test_token_label[
-                    'test_token']
+                'AGGREGATION_JOB_LABEL_FILTER'] = "test_token=" + self.test_token_label['test_token']
 
-            # name = 'aggregation-test'
             labels = {
                 'aggregation-testing-unique-1': 'testing-rocks',
             }
@@ -543,7 +541,6 @@ class BaseTestCases:
             if current_app.config['PROVIDER_TYPE'] == ProviderType.LOCAL:
                 time.sleep(10)
 
-            # self.wait_status(job_aborted, ApiStatus.RUNNING)
             for running_job in running_job_list:
                 self.wait_status(running_job, ApiStatus.RUNNING)
 
@@ -551,10 +548,6 @@ class BaseTestCases:
             self.wait_status(job_aborted, ApiStatus.ABORTED)
             self.wait_status(job_failed, ApiStatus.FAILED)
             self.wait_status(job_succeeded, ApiStatus.SUCCEEDED)
-
-            # self.wait_status(job_running, ApiStatus.RUNNING)
-            # self.wait_status(job_running_diff_label_value, ApiStatus.RUNNING)
-            # self.wait_status(job_running_diff_labels, ApiStatus.RUNNING)
 
             userId = self.must_get_job(job_succeeded).extensions.user_id
             aggregation_resp = self.must_get_job_aggregations('HOURS_1')
@@ -612,13 +605,7 @@ class BaseTestCases:
             self.assertEqual(aggregation_response_dict,
                              expected_aggregations_response_dict)
 
-            # Cancel jobs for testing
+            # Cancel running jobs for testing
             for running_job in running_job_list:
                 self.client.open(
                     '/jobs/{}/abort'.format(running_job), method='POST')
-            # self.client.open(
-            #     '/jobs/{}/abort'.format(job_running_diff_labels),
-            #     method='POST')
-            # self.client.open(
-            #     '/jobs/{}/abort'.format(job_running_diff_label_value),
-            #     method='POST')
