@@ -107,6 +107,7 @@ class TestJobsController(BaseTestCase):
                     'test.analysis': [{
                         'jobId': job_id,
                         'executionStatus': 'Done',
+                        'shardIndex': '-1',
                         'start': timestamp,
                         'end': timestamp,
                         'stderr': std_err,
@@ -420,7 +421,8 @@ class TestJobsController(BaseTestCase):
                     'inputs': jobs_controller.update_key_names(inputs),
                     'returnCode': return_code,
                     'attempts': attempts,
-                    'jobId': subworkflow_id
+                    'jobId': subworkflow_id,
+                    'shardStatuses': None
                 }]
             }
         }  # yapf: disable
