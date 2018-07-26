@@ -32,6 +32,7 @@ export class JobListComponent implements OnInit {
   // whenever we change query parameters, via a subscription.
   jobs = new BehaviorSubject<JobListView>({
     results: [],
+    totalSize: 0,
     exhaustive: false,
     stale: false
   });
