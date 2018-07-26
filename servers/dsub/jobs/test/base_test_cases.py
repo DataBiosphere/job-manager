@@ -597,6 +597,11 @@ class BaseTestCases:
                 }
             }
 
+            print('expected')
+            print(expected_aggregations_response_dict)
+            print('actual')
+            print(aggregation_response_dict)
+
             self.assertEqual(aggregation_response_dict,
                              expected_aggregations_response_dict)
 
