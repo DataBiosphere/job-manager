@@ -366,7 +366,7 @@ class TestJobsController(BaseTestCase):
                     'test.analysis': [{
                         'jobId': job_id,
                         'executionStatus': 'Done',
-                        'shardIndex': '-1',
+                        'shardIndex': -1,
                         'start': timestamp,
                         'end': timestamp,
                         'stderr': std_err,
