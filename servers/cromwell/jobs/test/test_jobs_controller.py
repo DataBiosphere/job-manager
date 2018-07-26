@@ -421,8 +421,7 @@ class TestJobsController(BaseTestCase):
                     'inputs': jobs_controller.update_key_names(inputs),
                     'returnCode': return_code,
                     'attempts': attempts,
-                    'jobId': subworkflow_id,
-                    'shardStatuses': None
+                    'jobId': subworkflow_id
                 }]
             }
         }  # yapf: disable
