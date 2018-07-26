@@ -1,3 +1,6 @@
+import apiclient
+import requests
+
 from flask import current_app, request
 from jobs.controllers.utils import jobs_generator, time_frame, providers
 from jobs.models.aggregation import Aggregation
@@ -5,6 +8,7 @@ from jobs.models.aggregation_entry import AggregationEntry
 from jobs.models.aggregation_response import AggregationResponse
 from jobs.models.status_count import StatusCount
 from jobs.models.status_counts import StatusCounts
+from werkzeug.exceptions import BadRequest, NotFound, Forbidden, InternalServerError
 
 _NUM_TOP_LABEL = 3
 _LABEL_MIN_COUNT_FOR_RANK = 10
@@ -32,11 +36,26 @@ def get_job_aggregations(timeFrame, projectId=None):
     job_name_summary = {}
     label_summaries = {}
 
-    for job in jobs:
-        _count_total_summary(job, total_summary)
-        _count_for_key(job, user_summary, job.extensions.user_id)
-        _count_for_key(job, job_name_summary, job.name)
-        _count_top_labels(job, label_summaries)
+    # AGGREGATION_JOB_LABEL_FILTER is a global config value used to distinguish testing jobs from batch to batch by timestamp
+    has_aggregation_filter = 'AGGREGATION_JOB_LABEL_FILTER' in current_app.config
+    # aggregation_filter is in string format 'key=value'
+    if has_aggregation_filter:
+        aggregation_filter = current_app.config[
+            'AGGREGATION_JOB_LABEL_FILTER'].split('=')
+        filter_key = aggregation_filter[0]
+        filter_value = aggregation_filter[1]
+
+    try:
+        for job in jobs:
+            if has_aggregation_filter and job.labels[filter_key] != filter_value:
+                continue
+
+            _count_total_summary(job, total_summary)
+            _count_for_key(job, user_summary, job.extensions.user_id)
+            _count_for_key(job, job_name_summary, job.name)
+            _count_top_labels(job, label_summaries)
+    except apiclient.errors.HttpError as error:
+        _handle_http_error(error, projectId)
 
     aggregations = [
         _to_aggregation('User Id', 'userId', user_summary),
@@ -97,17 +116,18 @@ def _to_top_labels_aggregations(label_summaries):
     # where valid means a label has jobs more than _LABEL_MIN_COUNT_FOR_RANK.
     label_freq = {}
     for label, item in label_summaries.items():
+        # job-id and task-id are assigned by dsub and are not meaningful for aggregation
+        if label == 'job-id' or label == 'task-id':
+            continue
         total_count = 0
-        for label_value, counts in item.items():
+        for _, counts in item.items():
             total_count += sum(
                 v for v in counts.values() if v > _LABEL_MIN_COUNT_FOR_RANK)
         label_freq[label] = total_count
 
     aggregations = []
-
-    # To avoid messy look of dashboard, instead of returning all the aggregations by label,
-    # we only return the top _NUM_TOP_LABEL result.
     num_label = min(len(label_freq), _NUM_TOP_LABEL)
+
     for k, _ in sorted(
             label_freq.items(), key=lambda x: x[1], reverse=True)[0:num_label]:
         aggregations.append(_to_aggregation(k, k, label_summaries[k]))
@@ -126,3 +146,13 @@ def _auth_token():
 
 def _provider_type():
     return current_app.config['PROVIDER_TYPE']
+
+
+def _handle_http_error(error, proj_id):
+    # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
+    # provider-specific error translation down into dstat.
+    if error.resp.status == requests.codes.not_found:
+        raise NotFound('Project "{}" not found'.format(proj_id))
+    elif error.resp.status == requests.codes.forbidden:
+        raise Forbidden('Permission denied for project "{}"'.format(proj_id))
+    raise InternalServerError("Unexpected failure getting dsub jobs")
