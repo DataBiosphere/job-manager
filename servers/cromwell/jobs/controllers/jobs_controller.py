@@ -167,11 +167,13 @@ def format_scattered_task(task_name, task_metadata):
             else:
                 temp_status_collection[
                     status] = temp_status_collection[status] + 1
-        current_shard = shard.get('shardIndex')
         if minStart > _parse_datetime(shard.get('start')):
             minStart = _parse_datetime(shard.get('start'))
-        if maxEnd < _parse_datetime(shard.get('end')):
+        if shard.get('executionStatus') not in ['Failed','Done']:
+            maxEnd = None
+        if maxEnd is not None and maxEnd < _parse_datetime(shard.get('end')):
             maxEnd = _parse_datetime(shard.get('end'))
+        current_shard = shard.get('shardIndex')
 
     shard_status_counts = [
         ShardStatusCount(status=status, count=temp_status_collection[status])
