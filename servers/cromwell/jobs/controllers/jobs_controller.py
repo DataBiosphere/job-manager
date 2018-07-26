@@ -195,8 +195,7 @@ def query_jobs(body, **kwargs):
     now = datetime.utcnow()
     jobs_list = [format_job(job, now) for job in response.json()['results']]
     if page >= last_page:
-        return QueryJobsResponse(
-            results=jobs_list, total_size=total_results)
+        return QueryJobsResponse(results=jobs_list, total_size=total_results)
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
     return QueryJobsResponse(
         results=jobs_list,
