@@ -20,6 +20,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
               private request: QueryJobsRequest) {
     super({
       results: [],
+      totalSize: 0,
       exhaustive: false,
       stale: false
     });
@@ -40,6 +41,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
       return this.queryJobs(pageSize, prevResp.nextPageToken).then(resp => {
         this.next({
           results: this.value.results.concat(resp.results),
+          totalSize: resp.totalSize,
           exhaustive: !resp.nextPageToken,
           stale: false
         });
@@ -52,6 +54,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
   public setStale(): void {
     this.next({
       results: this.value.results,
+      totalSize: this.value.totalSize,
       exhaustive: this.value.exhaustive,
       stale: true
     });
@@ -70,6 +73,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
 // by the exhaustive flag.
 export type JobListView = {
   results: QueryJobsResult[];
+  totalSize: number|null;
   exhaustive: boolean;
   stale: boolean;
 }

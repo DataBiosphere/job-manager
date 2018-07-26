@@ -243,22 +243,24 @@ def query_jobs(body, **kwargs):
         auth=auth,
         headers=headers)
 
-    total_results = response.json()['totalResultsCount']
-    last_page = get_last_page(total_results, query_page_size)
-
     if response.status_code == BadRequest.code:
         raise BadRequest(response.json().get('message'))
     elif response.status_code == InternalServerError.code:
         raise InternalServerError(response.json().get('message'))
     response.raise_for_status()
 
+    total_results = int(response.json()['totalResultsCount'])
+    last_page = get_last_page(total_results, query_page_size)
+
     now = datetime.utcnow()
     jobs_list = [format_job(job, now) for job in response.json()['results']]
     if page >= last_page:
-        return QueryJobsResponse(results=jobs_list)
+        return QueryJobsResponse(results=jobs_list, total_size=total_results)
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
     return QueryJobsResponse(
-        results=jobs_list, next_page_token=next_page_token)
+        results=jobs_list,
+        total_size=total_results,
+        next_page_token=next_page_token)
 
 
 def get_last_page(total_results, page_size):
