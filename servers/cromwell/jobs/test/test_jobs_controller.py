@@ -521,7 +521,6 @@ class TestJobsController(BaseTestCase):
                     'start': response_timestamp,
                     'end': response_timestamp,
                     'attempts': attempts,
-                    'returnCode': return_code,
                     'shardStatuses': [{
                         'count': 2,
                         'status': 'Failed'
