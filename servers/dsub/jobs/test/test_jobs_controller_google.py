@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import datetime
 from dsub.providers import google
 import flask
 import operator

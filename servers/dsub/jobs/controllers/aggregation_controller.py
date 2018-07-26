@@ -36,9 +36,9 @@ def get_job_aggregations(timeFrame, projectId=None):
     job_name_summary = {}
     label_summaries = {}
 
-    # AGGREGATION_JOB_LABEL_FILTER is a global config value used to distinguish testing jobs from batch to batch by timestemp
+    # AGGREGATION_JOB_LABEL_FILTER is a global config value used to distinguish testing jobs from batch to batch by timestamp
     has_aggregation_filter = 'AGGREGATION_JOB_LABEL_FILTER' in current_app.config
-    # aggregation_filter is in string formate 'key=value'
+    # aggregation_filter is in string format 'key=value'
     if has_aggregation_filter:
         aggregation_filter = current_app.config[
             'AGGREGATION_JOB_LABEL_FILTER'].split('=')
