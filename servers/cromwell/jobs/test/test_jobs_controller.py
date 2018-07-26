@@ -428,6 +428,113 @@ class TestJobsController(BaseTestCase):
         self.assertDictEqual(response_data, expected_data)
 
     @requests_mock.mock()
+    def test_get_scattered_job_returns_200(self, mock_request):
+        """
+        Test case for get_job
+
+        Query for job and task-level metadata for a specified job
+        """
+        workflow_id = 'id'
+        workflow_name = 'test'
+        status = 'Succeeded'
+        timestamp = '2017-11-08T05:06:41.424Z'
+        response_timestamp = '2017-11-08T05:06:41.424000Z'
+        inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
+        outputs = {
+            'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
+        }
+        labels = {'cromwell-workflow-id': 'cromwell-12345'}
+        job_id1 = 'operations/abcde'
+        job_id2 = 'operations/dffdf'
+        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
+        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        attempts = 1
+        return_code = 0
+
+        def _request_callback(request, context):
+            context.status_code = 200
+            return {
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
+                'calls': {
+                    'test.analysis': [{
+                        'jobId': job_id1,
+                        'executionStatus': 'Done',
+                        'shardIndex': 0,
+                        'start': timestamp,
+                        'end': timestamp,
+                        'stderr': std_err,
+                        'stdout': std_out,
+                        'returnCode': return_code,
+                        'inputs': inputs,
+                        'attempt': attempts
+                    },{
+                        'jobId': job_id2,
+                        'executionStatus': 'Failed',
+                        'shardIndex': 1,
+                        'start': timestamp,
+                        'end': timestamp,
+                        'stderr': std_err,
+                        'stdout': std_out,
+                        'returnCode': return_code,
+                        'inputs': inputs,
+                        'attempt': attempts
+                    }]
+                },
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
+                'failures': [{
+                    'causedBy': [],
+                    'message': 'Task test.analysis failed'
+                }]
+            }  # yapf: disable
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
+        response = self.client.open(
+            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        self.assertStatus(response, 200)
+        response_data = json.loads(response.data)
+        expected_data = {
+            'name': workflow_name,
+            'id': workflow_id,
+            'status': status,
+            'submission': response_timestamp,
+            'start': response_timestamp,
+            'end': response_timestamp,
+            'inputs': jobs_controller.update_key_names(inputs),
+            'outputs': jobs_controller.update_key_names(outputs),
+            'labels': labels,
+            'failures': [{
+                'failure': 'Task test.analysis failed'
+            }],
+            'extensions':{
+                'tasks': [{
+                    'name': 'analysis',
+                    'executionStatus': 'Failed',
+                    'start': response_timestamp,
+                    'end': response_timestamp,
+                    'attempts': attempts,
+                    'returnCode': return_code,
+                    'shardStatuses': [{
+                        'count': 1,
+                        'status': 'Succeeded'
+                    }, {
+                        'count': 1,
+                        'status': 'Failed'
+                    }]
+                }]
+            }
+        }  # yapf: disable
+        self.assertDictEqual(response_data, expected_data)
+
+    @requests_mock.mock()
     def test_get_job_bad_request(self, mock_request):
         workflow_id = 'id'
         error_message = 'Invalid workflow ID: {}.'.format(workflow_id)
