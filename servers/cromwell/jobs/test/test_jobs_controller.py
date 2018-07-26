@@ -460,7 +460,7 @@ class TestJobsController(BaseTestCase):
                 'calls': {
                     'test.analysis': [{
                         'jobId': job_id1,
-                        'executionStatus': 'Done',
+                        'executionStatus': 'Failed',
                         'shardIndex': 0,
                         'start': timestamp,
                         'end': timestamp,
@@ -523,11 +523,8 @@ class TestJobsController(BaseTestCase):
                     'attempts': attempts,
                     'returnCode': return_code,
                     'shardStatuses': [{
-                        'count': 1,
+                        'count': 2,
                         'status': 'Failed'
-                    }, {
-                        'count': 1,
-                        'status': 'Succeeded'
                     }]
                 }]
             }
