@@ -39,6 +39,7 @@ describe('HeaderComponent', () => {
 
   const initJobs: JobListView = {
     results: [testJob1, testJob2, testJob3],
+    totalSize: null,
     exhaustive: false,
     stale: false
   };
@@ -138,6 +139,7 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
+      totalSize: null,
       exhaustive: true,
       stale: false
     });
@@ -154,6 +156,7 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
+      totalSize: null,
       exhaustive: false,
       stale: false
     });
@@ -166,9 +169,10 @@ describe('HeaderComponent', () => {
     });
   }));
 
-  it('should only show length for exhaustive job streams', async(() => {
+  it('should not show length of inexhaustive job streams of unknown length', async(() => {
     testComponent.jobs.next({
       results: [testJob1],
+      totalSize: null,
       exhaustive: false,
       stale: false
     });
@@ -177,15 +181,29 @@ describe('HeaderComponent', () => {
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
       .toContain('1 - 1 of many');
 
-    // Transition to exhaustive, "of X" should now display length.
+    // Transition to exhaustive, "of X" should now display length (even though totalSize is still null).
     testComponent.jobs.next({
       results: [testJob1, testJob2],
+      totalSize: null,
       exhaustive: true,
       stale: false
     });
     fixture.detectChanges();
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
       .toContain('1 - 2 of 2');
+  }));
+
+  it('should show length of inexhaustive job streams of known length', async(() => {
+    testComponent.jobs.next({
+      results: [testJob1, testJob2],
+      totalSize: 25,
+      exhaustive: false,
+      stale: false
+    });
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+      .toContain('1 - 2 of 25');
   }));
 
   it('should maintain chip ordering', fakeAsync(() => {
@@ -205,7 +223,7 @@ describe('HeaderComponent', () => {
   @Component({
     selector: 'jm-test-table-component',
     template:
-      `<jm-header [jobs]="jobs" [pageSize]="25"></jm-header>`
+      `<jm-header [jobs]="jobs" [pageSize]="2"></jm-header>`
   })
   class TestHeaderComponent {
     public jobs = new BehaviorSubject<JobListView>(initJobs);
