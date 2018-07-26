@@ -17,6 +17,7 @@ from jobs.controllers import jobs_controller
 
 class TestJobsController(BaseTestCase):
     """ JobsController integration test stubs """
+    maxDiff = None
 
     def setUp(self):
         self.base_url = 'https://test-cromwell.org'
