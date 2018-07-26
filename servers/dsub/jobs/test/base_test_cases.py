@@ -6,18 +6,18 @@ from dsub.providers import local
 from dsub.lib import resources
 import flask
 import flask_testing
+from flask import current_app
 import logging
 import operator
 import os
 import string
-import time
-from flask import current_app
 import time
 
 from jobs.common import execute_redirect_stdout
 from jobs.controllers.utils import job_ids
 from jobs.controllers.utils.job_statuses import ApiStatus
 from jobs.encoder import JSONEncoder
+from jobs.providers import ProviderType
 from jobs.models.extended_query_fields import ExtendedQueryFields
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
@@ -539,8 +539,8 @@ class BaseTestCases:
                 self.start_job(
                     'sleep 180', labels=different_labels, name=name))
 
-            # wait_status need 10ms on local provider
-            if self.provider == local.LocalJobProvider(resources):
+            # wait_status need 10s on local provider
+            if current_app.config['PROVIDER_TYPE'] == ProviderType.LOCAL:
                 time.sleep(10)
 
             self.wait_status(job_aborted, ApiStatus.RUNNING)
