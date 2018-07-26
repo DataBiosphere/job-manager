@@ -14,10 +14,10 @@ import string
 import time
 
 from jobs.common import execute_redirect_stdout
-from jobs.controllers.utils import job_ids
+from jobs.controllers.utils import job_ids, providers
 from jobs.controllers.utils.job_statuses import ApiStatus
 from jobs.encoder import JSONEncoder
-from jobs.providers import ProviderType
+from jobs.controllers.utils.providers import ProviderType
 from jobs.models.extended_query_fields import ExtendedQueryFields
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
