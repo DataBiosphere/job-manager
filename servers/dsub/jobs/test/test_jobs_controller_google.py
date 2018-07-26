@@ -27,6 +27,9 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
 
     def setUp(self):
         self.log_path = '{}/logging'.format(self.testing_root)
+        self.test_token_label = {
+            'test_token': datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+        }
 
     def create_app(self):
         app = super(TestJobsControllerGoogle, self).create_app()
@@ -50,7 +53,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
             query_params, job_list)
 
     def test_abort_job(self):
-        started = self.start_job('sleep 30', with_test_token=True)
+        started = self.start_job('sleep 30')
         api_job_id = self.api_job_id(started)
         self.wait_status(api_job_id, ApiStatus.RUNNING)
         self.must_abort_job(api_job_id)
@@ -69,13 +72,11 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
                          'Project \"some-bogus-project-id\" not found')
 
     def test_query_jobs_by_submitted_status(self):
-        job1 = self.start_job(
-            'echo job1 && sleep 30', name='job1', with_test_token=True)
+        job1 = self.start_job('echo job1 && sleep 30', name='job1')
         self.assert_query_matches(
             QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [job1])
         self.wait_status(self.api_job_id(job1), ApiStatus.RUNNING)
-        job2 = self.start_job(
-            'echo job2 && sleep 30', name='job2', with_test_token=True)
+        job2 = self.start_job('echo job2 && sleep 30', name='job2')
         self.assert_query_matches(
             QueryJobsRequest(statuses=[ApiStatus.SUBMITTED]), [job2])
         self.assert_query_matches(
@@ -83,8 +84,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
 
     def test_query_jobs_by_start(self):
         date = datetime.datetime.now()
-        job = self.start_job(
-            'sleep 30', name='job_by_start', with_test_token=True)
+        job = self.start_job('sleep 30', name='job_by_start')
         self.assert_query_matches(QueryJobsRequest(start=date), [])
         self.wait_status(self.api_job_id(job), ApiStatus.RUNNING)
         self.assert_query_matches(QueryJobsRequest(start=date), [job])
