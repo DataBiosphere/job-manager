@@ -130,27 +130,24 @@ def get_job(id, **kwargs):
 
 def format_task(task_name, task_metadata):
     # check to see if task is scattered
-    is_scattered_task = len(
-        set([item.get('shardIndex') for item in task_metadata])) > 1
-    if is_scattered_task:
+    if task_metadata[-1].get('shardIndex') != -1:
         return format_scattered_task(task_name, task_metadata)
-    else:
-        latest_attempt = task_metadata[-1]
-        return TaskMetadata(
-            name=remove_workflow_name(task_name),
-            execution_id=latest_attempt.get('jobId'),
-            execution_status=task_statuses.cromwell_execution_to_api(
-                latest_attempt.get('executionStatus')),
-            start=_parse_datetime(latest_attempt.get('start')),
-            end=_parse_datetime(latest_attempt.get('end')),
-            stderr=latest_attempt.get('stderr'),
-            stdout=latest_attempt.get('stdout'),
-            inputs=update_key_names(latest_attempt.get('inputs', {})),
-            return_code=latest_attempt.get('returnCode'),
-            attempts=latest_attempt.get('attempt'),
-            call_root=latest_attempt.get('callRoot'),
-            job_id=latest_attempt.get('subWorkflowId'),
-            shard_statuses=None)
+    latest_attempt = task_metadata[-1]
+    return TaskMetadata(
+        name=remove_workflow_name(task_name),
+        execution_id=latest_attempt.get('jobId'),
+        execution_status=task_statuses.cromwell_execution_to_api(
+            latest_attempt.get('executionStatus')),
+        start=_parse_datetime(latest_attempt.get('start')),
+        end=_parse_datetime(latest_attempt.get('end')),
+        stderr=latest_attempt.get('stderr'),
+        stdout=latest_attempt.get('stdout'),
+        inputs=update_key_names(latest_attempt.get('inputs', {})),
+        return_code=latest_attempt.get('returnCode'),
+        attempts=latest_attempt.get('attempt'),
+        call_root=latest_attempt.get('callRoot'),
+        job_id=latest_attempt.get('subWorkflowId'),
+        shard_statuses=None)
 
 
 def format_scattered_task(task_name, task_metadata):
@@ -209,6 +206,8 @@ def remove_shard_path(path):
     """ Remove the workflow name from the beginning of task, input and output names (if it's there).
     E.g. Task names {..}/{taskName}/shard-0 => {..}/{taskName}/
      """
+    if not path:
+        return None
     if "/shard-" in path:
         return path.split('/shard-')[0]
     return path
