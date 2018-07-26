@@ -524,10 +524,10 @@ class TestJobsController(BaseTestCase):
                     'returnCode': return_code,
                     'shardStatuses': [{
                         'count': 1,
-                        'status': 'Succeeded'
+                        'status': 'Failed'
                     }, {
                         'count': 1,
-                        'status': 'Failed'
+                        'status': 'Succeeded'
                     }]
                 }]
             }
