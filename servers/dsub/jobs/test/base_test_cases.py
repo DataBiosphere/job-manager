@@ -45,6 +45,12 @@ class BaseTestCases:
             cls.wait_timeout = 30
             cls.poll_interval = 1
 
+        def setUp(self):
+            self.test_token_label = {
+                'test_token':
+                datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+            }
+
         def assert_query_matches(self, query_params, job_list):
             """Executes query and asserts that the results match the given job_list
 
@@ -466,9 +472,10 @@ class BaseTestCases:
 
         def aggregation_response_to_dict(self, aggregation_response):
             # Flatten the nested aggregation response to a dict that is easy to compare equality
-            aggregation_response_dict = {}
-            aggregation_response_dict['summary'] = self.status_counts_to_dict(
-                aggregation_response.summary)
+            aggregation_response_dict = {
+                'summary':
+                self.status_counts_to_dict(aggregation_response.summary)
+            }
 
             for aggregation in aggregation_response.aggregations:
                 entry_dict = {}
@@ -488,7 +495,7 @@ class BaseTestCases:
                 'AGGREGATION_JOB_LABEL_FILTER'] = self.test_token_label[
                     'test_token']
 
-            name = 'aggregation-test'
+            # name = 'aggregation-test'
             labels = {
                 'aggregation-testing-unique-1': 'testing-rocks',
             }
@@ -499,44 +506,57 @@ class BaseTestCases:
 
             different_labels = {'different-label': 'different-value'}
 
+            running_job_list = []
+
             # Created a job to be aborted
             job_aborted = self.api_job_id(
-                self.start_job('sleep 180', labels=labels, name=name))
+                self.start_job('sleep 180', labels=labels, name='agg-aborted'))
+            running_job_list.append(job_aborted)
             # Create a job to fail
             job_failed = self.api_job_id(
-                self.start_job('not_a_command', labels=labels, name=name))
+                self.start_job(
+                    'not_a_command', labels=labels, name='agg-failed'))
             # Created a succeeded job
             job_succeeded = self.api_job_id(
-                self.start_job('echo SUCCEEDED', labels=labels, name=name))
-            # Created a running job
-            job_running = self.api_job_id(
-                self.start_job('sleep 180', labels=labels, name=name))
-
-            # Create a running job that has different label values
-            job_running_diff_label_value = self.api_job_id(
-                self.start_job('sleep 180', labels=another_value, name=name))
-            # Create a running job that has different labels
-            job_running_diff_labels = self.api_job_id(
                 self.start_job(
-                    'sleep 180', labels=different_labels, name=name))
+                    'echo SUCCEEDED', labels=labels, name='agg-succeeded'))
+            # Created a running job
+            running_job_list.append(
+                self.api_job_id(
+                    self.start_job(
+                        'sleep 180', labels=labels, name='agg-running')))
+            # Create a running job that has different label values
+            running_job_list.append(
+                self.api_job_id(
+                    self.start_job(
+                        'sleep 180', labels=another_value,
+                        name='agg-running')))
+            # Create a running job that has different labels
+            running_job_list.append(
+                self.api_job_id(
+                    self.start_job(
+                        'sleep 180',
+                        labels=different_labels,
+                        name='agg-running')))
 
             # wait_status need 10s on local provider
             if current_app.config['PROVIDER_TYPE'] == ProviderType.LOCAL:
                 time.sleep(10)
 
-            self.wait_status(job_aborted, ApiStatus.RUNNING)
+            # self.wait_status(job_aborted, ApiStatus.RUNNING)
+            for running_job in running_job_list:
+                self.wait_status(running_job, ApiStatus.RUNNING)
+
             self.must_abort_job(job_aborted)
             self.wait_status(job_aborted, ApiStatus.ABORTED)
-
             self.wait_status(job_failed, ApiStatus.FAILED)
-
             self.wait_status(job_succeeded, ApiStatus.SUCCEEDED)
 
-            self.wait_status(job_running, ApiStatus.RUNNING)
-            self.wait_status(job_running_diff_label_value, ApiStatus.RUNNING)
-            self.wait_status(job_running_diff_labels, ApiStatus.RUNNING)
+            # self.wait_status(job_running, ApiStatus.RUNNING)
+            # self.wait_status(job_running_diff_label_value, ApiStatus.RUNNING)
+            # self.wait_status(job_running_diff_labels, ApiStatus.RUNNING)
 
-            userId = self.must_get_job(job_running).extensions.user_id
+            userId = self.must_get_job(job_succeeded).extensions.user_id
             aggregation_resp = self.must_get_job_aggregations('HOURS_1')
 
             aggregation_response_dict = self.aggregation_response_to_dict(
@@ -564,7 +584,18 @@ class BaseTestCases:
                     userId: status_counts_total
                 },
                 'name': {
-                    name: status_counts_total
+                    'agg-aborted': {
+                        'Aborted': 1
+                    },
+                    'agg-failed': {
+                        'Failed': 1
+                    },
+                    'agg-succeeded': {
+                        'Succeeded': 1
+                    },
+                    'agg-running': {
+                        'Running': 3
+                    }
                 },
                 'aggregation-testing-unique-1': {
                     'testing-rocks': status_counts_group,
@@ -582,11 +613,12 @@ class BaseTestCases:
                              expected_aggregations_response_dict)
 
             # Cancel jobs for testing
-            self.client.open(
-                '/jobs/{}/abort'.format(job_running), method='POST')
-            self.client.open(
-                '/jobs/{}/abort'.format(job_running_diff_labels),
-                method='POST')
-            self.client.open(
-                '/jobs/{}/abort'.format(job_running_diff_label_value),
-                method='POST')
+            for running_job in running_job_list:
+                self.client.open(
+                    '/jobs/{}/abort'.format(running_job), method='POST')
+            # self.client.open(
+            #     '/jobs/{}/abort'.format(job_running_diff_labels),
+            #     method='POST')
+            # self.client.open(
+            #     '/jobs/{}/abort'.format(job_running_diff_label_value),
+            #     method='POST')

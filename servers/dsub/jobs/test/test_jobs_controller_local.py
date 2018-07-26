@@ -34,9 +34,7 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
         # Create logging directory
         self.log_path = '{}/logging'.format(self.testing_root)
         os.mkdir(self.log_path)
-        self.test_token_label = {
-            'test_token': datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
-        }
+        super(TestJobsControllerLocal, self).setUp()
 
     def tearDown(self):
         if os.environ.get('KEEP_TEST_DSUB_FILES') != 'true':

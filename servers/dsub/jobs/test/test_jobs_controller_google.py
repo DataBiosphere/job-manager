@@ -30,6 +30,7 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         self.test_token_label = {
             'test_token': datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
         }
+        super(TestJobsControllerGoogle, self).setUp()
 
     def create_app(self):
         app = super(TestJobsControllerGoogle, self).create_app()
