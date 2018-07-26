@@ -40,14 +40,15 @@ def get_job_aggregations(timeFrame, projectId=None):
     has_aggregation_filter = 'AGGREGATION_JOB_LABEL_FILTER' in current_app.config
     # aggregation_filter is in string formate 'key=value'
     if has_aggregation_filter:
-        aggregation_filter = current_app.config['AGGREGATION_JOB_LABEL_FILTER'].split('=')
+        aggregation_filter = current_app.config[
+            'AGGREGATION_JOB_LABEL_FILTER'].split('=')
         filter_key = aggregation_filter[0]
         filter_value = aggregation_filter[1]
 
     try:
         for job in jobs:
             if has_aggregation_filter and job.labels[filter_key] != filter_value:
-                    continue
+                continue
 
             _count_total_summary(job, total_summary)
             _count_for_key(job, user_summary, job.extensions.user_id)
