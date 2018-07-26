@@ -35,24 +35,12 @@ def get_job_aggregations(timeFrame, projectId=None):
     user_summary = {}
     job_name_summary = {}
     label_summaries = {}
-    # current_app.config['AGGREGATION_JOB_LABEL_FILTER'] = '20180726_101242_923727'
+
     try:
         for job in jobs:
-            print(job)
-            print('if filter in config')
-            print('AGGREGATION_JOB_LABEL_FILTER' in current_app.config)
-            if 'AGGREGATION_JOB_LABEL_FILTER' in current_app.config:
-                print('equals?')
-                print(job.labels['test_token'] !=
-                      current_app.config['AGGREGATION_JOB_LABEL_FILTER'])
             # TEST_TOKEN_VALIE is a global config value used to distinguish testing jobs from batch to batch by timestemp
             if 'AGGREGATION_JOB_LABEL_FILTER' in current_app.config and job.labels['test_token'] != current_app.config['AGGREGATION_JOB_LABEL_FILTER']:
-                print('continue')
-                print(current_app.config['AGGREGATION_JOB_LABEL_FILTER'])
                 continue
-            # AGGREGATION_JOB_NAME_FILTER is a global config value used to distinguish aggregation testing jobs from others
-            # if 'AGGREGATION_JOB_NAME_FILTER' in current_app.config and job.name != current_app.config['AGGREGATION_JOB_NAME_FILTER']:
-            #     continue
 
             _count_total_summary(job, total_summary)
             _count_for_key(job, user_summary, job.extensions.user_id)

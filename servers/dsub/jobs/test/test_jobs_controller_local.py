@@ -34,7 +34,6 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
         # Create logging directory
         self.log_path = '{}/logging'.format(self.testing_root)
         os.mkdir(self.log_path)
-        # print('set up')
         self.test_token_label = {
             'test_token': datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
         }
@@ -58,24 +57,24 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
             return not job.extensions or not job.extensions.status_detail or job.extensions.status_detail != PROCESS_NOT_FOUND_MESSAGE
         return has_status
 
-    # def test_abort_job(self):
-    #     started = self.start_job('sleep 30')
-    #     api_job_id = self.api_job_id(started)
-    #     # TODO(https://github.com/googlegenomics/dsub/issues/101): Remove
-    #     # this sleep once the local and google statuses are consistent
-    #     time.sleep(10)
-    #     self.wait_status(api_job_id, ApiStatus.RUNNING)
-    #     self.must_abort_job(api_job_id)
-    #     self.wait_status(api_job_id, ApiStatus.ABORTED)
+    def test_abort_job(self):
+        started = self.start_job('sleep 30')
+        api_job_id = self.api_job_id(started)
+        # TODO(https://github.com/googlegenomics/dsub/issues/101): Remove
+        # this sleep once the local and google statuses are consistent
+        time.sleep(10)
+        self.wait_status(api_job_id, ApiStatus.RUNNING)
+        self.must_abort_job(api_job_id)
+        self.wait_status(api_job_id, ApiStatus.ABORTED)
 
-    # def test_get_succeeded_job(self):
-    #     inputs_dir = '{}/inputs'.format(self.testing_root)
-    #     outputs_dir = '{}/outputs'.format(self.testing_root)
-    #     os.mkdir(inputs_dir)
-    #     os.mkdir(outputs_dir)
-    #     input_file_path = '{}/test-input'.format(inputs_dir)
-    #     os.mknod(input_file_path)
-    #     super(TestJobsControllerLocal, self).test_get_succeeded_job()
+    def test_get_succeeded_job(self):
+        inputs_dir = '{}/inputs'.format(self.testing_root)
+        outputs_dir = '{}/outputs'.format(self.testing_root)
+        os.mkdir(inputs_dir)
+        os.mkdir(outputs_dir)
+        input_file_path = '{}/test-input'.format(inputs_dir)
+        os.mknod(input_file_path)
+        super(TestJobsControllerLocal, self).test_get_succeeded_job()
 
 
 if __name__ == '__main__':
