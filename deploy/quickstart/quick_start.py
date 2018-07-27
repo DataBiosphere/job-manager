@@ -155,7 +155,7 @@ def request_input_from_list(message, options, default):
 
 
 def make_or_replace_or_reuse_directory(path_to_make, exit_if_invalid):
-    print("Creating directory: {0}").format(path_to_make)
+    print("Creating directory: {0}".format(path_to_make))
     valid = False
     time_to_exit = False
     if path.isdir(path_to_make):
