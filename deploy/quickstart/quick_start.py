@@ -44,9 +44,11 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
     os.chdir(config_dir)
     api_config = download_file(version, 'deploy/cromwell/api-config.json',
                                'api-config.json')
-    cromwell_url = request_input_with_help(
-        'Enter the raw Cromwell IP address, eg "10.1.10.100" (DO NOT USE "LOCALHOST" or "127.0.0.1"!)',
-        cromwell_service_clue)
+    cromwell_ip = guess_local_ip()
+
+    cromwell_url_guess = 'http://{0}:8000/api/workflows/v1'.format(cromwell_ip)
+    cromwell_url = request_input_with_default("Enter the Cromwell URL",
+                                              cromwell_url_guess)
 
     os.chdir(install_dir)
     start_script_file = '{0}/jmui_start.sh'.format(bin_dir)
@@ -153,18 +155,20 @@ def request_input_from_list(message, options, default):
 
 
 def make_or_replace_or_reuse_directory(path_to_make, exit_if_invalid):
+    print("Creating directory: {0}").format(path_to_make)
     valid = False
     time_to_exit = False
+    if path.isdir(path_to_make):
+        print(
+            'That directory already exists... I can...'.format(path_to_make))
+        print(
+            '1. Default: Re-use the existing directory which might leave behind some old files'
+        )
+        print(
+            '2. Delete the entire directory and all of its contents - and then remake it, completely empty'
+        )
     while not time_to_exit:
         if path.isdir(path_to_make):
-            print(
-                'Directory {0} already exists. I can...'.format(path_to_make))
-            print(
-                '1. Default: Re-use the existing directory which might leave behind some old files'
-            )
-            print(
-                '2. Delete the entire directory and all of its contents - and then remake it, completely empty'
-            )
             provided = input('Re-use or replace? (1/2) [ 1 ] > ') or '1'
             if provided == '1':
                 valid = True
@@ -172,10 +176,11 @@ def make_or_replace_or_reuse_directory(path_to_make, exit_if_invalid):
             elif provided == '2':
                 try:
                     print(
-                        'Removing {0} and its subdirectories'.format(provided))
-                    call(['rm', '-rf', provided])
-                    print('Creating a new directory at {0}'.format(provided))
-                    os.mkdir(provided)
+                        'Removing {0} and its subdirectories'.format(
+                            path_to_make))
+                    call(['rm', '-rf', path_to_make])
+                    print('Creating a new directory at {0}'.format(path_to_make))
+                    os.mkdir(path_to_make)
                     valid = True
                     time_to_exit = True
                 except OSError:
@@ -233,6 +238,21 @@ def request_input_with_help(message, clue):
             valid = True
     print('Using: {0}'.format(provided))
     return provided
+
+
+def request_input_with_default(message, default):
+    provided = input('>> {0} [ {1} ] > '.format(message, default)) or default
+    return provided
+
+
+def guess_local_ip():
+    try:
+        call(['sh',
+              '-c',
+              'ifconfig | grep \'inet \' | grep -v 127.0.0.1 | head -n1 | awk \'{print $2}\''
+              ])
+    except:
+        return "<IP ADDRESS>"
 
 
 def cromwell_service_clue():
