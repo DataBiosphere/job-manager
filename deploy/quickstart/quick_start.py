@@ -56,7 +56,7 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
         'if docker ps | grep job-manager', 'then',
         'echo \'Stopping current instance(s)\'',
         'docker stop $(docker ps | grep \'job-manager\' | awk \'{ print $1 }\')',
-        'fi', 'export CROMWELL_URL=http://{0}:8000/api/workflows/v1'.format(
+        'fi', 'export CROMWELL_URL=\'{0}\''.format(
             cromwell_url), 'docker-compose -f {0} up'.format(docker_compose)
     ]
     write_string(start_script_file, start_script_contents)
@@ -141,6 +141,7 @@ def request_input_from_list(message, options, default):
         str(e) for e in all_options))
 
     while not valid:
+        print()
         provided = input('>> {0} {1} [ {2} ] >'.format(
             message, printed_options_list, default)) or default
         if provided in all_options:
@@ -155,10 +156,11 @@ def request_input_from_list(message, options, default):
 
 
 def make_or_replace_or_reuse_directory(path_to_make, exit_if_invalid):
-    print("Creating directory: {0}...".format(path_to_make))
+    print("Creating directory: {0}".format(path_to_make))
     valid = False
     time_to_exit = False
     if path.isdir(path_to_make):
+        print()
         print(
             'That directory already exists... I can...'.format(path_to_make))
         print(
@@ -169,6 +171,7 @@ def make_or_replace_or_reuse_directory(path_to_make, exit_if_invalid):
         )
     while not time_to_exit:
         if path.isdir(path_to_make):
+            print()
             provided = input('Re-use or replace? (1/2) [ 1 ] > ') or '1'
             if provided == '1':
                 valid = True
@@ -214,6 +217,7 @@ def request_input_path(message, default):
     valid = False
     absolute_path = path.abspath(default)
     while not valid:
+        print()
         provided = input('>> {0} [ {1} ] > '.format(
             message, absolute_path)) or absolute_path
         absolute_path = path.abspath(provided)
@@ -229,6 +233,7 @@ def request_input_with_help(message, clue):
     valid = False
     provided = None
     while not valid:
+        print()
         provided = input('>> {0} (or "clue" for help) [ clue ] > '.format(
             message)) or 'clue'
         if provided == 'clue':
@@ -242,25 +247,25 @@ def request_input_with_help(message, clue):
 
 
 def request_input_with_default(message, default):
+    print()
     provided = input('>> {0} [ {1} ] > '.format(message, default)) or default
     return provided
 
 
 def guess_local_ip():
+    default = '<IP ADDRESS>'
     try:
-        call(['sh',
-              '-c',
-              'ifconfig | grep \'inet \' | grep -v 127.0.0.1 | head -n1 | awk \'{print $2}\''
-              ])
-    except:
-        return "<IP ADDRESS>"
-
-
-def cromwell_service_clue():
-    print('Checking for local interfaces (one of these might be useful):')
-    print()
-    call(['sh', '-c', 'ifconfig | grep \'inet \' | grep -v 127.0.0.1'])
-    print()
+        result = subprocess.run(['sh', '-c',
+                                 'ifconfig | grep \'inet \' | grep -v 127.0.0.1 | head -n1 | awk \'{print $2}\''
+                                 ], stdout=subprocess.PIPE)
+        if result.returncode == 0:
+            return result.stdout.decode('UTF-8').strip()
+        else:
+            print('Non-zero return code: {0}'.format(result.returncode))
+            return default
+    except Exception as e:
+        print(e)
+        return default
 
 
 quick_start()
