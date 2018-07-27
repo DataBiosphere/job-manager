@@ -78,8 +78,8 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
 
         # This will obviously fail if the capabilities config gets any more
         # than one default-required field like this:
-        replace_in_file(capabilities_config, '\'isRequired\': true',
-                        '\'isRequired\': false')
+        replace_in_file(capabilities_config, '"isRequired": true',
+                        '"isRequired": false')
 
         print('To start, run:')
         print('> ' + start_script_file)
