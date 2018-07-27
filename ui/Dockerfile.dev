@@ -1,5 +1,12 @@
-FROM node
+FROM java
+ADD api/ /api/
+ADD ui/ /ui/
+RUN wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+RUN java -jar swagger-codegen-cli.jar generate -i /api/jobs.yaml -l typescript-angular2 -o /ui/src/app/shared
 
+FROM node
+COPY --from=0 /ui/src/ /prebuilt/ui/src/
 WORKDIR /ui
-ADD package-lock.json package.json /ui/
+ADD ui/package-lock.json ui/package.json /ui/
 RUN npm install
+

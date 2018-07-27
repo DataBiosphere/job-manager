@@ -2,15 +2,14 @@ version: '2.1'
 services:
   jmui:
     build:
-      context: ui
-      dockerfile: Dockerfile.dev
+      context: ./
+      dockerfile: ui/Dockerfile.dev
     volumes:
       # Only mount a whitelist of top-level /ui files/directories; specifically
       # node_modules must not be included here. Mount only files required to run
       # the dev server. Anything required to install dependencies (npm install)
       # should instead be added via the Dockerfile. Updating dependencies
       # requires use of the slower docker-compose build.
-      - ./ui/src:/ui/src
       - ./ui/tsconfig.json:/ui/tsconfig.json
       - ./ui/tslint.json:/ui/tslint.json
       - ./ui/.angular-cli.json:/ui/.angular-cli.json
