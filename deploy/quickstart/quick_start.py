@@ -56,8 +56,8 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
         'if docker ps | grep job-manager', 'then',
         'echo \'Stopping current instance(s)\'',
         'docker stop $(docker ps | grep \'job-manager\' | awk \'{ print $1 }\')',
-        'fi', 'export CROMWELL_URL=\'{0}\''.format(
-            cromwell_url), 'docker-compose -f {0} up'.format(docker_compose)
+        'fi', 'export CROMWELL_URL=\'{0}\''.format(cromwell_url),
+        'docker-compose -f {0} up'.format(docker_compose)
     ]
     write_string(start_script_file, start_script_contents)
     call(['chmod', '+x', start_script_file])
@@ -161,8 +161,7 @@ def make_or_replace_or_reuse_directory(path_to_make, exit_if_invalid):
     time_to_exit = False
     if path.isdir(path_to_make):
         print()
-        print(
-            'That directory already exists... I can...'.format(path_to_make))
+        print('That directory already exists... I can...'.format(path_to_make))
         print(
             '1. Default: Re-use the existing directory which might leave behind some old files'
         )
@@ -178,11 +177,11 @@ def make_or_replace_or_reuse_directory(path_to_make, exit_if_invalid):
                 time_to_exit = True
             elif provided == '2':
                 try:
-                    print(
-                        'Removing {0} and its subdirectories'.format(
-                            path_to_make))
+                    print('Removing {0} and its subdirectories'.format(
+                        path_to_make))
                     call(['rm', '-rf', path_to_make])
-                    print('Creating a new directory at {0}'.format(path_to_make))
+                    print(
+                        'Creating a new directory at {0}'.format(path_to_make))
                     os.mkdir(path_to_make)
                     valid = True
                     time_to_exit = True
@@ -255,9 +254,12 @@ def request_input_with_default(message, default):
 def guess_local_ip():
     default = '<IP ADDRESS>'
     try:
-        result = subprocess.run(['sh', '-c',
-                                 'ifconfig | grep \'inet \' | grep -v 127.0.0.1 | head -n1 | awk \'{print $2}\''
-                                 ], stdout=subprocess.PIPE)
+        result = subprocess.run(
+            [
+                'sh', '-c',
+                'ifconfig | grep \'inet \' | grep -v 127.0.0.1 | head -n1 | awk \'{print $2}\''
+            ],
+            stdout=subprocess.PIPE)
         if result.returncode == 0:
             return result.stdout.decode('UTF-8').strip()
         else:
