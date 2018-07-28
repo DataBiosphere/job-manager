@@ -26,21 +26,27 @@ fi
 [[ -d "servers/dsub/jobs/models" ]] && rm servers/dsub/jobs/models/*
 [[ -d "servers/cromwell/jobs/models" ]] && rm servers/cromwell/jobs/models/*
 
+MD5=$(md5sum api/jobs.yaml | awk ' { print $1 }' )
+MD5="$MD5 /api/jobs.yaml"
+
 java -jar swagger-codegen-cli.jar generate \
   -i api/jobs.yaml \
   -l typescript-angular2 \
   -o ui/src/app/shared
+echo $MD5 > ui/src/app/shared/.jobs.yaml.md5
 
 java -jar swagger-codegen-cli.jar generate \
   -i api/jobs.yaml \
   -l python-flask \
   -o servers/dsub \
   -DsupportPython2=true,packageName=jobs
+echo $MD5 > servers/dsub/jobs/.jobs.yaml.md5
 
 java -jar swagger-codegen-cli.jar generate \
   -i api/jobs.yaml \
   -l python-flask \
   -o servers/cromwell \
   -DsupportPython2=true,packageName=jobs
+echo $MD5 > servers/cromwell/jobs/.jobs.yaml.md5
 
 echo "Done!"

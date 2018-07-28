@@ -7,7 +7,8 @@ services:
     # Use --host "jmui" to match the container name, as this is how nginx will
     # access the UI on the network. This must match to avoid "Invalid Host"
     # errors. See also https://github.com/angular/angular-cli/issues/6349.
-    command: ["npm", "run-script", "ng", "--", "serve", "--host", "jmui"]
+    command: ["/scripts/await_md5_match.sh", "/ui/src/app/shared/.jobs.yaml.md5", "--",
+              "npm", "run-script", "ng", "--", "serve", "--host", "jmui"]
     volumes:
       - ${PWD}/ui/assets/environments/environment.dsub.google.json:/ui/src/assets/environments/environment.json
   dsub:
