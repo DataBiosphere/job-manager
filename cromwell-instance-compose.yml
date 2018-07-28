@@ -8,7 +8,7 @@ services:
     extends:
       file: common-compose.yml
       service: jmui
-    command: ["/scripts/await_md5_match.sh", "/ui/src/app/shared/.jobs.yaml.md5", "--",
+    command: ["/scripts/await_md5_match.sh", "/ui/src/app/shared/model/.jobs.yaml.md5", "--",
               "npm", "run-script", "ng", "--", "serve", "--host", "jmui"]
     volumes:
       - ${PWD}/ui/assets/environments/environment.cromwell.instance.json:/ui/src/assets/environments/environment.json

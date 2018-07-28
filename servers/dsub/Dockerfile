@@ -27,4 +27,4 @@ RUN rm -rf jm_utils
 
 # Missing required arguments -b PORT, -e ... which must be provided by the
 # docker image user.
-ENTRYPOINT ["/bin/bash", "/scripts/await_md5_match.sh", "/app/jobs/.jobs.yaml.md5", "--", "/env/bin/gunicorn", "jobs.__main__:app"]
+ENTRYPOINT ["/bin/bash", "/scripts/await_md5_match.sh", "/app/jobs/models/.jobs.yaml.md5", "--", "/env/bin/gunicorn", "jobs.__main__:app"]
