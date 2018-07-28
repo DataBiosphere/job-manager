@@ -28,7 +28,10 @@ MD5=$(md5sum api/jobs.yaml)
 
 if ! md5sum -c ui/src/app/shared/model/.jobs.yaml.md5 &>/dev/null
 then
-  rm -r ui/src/app/shared/model
+  if [[ -d ui/src/app/shared/model ]]
+  then
+    rm -r ui/src/app/shared/model
+  fi
 
   java -jar swagger-codegen-cli.jar generate \
     -i api/jobs.yaml \
@@ -40,7 +43,10 @@ fi
 
 if ! md5sum -c servers/dsub/jobs/models/.jobs.yaml.md5 &>/dev/null
 then
-  rm -r servers/dsub/jobs/models
+  if [[ -d servers/dsub/jobs/models ]]
+  then
+    rm -r servers/dsub/jobs/models
+  fi
 
   java -jar swagger-codegen-cli.jar generate \
     -i api/jobs.yaml \
@@ -53,7 +59,10 @@ fi
 
 if ! md5sum -c servers/cromwell/jobs/models/.jobs.yaml.md5 &>/dev/null
 then
-  rm -r servers/cromwell/jobs/models
+  if [[ -d servers/cromwell/jobs/models ]]
+  then
+    rm -r servers/cromwell/jobs/models
+  fi
 
   java -jar swagger-codegen-cli.jar generate \
     -i api/jobs.yaml \
