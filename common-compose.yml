@@ -15,12 +15,12 @@ services:
       # the dev server. Anything required to install dependencies (npm install)
       # should instead be added via the Dockerfile. Updating dependencies
       # requires use of the slower docker-compose build.
-      - ./api:/api
       - ./scripts:/scripts
       - ./ui/src:/ui/src
       - ./ui/tsconfig.json:/ui/tsconfig.json
       - ./ui/tslint.json:/ui/tslint.json
       - ./ui/.angular-cli.json:/ui/.angular-cli.json
+      - ./api:/ui/api
   dsub:
     # Flags to gunicorn:
     # http://docs.gunicorn.org/en/stable/run.html#commonly-used-arguments
@@ -35,7 +35,7 @@ services:
     volumes:
       # Mount the python source so that code changes don't require rebuilding
       # the image. Changes to requirements.txt will still require rebuilds.
-      - ./api:/api
+      - ./api:/app/api
       - ./scripts:/scripts
       - ./servers/dsub/jobs:/app/jobs
     ports:
@@ -50,7 +50,7 @@ services:
       - GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS:-"--workers=5"}
       - PYTHONDONTWRITEBYTECODE=1
     volumes:
-      - ./api:/api
+      - ./api:/app/api
       - ./scripts:/scripts
       - ./servers/cromwell/jobs:/app/jobs
     ports:

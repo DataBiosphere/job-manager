@@ -22,42 +22,46 @@ then
   fi
 fi
 
-if [[ -d "ui/src/app/shared/model" ]]
+MD5=$(md5sum api/jobs.yaml)
+#MD5=$(md5sum api/jobs.yaml | awk ' { print $1 }' )
+#MD5="$MD5 /api/jobs.yaml"
+
+if ! md5sum -c ui/src/app/shared/model/.jobs.yaml.md5 &>/dev/null
 then
   rm -r ui/src/app/shared/model
+
+  java -jar swagger-codegen-cli.jar generate \
+    -i api/jobs.yaml \
+    -l typescript-angular2 \
+    -o ui/src/app/shared
+
+  echo $MD5 > ui/src/app/shared/model/.jobs.yaml.md5
 fi
 
-if [[ -d "servers/dsub/jobs/models" ]]
+if ! md5sum -c servers/dsub/jobs/models/.jobs.yaml.md5 &>/dev/null
 then
   rm -r servers/dsub/jobs/models
+
+  java -jar swagger-codegen-cli.jar generate \
+    -i api/jobs.yaml \
+    -l python-flask \
+    -o servers/dsub \
+    -DsupportPython2=true,packageName=jobs
+
+  echo $MD5 > servers/dsub/jobs/models/.jobs.yaml.md5
 fi
 
-if [[ -d "servers/cromwell/jobs/models" ]]
+if ! md5sum -c servers/cromwell/jobs/models/.jobs.yaml.md5 &>/dev/null
 then
   rm -r servers/cromwell/jobs/models
+
+  java -jar swagger-codegen-cli.jar generate \
+    -i api/jobs.yaml \
+    -l python-flask \
+    -o servers/cromwell \
+    -DsupportPython2=true,packageName=jobs
+
+  echo $MD5 > servers/cromwell/jobs/models/.jobs.yaml.md5
 fi
-
-MD5=$(md5sum api/jobs.yaml | awk ' { print $1 }' )
-MD5="$MD5 /api/jobs.yaml"
-
-java -jar swagger-codegen-cli.jar generate \
-  -i api/jobs.yaml \
-  -l typescript-angular2 \
-  -o ui/src/app/shared
-echo $MD5 > ui/src/app/shared/model/.jobs.yaml.md5
-
-java -jar swagger-codegen-cli.jar generate \
-  -i api/jobs.yaml \
-  -l python-flask \
-  -o servers/dsub \
-  -DsupportPython2=true,packageName=jobs
-echo $MD5 > servers/dsub/jobs/models/.jobs.yaml.md5
-
-java -jar swagger-codegen-cli.jar generate \
-  -i api/jobs.yaml \
-  -l python-flask \
-  -o servers/cromwell \
-  -DsupportPython2=true,packageName=jobs
-echo $MD5 > servers/cromwell/jobs/models/.jobs.yaml.md5
 
 echo "Done!"
