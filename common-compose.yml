@@ -1,5 +1,10 @@
 version: '2.1'
 services:
+  rebuild-swagger:
+    image: java
+    volumes:
+      - ./:/base
+    entrypoint: ["/bin/bash", "-c", "cd base && /base/scripts/rebuild_swagger.sh"]
   jmui:
     build:
       context: ui
