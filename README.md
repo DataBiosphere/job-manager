@@ -9,7 +9,7 @@ _This product is in Alpha and not yet ready for production use. We welcome all f
 
 This script is not perfect but you should be able to get started by copying the following command into a terminal window and following the prompts:
 `
-curl -s https://raw.githubusercontent.com/DataBiosphere/job-manager/cjl_quick_start/deploy/quickstart/quick_start.py > /tmp/jmui.py && python3 /tmp/jmui.py
+curl -s https://raw.githubusercontent.com/DataBiosphere/job-manager/master/deploy/quickstart/quick_start.py > /tmp/jmui.py && python3 /tmp/jmui.py
 `
 
 Note: This quickstart script relies on the following being available before starting:
