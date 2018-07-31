@@ -78,4 +78,6 @@ export interface TaskMetadata {
      */
     jobId?: string;
 
+    shardStatuses?: Array<models.ShardStatusCount>;
+
 }

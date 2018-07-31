@@ -19,9 +19,26 @@
       <!-- Task name column -->
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-        <mat-cell *matCellDef="let t">
+        <mat-cell *matCellDef="let t" class="task-title">
           <a class="title-link" *ngIf="t.jobId" href="{{ '/jobs/' + t.jobId }}">{{ t.name }}</a>
-          <p *ngIf="!t.jobId">{{ t.name }}</p>
+          <p *ngIf="!t.jobId" class="title-nolink">{{ t.name }}</p>
+          <button *ngIf="isScattered(t)" mat-icon-button class="shard-icon" [matMenuTriggerFor]="shardMenu">
+            <clr-tooltip>
+              <clr-icon clrTooltipTrigger shape="layers" size="24"  class="is-solid"></clr-icon>
+              <clr-tooltip-content clrPosition="right"  clrSize="xs" *clrIfOpen>
+                <span>task shards</span>
+              </clr-tooltip-content>
+            </clr-tooltip>
+          </button>
+          <mat-menu #shardMenu="matMenu" class="wide-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+            <div class="shards-header">Scattered: {{ getScatteredCountTotal(t) }} shards</div>
+            <div class="shards-container" *ngIf="isScattered(t)">
+              <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
+                <div class="shard-status"><clr-icon [attr.shape]="getStatusIcon(jobStatus)" size="18"></clr-icon></div>
+                <div class="shard-count">{{ getShardCountByStatus(t, jobStatus) }}</div>
+              </div>
+            </div>
+          </mat-menu>
         </mat-cell>
       </ng-container>
 
