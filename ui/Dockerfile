@@ -11,3 +11,4 @@ FROM nginx
 
 COPY --from=0 /ui/dist /ui/dist
 ADD nginx.prod.conf /etc/nginx/nginx.conf
+ENTRYPOINT [ "/scripts/await_md5_match.sh", "/ui/src/app/shared/model/.jobs.yaml.md5", "--" ]
