@@ -176,8 +176,8 @@ def format_scattered_task(task_name, task_metadata):
         current_shard = shard.get('shardIndex')
 
     shard_status_counts = [
-        ShardStatusCount(status=status, count=temp_status_collection[status])
-        for status in temp_status_collection
+        ShardStatusCount(status=status, count=count)
+        for status, count in temp_status_collection.items()
     ]
 
     # grab attempts, path and subWorkflowId from last call
@@ -199,10 +199,9 @@ def remove_workflow_name(name):
          Input names {workflowName}.{inputName} => inputName
          Output names {workflowName}.{taskName}.{outputName} => taskName.outputName
     """
-    if "." in name:
-        return '.'.join(name.split('.')[1:])
+    partitioned = name.partition('.')
+    name = partitioned[2] if partitioned[2] != '' else partitioned[0]
     return name
-
 
 def remove_shard_path(path):
     """ Remove the workflow name from the beginning of task, input and output names (if it's there).
