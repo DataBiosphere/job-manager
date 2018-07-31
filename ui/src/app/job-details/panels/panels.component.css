@@ -42,6 +42,11 @@ p {
   margin: 1rem;
 }
 
+.card .mat-card-content {
+  font-size: 0.8rem;
+  line-height: 1rem;
+}
+
 /* TODO(bryancrampton): Add hover-over to display full detail field, if truncated */
 .detail-field {
   white-space: nowrap;

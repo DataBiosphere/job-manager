@@ -2,8 +2,11 @@ import connexion
 import datetime
 from dsub.commands import dsub
 from dsub.lib import job_model, param_util
+from dsub.providers import local
+from dsub.lib import resources
 import flask
 import flask_testing
+from flask import current_app
 import logging
 import operator
 import os
@@ -11,13 +14,16 @@ import string
 import time
 
 from jobs.common import execute_redirect_stdout
-from jobs.controllers.utils import job_ids
+from jobs.controllers.utils import job_ids, providers
 from jobs.controllers.utils.job_statuses import ApiStatus
 from jobs.encoder import JSONEncoder
+from jobs.controllers.utils.providers import ProviderType
 from jobs.models.extended_query_fields import ExtendedQueryFields
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
+from jobs.models.aggregation_response import AggregationResponse
+from jobs.models.status_counts import StatusCounts
 
 DOCKER_IMAGE = 'ubuntu:14.04'
 
@@ -38,6 +44,12 @@ class BaseTestCases:
             cls.provider = None
             cls.wait_timeout = 30
             cls.poll_interval = 1
+
+        def setUp(self):
+            self.test_token_label = {
+                'test_token':
+                datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+            }
 
         def assert_query_matches(self, query_params, job_list):
             """Executes query and asserts that the results match the given job_list
@@ -101,6 +113,17 @@ class BaseTestCases:
             self.assert_status(resp, 200)
             return QueryJobsResponse.from_dict(resp.json)
 
+        def must_get_job_aggregations(self, time_frame):
+            if self.testing_project:
+                url = '/aggregations?projectId={}&timeFrame={}'.format(
+                    self.testing_project, time_frame)
+            else:
+                url = '/aggregations?timeFrame={}'.format(time_frame)
+
+            resp = self.client.open(url, method='GET')
+            self.assert_status(resp, 200)
+            return AggregationResponse.from_dict(resp.json)
+
         def start_job(self,
                       command,
                       name=None,
@@ -112,6 +135,8 @@ class BaseTestCases:
                       outputs_recursive={},
                       task_count=1,
                       wait=False):
+            labels.update(self.test_token_label)
+
             logging = param_util.build_logging_param(self.log_path)
             resources = job_model.Resources(
                 image=DOCKER_IMAGE, logging=logging, zones=['us-central1*'])
@@ -438,3 +463,149 @@ class BaseTestCases:
                     page_token=response.next_page_token,
                     extensions=ExtendedQueryFields(submission=min_time)),
                 [job2])
+
+        def status_counts_to_dict(self, status_counts):
+            return {
+                status_count.status: status_count.count
+                for status_count in status_counts.counts
+            }
+
+        def aggregation_response_to_dict(self, aggregation_response):
+            # Flatten the nested aggregation response to a dict that is easy to compare equality
+            aggregation_response_dict = {
+                'summary':
+                self.status_counts_to_dict(aggregation_response.summary)
+            }
+
+            for aggregation in aggregation_response.aggregations:
+                entry_dict = {}
+
+                for entry in aggregation.entries:
+                    entry_dict[entry.label] = self.status_counts_to_dict(
+                        entry.status_counts)
+
+                aggregation_response_dict[aggregation.key] = entry_dict
+
+            return aggregation_response_dict
+
+        def test_get_job_aggregations(self):
+            # Set the current test_token as global config parameter
+            # so that the aggregation_controller can filter out unrelated jobs
+            current_app.config[
+                'AGGREGATION_JOB_LABEL_FILTER'] = "test_token=" + self.test_token_label['test_token']
+
+            labels = {
+                'aggregation-testing-unique-1': 'testing-rocks',
+            }
+
+            another_value = {
+                'aggregation-testing-unique-1': 'different-value',
+            }
+
+            different_labels = {'different-label': 'different-value'}
+
+            running_job_list = []
+
+            # Created a job to be aborted
+            job_aborted = self.api_job_id(
+                self.start_job('sleep 180', labels=labels, name='agg-aborted'))
+            running_job_list.append(job_aborted)
+            # Create a job to fail
+            job_failed = self.api_job_id(
+                self.start_job(
+                    'not_a_command', labels=labels, name='agg-failed'))
+            # Created a succeeded job
+            job_succeeded = self.api_job_id(
+                self.start_job(
+                    'echo SUCCEEDED', labels=labels, name='agg-succeeded'))
+            # Created a running job
+            running_job_list.append(
+                self.api_job_id(
+                    self.start_job(
+                        'sleep 180', labels=labels, name='agg-running')))
+            # Create a running job that has different label values
+            running_job_list.append(
+                self.api_job_id(
+                    self.start_job(
+                        'sleep 180', labels=another_value,
+                        name='agg-running')))
+            # Create a running job that has different labels
+            running_job_list.append(
+                self.api_job_id(
+                    self.start_job(
+                        'sleep 180',
+                        labels=different_labels,
+                        name='agg-running')))
+
+            # wait_status need 10s on local provider
+            if current_app.config['PROVIDER_TYPE'] == ProviderType.LOCAL:
+                time.sleep(10)
+
+            for running_job in running_job_list:
+                self.wait_status(running_job, ApiStatus.RUNNING)
+
+            self.must_abort_job(job_aborted)
+            self.wait_status(job_aborted, ApiStatus.ABORTED)
+            self.wait_status(job_failed, ApiStatus.FAILED)
+            self.wait_status(job_succeeded, ApiStatus.SUCCEEDED)
+
+            userId = self.must_get_job(job_succeeded).extensions.user_id
+            aggregation_resp = self.must_get_job_aggregations('HOURS_1')
+
+            aggregation_response_dict = self.aggregation_response_to_dict(
+                aggregation_resp)
+
+            status_counts_total = {
+                'Running': 3,
+                'Failed': 1,
+                'Succeeded': 1,
+                'Aborted': 1
+            }
+
+            status_counts_group = {
+                'Running': 1,
+                'Failed': 1,
+                'Succeeded': 1,
+                'Aborted': 1
+            }
+
+            status_counts_single = {'Running': 1}
+
+            expected_aggregations_response_dict = {
+                'summary': status_counts_total,
+                'userId': {
+                    userId: status_counts_total
+                },
+                'name': {
+                    'agg-aborted': {
+                        'Aborted': 1
+                    },
+                    'agg-failed': {
+                        'Failed': 1
+                    },
+                    'agg-succeeded': {
+                        'Succeeded': 1
+                    },
+                    'agg-running': {
+                        'Running': 3
+                    }
+                },
+                'aggregation-testing-unique-1': {
+                    'testing-rocks': status_counts_group,
+                    'different-value': status_counts_single
+                },
+                'test_token': {
+                    self.test_token_label['test_token']: status_counts_total,
+                },
+                'different-label': {
+                    'different-value': status_counts_single
+                }
+            }
+
+            self.assertEqual(aggregation_response_dict,
+                             expected_aggregations_response_dict)
+
+            # Cancel running jobs for testing
+            for running_job in running_job_list:
+                self.client.open(
+                    '/jobs/{}/abort'.format(running_job), method='POST')

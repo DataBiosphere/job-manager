@@ -407,8 +407,14 @@ definitions:
     properties:
       results:
         type: array
+        required: true
         items:
           $ref: '#/definitions/QueryJobsResult'
+      totalSize:
+        type: number
+        description:
+          The total number of results which matched the query. Can be empty
+          if the backend cannot calculate this total.
       nextPageToken:
         type: string
         description: |
@@ -558,6 +564,10 @@ definitions:
           Id of the job corresponding to this task, if this task is a nested
           child job. Expresses a child:parent relationship between this job
           and the job containing this task.
+      shardStatuses:
+        type: array
+        items:
+          $ref: '#/definitions/ShardStatusCount'
   FailureMessage:
     description: Failure messages
     required:
@@ -585,6 +595,13 @@ definitions:
         type: string
       displayField:
         $ref: '#/definitions/DisplayField'
+  ShardStatusCount:
+    description: a total of the number of shards for a task with a certain status
+    properties:
+      status:
+        $ref: '#/definitions/JobStatus'
+      count:
+        type: integer
 responses:
   BadRequest:
     description: 'Bad request'

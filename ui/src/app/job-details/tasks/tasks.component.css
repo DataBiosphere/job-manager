@@ -57,9 +57,11 @@ clr-tooltip-content {
   background-color: rgba(0, 0, 0, 0.65);
   padding: 0.25rem 0.5rem;
   font-size: 0.65rem;
+  line-height: 0.65rem;
   color: #fff;
   display: block;
   margin: -0.6rem 0.5rem 0 0;
+  height: auto;
 }
 
 clr-icon {
@@ -73,4 +75,39 @@ clr-icon {
 
 ::ng-deep clr-icon.log-error.disabled .clr-i-alert.clr-i-outline--alerted {
   fill: currentColor;
+}
+
+a.title-link, p.title-nolink {
+  display: inline-flex;
+}
+
+button.shard-icon {
+  display: inline-flex;
+  margin-left: 1.5rem;
+}
+
+.shards-container {
+  display: inline-flex;
+  flex-direction: row;
+}
+
+.shards-header {
+  font-size: 0.8rem;
+  line-height: 1.5rem;
+  margin: 0 0.5rem 0 0.5rem;
+  font-weight: bold;
+}
+
+.shards-statuses {
+  margin: 0.5rem;
+}
+
+.shard-count {
+  text-align: center;
+  font-size: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.shard-status clr-icon {
+  margin: 0 auto;
 }

@@ -19,6 +19,7 @@ from .job_status import JobStatus
 from .query_jobs_request import QueryJobsRequest
 from .query_jobs_response import QueryJobsResponse
 from .query_jobs_result import QueryJobsResult
+from .shard_status_count import ShardStatusCount
 from .status_count import StatusCount
 from .status_counts import StatusCounts
 from .task_metadata import TaskMetadata

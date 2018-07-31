@@ -15,6 +15,7 @@ export * from './JobStatus';
 export * from './QueryJobsRequest';
 export * from './QueryJobsResponse';
 export * from './QueryJobsResult';
+export * from './ShardStatusCount';
 export * from './StatusCount';
 export * from './StatusCounts';
 export * from './TaskMetadata';

@@ -4,6 +4,24 @@
 
 _This product is in Alpha and not yet ready for production use. We welcome all feedback!_
 
+
+## Try it out!
+
+This script is not perfect but you should be able to get started by copying the following command into a terminal window and following the prompts:
+`
+curl -s https://raw.githubusercontent.com/DataBiosphere/job-manager/master/deploy/quickstart/quick_start.py > /tmp/jmui.py && python3 /tmp/jmui.py
+`
+
+Note: This quickstart script relies on the following being available before starting:
+
+- Linux or MacOS based system
+- Python 3
+- docker
+- docker-compose
+- ifconfig (to provide a hint about your IP address)
+
+## Welcome
+
 See the [development guide](#development) below.
 
 The Job Manager is an API and UI for monitoring and managing jobs in a backend execution engine.
@@ -128,17 +146,39 @@ https://github.com/angular/angular-cli/issues/6349).
   ```
 
 ### Updating the API using swagger-codegen
+
 We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to automatically implement the API, as defined in `api/jobs.yaml`, for all
-servers and the UI. Whenever the API is updated, follow these steps to
-update the server implementations:
+servers and the UI. Whenever the API is updated, follow these steps to update the server implementations. 
+
+**Note:** after updating the API files you will need to test and update the server implementations to resolve any broken dependencies on old 
+API definitions or implement additional functionality to match the new specs. 
+
+From the base of the checked-out job-manager repository, run:
+```sh
+scripts/rebuild_swagger.sh
+```
+
+This will:
+ - Find and download `swagger-codegen-cli.jar`
+ - Remove the necessary build artifacts 
+ - Use `swagger-codegen-cli.jar` to regenerate them. 
+
+If you prefer to do this manually you can fallow the instructions below.
+
+#### Manual Process
+
+If you prefer to perform the steps manually, you can:
 
 1. If you do not already have the jar, you can download it here:
+ 
     ```
-    # Linux
-    wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
-    # macOS
-    brew install swagger-codegen
+      # Using wget:
+      wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+      
+      # Or, using curl:
+      curl http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar > swagger-codegen-cli.jar
     ```
+    
 2. Clear out existing generated models:
     ```
     rm ui/src/app/shared/model/*
@@ -162,7 +202,6 @@ update the server implementations:
       -o servers/cromwell \
       -DsupportPython2=true,packageName=jobs
       ```
-4. Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
 ## Job Manager UI Server
 For UI server documentation, see [ui](ui/).
