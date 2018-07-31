@@ -35,7 +35,8 @@ export class JobPanelsComponent implements OnInit {
   @Output() close: EventEmitter<any> = new EventEmitter();
   labels: Array<string> = [];
   displayedExtensions: Array<string> = [];
-  numCompletedTasks: number = 0;
+  numSucceededTasks: number = 0;
+  numFailedTasks: number = 0;
   numRunningTasks: number = 0;
   numTasks: number = 0;
 
@@ -44,8 +45,10 @@ export class JobPanelsComponent implements OnInit {
       if (this.job.extensions.tasks) {
         this.numTasks = this.job.extensions.tasks.length;
         for (let task of this.job.extensions.tasks) {
-          if ([JobStatus.Succeeded, JobStatus.Failed, JobStatus.Aborted].includes(JobStatus[task.executionStatus])) {
-            this.numCompletedTasks++;
+          if (JobStatus[task.executionStatus] == JobStatus.Succeeded) {
+            this.numSucceededTasks++;
+          } else if (JobStatus[task.executionStatus] == JobStatus.Failed) {
+            this.numFailedTasks++;
           } else if ([JobStatus.Submitted, JobStatus.Running].includes(JobStatus[task.executionStatus])) {
             this.numRunningTasks++;
           }
