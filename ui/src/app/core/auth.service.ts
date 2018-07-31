@@ -12,6 +12,7 @@ export class AuthService {
   private initAuthPromise: Promise<void>;
   public authenticated = new BehaviorSubject<boolean>(false);
   public authToken: string;
+  public userId: string;
 
   private initAuth(scopes: string[]): Promise<void> {
     const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
@@ -25,9 +26,11 @@ export class AuthService {
   private updateUser(user: any) {
     if (user && user.isSignedIn()) {
       this.authToken = user.getAuthResponse().access_token;
+      this.userId = user.getId();
       this.authenticated.next(true);
     } else {
-      this.authToken = undefined
+      this.authToken = undefined;
+      this.userId = undefined;
       this.authenticated.next(false);
     }
   }

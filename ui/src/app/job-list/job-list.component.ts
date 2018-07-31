@@ -8,6 +8,7 @@ import {Observable} from 'rxjs/Observable';
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
+import {SettingsService} from '../core/settings.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {JobListView, JobStream} from '../shared/job-stream';
 import {HeaderComponent} from '../shared/header/header.component';
@@ -46,6 +47,7 @@ export class JobListComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly jobManagerService: JobManagerService,
+    private readonly settingsService: SettingsService,
     private readonly viewContainer: ViewContainerRef,
     private snackBar: MatSnackBar,
     private readonly capabilitiesService: CapabilitiesService) {
