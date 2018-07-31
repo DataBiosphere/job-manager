@@ -203,6 +203,7 @@ def remove_workflow_name(name):
     name = partitioned[2] if partitioned[2] != '' else partitioned[0]
     return name
 
+
 def remove_shard_path(path):
     """ Remove the workflow name from the beginning of task, input and output names (if it's there).
     E.g. Task names {..}/{taskName}/shard-0 => {..}/{taskName}/
