@@ -573,6 +573,9 @@ definitions:
     required:
       - failure
     properties:
+      taskName:
+        type: string
+        description: The name of the task that generated the failure message
       failure:
         type: string
         description: The failure message
@@ -580,6 +583,15 @@ definitions:
         type: string
         format: date-time
         description: The time at which this failure occurred
+      stdout:
+        type: string
+        description: Path to the standard output file for this task or shard
+      stderr:
+        type: string
+        description: Path to the standard error file for this task or shard
+      callRoot:
+        type: string
+        description: The root directory of the task or shard execution
   FieldType:
     type: string
     default: text

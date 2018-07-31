@@ -28,25 +28,7 @@
       Ended: {{ job.end | jmShortDateTime }}
       ({{ job.start | jmDuration: job.end }})
     </p>
-  </mat-card-content>
-</mat-card>
-
-<mat-card class="card" *ngIf="job.failures">
-  <mat-card-title>Errors</mat-card-title>
-  <div class="errors-total">{{ job.failures.length }} errors</div>
-  <mat-card-content>
-    <mat-list>
-      <mat-list-item *ngFor="let f of job.failures | slice:0:errorNumLimit">
-        <clr-tooltip *ngIf="f.failure.length > errorCharLimit">
-          <span clrTooltipTrigger>{{ showErrorPreview(f.failure) }}</span>
-          <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
-            <span>{{ f.failure }}</span>
-          </clr-tooltip-content>
-        </clr-tooltip>
-        <span *ngIf="f.failure.length <= errorCharLimit">{{ f.failure }}</span>
-      </mat-list-item>
-    </mat-list>
-    <div class="other-errors" *ngIf="job.failures.length > errorNumLimit">and {{ job.failures.length - errorNumLimit }} others</div>
+    <div *ngIf="job.failures.length" class="errors-total">{{ job.failures.length }} errors</div>
   </mat-card-content>
 </mat-card>
 

@@ -17,6 +17,11 @@ import * as models from './models';
  */
 export interface FailureMessage {
     /**
+     * The name of the task that generated the failure message
+     */
+    taskName?: string;
+
+    /**
      * The failure message
      */
     failure: string;
@@ -25,5 +30,20 @@ export interface FailureMessage {
      * The time at which this failure occurred
      */
     timestamp?: Date;
+
+    /**
+     * Path to the standard output file for this task or shard
+     */
+    stdout?: string;
+
+    /**
+     * Path to the standard error file for this task or shard
+     */
+    stderr?: string;
+
+    /**
+     * The root directory of the task or shard execution
+     */
+    callRoot?: string;
 
 }

@@ -22,6 +22,7 @@ import {JobResourcesTableComponent} from './resources/resources-table/resources-
 import {SharedModule} from '../shared/shared.module';
 import {TaskDetailsComponent} from './tasks/tasks.component';
 import {GcsService} from '../core/gcs.service';
+import {JobFailuresComponent} from './failures/failures.component';
 
 
 @NgModule({
@@ -48,6 +49,7 @@ import {GcsService} from '../core/gcs.service';
     JobResourcesComponent,
     JobResourcesTableComponent,
     TaskDetailsComponent,
+    JobFailuresComponent,
   ],
   providers: [
     GcsService

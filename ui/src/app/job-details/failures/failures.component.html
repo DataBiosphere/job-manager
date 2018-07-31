@@ -1,0 +1,21 @@
+<mat-table #table [dataSource]="dataSource">
+  <!-- Task name column -->
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+    <mat-cell *matCellDef="let f" class="failure-task-name">{{ f.taskName }}</mat-cell>
+  </ng-container>
+
+  <!-- Failure message column -->
+  <ng-container matColumnDef="message">
+    <mat-header-cell *matHeaderCellDef> Message </mat-header-cell>
+    <mat-cell *matCellDef="let f" class="failure-message">{{ f.failure }}</mat-cell>
+  </ng-container>
+
+  <!-- Outside links column -->
+  <ng-container matColumnDef="links">
+    <mat-header-cell *matHeaderCellDef> Links </mat-header-cell>
+    <mat-cell *matCellDef="let f" class="failure-message">[here be links]</mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let f; columns: displayedColumns;"></mat-row>
+</mat-table>

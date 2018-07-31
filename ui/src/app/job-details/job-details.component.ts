@@ -37,9 +37,10 @@ export class JobDetailsComponent implements OnInit {
   }
 
   hasResources(): boolean {
-    return this.job.inputs
-      || this.job.outputs
+    return Object.keys(this.job.inputs).length !== 0
+      || Object.keys(this.job.outputs).length !== 0
       || (this.job.extensions
         && (this.job.extensions.sourceFile || this.job.extensions.logs));
+
   }
 }
