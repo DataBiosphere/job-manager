@@ -4,6 +4,24 @@
 
 _This product is in Alpha and not yet ready for production use. We welcome all feedback!_
 
+
+## Try it out!
+
+This script is not perfect but you should be able to get started by copying the following command into a terminal window and following the prompts:
+`
+curl -s https://raw.githubusercontent.com/DataBiosphere/job-manager/master/deploy/quickstart/quick_start.py > /tmp/jmui.py && python3 /tmp/jmui.py
+`
+
+Note: This quickstart script relies on the following being available before starting:
+
+- Linux or MacOS based system
+- Python 3
+- docker
+- docker-compose
+- ifconfig (to provide a hint about your IP address)
+
+## Welcome
+
 See the [development guide](#development) below.
 
 The Job Manager is an API and UI for monitoring and managing jobs in a backend execution engine.

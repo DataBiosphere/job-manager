@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
-import datetime
 from dsub.providers import google
 import flask
 import operator
 import unittest
+import datetime
 
 from jobs.test.base_test_cases import BaseTestCases
 from jobs.controllers.utils.job_statuses import ApiStatus
@@ -27,11 +27,10 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
 
     def setUp(self):
         self.log_path = '{}/logging'.format(self.testing_root)
-        # Because all these tests are being run in the same project, add a
-        # unique test_token to scope all jobs to this test
         self.test_token_label = {
             'test_token': datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
         }
+        super(TestJobsControllerGoogle, self).setUp()
 
     def create_app(self):
         app = super(TestJobsControllerGoogle, self).create_app()
@@ -53,30 +52,6 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
             query_params.labels = self.test_token_label
         return super(TestJobsControllerGoogle, self).assert_query_matches(
             query_params, job_list)
-
-    def start_job(self,
-                  command,
-                  name=None,
-                  envs={},
-                  labels={},
-                  inputs={},
-                  inputs_recursive={},
-                  outputs={},
-                  outputs_recursive={},
-                  task_count=1,
-                  wait=False):
-        labels.update(self.test_token_label)
-        return super(TestJobsControllerGoogle, self).start_job(
-            command,
-            name=name,
-            envs=envs,
-            labels=labels,
-            inputs=inputs,
-            inputs_recursive=inputs_recursive,
-            outputs=outputs,
-            outputs_recursive=outputs_recursive,
-            task_count=task_count,
-            wait=wait)
 
     def test_abort_job(self):
         started = self.start_job('sleep 30')
@@ -114,6 +89,21 @@ class TestJobsControllerGoogle(BaseTestCases.JobsControllerTestCase):
         self.assert_query_matches(QueryJobsRequest(start=date), [])
         self.wait_status(self.api_job_id(job), ApiStatus.RUNNING)
         self.assert_query_matches(QueryJobsRequest(start=date), [job])
+
+    def test_aggregation_jobs_without_project_id(self):
+        time_frame = 'DAYS_7'
+        resp = self.client.open(
+            '/aggregations?timeFrame={}'.format(time_frame), method='GET')
+        self.assert_status(resp, 400)
+
+    def test_aggregation_jobs_invalid_project_id(self):
+        time_frame = 'DAYS_7'
+        project_id = 'should-be-an-invalid-id'
+        resp = self.client.open(
+            '/aggregations?projectId={}&timeFrame={}'.format(
+                project_id, time_frame),
+            method='GET')
+        self.assert_status(resp, 404)
 
 
 if __name__ == '__main__':
