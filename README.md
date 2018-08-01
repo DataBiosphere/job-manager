@@ -151,7 +151,7 @@ We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to auto
 defined in `api/jobs.yaml` for the servers and for the UI. 
 Whenever the API is updated, re-run `docker-compose up rebuild-swagger` to trigger a rebuild.
  
-**Note:** the `swagger-rebuild` job does nothing if the file `api/jobs.yaml` has not changed since the
+**Note:** the `rebuild-swagger` job does nothing if the file `api/jobs.yaml` has not changed since the
 last time it was run.
 
 **Note:** the `rebuild-swagger` job will run by default during `docker-compose up` to generate the swagger for the other 
