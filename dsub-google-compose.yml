@@ -1,5 +1,9 @@
 version: '2.1'
 services:
+  rebuild-swagger:
+    extends:
+      file: common-compose.yml
+      service: rebuild-swagger
   jmui:
     extends:
       file: common-compose.yml
