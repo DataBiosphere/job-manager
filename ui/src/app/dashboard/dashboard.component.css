@@ -1,0 +1,24 @@
+* {
+  font-family: "Gotham HTF", sans-serif;
+}
+
+div {
+  margin: 1rem;
+}
+
+.aggregation-container {
+  border: 1px solid pink;
+  padding: 1rem;
+}
+
+mat-select {
+  /*TODO: width adjust to content*/
+  width: 150px;
+}
+
+.title {
+  font-size: x-large;
+  margin: 1rem;
+}
+
+

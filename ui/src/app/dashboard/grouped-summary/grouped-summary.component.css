@@ -1,14 +1,43 @@
 .mat-card {
   margin: 1rem;
+  display: inline-block;
+  width: 25%;
 }
 
-table a {
+table {
+  width: 100%;
+}
+
+a {
   text-decoration: none;
   color: #000000;
 }
 
-.mat-card-title {
-  font-size: 1.2rem;
-  color: gray
+tr > th.label {
+  width: 50%;
+  height: 30px;
+  font-size: large;
 }
 
+tr > td.label-value {
+  width: 40%;
+}
+
+div {
+  text-align: center;
+}
+
+clr-tooltip {
+  height: 2rem;
+  width: 2rem;
+}
+
+.status-icon {
+  height: 100%;
+  width: 100%;
+}
+
+.arrow {
+  height: 50%;
+  width: 50%;
+}

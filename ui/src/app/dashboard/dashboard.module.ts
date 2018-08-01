@@ -5,9 +5,17 @@ import {RouterModule} from "@angular/router";
 import {DashboardComponent} from "./dashboard.component";
 import {TotalSummaryComponent} from './total-summary/total-summary.component';
 import {DashboardResolver} from "./dashboard.resolver.service";
-import {MatCardModule, MatDividerModule, MatGridListModule, MatTableModule} from "@angular/material";
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatDividerModule,
+  MatGridListModule, MatSelectModule,
+  MatSortModule,
+  MatTableModule
+} from "@angular/material";
 import {GroupedSummaryComponent} from './grouped-summary/grouped-summary.component';
 import {SharedModule} from "../shared/shared.module";
+import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
 
 
 @NgModule({
@@ -17,11 +25,14 @@ import {SharedModule} from "../shared/shared.module";
     GroupedSummaryComponent
   ],
   imports: [
+    ClrIconModule,
+    ClrTooltipModule,
     CommonModule,
     MatCardModule,
-    MatDividerModule,
     MatTableModule,
-    MatGridListModule,
+    MatSortModule,
+    MatButtonModule,
+    MatSelectModule,
     RouterModule,
     SharedModule,
   ],

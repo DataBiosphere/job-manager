@@ -2,7 +2,14 @@ import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/t
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement} from '@angular/core';
-import {MatCardModule, MatGridListModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatGridListModule,
+  MatSelectModule,
+  MatSortModule,
+  MatTableModule
+} from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ActivatedRoute, Router} from "@angular/router";
@@ -22,6 +29,7 @@ import {CapabilitiesResponse} from "../shared/model/CapabilitiesResponse";
 import {CapabilitiesService} from "../core/capabilities.service";
 import {FakeCapabilitiesService} from "../testing/fake-capabilities.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
 
 const TEST_AGGREGATION_RESPONSE: AggregationResponse =
   {
@@ -140,11 +148,15 @@ describe('DashboardComponent', () => {
         TestJobListComponent,
       ],
       imports: [
+        ClrIconModule,
+        ClrTooltipModule,
         CommonModule,
         BrowserAnimationsModule,
         MatCardModule,
-        MatDividerModule,
-        MatGridListModule,
+        MatTableModule,
+        MatSortModule,
+        MatButtonModule,
+        MatSelectModule,
         RouterTestingModule.withRoutes([
           {path: 'dashboard', component: DashboardComponent, resolve: {aggregations: DashboardResolver}},
           {path: 'jobs', component: TestJobListComponent}
@@ -187,8 +199,14 @@ describe('DashboardComponent', () => {
   it('should create expected amount of cards', fakeAsync(() => {
     const summaryCardNum = de.queryAll(By.css('jm-total-summary mat-card')).length;
     const groupedCardNum = de.queryAll(By.css('jm-grouped-summary')).length;
+    const statusArray: Array<JobStatus> = [JobStatus.Succeeded, JobStatus.Aborted, JobStatus.Running, JobStatus.Failed];
 
-    expect(summaryCardNum).toEqual(TEST_AGGREGATION_RESPONSE.summary.counts.length);
+    for (let countEntry of TEST_AGGREGATION_RESPONSE.summary.counts) {
+      if (!statusArray.includes(countEntry.status)) {
+        statusArray.push(countEntry.status);
+      }
+    }
+    expect(summaryCardNum).toEqual(statusArray.length);
     expect(groupedCardNum).toEqual(TEST_AGGREGATION_RESPONSE.aggregations.length);
   }));
 
@@ -197,11 +215,12 @@ describe('DashboardComponent', () => {
     countAnchor.click();
     fixture.detectChanges();
     tick();
+
     expect(de.query(By.css('div')).nativeElement.textContent).toEqual('fake job-list page');
   }));
 
   it('should have status as url param when totalSummaryComponent links are clicked', fakeAsync(() => {
-    const totalSummaryAnchor = de.query(By.css('jm-total-summary .count a')).nativeElement;
+    const totalSummaryAnchor = de.query(By.css('jm-total-summary .content a')).nativeElement;
     const status: JobStatus = JobStatus.Succeeded;
 
     totalSummaryAnchor.click();
@@ -229,6 +248,7 @@ describe('DashboardComponent', () => {
     expect(queryJobRequest.labels[labelKey]).toEqual(labelValue);
     expect(queryJobRequest.extensions['projectId']).toEqual(TEST_PROJECT);
   }));
+
 
   @Component({
     selector: 'jm-test-app',

@@ -1,5 +1,17 @@
 <jm-header [showControls]="false"></jm-header>
-<jm-total-summary [summary]="aggregationResponse.summary"></jm-total-summary>
-<jm-grouped-summary *ngFor="let aggregation of aggregationResponse.aggregations"
+
+<div class="aggregation-container">
+  <span class="title"> Total Jobs</span>
+  <mat-select [placeholder]='timeFrameMapping.get(selectedTimeFrame)' (selectionChange)="onTimeFrameChange($event.value)">
+    <mat-option *ngFor="let timeFrame of timeFrames" [value]="timeFrame">
+      {{timeFrameMapping.get(timeFrame)}}
+    </mat-option>
+  </mat-select>
+  <jm-total-summary [summary]="aggregationResponse.summary" [statusArray]="statusArray"></jm-total-summary>
+
+  <div class="group-container">
+    <jm-grouped-summary *ngFor="let aggregation of aggregationResponse.aggregations"
                         [statusArray]="statusArray"
                         [aggregation]="aggregation"></jm-grouped-summary>
+  </div>
+</div>
