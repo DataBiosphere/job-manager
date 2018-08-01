@@ -192,6 +192,10 @@ describe('JobListComponent', () => {
 
     // Page 2.
     expectJobsRendered(fakeJobService.jobs.slice(3, 5));
+
+    // the prev page button should be enabled and the next page button should be disabled
+    expect(de.query(By.css('.mat-paginator-navigation-previous')).attributes['ng-reflect-disabled']).toEqual('false');
+    expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('true');
   }));
 
   it('paginates backwards', fakeAsync(() => {
@@ -207,6 +211,25 @@ describe('JobListComponent', () => {
     fixture.detectChanges();
     tick();
     expectJobsRendered(fakeJobService.jobs.slice(0, 3));
+
+    // the prev page button should be disabled and the next page button should be enabled
+    expect(de.query(By.css('.mat-paginator-navigation-previous')).attributes['ng-reflect-disabled']).toEqual('true');
+    expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('false');
+  }));
+
+  it('next pagination is disabled on last page when number of jobs equals the page length', fakeAsync(() => {
+    fakeJobService.jobs = testJobs(6);
+    testComponent.jobStream.setStale();
+    fixture.detectChanges();
+    tick(100);
+
+    const de: DebugElement = fixture.debugElement;
+    de.query(By.css('.mat-paginator-increment')).nativeElement.click();
+    fixture.detectChanges();
+
+    // the last three jobs should be displayed and next page button should be disabled
+    expectJobsRendered(fakeJobService.jobs.slice(3, 6));
+    expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('true');
   }));
 
   it('reloads properly on filter', fakeAsync(() => {

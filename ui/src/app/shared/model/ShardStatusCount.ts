@@ -13,9 +13,11 @@
 import * as models from './models';
 
 /**
- * A collection of StatusCount
+ * a total of the number of shards for a task with a certain status
  */
-export interface StatusCounts {
-    counts?: Array<models.StatusCount>;
+export interface ShardStatusCount {
+    status?: models.JobStatus;
+
+    count?: number;
 
 }

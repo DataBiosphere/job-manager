@@ -66,6 +66,41 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
   tabChanged(event: MatTabChangeEvent) {
     event.tab.isActive = false;
   }
+
+  isScattered(task: TaskMetadata): boolean {
+    return task.shardStatuses != null;
+  }
+
+  getScatteredCountTotal(task: TaskMetadata): number {
+    if (this.isScattered(task)) {
+      let count = 0;
+      task.shardStatuses.forEach((status) => {
+        count += status.count;
+      });
+      return count;
+    }
+  }
+
+  // these are the shard statuses we care about
+  getShardStatuses(): JobStatus[] {
+    return [JobStatus.Succeeded,
+            JobStatus.Failed,
+            JobStatus.Running,
+            JobStatus.Submitted];
+   }
+
+  getShardCountByStatus(task:TaskMetadata, status:JobStatus): number {
+    let result = 0
+    if(this.isScattered(task)) {
+      task.shardStatuses.forEach((thisStatus) => {
+        if (status == thisStatus.status) {
+          result = thisStatus.count;
+          return;
+        }
+      });
+    }
+    return result;
+  }
 }
 
 /** Simple database with an observable list of jobs to be subscribed to by the

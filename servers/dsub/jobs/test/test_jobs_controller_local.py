@@ -33,6 +33,7 @@ class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
         # Create logging directory
         self.log_path = '{}/logging'.format(self.testing_root)
         os.mkdir(self.log_path)
+        super(TestJobsControllerLocal, self).setUp()
 
     def tearDown(self):
         if os.environ.get('KEEP_TEST_DSUB_FILES') != 'true':

@@ -426,6 +426,10 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/QueryJobsResult"
+      totalSize:
+        type: "number"
+        description: "The total number of results which matched the query. Can be\
+          \ empty if the backend cannot calculate this total."
       nextPageToken:
         type: "string"
         description: "The continuation token, which is used to page through large\
@@ -470,6 +474,7 @@ definitions:
     type: "string"
     enum:
     - "Submitted"
+    - "OnHold"
     - "Running"
     - "Aborting"
     - "Failed"
@@ -570,6 +575,10 @@ definitions:
         description: "Id of the job corresponding to this task, if this task is a\
           \ nested child job. Expresses a child:parent relationship between this job\
           \ and the job containing this task.\n"
+      shardStatuses:
+        type: "array"
+        items:
+          $ref: "#/definitions/ShardStatusCount"
     description: "Task level metadata"
   FailureMessage:
     required:
@@ -598,6 +607,13 @@ definitions:
       displayField:
         $ref: "#/definitions/DisplayField"
     description: "a DisplayField that can be bulk-editable via the UI"
+  ShardStatusCount:
+    properties:
+      status:
+        $ref: "#/definitions/JobStatus"
+      count:
+        type: "integer"
+    description: "a total of the number of shards for a task with a certain status"
 responses:
   BadRequest:
     description: "Bad request"

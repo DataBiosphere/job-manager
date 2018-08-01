@@ -59,6 +59,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   private readonly activeStatuses = [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
   private readonly completedStatuses = [JobStatus.Succeeded, JobStatus.Aborted];
   private readonly failedStatuses = [JobStatus.Failed];
+  private readonly onHoldStatuses = [JobStatus.OnHold];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -220,6 +221,10 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     this.navigateWithStatus(this.failedStatuses.slice());
   }
 
+  showOnHoldJobs(): void {
+    this.navigateWithStatus(this.onHoldStatuses.slice());
+  }
+
   getActiveCount(): number {
     return this.jobs.value.results.filter(
       j => this.activeStatuses.includes(j.status)).length;
@@ -233,6 +238,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   getCompletedCount(): number {
     return this.jobs.value.results.filter(
       j => this.completedStatuses.includes(j.status)).length;
+  }
+
+  getOnHoldCount(): number {
+    return this.jobs.value.results.filter(
+      j => this.onHoldStatuses.includes(j.status)).length;
   }
 
   private refreshChips(query: string): void {
@@ -269,16 +279,26 @@ export class JobsPaginatorIntl extends MatPaginatorIntl {
   }
 
   getRangeLabel = (page: number, pageSize: number, length: number) => {
-    if (this.backendJobs.value.exhaustive) {
+
+    let knownLength = null;
+
+    if (this.backendJobs.value.totalSize !== null) {
+      knownLength = this.backendJobs.value.totalSize;
+    } else if (this.backendJobs.value.exhaustive) {
+      knownLength = length;
+    }
+
+    if (knownLength !== null) {
       // Can't use proper inheritance here, since MatPaginatorIntl only defines
       // properties, rather than class methods.
-      return this.defaultIntl.getRangeLabel(page, pageSize, length);
+      return this.defaultIntl.getRangeLabel(page, pageSize, knownLength);
+    } else {
+      // Ported from MatPaginatorIntl - boundary checks likely unneeded.
+      const startIndex = page * pageSize;
+      const endIndex = startIndex < length ?
+          Math.min(startIndex + pageSize, length) :
+          startIndex + pageSize;
+      return `${startIndex + 1} - ${endIndex} of many`;
     }
-    // Ported from MatPaginatorIntl - boundary checks likely unneeded.
-    const startIndex = page * pageSize;
-    const endIndex = startIndex < length ?
-        Math.min(startIndex + pageSize, length) :
-        startIndex + pageSize;
-    return `${startIndex + 1} - ${endIndex} of many`;
   }
 }
