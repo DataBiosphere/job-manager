@@ -26,14 +26,21 @@
   margin-right: 1rem;
 }
 
-.mat-tab-nav-bar  {
+.mat-expansion-panel-header.title {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+::ng-deep .mat-tab-labels  {
   display: flex;
   justify-content: flex-end;
+  margin-top: 0;
 }
 
 .mat-table {
   display: table;
   width: 100%;
+  clear: left;
 }
 
 .mat-header-row, .mat-row {
