@@ -5,12 +5,10 @@ import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
-  MatGridListModule,
   MatSelectModule,
   MatSortModule,
   MatTableModule
 } from '@angular/material';
-import {MatDividerModule} from '@angular/material/divider';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ActivatedRoute, Router} from "@angular/router";
 
@@ -248,7 +246,6 @@ describe('DashboardComponent', () => {
     expect(queryJobRequest.labels[labelKey]).toEqual(labelValue);
     expect(queryJobRequest.extensions['projectId']).toEqual(TEST_PROJECT);
   }));
-
 
   @Component({
     selector: 'jm-test-app',

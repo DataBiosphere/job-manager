@@ -1,7 +1,23 @@
-.mat-card {
-  margin: 1rem;
+#container {
   display: inline-block;
-  width: 25%;
+  width: 25rem;
+  margin: 1rem;
+}
+
+div.expanded mat-card {
+  padding-bottom: 0.2rem;
+}
+
+div.collapsed mat-card {
+  padding-bottom: 0.2rem;
+}
+
+div.collapsed clr-icon.arrow {
+  transform: rotate(180deg);
+}
+
+div.expanded clr-icon.arrow {
+  transform: rotate(0deg);
 }
 
 table {
@@ -23,9 +39,10 @@ tr > td.label-value {
   width: 40%;
 }
 
-div {
+div.button-container {
   text-align: center;
 }
+
 
 clr-tooltip {
   height: 2rem;

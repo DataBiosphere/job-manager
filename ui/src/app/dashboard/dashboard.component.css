@@ -10,9 +10,9 @@ div {
   padding: 1rem;
 }
 
-mat-select {
-  /*TODO: width adjust to content*/
-  width: 150px;
+.group-container {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .title {

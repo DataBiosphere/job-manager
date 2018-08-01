@@ -8,8 +8,7 @@ import {DashboardResolver} from "./dashboard.resolver.service";
 import {
   MatButtonModule,
   MatCardModule,
-  MatDividerModule,
-  MatGridListModule, MatSelectModule,
+  MatSelectModule,
   MatSortModule,
   MatTableModule
 } from "@angular/material";

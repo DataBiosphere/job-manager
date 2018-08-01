@@ -10,6 +10,12 @@ import {Sort} from "@angular/material";
 const LABEL_KEY = 'label';
 const DEFAULT_NUM_ROW = 5;
 
+enum CardStatus {
+  EXPANDED = 'expanded',
+  COLLAPSED = 'collapsed',
+  NONE = 'none'
+}
+
 @Component({
   selector: 'jm-grouped-summary',
   templateUrl: './grouped-summary.component.html',
@@ -18,18 +24,17 @@ const DEFAULT_NUM_ROW = 5;
 export class GroupedSummaryComponent implements OnInit{
   @Input() aggregation: Aggregation;
   @Input() statusArray: Array<JobStatus>;
-  aggregationEntries = [];
-  unsortedAggregationEntries = [];
+
+  displayedAggregationEntries = [];
+  originalAggregationEntries = [];
 
   labelKey = LABEL_KEY;
   expand = false;
 
   displayCollapseArrow = false;
-  iconTransform = 'rotate(180deg)';
-  paddingBottom = '';
+  cardClass = CardStatus.NONE;
 
-  displayNumRow = DEFAULT_NUM_ROW;
-  minDisplayNumRow = DEFAULT_NUM_ROW;
+  numRowToDisplay = DEFAULT_NUM_ROW;
 
   constructor(private readonly activatedRoute:ActivatedRoute) {}
 
@@ -45,14 +50,14 @@ export class GroupedSummaryComponent implements OnInit{
         }
       }
       row.set(LABEL_KEY, entry.label);
-      this.aggregationEntries.push(row);
+      this.displayedAggregationEntries.push(row);
     }
     // make a copy of original data
-    this.unsortedAggregationEntries = this.aggregationEntries.slice();
+    this.originalAggregationEntries = this.displayedAggregationEntries.slice();
 
-    if (this.unsortedAggregationEntries.length > this.minDisplayNumRow) {
+    if (this.originalAggregationEntries.length > DEFAULT_NUM_ROW) {
       this.displayCollapseArrow = true;
-      this.paddingBottom = '0.2rem';
+      this.cardClass = CardStatus.COLLAPSED;
     }
   }
 
@@ -91,40 +96,38 @@ export class GroupedSummaryComponent implements OnInit{
   }
 
   sortData(sort: Sort) {
-    const data = this.unsortedAggregationEntries.slice();
+    const data = this.originalAggregationEntries.slice();
     if (!sort.active || sort.direction === '') {
-      this.aggregationEntries = data;
+      this.displayedAggregationEntries = data;
       return;
     }
 
-    this.aggregationEntries = data.sort((a, b) => {
+    this.displayedAggregationEntries = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
-        case 'label': return compare(a.get('label'), b.get('label'), isAsc);
-        case 'Running': return compare(a.get('Running'), b.get('Running'), isAsc);
-        case 'Aborted': return compare(a.get('Aborted'), b.get('Aborted'), isAsc);
-        case 'Succeeded': return compare(a.get('Succeeded'), b.get('Succeeded'), isAsc);
-        case 'Failed': return compare(a.get('Failed'), b.get('Failed'), isAsc);
-        case 'Submitted': return compare(a.get('Submitted'), b.get('Submitted'), isAsc);
-        case 'Aborting': return compare(a.get('Aborting'), b.get('Aborting'), isAsc);
+        case 'label': return this.compare(a.get('label'), b.get('label'), isAsc);
+        case 'Running': return this.compare(a.get('Running'), b.get('Running'), isAsc);
+        case 'Aborted': return this.compare(a.get('Aborted'), b.get('Aborted'), isAsc);
+        case 'Succeeded': return this.compare(a.get('Succeeded'), b.get('Succeeded'), isAsc);
+        case 'Failed': return this.compare(a.get('Failed'), b.get('Failed'), isAsc);
+        case 'Submitted': return this.compare(a.get('Submitted'), b.get('Submitted'), isAsc);
+        case 'Aborting': return this.compare(a.get('Aborting'), b.get('Aborting'), isAsc);
         default: return 0;
       }
     });
   }
 
   onArrowClick() {
-    this.expand = !this.expand;
-    if (this.expand) {
-      this.iconTransform = 'rotate(0deg)';
-      this.displayNumRow = this.unsortedAggregationEntries.length;
+    if (this.cardClass == CardStatus.COLLAPSED) {
+      this.cardClass = CardStatus.EXPANDED;
+      this.numRowToDisplay = this.originalAggregationEntries.length;
     } else {
-      this.displayNumRow = DEFAULT_NUM_ROW;
-      this.iconTransform = 'rotate(180deg)';
+      this.numRowToDisplay = DEFAULT_NUM_ROW;
+      this.cardClass = CardStatus.COLLAPSED;
     }
   }
 
-}
-
-function compare(a, b, isAsc) {
-  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  private compare(a, b, isAsc) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
 }

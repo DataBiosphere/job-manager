@@ -1,19 +1,20 @@
-<mat-card [style.padding-bottom]="paddingBottom">
-  <mat-card-content>
-    <table matSort (matSortChange)="sortData($event)">
-      <tr>
-        <th mat-sort-header="label" class="label">{{ aggregation.name }}</th>
+<div [class]="cardClass" id="container">
+  <mat-card>
+    <mat-card-content>
+      <table matSort (matSortChange)="sortData($event)">
+        <tr>
+          <th mat-sort-header="label" class="label">{{ aggregation.name }}</th>
           <ng-container *ngFor="let status of statusArray">
-          <th [mat-sort-header]=status>
-            <clr-tooltip>
-              <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(status)" class="status-icon"></clr-icon>
-            </clr-tooltip>
-          </th>
-        </ng-container>
-      </tr>
+            <th [mat-sort-header]=status>
+              <clr-tooltip>
+                <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(status)" class="status-icon"></clr-icon>
+              </clr-tooltip>
+            </th>
+          </ng-container>
+        </tr>
 
-      <ng-container *ngFor="let entry of aggregationEntries; let i = index">
-        <tr *ngIf="i < displayNumRow" class="data">
+        <ng-container *ngFor="let entry of displayedAggregationEntries; let i = index">
+          <tr *ngIf="i < numRowToDisplay" class="data">
             <td class="label-value">
               <a [routerLink]="['/jobs']" [queryParams]="getLabelUrlParams(entry)">
                 {{ entry.get(labelKey) }}
@@ -27,18 +28,18 @@
                 </a>
               </td>
             </ng-container>
-        </tr>
-      </ng-container>
+          </tr>
+        </ng-container>
       </table>
 
-    <div>
-      <button mat-icon-button (click)="onArrowClick()"
-              *ngIf="displayCollapseArrow">
-        <clr-tooltip>
-          <clr-icon clrTooltipTrigger [attr.shape]="'angle'" class="arrow" [style.transform]="iconTransform"></clr-icon>
-        </clr-tooltip>
-      </button>
-    </div>
-
-  </mat-card-content>
-</mat-card>
+      <div class="button-container">
+        <button mat-icon-button (click)="onArrowClick()"
+                *ngIf="displayCollapseArrow">
+          <clr-tooltip>
+            <clr-icon clrTooltipTrigger [attr.shape]="'angle'" class="arrow"></clr-icon>
+          </clr-tooltip>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
