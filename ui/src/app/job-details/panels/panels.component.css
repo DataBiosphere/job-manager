@@ -43,7 +43,7 @@ p {
 }
 
 .card .mat-card-content {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   line-height: 1rem;
 }
 
@@ -66,9 +66,8 @@ p {
 }
 
 .errors-total {
-  font-size: 0.7rem;
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  color: #e62700;
 }
 
 ::ng-deep .card .mat-list {

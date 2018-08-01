@@ -1,0 +1,38 @@
+.mat-cell {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  vertical-align: top;
+}
+
+.mat-column-name, .failure-task-name {
+  flex-grow: 2;
+}
+
+.mat-column-message, .failure-message {
+  flex-grow: 6;
+}
+
+mat-column-links, .failure-links {
+  flex-grow: 1;
+}
+
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+  line-height: 0.65rem;
+  color: #fff;
+  display: block;
+  margin: -0.6rem 0.5rem 0 0;
+  height: auto;
+}
+
+.log-item {
+  color: black;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+clr-icon {
+  margin-right: 0.6rem;
+}

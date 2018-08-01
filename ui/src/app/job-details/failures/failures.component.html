@@ -1,20 +1,48 @@
 <mat-table #table [dataSource]="dataSource">
   <!-- Task name column -->
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef> Task Name </mat-header-cell>
     <mat-cell *matCellDef="let f" class="failure-task-name">{{ f.taskName }}</mat-cell>
   </ng-container>
 
   <!-- Failure message column -->
   <ng-container matColumnDef="message">
-    <mat-header-cell *matHeaderCellDef> Message </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef> Failure Message </mat-header-cell>
     <mat-cell *matCellDef="let f" class="failure-message">{{ f.failure }}</mat-cell>
   </ng-container>
 
   <!-- Outside links column -->
   <ng-container matColumnDef="links">
-    <mat-header-cell *matHeaderCellDef> Links </mat-header-cell>
-    <mat-cell *matCellDef="let f" class="failure-message">[here be links]</mat-cell>
+    <mat-header-cell *matHeaderCellDef> Log Files </mat-header-cell>
+    <mat-cell *matCellDef="let f" class="failure-links">
+      <clr-tooltip *ngIf="getResourceUrl(f.stdout)">
+        <a class="log-item" href="{{ getResourceUrl(f.stdout) }}">
+          <clr-icon clrTooltipTrigger shape="file" size="24"></clr-icon>
+          <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+            <span>stdout log</span>
+          </clr-tooltip-content>
+        </a>
+      </clr-tooltip>
+      <clr-icon *ngIf="!getResourceUrl(f.stdout)" shape="file" size="24" style="color: #ccc;"></clr-icon>
+      <clr-tooltip *ngIf="getResourceUrl(f.stderr)">
+        <a class="log-item" href="{{ getResourceUrl(f.stderr) }}">
+          <clr-icon clrTooltipTrigger shape="file" size="24" class="has-alert log-error" style="color: #000;"></clr-icon>
+          <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+            <span>stderr log</span>
+          </clr-tooltip-content>
+        </a>
+      </clr-tooltip>
+      <clr-icon *ngIf="!getResourceUrl(f.stderr)" shape="file" size="24" class="has-alert log-error disabled" style="color: #ccc;"></clr-icon>
+      <clr-tooltip *ngIf="getTaskDirectory(f)">
+        <a class="log-item" href="{{ getTaskDirectory(f) }}">
+          <clr-icon clrTooltipTrigger shape="folder" size="24"></clr-icon>
+          <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+            <span>execution directory</span>
+          </clr-tooltip-content>
+        </a>
+      </clr-tooltip>
+      <clr-icon *ngIf="!getTaskDirectory(f)" shape="folder" size="24" style="color: #ccc;"></clr-icon>
+    </mat-cell>
   </ng-container>
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let f; columns: displayedColumns;"></mat-row>

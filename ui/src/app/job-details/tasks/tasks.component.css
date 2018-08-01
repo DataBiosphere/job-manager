@@ -26,6 +26,11 @@
   margin-right: 1rem;
 }
 
+.mat-tab-nav-bar  {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .mat-table {
   display: table;
   width: 100%;

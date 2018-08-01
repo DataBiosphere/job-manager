@@ -152,7 +152,7 @@ def format_task(task_name, task_metadata):
 
 def format_failure(task_name, metadata):
     return FailureMessage(
-        task_name=task_name,
+        task_name=remove_workflow_name(task_name),
         failure=metadata['failures'][0].get('message'),
         timestamp=_parse_datetime(metadata.get('end')),
         stdout=metadata.get('stdout'),

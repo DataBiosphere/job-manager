@@ -28,7 +28,7 @@
       Ended: {{ job.end | jmShortDateTime }}
       ({{ job.start | jmDuration: job.end }})
     </p>
-    <div *ngIf="job.failures.length" class="errors-total">{{ job.failures.length }} errors</div>
+    <p *ngIf="job.failures" class="errors-total">{{ job.failures.length }} errors</p>
   </mat-card-content>
 </mat-card>
 
