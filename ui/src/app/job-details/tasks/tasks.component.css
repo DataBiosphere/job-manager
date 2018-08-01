@@ -15,32 +15,28 @@
   margin-top: .6rem;
   margin-bottom: .6rem;
   font-size: 1.2rem;
-  color: gray
+  color: gray;
 }
 
 .title-link {
   color: black;
 }
 
-.mat-tab-group {
-  margin-right: 1rem;
-}
-
-.mat-expansion-panel-header.title {
+::ng-deep .mat-expansion-panel-header.title {
+  display: inline;
+  padding-top: 1rem;
   margin-bottom: 0;
-  padding-bottom: 0;
+  font-size: 1.2rem;
+  position: absolute;
 }
 
 ::ng-deep .mat-tab-labels  {
-  display: flex;
   justify-content: flex-end;
-  margin-top: 0;
 }
 
 .mat-table {
   display: table;
   width: 100%;
-  clear: left;
 }
 
 .mat-header-row, .mat-row {
@@ -54,7 +50,6 @@
   height: 48px;
   vertical-align: middle;
   padding: 0 8px;
-
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
