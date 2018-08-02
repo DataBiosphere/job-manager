@@ -85,6 +85,8 @@ def get_job(id, **kwargs):
     """
     url = '{cromwell_url}/{id}/metadata'.format(
         cromwell_url=_get_base_url(), id=id)
+    timing_url = '{cromwell_url}/{id}/timing'.format(
+        cromwell_url=_get_base_url(), id=id)
     response = requests.get(
         url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
     job = response.json()
@@ -125,7 +127,7 @@ def get_job(id, **kwargs):
         outputs=update_key_names(job.get('outputs', {})),
         labels=job.get('labels'),
         failures=failures,
-        extensions=ExtendedFields(tasks=sorted_tasks))
+        extensions=ExtendedFields(tasks=sorted_tasks, timing_url=timing_url))
 
 
 def format_task(task_name, task_metadata):
