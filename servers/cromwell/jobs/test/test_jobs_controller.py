@@ -422,7 +422,8 @@ class TestJobsController(BaseTestCase):
                     'returnCode': return_code,
                     'attempts': attempts,
                     'jobId': subworkflow_id
-                }]
+                }],
+                'timingUrl': "https://test-cromwell.org/id/timing"
             }
         }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)
@@ -525,7 +526,8 @@ class TestJobsController(BaseTestCase):
                         'count': 2,
                         'status': 'Failed'
                     }]
-                }]
+                }],
+                'timingUrl': "https://test-cromwell.org/id/timing"
             }
         }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)
