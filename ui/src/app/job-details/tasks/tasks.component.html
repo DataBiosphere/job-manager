@@ -42,7 +42,7 @@
           </mat-cell>
         </ng-container>
 
-        <!-- Example columns -->
+        <!-- Task detail columns -->
         <ng-container matColumnDef="startTime">
           <mat-header-cell *matHeaderCellDef> Start Time </mat-header-cell>
           <mat-cell *matCellDef="let t" class="column">{{ t.start | jmShortDateTime }}</mat-cell>
@@ -92,6 +92,7 @@
         <mat-row *matRowDef="let t; columns: displayedColumns;"></mat-row>
       </mat-table>
     </mat-tab>
+    <!-- Task failures tab -->
     <mat-tab *ngIf="job.failures" label="Errors">
       <jm-failures [job]="job"></jm-failures>
     </mat-tab>

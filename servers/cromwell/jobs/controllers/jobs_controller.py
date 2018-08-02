@@ -100,7 +100,9 @@ def get_job(id, **kwargs):
     failures = None
     if job.get('failures'):
         failures = [
-            format_failure(name, m) for name, metadata in job.get('calls', {}).items() for m in metadata if m.get('failures') is not None
+            format_failure(name, m)
+            for name, metadata in job.get('calls', {}).items()
+            for m in metadata if m.get('failures') is not None
         ]
 
     tasks = [
