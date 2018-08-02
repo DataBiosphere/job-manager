@@ -1,14 +1,96 @@
-.mat-card {
+/*TODO(zachx): fixing the problem that expanding  a card reshuffles other cards */
+#container {
+  display: inline-block;
+  width: 25rem;
   margin: 1rem;
+
 }
 
-table a {
+mat-card {
+  min-height: 220px;
+}
+
+div.expanded mat-card {
+  padding-bottom: 0;
+  /*min-height should plus removed padding-bottom, which is 24px by default*/
+  min-height: 244px;
+}
+
+div.collapsed mat-card {
+  padding-bottom: 0;
+  /*min-height should plus removed padding-bottom, which is 24px by default*/
+  min-height: 244px;
+}
+
+div.collapsed clr-icon.arrow {
+  transform: rotate(180deg);
+}
+
+div.expanded clr-icon.arrow {
+  transform: rotate(0deg);
+}
+
+a {
   text-decoration: none;
   color: #000000;
+  margin-right: 40%
 }
 
-.mat-card-title {
-  font-size: 1.2rem;
-  color: gray
+th.label span {
+  text-align: left;
 }
 
+td.count a {
+  color: #555555;
+}
+
+a.zero {
+  color: #CCCCCC !important;
+}
+
+tr > th.label {
+  width: 30%;
+  height: 2rem;
+  font-size: large;
+}
+
+table {
+  width: 100%;
+}
+tr > td.label-value {
+  width: 30%;
+  height: 1.3rem;
+}
+
+tr > td.count {
+  text-align: right;
+}
+
+div.button-container {
+  text-align: center;
+}
+
+clr-tooltip {
+  height: 2rem;
+  width: 2rem;
+}
+
+.status-icon {
+  margin-left: 50%;
+  height: 70%;
+  width: 70%;
+}
+
+.arrow {
+  height: 50%;
+  width: 50%;
+}
+
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0.25rem;
+  font-size: 0.65rem;
+  color: #fff;
+  display: block;
+  margin: -0.6rem 0.5rem 0 0;
+}

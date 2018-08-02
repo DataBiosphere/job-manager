@@ -7,8 +7,9 @@ import {MatCardModule, MatTableModule} from "@angular/material";
 import {TotalSummaryComponent} from './total-summary.component';
 import {JobStatus} from "../../shared/model/JobStatus";
 import {StatusCounts} from "../../shared/model/StatusCounts";
-import {ActivatedRoute, RouterModule} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {RouterTestingModule} from "@angular/router/testing";
+import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
 
 const testSummary: StatusCounts = {
   counts: [
@@ -23,6 +24,8 @@ const testSummary: StatusCounts = {
   ]
 };
 
+const testStatusArray: Array<JobStatus> = [JobStatus.Succeeded, JobStatus.Aborted, JobStatus.Running, JobStatus.Failed];
+
 describe('TotalSummaryComponent', () => {
   let hostComponent: TestHostComponent;
   let testComponent: TotalSummaryComponent;
@@ -35,6 +38,8 @@ describe('TotalSummaryComponent', () => {
         TestHostComponent
       ],
       imports: [
+        ClrIconModule,
+        ClrTooltipModule,
         CommonModule,
         MatCardModule,
         MatTableModule,
@@ -53,7 +58,8 @@ describe('TotalSummaryComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TestHostComponent);
     hostComponent = fixture.componentInstance;
-    hostComponent.componmentSummary = testSummary;
+    hostComponent.componentSummary = testSummary;
+    hostComponent.statusArray = testStatusArray;
     testComponent = fixture.debugElement.query(By.css('jm-total-summary')).componentInstance;
     fixture.detectChanges();
   });
@@ -64,10 +70,11 @@ describe('TotalSummaryComponent', () => {
 
   @Component({
     selector: `jm-test-host-component`,
-    template: `<jm-total-summary [summary]="componmentSummary"></jm-total-summary>`
+    template: `<jm-total-summary [summary]="componentSummary" [statusArray]="statusArray"></jm-total-summary>`
   })
 
   class TestHostComponent {
-    public componmentSummary: StatusCounts;
+    public componentSummary: StatusCounts;
+    public statusArray: Array<JobStatus>;
   }
 });
