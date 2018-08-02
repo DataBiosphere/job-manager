@@ -154,7 +154,7 @@ defined in `api/jobs.yaml` into appropriate classes for the servers and the UI t
 docker-compose up rebuild-swagger
 ```
  
-**Notes** 
+#### Swagger codegen notes
 
 * The `rebuild-swagger` job does nothing if the file `api/jobs.yaml` has not changed since the
 last time it was run.
