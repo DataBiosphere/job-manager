@@ -92,6 +92,9 @@
         <mat-row *matRowDef="let t; columns: displayedColumns;"></mat-row>
       </mat-table>
     </mat-tab>
+    <mat-tab *ngIf="job.failures" label="Errors">
+      <jm-failures [job]="job"></jm-failures>
+    </mat-tab>
     <!-- Disable the graph view tab so the indicator doesn't switch on click -->
     <mat-tab *ngIf="hasTimingUrl()" label="Graph View" [disabled]=true>
       <ng-template mat-tab-label>
@@ -99,9 +102,6 @@
           <div class="title-link">Graph view</div>
         </a>
       </ng-template>
-    </mat-tab>
-    <mat-tab *ngIf="job.failures" label="Errors">
-      <jm-failures [job]="job"></jm-failures>
     </mat-tab>
   </mat-tab-group>
 </mat-expansion-panel>
