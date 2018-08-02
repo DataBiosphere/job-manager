@@ -1,15 +1,15 @@
 <div class="total-summary">
   <mat-card class="card" *ngFor="let status of statusArray">
-    <div class="title">
-      <span>{{status}}</span>
-    </div>
-    <div class="content">
-      <a [routerLink]="['/jobs']" [queryParams]="getUrlParams(status)">
-        {{ statusCountsMap.get(status) }}
-      </a>
-      <clr-tooltip>
-        <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(status)" class="icon"></clr-icon>
-      </clr-tooltip>
-    </div>
+    <a [routerLink]="['/jobs']" [queryParams]="getUrlParams(status)">
+      <div class="title">
+        <span>{{status}}</span>
+      </div>
+      <div class="content">
+          {{ statusCountsMap.get(status) }}
+        <clr-tooltip>
+          <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(status)" class="icon"></clr-icon>
+        </clr-tooltip>
+      </div>
+    </a>
   </mat-card>
 </div>

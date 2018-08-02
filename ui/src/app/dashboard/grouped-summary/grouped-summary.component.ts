@@ -13,7 +13,7 @@ const DEFAULT_NUM_ROW = 5;
 enum CardStatus {
   EXPANDED = 'expanded',
   COLLAPSED = 'collapsed',
-  NONE = 'none'
+  NONE = ''
 }
 
 @Component({
@@ -21,20 +21,22 @@ enum CardStatus {
   templateUrl: './grouped-summary.component.html',
   styleUrls: ['./grouped-summary.component.css']
 })
-export class GroupedSummaryComponent implements OnInit{
+export class GroupedSummaryComponent implements OnInit {
   @Input() aggregation: Aggregation;
   @Input() statusArray: Array<JobStatus>;
 
-  displayedAggregationEntries = [];
-  originalAggregationEntries = [];
+  displayedAggregationEntries = new Array<Map<JobStatus, Number>>();
+  originalAggregationEntries = new Array<Map<JobStatus, Number>>();
 
   labelKey = LABEL_KEY;
-  expand = false;
 
   displayCollapseArrow = false;
   cardClass = CardStatus.NONE;
 
-  numRowToDisplay = DEFAULT_NUM_ROW;
+  expanded = false;
+
+  // make this variable accessible
+  numRowsToDisplay = DEFAULT_NUM_ROW;
 
   constructor(private readonly activatedRoute:ActivatedRoute) {}
 
@@ -69,18 +71,18 @@ export class GroupedSummaryComponent implements OnInit{
     return statusCountsMap;
   }
 
-  getLabelUrlParams(entry) {
+  getLabelUrlParams(entry: Map<string, string>) {
     let map = this.getCommonUrlParamsMap(entry);
     return {q: URLSearchParamsUtils.encodeURLSearchParamsFromMap(map)};
   }
 
-  getStatusUrlParams(entry, status: JobStatus) {
+  getStatusUrlParams(entry: Map<string, string>, status: JobStatus) {
     let map = this.getCommonUrlParamsMap(entry);
     map.set('statuses', [status.toString()]);
     return {q: URLSearchParamsUtils.encodeURLSearchParamsFromMap(map)};
   }
 
-  getCommonUrlParamsMap(entry) {
+  getCommonUrlParamsMap(entry: Map<string, string>) {
     let map = new Map<string, string[]>();
     const projectId = URLSearchParamsUtils.unpackURLSearchParams(this.activatedRoute.snapshot.queryParams['q'])
       .extensions['projectId'];
@@ -104,30 +106,29 @@ export class GroupedSummaryComponent implements OnInit{
 
     this.displayedAggregationEntries = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
-      switch (sort.active) {
-        case 'label': return this.compare(a.get('label'), b.get('label'), isAsc);
-        case 'Running': return this.compare(a.get('Running'), b.get('Running'), isAsc);
-        case 'Aborted': return this.compare(a.get('Aborted'), b.get('Aborted'), isAsc);
-        case 'Succeeded': return this.compare(a.get('Succeeded'), b.get('Succeeded'), isAsc);
-        case 'Failed': return this.compare(a.get('Failed'), b.get('Failed'), isAsc);
-        case 'Submitted': return this.compare(a.get('Submitted'), b.get('Submitted'), isAsc);
-        case 'Aborting': return this.compare(a.get('Aborting'), b.get('Aborting'), isAsc);
-        default: return 0;
+      if (!sort.active) {
+        return 0;
       }
+      return (a.get(sort.active) < b.get(sort.active) ? -1: 1) * (isAsc ? 1 : -1);
     });
   }
 
   onArrowClick() {
-    if (this.cardClass == CardStatus.COLLAPSED) {
+    this.expanded = !this.expanded;
+    if (this.expanded) {
       this.cardClass = CardStatus.EXPANDED;
-      this.numRowToDisplay = this.originalAggregationEntries.length;
+      this.numRowsToDisplay = this.originalAggregationEntries.length;
     } else {
-      this.numRowToDisplay = DEFAULT_NUM_ROW;
+      this.numRowsToDisplay = DEFAULT_NUM_ROW;
       this.cardClass = CardStatus.COLLAPSED;
     }
   }
 
-  private compare(a, b, isAsc) {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  getAnchorClass(entry: Map<JobStatus, number>, status: JobStatus) {
+    if (entry.get(status) == 0) {
+      return 'zero'
+    } else {
+      return ''
+    }
   }
 }

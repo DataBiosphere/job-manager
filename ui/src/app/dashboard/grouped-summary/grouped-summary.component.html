@@ -8,13 +8,16 @@
             <th [mat-sort-header]=status>
               <clr-tooltip>
                 <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(status)" class="status-icon"></clr-icon>
+                <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+                  <span>{{ status }}</span>
+                </clr-tooltip-content>
               </clr-tooltip>
             </th>
           </ng-container>
         </tr>
 
         <ng-container *ngFor="let entry of displayedAggregationEntries; let i = index">
-          <tr *ngIf="i < numRowToDisplay" class="data">
+          <tr *ngIf="i < numRowsToDisplay" class="data">
             <td class="label-value">
               <a [routerLink]="['/jobs']" [queryParams]="getLabelUrlParams(entry)">
                 {{ entry.get(labelKey) }}
@@ -23,7 +26,7 @@
 
             <ng-container *ngFor="let status of statusArray">
               <td class="count">
-                <a [routerLink]="['/jobs']" [queryParams]="getStatusUrlParams(entry, status)">
+                <a [routerLink]="['/jobs']" [queryParams]="getStatusUrlParams(entry, status)" [class]="getAnchorClass(entry, status)">
                   {{ entry.get(status) }}
                 </a>
               </td>
@@ -32,9 +35,8 @@
         </ng-container>
       </table>
 
-      <div class="button-container">
-        <button mat-icon-button (click)="onArrowClick()"
-                *ngIf="displayCollapseArrow">
+      <div class="button-container" *ngIf="displayCollapseArrow">
+        <button mat-icon-button (click)="onArrowClick()">
           <clr-tooltip>
             <clr-icon clrTooltipTrigger [attr.shape]="'angle'" class="arrow"></clr-icon>
           </clr-tooltip>
