@@ -197,14 +197,7 @@ describe('DashboardComponent', () => {
   it('should create expected amount of cards', fakeAsync(() => {
     const summaryCardNum = de.queryAll(By.css('jm-total-summary mat-card')).length;
     const groupedCardNum = de.queryAll(By.css('jm-grouped-summary')).length;
-    const statusArray: Array<JobStatus> = [JobStatus.Succeeded, JobStatus.Aborted, JobStatus.Running, JobStatus.Failed];
-
-    for (let countEntry of TEST_AGGREGATION_RESPONSE.summary.counts) {
-      if (!statusArray.includes(countEntry.status)) {
-        statusArray.push(countEntry.status);
-      }
-    }
-    expect(summaryCardNum).toEqual(statusArray.length);
+    expect(summaryCardNum).toEqual(4);
     expect(groupedCardNum).toEqual(TEST_AGGREGATION_RESPONSE.aggregations.length);
   }));
 

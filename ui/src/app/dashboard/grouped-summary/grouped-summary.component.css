@@ -36,6 +36,10 @@ a {
   margin-right: 40%
 }
 
+th.label span {
+  text-align: left;
+}
+
 td.count a {
   color: #555555;
 }

@@ -3,7 +3,9 @@
     <mat-card-content>
       <table matSort (matSortChange)="sortData($event)">
         <tr>
-          <th mat-sort-header="label" class="label">{{ aggregation.name }}</th>
+          <th mat-sort-header="label" class="label"><span>
+            {{ aggregation.name }}
+          </span></th>
           <ng-container *ngFor="let status of statusArray">
             <th [mat-sort-header]=status>
               <clr-tooltip>
