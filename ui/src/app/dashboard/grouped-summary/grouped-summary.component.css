@@ -1,3 +1,4 @@
+/*TODO(zachx): fixing the problem that expanding  a card reshuffles other cards */
 #container {
   display: inline-block;
   width: 25rem;
