@@ -147,17 +147,20 @@ https://github.com/angular/angular-cli/issues/6349).
 
 ### Updating the API using swagger-codegen
 
-We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to automatically generate the API classes
-defined in `api/jobs.yaml` for the servers and for the UI. 
-Whenever the API is updated, re-run `docker-compose up rebuild-swagger` to trigger a rebuild.
+* We use [swagger-codegen](https://github.com/swagger-api/swagger-codegen) to transform the API 
+defined in `api/jobs.yaml` into appropriate classes for the servers and the UI to use.
+* Whenever the API is updated, run this to trigger a rebuild: 
+```sh
+docker-compose up rebuild-swagger
+```
  
-**Note:** the `rebuild-swagger` job does nothing if the file `api/jobs.yaml` has not changed since the
+**Notes** 
+
+* The `rebuild-swagger` job does nothing if the file `api/jobs.yaml` has not changed since the
 last time it was run.
-
-**Note:** the `rebuild-swagger` job will run by default during `docker-compose up` to generate the swagger for the other 
+* The `rebuild-swagger` job will run by default during `docker-compose up` to generate the swagger for the other 
 services if necessary. The other services will not start until their swagger classes exist.
-
-**Note:** after regenerating the model files, you'll need to test and update the server implementations to 
+* After regenerating the model files, you'll need to test and update the server implementations to 
 resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs. 
 
 ## Job Manager UI Server
