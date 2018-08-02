@@ -3,18 +3,23 @@
   display: inline-block;
   width: 25rem;
   margin: 1rem;
+
 }
 
 mat-card {
-  min-height: 12rem;
+  min-height: 220px;
 }
 
 div.expanded mat-card {
-  padding-bottom: 0.2rem;
+  padding-bottom: 0;
+  /*min-height should plus removed padding-bottom, which is 24px by default*/
+  min-height: 244px;
 }
 
 div.collapsed mat-card {
-  padding-bottom: 0.2rem;
+  padding-bottom: 0;
+  /*min-height should plus removed padding-bottom, which is 24px by default*/
+  min-height: 244px;
 }
 
 div.collapsed clr-icon.arrow {
@@ -28,10 +33,11 @@ div.expanded clr-icon.arrow {
 a {
   text-decoration: none;
   color: #000000;
+  margin-right: 40%
 }
 
 td.count a {
-  color: #888888;
+  color: #555555;
 }
 
 a.zero {
@@ -39,20 +45,26 @@ a.zero {
 }
 
 tr > th.label {
-  width: 50%;
-  height: 3rem;
+  width: 30%;
+  height: 2rem;
   font-size: large;
 }
 
+table {
+  width: 100%;
+}
 tr > td.label-value {
-  width: 40%;
+  width: 30%;
   height: 1.3rem;
+}
+
+tr > td.count {
+  text-align: right;
 }
 
 div.button-container {
   text-align: center;
 }
-
 
 clr-tooltip {
   height: 2rem;
@@ -60,8 +72,9 @@ clr-tooltip {
 }
 
 .status-icon {
-  height: 100%;
-  width: 100%;
+  margin-left: 50%;
+  height: 70%;
+  width: 70%;
 }
 
 .arrow {

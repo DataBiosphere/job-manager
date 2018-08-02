@@ -218,7 +218,7 @@ describe('DashboardComponent', () => {
   }));
 
   it('should have status as url param when totalSummaryComponent links are clicked', fakeAsync(() => {
-    const totalSummaryAnchor = de.query(By.css('jm-total-summary .content a')).nativeElement;
+    const totalSummaryAnchor = de.query(By.css('jm-total-summary mat-card.card a')).nativeElement;
     const status: JobStatus = JobStatus.Succeeded;
 
     totalSummaryAnchor.click();

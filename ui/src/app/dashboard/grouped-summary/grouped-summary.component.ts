@@ -25,12 +25,10 @@ export class GroupedSummaryComponent implements OnInit {
   @Input() aggregation: Aggregation;
   @Input() statusArray: Array<JobStatus>;
 
-  displayedAggregationEntries = new Array<Map<JobStatus, Number>>();
-  originalAggregationEntries = new Array<Map<JobStatus, Number>>();
+  displayedAggregationEntries = new Array<Map<string, string>>();
+  originalAggregationEntries = new Array<Map<string, string>>();
 
   labelKey = LABEL_KEY;
-
-  displayCollapseArrow = false;
   cardClass = CardStatus.NONE;
 
   expanded = false;
@@ -58,7 +56,6 @@ export class GroupedSummaryComponent implements OnInit {
     this.originalAggregationEntries = this.displayedAggregationEntries.slice();
 
     if (this.originalAggregationEntries.length > DEFAULT_NUM_ROW) {
-      this.displayCollapseArrow = true;
       this.cardClass = CardStatus.COLLAPSED;
     }
   }
@@ -130,5 +127,9 @@ export class GroupedSummaryComponent implements OnInit {
     } else {
       return ''
     }
+  }
+
+  displayCollapseArrow(): boolean {
+    return this.originalAggregationEntries.length > DEFAULT_NUM_ROW;
   }
 }

@@ -34,14 +34,11 @@
           </tr>
         </ng-container>
       </table>
-
-      <div class="button-container" *ngIf="displayCollapseArrow">
-        <button mat-icon-button (click)="onArrowClick()">
-          <clr-tooltip>
-            <clr-icon clrTooltipTrigger [attr.shape]="'angle'" class="arrow"></clr-icon>
-          </clr-tooltip>
-        </button>
-      </div>
     </mat-card-content>
+    <div class="button-container" *ngIf="displayCollapseArrow()">
+      <button mat-icon-button (click)="onArrowClick()">
+          <clr-icon [attr.shape]="'angle'" class="arrow"></clr-icon>
+      </button>
+    </div>
   </mat-card>
 </div>
