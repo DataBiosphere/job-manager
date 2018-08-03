@@ -45,5 +45,5 @@
     </ng-container>
     <mat-row *matRowDef="let f; columns: displayedColumns;"></mat-row>
   </mat-table>
-  <p *ngIf="totalNumErrors > dataSource.length" class="tab-link"><button (click)="showAllErrors()"> {{ totalNumErrors - dataSource.length }} more errors</button></p>
+  <p *ngIf="totalNumErrors > dataSource.length" class="tab-link"><button (click)="showAllErrors()"> See all {{ totalNumErrors - dataSource.length }} errors</button></p>
 </mat-expansion-panel>
