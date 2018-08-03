@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {AggregationResponse} from "../shared/model/AggregationResponse";
 import {JobStatus} from "../shared/model/JobStatus";
@@ -10,7 +10,7 @@ import {JobStatus} from "../shared/model/JobStatus";
 })
 export class DashboardComponent implements OnInit {
   aggregationResponse: AggregationResponse;
-  statusArray: Array<JobStatus> = [];
+  statusArray: Array<JobStatus> = [JobStatus.Succeeded, JobStatus.Aborted, JobStatus.Running, JobStatus.Failed];
 
   constructor(private readonly activatedRoute: ActivatedRoute) {}
 
@@ -19,9 +19,9 @@ export class DashboardComponent implements OnInit {
 
     // collect status
     for (let countEntry of this.aggregationResponse.summary.counts) {
-      //TODO(zach): Seems that job status on the backend is not an enum type and it still fit in even if the
-      // string is not one of the enum of JobStatus
-      this.statusArray.push(countEntry.status);
+      if (!this.statusArray.includes(countEntry.status)) {
+        this.statusArray.push(countEntry.status);
+      }
     }
   }
 }

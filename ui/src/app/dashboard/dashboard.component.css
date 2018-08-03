@@ -1,0 +1,24 @@
+* {
+  font-family: "Gotham HTF", sans-serif;
+}
+
+div {
+  margin: 1rem;
+}
+
+.aggregation-container {
+  padding: 1rem;
+}
+
+.group-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.title {
+  font-size: x-large;
+  margin: 1rem;
+}
+
+

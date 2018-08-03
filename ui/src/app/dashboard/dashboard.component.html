@@ -1,5 +1,13 @@
 <jm-header [showControls]="false"></jm-header>
-<jm-total-summary [summary]="aggregationResponse.summary"></jm-total-summary>
-<jm-grouped-summary *ngFor="let aggregation of aggregationResponse.aggregations"
+
+<div class="aggregation-container">
+  <jm-total-summary [summary]="aggregationResponse.summary" [statusArray]="statusArray"></jm-total-summary>
+
+  <div class="group-container">
+    <jm-grouped-summary *ngFor="let aggregation of aggregationResponse.aggregations"
                         [statusArray]="statusArray"
                         [aggregation]="aggregation"></jm-grouped-summary>
+  </div>
+</div>
+
+<!--TODO(zachx): improving the layout using angular grid system-->
