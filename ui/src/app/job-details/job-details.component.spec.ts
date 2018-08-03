@@ -30,6 +30,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {URLSearchParamsUtils} from '../shared/utils/url-search-params.utils';
 import {JobStatus} from "../shared/model/JobStatus";
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
+import {JobFailuresComponent} from "./failures/failures.component";
+import {JobFailuresTabComponent} from "./failures/failures-tab/failures-tab.component";
 
 describe('JobDetailsComponent', () => {
 
@@ -57,6 +59,8 @@ describe('JobDetailsComponent', () => {
         FakeJobListComponent,
         TestJobDetailsComponent,
         JobDetailsComponent,
+        JobFailuresComponent,
+        JobFailuresTabComponent,
         JobPanelsComponent,
         JobResourcesComponent,
         JobResourcesTableComponent,

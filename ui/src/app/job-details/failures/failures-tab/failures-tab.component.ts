@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {JobMetadataResponse} from "../../../shared/model/JobMetadataResponse";
 import {FailureMessage} from "../../../shared/model/FailureMessage";
-import {DataSource} from '@angular/cdk/collections';
 import {ResourceUtils} from "../../../shared/utils/resource-utils";
 import {TaskMetadata} from "../../../shared/model/TaskMetadata";
 
@@ -15,8 +14,7 @@ export class JobFailuresTabComponent implements OnInit {
   displayedColumns: string[] = ['name', 'message', 'links'];
   dataSource: FailureMessage[] | null;
 
-
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.dataSource = this.job.failures;

@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {JobMetadataResponse} from "../../shared/model/JobMetadataResponse";
 import {FailureMessage} from "../../shared/model/FailureMessage";
 import {ResourceUtils} from "../../shared/utils/resource-utils";
 import {TaskMetadata} from "../../shared/model/TaskMetadata";
@@ -10,19 +9,18 @@ import {TaskMetadata} from "../../shared/model/TaskMetadata";
   styleUrls: ['./failures.component.css']
 })
 export class JobFailuresComponent implements OnInit {
-  @Input() job: JobMetadataResponse;
-
+  @Input() failures: FailureMessage[];
   displayedColumns: string[] = ['name', 'message', 'links'];
   dataSource: FailureMessage[] | null;
   totalNumErrors = 0;
   expandPanel: boolean;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.expandPanel = true;
-    this.totalNumErrors = this.job.failures.length;
-    this.dataSource = this.job.failures.slice(0,2);
+    this.totalNumErrors = this.failures.length;
+    this.dataSource = this.failures.slice(0,2);
   }
 
   getResourceUrl(url: string): string {
