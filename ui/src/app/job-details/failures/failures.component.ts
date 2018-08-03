@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {JobMetadataResponse} from "../../shared/model/JobMetadataResponse";
 import {FailureMessage} from "../../shared/model/FailureMessage";
-import {DataSource} from '@angular/cdk/collections';
 import {ResourceUtils} from "../../shared/utils/resource-utils";
 import {TaskMetadata} from "../../shared/model/TaskMetadata";
 
@@ -12,16 +11,19 @@ import {TaskMetadata} from "../../shared/model/TaskMetadata";
 })
 export class JobFailuresComponent implements OnInit {
   @Input() job: JobMetadataResponse;
+
   displayedColumns: string[] = ['name', 'message', 'links'];
   dataSource: FailureMessage[] | null;
-
+  totalNumErrors = 0;
+  expandPanel: boolean;
 
   constructor() { }
 
   ngOnInit() {
-    this.dataSource = this.job.failures;
+    this.expandPanel = true;
+    this.totalNumErrors = this.job.failures.length;
+    this.dataSource = this.job.failures.slice(0,2);
   }
-
 
   getResourceUrl(url: string): string {
     return ResourceUtils.getResourceURL(url);
@@ -31,5 +33,9 @@ export class JobFailuresComponent implements OnInit {
     if (task.callRoot) {
       return ResourceUtils.getDirectoryBrowserURL(task.callRoot);
     }
+  }
+
+  showAllErrors(): void {
+    this.expandPanel = false;
   }
 }
