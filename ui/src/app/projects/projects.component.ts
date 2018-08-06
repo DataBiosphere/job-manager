@@ -20,6 +20,7 @@ import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter
 import {ProjectsService} from './projects.service'
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 import {ConfigLoaderService} from "../../environments/config-loader.service";
+import {defaultTimeFrame} from "../shared/common";
 
 @Component({
   selector: 'jm-projects',
@@ -95,20 +96,29 @@ export class ProjectsComponent implements OnInit {
   }
 
   navigateJobs() {
-    const extras = {
-      queryParams:
-        {
-          q: URLSearchParamsUtils.encodeURLSearchParams({
-            extensions: {
-              projectId: this.projectsControl.value
-            }})
-        }
-    };
-
     if (this.configLoader.getEnvironmentConfigSynchronous()['dashboardEnabled']) {
-      this.router.navigate(['dashboard'], extras);
+      this.router.navigate(['dashboard'],
+        {
+          queryParams:
+            {
+              q: URLSearchParamsUtils.encodeURLSearchParams({
+                extensions: {
+                  projectId: this.projectsControl.value
+                }}),
+              timeFrame: defaultTimeFrame,
+            }
+        });
     } else {
-      this.router.navigate(['jobs'], extras);
+      this.router.navigate(['jobs'],
+        {
+          queryParams:
+            {
+              q: URLSearchParamsUtils.encodeURLSearchParams({
+                extensions: {
+                  projectId: this.projectsControl.value
+                }})
+            }
+        });
     }
   }
 }

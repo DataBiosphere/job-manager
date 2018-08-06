@@ -41,6 +41,7 @@ const routes: Routes = [
     component: DashboardComponent,
     //TODO: (zach) dashboard need a query param of project id before it can be activated
     canActivate: [CapabilitiesActivator],
+    runGuardsAndResolvers: 'always',
     resolve: {
       aggregations: DashboardResolver
     }
