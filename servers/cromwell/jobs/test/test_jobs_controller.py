@@ -406,9 +406,6 @@ class TestJobsController(BaseTestCase):
             'inputs': jobs_controller.update_key_names(inputs),
             'outputs': jobs_controller.update_key_names(outputs),
             'labels': labels,
-            'failures': [{
-                'failure': 'Task test.analysis failed'
-            }],
             'extensions':{
                 'tasks': [{
                     'name': 'analysis',
@@ -437,7 +434,7 @@ class TestJobsController(BaseTestCase):
         """
         workflow_id = 'id'
         workflow_name = 'test'
-        status = 'Succeeded'
+        status = 'Failed'
         timestamp = '2017-11-08T05:06:41.424Z'
         response_timestamp = '2017-11-08T05:06:41.424000Z'
         inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
@@ -447,6 +444,7 @@ class TestJobsController(BaseTestCase):
         labels = {'cromwell-workflow-id': 'cromwell-12345'}
         job_id1 = 'operations/abcde'
         job_id2 = 'operations/dffdf'
+        call_root = '/cromwell/cromwell-executions/id/call-analysis'
         std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
         std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
         attempts = 1
@@ -469,7 +467,13 @@ class TestJobsController(BaseTestCase):
                         'stdout': std_out,
                         'returnCode': return_code,
                         'inputs': inputs,
-                        'attempt': attempts
+                        'attempt': attempts,
+                        'failures': [
+                            {
+                                'causedBy': [],
+                                'message': 'test.analysis shard 0 failed'
+                            }
+                        ],
                     },{
                         'jobId': job_id2,
                         'executionStatus': 'Failed',
@@ -480,7 +484,13 @@ class TestJobsController(BaseTestCase):
                         'stdout': std_out,
                         'returnCode': return_code,
                         'inputs': inputs,
-                        'attempt': attempts
+                        'attempt': attempts,
+                        'failures': [
+                            {
+                                'causedBy': [],
+                                'message': 'test.analysis shard 1 failed'
+                            }
+                        ],
                     }]
                 },
                 'inputs': inputs,
@@ -490,8 +500,14 @@ class TestJobsController(BaseTestCase):
                 'end': timestamp,
                 'start': timestamp,
                 'failures': [{
-                    'causedBy': [],
-                    'message': 'Task test.analysis failed'
+                    'causedBy': [{
+                        'causedBy': [],
+                        'message': 'test.analysis shard 0 failed'
+                    },{
+                        'causedBy': [],
+                        'message': 'test.analysis shard 1 failed'
+                    }],
+                    'message': 'Workflow failed'
                 }]
             }  # yapf: disable
 
@@ -513,7 +529,19 @@ class TestJobsController(BaseTestCase):
             'outputs': jobs_controller.update_key_names(outputs),
             'labels': labels,
             'failures': [{
-                'failure': 'Task test.analysis failed'
+                'callRoot': call_root,
+                'failure': 'test.analysis shard 0 failed',
+                'stderr': std_err,
+                'stdout': std_out,
+                'taskName': 'analysis',
+                'timestamp': timestamp
+             },{
+                'callRoot': call_root,
+                'failure': 'test.analysis shard 1 failed',
+                'stderr': std_err,
+                'stdout': std_out,
+                'taskName': 'analysis',
+                'timestamp': timestamp
             }],
             'extensions':{
                 'tasks': [{
