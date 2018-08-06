@@ -114,8 +114,7 @@ def generate_jobs_by_window(provider, project_id, window_min, window_max=None):
     for j in jobs:
         job = _query_jobs_result(j, project_id)
         # Filter jobs that do no end within the time window
-        if job.end and window_min and window_max and (job.end < window_min
-                        or window_max and job.end > window_max):
+        if job.end and (window_min and job.end < window_min or window_max and job.end > window_max):
             continue
 
         yield job

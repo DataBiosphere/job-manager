@@ -2,10 +2,9 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core'
 import {StatusCounts} from "../../shared/model/StatusCounts";
 import {ActivatedRoute} from "@angular/router";
 import {URLSearchParamsUtils} from "../../shared/utils/url-search-params.utils";
-import {StatusCount} from "../../shared/model/StatusCount";
 import {JobStatusIcon} from "../../shared/common";
 import {JobStatus} from "../../shared/model/JobStatus";
-import {AggregationResponse} from "../../shared/model/AggregationResponse";
+import {TimeFrame} from "../../shared/model/TimeFrame";
 
 @Component({
   selector: 'jm-total-summary',
@@ -15,12 +14,23 @@ import {AggregationResponse} from "../../shared/model/AggregationResponse";
 export class TotalSummaryComponent implements OnInit, OnChanges {
   @Input() summary: StatusCounts;
   @Input() statusArray: Array<JobStatus>;
+  @Input() timeFrame: TimeFrame;
+
   statusCountsMap = new Map<JobStatus, number>();
 
   constructor(private readonly activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.updateStatusCountsMap(this.summary);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // return if onInit() has not been called
+    if (changes['summary'] == null) {
+      return;
+    }
+    console.log(changes['summary']);
+    this.updateStatusCountsMap(changes['summary'].currentValue);
   }
 
   updateStatusCountsMap(summary: StatusCounts) {
@@ -38,16 +48,20 @@ export class TotalSummaryComponent implements OnInit, OnChanges {
   }
 
   getUrlParams(status: JobStatus) {
-    let query = URLSearchParamsUtils.unpackURLSearchParams(this.activatedRoute.snapshot.queryParams['q']);
-    query.statuses = [status];
-    return {q: URLSearchParamsUtils.encodeURLSearchParams(query)};
+    const query = URLSearchParamsUtils.unpackURLSearchParams(this.activatedRoute.snapshot.queryParams['q']);
+
+    let map = new Map<string, string[]>();
+    map.set('statuses', [status.toString()]);
+    map.set('projectId', [query.extensions.projectId]);
+    const startTime = URLSearchParamsUtils.getStartTimeByTimeFrame(this.timeFrame);
+    if (startTime != "") {
+      map.set('start', [startTime]);
+    }
+
+    return {q: URLSearchParamsUtils.encodeURLSearchParamsFromMap(map)};
   }
 
   getStatusIcon(status: JobStatus): string {
     return JobStatusIcon[status];
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    this.updateStatusCountsMap(changes['summary'].currentValue);
   }
 }
