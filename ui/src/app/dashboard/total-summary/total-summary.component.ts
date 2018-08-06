@@ -29,7 +29,6 @@ export class TotalSummaryComponent implements OnInit, OnChanges {
     if (changes['summary'] == null) {
       return;
     }
-    console.log(changes['summary']);
     this.updateStatusCountsMap(changes['summary'].currentValue);
   }
 
