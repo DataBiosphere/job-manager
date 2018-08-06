@@ -4,7 +4,7 @@ import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/router";
 import {AggregationResponse} from "../shared/model/AggregationResponse";
 import {JobManagerService} from "../core/job-manager.service";
-import {stringToTimeFrameMap} from "../shared/time-frame";
+import {stringToTimeFrameMap} from "../shared/common";
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 
 @Injectable()

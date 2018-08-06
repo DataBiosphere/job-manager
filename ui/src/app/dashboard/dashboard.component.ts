@@ -4,7 +4,7 @@ import {AggregationResponse} from "../shared/model/AggregationResponse";
 import {JobStatus} from "../shared/model/JobStatus";
 import {TimeFrame} from "../shared/model/TimeFrame";
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
-import {defaultTimeFrame, timeFrameToDescriptionMap} from "../shared/time-frame";
+import {defaultTimeFrame, timeFrameToDescriptionMap} from "../shared/common";
 
 @Component({
   selector: 'jm-dashboard',
