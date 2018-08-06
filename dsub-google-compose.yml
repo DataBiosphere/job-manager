@@ -31,3 +31,7 @@ services:
     links:
       - jmui
       - dsub:jmapi
+  aggregation-cache:
+    extends:
+      file: common-compose.yml
+      service: aggregation-cache

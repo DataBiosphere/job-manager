@@ -27,3 +27,7 @@ services:
     links:
       - jmui
       - cromwell:jmapi
+  aggregation-cache:
+    extends:
+      file: common-compose.yml
+      service: aggregation-cache
