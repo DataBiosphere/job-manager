@@ -16,6 +16,7 @@ _LABEL_MIN_COUNT_FOR_RANK = 10
 
 cache = redis.Redis(host='aggregation-cache', port=6379)
 
+
 def get_job_aggregations(timeFrame, projectId=None):
     """Query for aggregated jobs in the given time frame.
 
