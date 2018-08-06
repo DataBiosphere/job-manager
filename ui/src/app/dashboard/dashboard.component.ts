@@ -4,8 +4,7 @@ import {AggregationResponse} from "../shared/model/AggregationResponse";
 import {JobStatus} from "../shared/model/JobStatus";
 import {TimeFrame} from "../shared/model/TimeFrame";
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
-import {defaultTimeFrame, timeFrameStringMap} from "../shared/common";
-import {URLSearchParams} from "@angular/http";
+import {defaultTimeFrame, timeFrameToDescriptionMap} from "../shared/time-frame";
 
 @Component({
   selector: 'jm-dashboard',
@@ -15,14 +14,7 @@ import {URLSearchParams} from "@angular/http";
 export class DashboardComponent implements OnInit {
   aggregationResponse: AggregationResponse;
   statusArray: Array<JobStatus> = [JobStatus.Succeeded, JobStatus.Aborted, JobStatus.Running, JobStatus.Failed];
-  timeFrameMapping = new Map<TimeFrame, string> ([
-    [TimeFrame.HOURS1, 'in past 1 hour'],
-    [TimeFrame.HOURS8, 'in past 8 hours'],
-    [TimeFrame.HOURS24, 'in past 24 hours'],
-    [TimeFrame.DAYS7, 'in past 7 days'],
-    [TimeFrame.DAYS30, 'in past 30 days'],
-    [TimeFrame.ALLTIME, 'in past all time'],
-  ]);
+  timeFrameToDescriptionMap = timeFrameToDescriptionMap;
 
   selectedTimeFrame = defaultTimeFrame;
   timeFrames: Array<TimeFrame> = [TimeFrame.HOURS1, TimeFrame.HOURS8, TimeFrame.HOURS24,
