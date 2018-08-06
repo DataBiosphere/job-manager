@@ -1,8 +1,10 @@
 import {ActivatedRoute, Router} from '@angular/router';
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {TaskMetadata} from '../shared/model/TaskMetadata';
+import {TaskDetailsComponent} from "./tasks/tasks.component";
+import {JobFailuresComponent} from "./failures/failures.component";
 
 @Component({
   selector: 'jm-job-details',
@@ -10,6 +12,8 @@ import {TaskMetadata} from '../shared/model/TaskMetadata';
   styleUrls: ['./job-details.component.css'],
 })
 export class JobDetailsComponent implements OnInit {
+  @ViewChild(TaskDetailsComponent) taskTabs;
+  @ViewChild(JobFailuresComponent) failurePanel;
   public job: JobMetadataResponse;
 
   constructor(
@@ -45,5 +49,11 @@ export class JobDetailsComponent implements OnInit {
 
   hasFailures(): boolean {
     return this.job.failures && this.job.failures.length !== 0;
+  }
+
+  changeSelectedTabToFailurePanel(): void {
+    if(this.failurePanel && this.failurePanel.changeToFailuresTab) {
+      this.taskTabs.selectedTab = 1;
+    }
   }
 }

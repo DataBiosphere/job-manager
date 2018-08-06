@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FailureMessage} from "../../../shared/model/FailureMessage";
-import {ResourceUtils} from "../../../shared/utils/resource-utils";
-import {TaskMetadata} from "../../../shared/model/TaskMetadata";
+import {Component, Input, OnInit} from '@angular/core';
+import {FailureMessage} from "../../shared/model/FailureMessage";
+import {ResourceUtils} from "../../shared/utils/resource-utils";
+import {TaskMetadata} from "../../shared/model/TaskMetadata";
 
 @Component({
   selector: 'jm-failures',
@@ -10,6 +10,8 @@ import {TaskMetadata} from "../../../shared/model/TaskMetadata";
 })
 export class JobFailuresComponent implements OnInit {
   @Input() failures: FailureMessage[];
+  changeToFailuresTab: boolean;
+
   displayedColumns: string[] = ['name', 'message', 'links'];
   dataSource: FailureMessage[] | null;
   totalNumErrors = 0;
@@ -35,5 +37,6 @@ export class JobFailuresComponent implements OnInit {
 
   showAllErrors(): void {
     this.expandPanel = false;
+    this.changeToFailuresTab = true;
   }
 }

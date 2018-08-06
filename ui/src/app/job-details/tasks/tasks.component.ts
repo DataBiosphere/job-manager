@@ -23,8 +23,8 @@ import {TaskMetadata} from '../../shared/model/TaskMetadata';
 export class TaskDetailsComponent implements OnInit, OnChanges {
   @Input() tasks: TaskMetadata[] = [];
   @Input() job: JobMetadataResponse;
+  @Input() selectedTab: number;
 
-  selectedTab: number;
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
   displayedColumns = [
