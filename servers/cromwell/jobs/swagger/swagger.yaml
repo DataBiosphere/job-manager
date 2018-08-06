@@ -586,7 +586,8 @@ definitions:
     properties:
       taskName:
         type: "string"
-        description: "The name of the task that generated the failure message"
+        description: "If from a task, the name of the task that generated the failure\
+          \ message"
       failure:
         type: "string"
         description: "The failure message"
@@ -596,14 +597,17 @@ definitions:
         description: "The time at which this failure occurred"
       stdout:
         type: "string"
-        description: "Path to the standard output file for this task or shard"
+        description: "If from a task, path to the standard output file for this task\
+          \ or shard"
       stderr:
         type: "string"
-        description: "Path to the standard error file for this task or shard"
+        description: "If from a task, path to the standard error file for this task\
+          \ or shard"
       callRoot:
         type: "string"
-        description: "The root directory of the task or shard execution"
-    description: "Failure messages"
+        description: "If from a task, the root directory of the task or shard execution"
+    description: "Failure messages with optional additional information if the failure\
+      \ was from a task or scattered task shard\n"
   FieldType:
     type: "string"
     enum:
