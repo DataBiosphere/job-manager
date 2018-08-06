@@ -575,7 +575,7 @@ definitions:
     properties:
       taskName:
         type: string
-        description: The name of the task that generated the failure message
+        description: The name of the task that generated the failure message, if any
       failure:
         type: string
         description: The failure message
