@@ -18,6 +18,7 @@ idna==2.7
 inflection==0.3.1
 itsdangerous==0.24
 Jinja2==2.10
+redis==2.10
 ../jm_utils
 jsonschema==2.6.0
 MarkupSafe==1.0

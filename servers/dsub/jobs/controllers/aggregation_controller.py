@@ -1,5 +1,6 @@
 import apiclient
 import requests
+import redis
 
 from flask import current_app, request
 from jobs.controllers.utils import jobs_generator, time_frame, providers
@@ -13,6 +14,7 @@ from werkzeug.exceptions import BadRequest, NotFound, Forbidden, InternalServerE
 _NUM_TOP_LABEL = 3
 _LABEL_MIN_COUNT_FOR_RANK = 10
 
+cache = redis.Redis(host='aggregation-cache', port=6379)
 
 def get_job_aggregations(timeFrame, projectId=None):
     """Query for aggregated jobs in the given time frame.

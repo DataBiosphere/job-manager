@@ -62,3 +62,5 @@ services:
       - ./nginx.dev.conf:/etc/nginx/nginx.conf
     ports:
       - 4200:4200
+  aggregation-cache:
+    image: "redis:alpine"
