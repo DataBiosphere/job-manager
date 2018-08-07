@@ -535,14 +535,14 @@ class TestJobsController(BaseTestCase):
                 'stderr': std_err,
                 'stdout': std_out,
                 'taskName': 'analysis',
-                'timestamp': timestamp
+                'timestamp': response_timestamp
              },{
                 'callRoot': call_root,
                 'failure': 'test.analysis shard 1 failed',
                 'stderr': std_err,
                 'stdout': std_out,
                 'taskName': 'analysis',
-                'timestamp': timestamp
+                'timestamp': response_timestamp
             }],
             'extensions':{
                 'tasks': [{
