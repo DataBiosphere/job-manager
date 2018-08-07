@@ -5,6 +5,16 @@
   [showControls]="true"></jm-header>
 <mat-divider class="divider"></mat-divider>
 <div class="table-container">
+  <span class="settings-icon-container">
+    <button mat-icon-button class="shard-icon" [matMenuTriggerFor]="" class="settings-icon">
+      <clr-tooltip>
+        <clr-icon clrTooltipTrigger shape="cog" size="18"  class="is-solid"></clr-icon>
+        <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+          <span>view settings</span>
+        </clr-tooltip-content>
+      </clr-tooltip>
+    </button>
+  </span>
   <jm-job-list-table
     class="job-list-table"
     [ngStyle]="{'opacity': tableOpacity}"
