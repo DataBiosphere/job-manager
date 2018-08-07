@@ -1,31 +1,46 @@
-<mat-card>
-  <mat-card-title>
-    {{ aggregation.name }}
-  </mat-card-title>
+<div [class]="cardClass" id="container">
+  <mat-card>
+    <mat-card-content>
+      <table matSort (matSortChange)="sortData($event)">
+        <tr>
+          <th mat-sort-header="label" class="label"><span>
+            {{ aggregation.name }}
+          </span></th>
+          <ng-container *ngFor="let status of statusArray">
+            <th [mat-sort-header]=status>
+              <clr-tooltip>
+                <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(status)" class="status-icon"></clr-icon>
+                <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+                  <span>{{ status }}</span>
+                </clr-tooltip-content>
+              </clr-tooltip>
+            </th>
+          </ng-container>
+        </tr>
 
-  <mat-card-content>
-    <table>
-      <tr>
-        <th mat-sort-header="label">Label</th>
-        <ng-container *ngFor="let status of statusArray">
-          <th mat-sort-header="'status'">{{ status }}</th>
-        </ng-container>
-      </tr>
+        <ng-container *ngFor="let entry of displayedAggregationEntries; let i = index">
+          <tr *ngIf="i < numRowsToDisplay" class="data">
+            <td class="label-value">
+              <a [routerLink]="['/jobs']" [queryParams]="getLabelUrlParams(entry)">
+                {{ entry.get(labelKey) }}
+              </a>
+            </td>
 
-      <tr *ngFor="let entry of aggregation.entries">
-        <td class="label">
-          <a [routerLink]="['/jobs']" [queryParams]="getLabelUrlParams(entry)">
-            {{ entry.label }}
-          </a>
-        </td>
-        <ng-container *ngFor="let status of statusArray">
-          <td class="count">
-            <a [routerLink]="['/jobs']" [queryParams]="getStatusUrlParams(entry, status)">
-              {{ convertCountsToMap(entry).get(status) }}
-            </a>
-          </td>
+            <ng-container *ngFor="let status of statusArray">
+              <td class="count">
+                <a [routerLink]="['/jobs']" [queryParams]="getStatusUrlParams(entry, status)" [class]="getAnchorClass(entry, status)">
+                  {{ entry.get(status) }}
+                </a>
+              </td>
+            </ng-container>
+          </tr>
         </ng-container>
-      </tr>
-    </table>
-  </mat-card-content>
-</mat-card>
+      </table>
+    </mat-card-content>
+    <div class="button-container" *ngIf="displayCollapseArrow()">
+      <button mat-icon-button (click)="onArrowClick()">
+          <clr-icon [attr.shape]="'angle'" class="arrow"></clr-icon>
+      </button>
+    </div>
+  </mat-card>
+</div>

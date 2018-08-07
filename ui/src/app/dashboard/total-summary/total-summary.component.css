@@ -1,18 +1,32 @@
-.mat-card {
+.total-summary{
   margin: 1rem;
+  display: flex;
+  justify-content: space-between;
 }
 
-.count a {
+.card {
+  margin: 1rem;
+  width: 18%;
+}
+
+.title {
+  font-size: large;
+}
+
+a {
   text-decoration: none;
   color: #000000;
+  font-size: xx-large;
 }
 
-.mat-card-title {
-  font-size: 1.2rem;
-  color: gray
+clr-tooltip {
+  height: 2.5rem;
+  width: 2.5rem;
+  margin-right: 20%;
+  float: right;
 }
 
-/*TODO(zachx): change this to adapt more complex layout*/
-.card-container {
-  display: inline-flex;
+.icon {
+  height: 100%;
+  width: 100%;
 }
