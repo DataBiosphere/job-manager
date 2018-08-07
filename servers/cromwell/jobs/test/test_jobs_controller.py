@@ -421,7 +421,8 @@ class TestJobsController(BaseTestCase):
                     'jobId': subworkflow_id
                 }],
                 'timingUrl': "https://test-cromwell.org/id/timing"
-            }
+            },
+            'failures': []
         }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)
 
@@ -529,18 +530,18 @@ class TestJobsController(BaseTestCase):
             'outputs': jobs_controller.update_key_names(outputs),
             'labels': labels,
             'failures': [{
-                'callRoot': call_root,
                 'failure': 'test.analysis shard 0 failed',
                 'stderr': std_err,
                 'stdout': std_out,
                 'taskName': 'analysis',
+                'callRoot': call_root,
                 'timestamp': timestamp
              },{
-                'callRoot': call_root,
                 'failure': 'test.analysis shard 1 failed',
                 'stderr': std_err,
                 'stdout': std_out,
                 'taskName': 'analysis',
+                'callRoot': call_root,
                 'timestamp': timestamp
             }],
             'extensions':{
