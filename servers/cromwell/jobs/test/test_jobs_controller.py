@@ -552,6 +552,7 @@ class TestJobsController(BaseTestCase):
                     'executionStatus': 'Failed',
                     'start': response_timestamp,
                     'end': response_timestamp,
+                    'callRoot': call_root,
                     'attempts': attempts,
                     'shardStatuses': [{
                         'count': 2,
