@@ -3,7 +3,7 @@
   <mat-table #table [dataSource]="dataSource">
     <!-- Task name column -->
     <ng-container matColumnDef="name">
-      <mat-cell *matCellDef="let f" class="failure-task-name">{{ f.taskName }}</mat-cell>
+      <mat-cell *matCellDef="let f" [ngClass]="{'hidden': !hasTaskNames()}">{{ f.taskName }}</mat-cell>
     </ng-container>
 
     <!-- Failure message column -->
@@ -13,7 +13,7 @@
 
     <!-- Outside links column -->
     <ng-container matColumnDef="links">
-      <mat-cell *matCellDef="let f" class="failure-links">
+      <mat-cell *matCellDef="let f" [ngClass]="{'hidden': !hasLinks()}">
         <clr-tooltip *ngIf="getResourceUrl(f.stdout)">
           <a class="log-item" href="{{ getResourceUrl(f.stdout) }}">
             <clr-icon clrTooltipTrigger shape="file" size="24"></clr-icon>

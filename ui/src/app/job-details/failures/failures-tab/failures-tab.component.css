@@ -40,3 +40,7 @@ clr-tooltip-content {
 clr-icon {
   margin-right: 0.6rem;
 }
+
+.hidden {
+  display: none;
+}

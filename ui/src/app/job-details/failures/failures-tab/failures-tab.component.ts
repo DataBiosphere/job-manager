@@ -20,7 +20,6 @@ export class JobFailuresTabComponent implements OnInit {
     this.dataSource = this.job.failures;
   }
 
-
   getResourceUrl(url: string): string {
     return ResourceUtils.getResourceURL(url);
   }
@@ -29,5 +28,27 @@ export class JobFailuresTabComponent implements OnInit {
     if (task.callRoot) {
       return ResourceUtils.getDirectoryBrowserURL(task.callRoot);
     }
+  }
+
+  hasTaskNames(): boolean {
+    let status = false;
+    this.dataSource.forEach((failure) => {
+      if (failure.taskName) {
+        status = true;
+        return;
+      }
+    });
+    return status;
+  }
+
+  hasLinks(): boolean {
+    let status = false;
+    this.dataSource.forEach((failure) => {
+      if (failure.stderr || failure.stdout || failure.callRoot) {
+        status = true;
+        return;
+      }
+    });
+    return status;
   }
 }

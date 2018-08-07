@@ -17,8 +17,6 @@ export class JobFailuresComponent implements OnInit {
   totalNumErrors = 0;
   expandPanel: boolean;
 
-  constructor() {}
-
   ngOnInit() {
     this.expandPanel = true;
     this.totalNumErrors = this.failures.length;
@@ -38,5 +36,27 @@ export class JobFailuresComponent implements OnInit {
   showAllErrors(): void {
     this.expandPanel = false;
     this.changeToFailuresTab = true;
+  }
+
+  hasTaskNames(): boolean {
+    let status = false;
+    this.failures.forEach((failure) => {
+      if (failure.taskName) {
+        status = true;
+        return;
+      }
+    });
+    return status;
+  }
+
+  hasLinks(): boolean {
+    let status = false;
+    this.failures.forEach((failure) => {
+      if (failure.stderr || failure.stdout || failure.callRoot) {
+        status = true;
+        return;
+      }
+    });
+    return status;
   }
 }
