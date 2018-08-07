@@ -1,5 +1,3 @@
-///<reference path="../shared/utils/url-search-params.utils.ts"/>
-///<reference path="../core/job-manager.service.ts"/>
 import {Injectable} from "@angular/core";
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from "@angular/router";
 import {AggregationResponse} from "../shared/model/AggregationResponse";

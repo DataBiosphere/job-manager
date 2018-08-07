@@ -99,7 +99,7 @@ def generate_jobs_by_window(provider, project_id, window_min, window_max=None):
 
     if window_min is not None:
         create_time_min = window_min - datetime.timedelta(
-            days=_MAX_RUNTIME_DAYS) if window_min is not None else None
+            days=_MAX_RUNTIME_DAYS)
 
     jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
         provider=provider,

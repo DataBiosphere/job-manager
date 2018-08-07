@@ -21,7 +21,7 @@ import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
   declarations: [
     DashboardComponent,
     TotalSummaryComponent,
-    GroupedSummaryComponent,
+    GroupedSummaryComponent
   ],
   imports: [
     ClrIconModule,

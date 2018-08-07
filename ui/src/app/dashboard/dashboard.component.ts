@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit {
     this.activatedRoute.queryParams.subscribe(() => this.reloadAggregations());
 
     // make the default toggle option match to url param
-    if (this.activatedRoute.snapshot.queryParams['timeFrame'] != null) {
+    if (this.activatedRoute.snapshot.queryParams['timeFrame']) {
       this.selectedTimeFrame = this.activatedRoute.snapshot.queryParams['timeFrame'];
     }
   }
@@ -44,17 +44,16 @@ export class DashboardComponent implements OnInit {
 
   onTimeFrameChange(newTimeFrame: TimeFrame) {
     this.selectedTimeFrame = newTimeFrame;
-    const extras = {
+    this.router.navigate(['dashboard'], {
       queryParams:
         {
           q: URLSearchParamsUtils.encodeURLSearchParams({
             extensions: {
-              projectId: 'bvdp-jmui-testing'
+              projectId: URLSearchParamsUtils.unpackURLSearchParams(
+                this.activatedRoute.snapshot.queryParams['q']).extensions.projectId
             }}),
           timeFrame: this.selectedTimeFrame
         }
-    };
-
-    this.router.navigate(['dashboard'], extras);
+    });
   }
 }
