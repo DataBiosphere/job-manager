@@ -97,13 +97,11 @@ def get_job(id, **kwargs):
     elif response.status_code == InternalServerError.code:
         raise InternalServerError(job.get('message'))
 
-    failures = None
-    if job.get('failures'):
-        failures = [
-            format_failure(name, m)
-            for name, metadata in job.get('calls', {}).items()
-            for m in metadata if m.get('failures') is not None
-        ]
+    failures = [
+        format_failure(name, m)
+        for name, metadata in job.get('calls', {}).items() for m in metadata
+        if m.get('failures') is not None
+    ]
 
     tasks = [
         format_task(task_name, task_metadata)
