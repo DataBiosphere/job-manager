@@ -120,7 +120,7 @@ import {TimeFrame} from "../model/TimeFrame";
         now.setHours(now.getHours() - 1);
         break;
       case TimeFrame.HOURS8:
-        now.setHours(now.getHours() - 24);
+        now.setHours(now.getHours() - 8);
         break;
       case TimeFrame.HOURS24:
         now.setDate(now.getDate() - 1);
