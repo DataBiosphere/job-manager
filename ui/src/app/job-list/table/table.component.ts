@@ -39,10 +39,11 @@ import {UpdateJobLabelsResponse} from "../../shared/model/UpdateJobLabelsRespons
 export class JobsTableComponent implements OnInit {
   @Input() dataSource: DataSource<QueryJobsResult>;
   @Output() onJobsChanged: EventEmitter<QueryJobsResult[]> = new EventEmitter();
+  @Input() displayFields: DisplayField[];
+  @Output() onColumnsChanged: EventEmitter<DisplayField[]> = new EventEmitter();
 
   private mouseoverJob: QueryJobsResult;
 
-  public displayFields: DisplayField[];
   public bulkLabelFields: BulkLabelField[];
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
@@ -62,16 +63,7 @@ export class JobsTableComponent implements OnInit {
     public bulkEditDialog: MatDialog) { }
 
   ngOnInit() {
-    // set up display fields and bulk update-able labels
-    this.displayFields = this.capabilitiesService.getCapabilitiesSynchronous().displayFields;
-    this.bulkLabelFields = [];
-    for (let displayField of this.displayFields) {
-      this.displayedColumns.push(displayField.field);
-      if (displayField.bulkEditable) {
-        this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
-      }
-    }
-
+    this.setUpFields();
     this.dataSource.connect(null).subscribe((jobs: QueryJobsResult[]) => {
       this.jobs = jobs;
       this.selection.clear();
@@ -303,6 +295,19 @@ export class JobsTableComponent implements OnInit {
           this.onJobsChanged.emit(result.jobs);
         });
     });
+  }
+
+  // set up display fields and bulk update-able labels
+  setUpFields() {
+    this.bulkLabelFields = [];
+    for (let displayField of this.displayFields) {
+      if (displayField.showInListView) {
+        this.displayedColumns.push(displayField.field);
+      }
+      if (displayField.bulkEditable) {
+        this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
+      }
+    }
   }
 
   private prepareUpdateJobLabelsRequest (fieldValues: {}): UpdateJobLabelsRequest {

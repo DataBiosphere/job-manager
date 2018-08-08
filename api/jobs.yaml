@@ -200,6 +200,9 @@ definitions:
         type: array
         items:
           type: string
+      showInListView:
+        type: boolean
+        default: true
   CapabilitiesResponse:
     description: Specification of the backend's capabilities
     properties:

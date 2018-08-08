@@ -17,6 +17,8 @@ import {initialBackendPageSize} from "../shared/common";
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from '../core/capabilities.service';
+import {DisplayField} from "../shared/model/DisplayField";
+import {JobsTableComponent} from "./table/table.component";
 
 @Component({
   selector: 'jm-job-list',
@@ -27,6 +29,7 @@ export class JobListComponent implements OnInit {
   @Input() pageSize: number = 50;
 
   @ViewChild(HeaderComponent) header: HeaderComponent;
+  @ViewChild(JobsTableComponent) jobTable: JobsTableComponent;
   dataSource: DataSource<QueryJobsResult>;
 
   // This Subject is synchronized to a JobStream, which we destroy and recreate
@@ -40,6 +43,7 @@ export class JobListComponent implements OnInit {
   loading = false;
   lazyLoading = false;
   jobStream: JobStream;
+  displayFields: DisplayField[];
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
 
@@ -77,6 +81,8 @@ export class JobListComponent implements OnInit {
         this.handleError(event.error);
       }
     });
+
+    this.displayFields = this.settingsService.getDisplayColumns();
   }
 
   reloadJobs(query: string, lazy = false): void {
@@ -135,6 +141,10 @@ export class JobListComponent implements OnInit {
     this.reloadJobs(this.route.snapshot.queryParams['q']);
   }
 
+  handleColumnsChanged() {
+    this.jobTable.displayFields = this.displayFields;
+  }
+
   private setLoading(loading: boolean, lazy: boolean): void {
     if (!lazy) {
       this.loading = loading;
@@ -152,6 +162,12 @@ export class JobListComponent implements OnInit {
     // display page n+1.
     this.jobStream.loadAtLeast((e.pageIndex+2) * e.pageSize)
       .catch((error) => this.handleError(error));
+  }
+
+  toggleDisplayColumn(field: DisplayField) {
+    const newValue = !field.showInListView;
+    this.displayFields = this.settingsService.setDisplayColumn(field, newValue);
+    this.jobTable.onColumnsChanged.emit(this.displayFields);
   }
 }
 

@@ -217,6 +217,9 @@ definitions:
         description: "A list of values the field can be set to"
         items:
           type: "string"
+      showInListView:
+        type: "boolean"
+        default: true
     description: "Description of a display field"
   CapabilitiesResponse:
     properties:
