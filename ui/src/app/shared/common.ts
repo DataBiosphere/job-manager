@@ -1,6 +1,9 @@
 /** A collection of enums and static functions. */
 
 /** Enum mapping of statuses and the clarity icon shapes representing with them. */
+
+import {TimeFrame} from "./model/TimeFrame";
+
 export enum JobStatusIcon {
   Submitted = 'minus',
   Running = 'sync',
@@ -35,6 +38,21 @@ export const queryExtensionsDataTypes: Map<string, FieldDataType> = new Map([
   ['userId', FieldDataType.Text],
   ['submission', FieldDataType.Date]
 ]);
+
+export const timeFrameToDescriptionMap = new Map<TimeFrame, string> ([
+  [TimeFrame.HOURS1, 'Past hour'],
+  [TimeFrame.HOURS8, 'Past 8 hours'],
+  [TimeFrame.HOURS24, 'Past 24 hours'],
+  [TimeFrame.DAYS7, 'Past 7 days'],
+  [TimeFrame.DAYS30, 'Past 30 days'],
+  [TimeFrame.ALLTIME, 'All time'],
+]);
+
+/**
+ * The default time frame of jobs aggregation on dashboard page
+ */
+export const defaultTimeFrame = TimeFrame.DAYS7;
+
 
 /** The page size to initially request from the backend. The maximum number of
  *  jobs on a page is 100, so request 100 initially. */
