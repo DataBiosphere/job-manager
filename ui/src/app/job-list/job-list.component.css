@@ -54,8 +54,8 @@
 
 clr-tooltip-content {
   background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem;
-  line-height: 0.8rem;
+  padding: 0 0.5rem;
+  line-height: 1.5rem;
   font-size: 0.65rem;
   color: #fff;
   display: block;
@@ -63,7 +63,7 @@ clr-tooltip-content {
 }
 
 h2.settings-header {
-  padding: 0 0.5rem;
+  padding: 0.5rem 1rem 0 1rem;
   margin: 0;
   font-size: 0.8rem;
   line-height: 1rem;
@@ -74,4 +74,24 @@ h2.settings-header {
   line-height: 1rem;
   margin: 0.5rem 0;
   height: auto;
+}
+
+.settings-button-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+}
+
+button.apply-link {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 12px;
+  border: none;
+  display: block;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button.apply-link:hover {
+  text-decoration: underline;
 }

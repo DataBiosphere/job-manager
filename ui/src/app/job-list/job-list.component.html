@@ -16,14 +16,17 @@
     </button>
   <mat-menu #settingsMenu="matMenu" class="wide-menu settings-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
     <h2 class="settings-header">Columns to show</h2>
-    <mat-divider></mat-divider>
     <mat-list>
       <mat-list-item *ngFor="let df of displayFields">
-        <mat-checkbox class="checkbox"
-                      [(checked)]="df.showInListView"
-                      (click)="toggleDisplayColumn(df)">{{ df.display }}</mat-checkbox>
+        <mat-checkbox [checked]="df.showInListView"
+                      (change)="toggleDisplayColumn(df)"
+                      (click)="$event.stopPropagation()">{{ df.display }}</mat-checkbox>
       </mat-list-item>
     </mat-list>
+   <mat-divider></mat-divider>
+   <div class="settings-button-container">
+     <button class="apply-link" (click)="saveSettings()">Done</button>
+   </div>
   </mat-menu>
   </span>
   <jm-job-list-table
