@@ -1,19 +1,19 @@
 <mat-table #table [dataSource]="dataSource">
   <!-- Task name column -->
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !hasTaskNames()}"> Task Name </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !hasTaskNames() || !showHeaders}"> Task Name </mat-header-cell>
     <mat-cell *matCellDef="let f" [ngClass]="{'hidden': !hasTaskNames()}">{{ f.taskName }}</mat-cell>
   </ng-container>
 
   <!-- Failure message column -->
   <ng-container matColumnDef="message">
-    <mat-header-cell *matHeaderCellDef> Failure Message </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !showHeaders}"> Failure Message </mat-header-cell>
     <mat-cell *matCellDef="let f" class="failure-message">{{ f.failure }}</mat-cell>
   </ng-container>
 
   <!-- Outside links column -->
   <ng-container matColumnDef="links">
-    <mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !hasLinks()}"> Log Files </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !hasLinks() || !showHeaders}"> Log Files </mat-header-cell>
     <mat-cell *matCellDef="let f" [ngClass]="{'hidden': !hasLinks()}">
       <clr-tooltip *ngIf="getResourceUrl(f.stdout)">
         <a class="log-item" href="{{ getResourceUrl(f.stdout) }}">

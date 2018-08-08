@@ -1,23 +1,24 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {JobMetadataResponse} from "../../../shared/model/JobMetadataResponse";
 import {FailureMessage} from "../../../shared/model/FailureMessage";
 import {ResourceUtils} from "../../../shared/utils/resource-utils";
 import {TaskMetadata} from "../../../shared/model/TaskMetadata";
 
 @Component({
-  selector: 'jm-failures-tab',
-  templateUrl: './failures-tab.component.html',
-  styleUrls: ['./failures-tab.component.css']
+  selector: 'jm-failures-table',
+  templateUrl: './failures-table.component.html',
+  styleUrls: ['./failures-table.component.css']
 })
-export class JobFailuresTabComponent implements OnInit {
-  @Input() job: JobMetadataResponse;
+export class JobFailuresTableComponent implements OnInit {
+  @Input() failures: FailureMessage[];
+  @Input() showHeaders: boolean;
+  @Input() numToShow: number;
   displayedColumns: string[] = ['name', 'message', 'links'];
   dataSource: FailureMessage[] | null;
 
   constructor() {}
 
   ngOnInit() {
-    this.dataSource = this.job.failures;
+    this.dataSource = this.failures.slice(0, this.numToShow);
   }
 
   getResourceUrl(url: string): string {

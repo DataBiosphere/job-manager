@@ -14,7 +14,7 @@ import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {JobFailuresComponent} from "../failures/failures.component";
-import {JobFailuresTabComponent} from "../failures/failures-tab/failures-tab.component";
+import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {SharedModule} from '../../shared/shared.module';
@@ -54,7 +54,7 @@ describe('TaskDetailsComponent', () => {
       declarations: [
         TaskDetailsComponent,
         JobFailuresComponent,
-        JobFailuresTabComponent,
+        JobFailuresTableComponent,
         TestTasksComponent
       ],
       imports: [

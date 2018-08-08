@@ -94,7 +94,7 @@
     </mat-tab>
     <!-- Task failures tab -->
     <mat-tab *ngIf="job.failures" label="Errors">
-      <jm-failures-tab [job]="job"></jm-failures-tab>
+      <jm-failures-table [failures]="job.failures" [numToShow]="job.failures.length" [showHeaders]="true"></jm-failures-table>
     </mat-tab>
     <!-- Disable the graph view tab so the indicator doesn't switch on click -->
     <mat-tab *ngIf="hasTimingUrl()" label="Graph View" [disabled]=true>

@@ -31,7 +31,7 @@ import {URLSearchParamsUtils} from '../shared/utils/url-search-params.utils';
 import {JobStatus} from "../shared/model/JobStatus";
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {JobFailuresComponent} from "./failures/failures.component";
-import {JobFailuresTabComponent} from "./failures/failures-tab/failures-tab.component";
+import {JobFailuresTableComponent} from "./common/failures-table/failures-table.component";
 
 describe('JobDetailsComponent', () => {
 
@@ -60,7 +60,7 @@ describe('JobDetailsComponent', () => {
         TestJobDetailsComponent,
         JobDetailsComponent,
         JobFailuresComponent,
-        JobFailuresTabComponent,
+        JobFailuresTableComponent,
         JobPanelsComponent,
         JobResourcesComponent,
         JobResourcesTableComponent,

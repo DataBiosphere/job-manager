@@ -1,7 +1,25 @@
+.mat-header-row, .mat-row {
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.mat-header-row {
+  line-height: 3rem;
+  align-items: flex-end;
+}
+
+.mat-row {
+  align-items: flex-start;
+}
+
+.mat-row .mat-cell,
+.mat-header-row .mat-header-cell {
+  padding: 5px 8px;
+}
+
 .mat-cell {
   font-size: 0.75rem;
   line-height: 1rem;
-  vertical-align: top;
 }
 
 .mat-column-name, .failure-task-name {
@@ -14,10 +32,6 @@
 
 mat-column-links, .failure-links {
   flex-grow: 1;
-}
-
-.mat-cell.mat-column-links {
-  text-align: center;
 }
 
 clr-tooltip-content {

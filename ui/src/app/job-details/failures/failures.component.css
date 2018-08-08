@@ -8,56 +8,6 @@
   color: gray;
 }
 
-.mat-row {
-  border-bottom: none;
-  padding: 0;
-  margin: 0;
-}
-
-.mat-cell {
-  font-size: 0.7rem;
-  line-height: 0.9rem;
-  vertical-align: top;
-  margin: 0;
-}
-
-.mat-column-name, .failure-task-name {
-  flex-grow: 2;
-}
-
-.mat-column-message, .failure-message {
-  flex-grow: 6;
-}
-
-mat-column-links, .failure-links {
-  flex-grow: 1;
-}
-
-.mat-cell.mat-column-links {
-  text-align: center;
-}
-
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem 0.5rem;
-  font-size: 0.65rem;
-  line-height: 0.65rem;
-  color: #fff;
-  display: block;
-  margin: -0.6rem 0.5rem 0 0;
-  height: auto;
-}
-
-.log-item {
-  color: black;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-clr-icon {
-  margin-right: 0.3rem;
-}
-
 .tab-link {
   text-align: right;
   padding-right: 40px;
@@ -73,6 +23,6 @@ clr-icon {
   text-decoration: underline;
 }
 
-.hidden {
-  display: none;
+::ng-deep mat-header-row.mat-header-row {
+  min-height: auto;
 }
