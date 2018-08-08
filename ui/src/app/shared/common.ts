@@ -49,12 +49,12 @@ export const stringToTimeFrameMap: Map<String, TimeFrame> = new Map([
 ]);
 
 export const timeFrameToDescriptionMap = new Map<TimeFrame, string> ([
-  [TimeFrame.HOURS1, 'in past 1 hour'],
-  [TimeFrame.HOURS8, 'in past 8 hours'],
-  [TimeFrame.HOURS24, 'in past 24 hours'],
-  [TimeFrame.DAYS7, 'in past 7 days'],
-  [TimeFrame.DAYS30, 'in past 30 days'],
-  [TimeFrame.ALLTIME, 'in past all time'],
+  [TimeFrame.HOURS1, 'Past 1 hour'],
+  [TimeFrame.HOURS8, 'Past 8 hours'],
+  [TimeFrame.HOURS24, 'Past 24 hours'],
+  [TimeFrame.DAYS7, 'Past 7 days'],
+  [TimeFrame.DAYS30, 'Past 30 days'],
+  [TimeFrame.ALLTIME, 'All time'],
 ]);
 
 /**

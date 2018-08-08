@@ -113,8 +113,8 @@ import {TimeFrame} from "../model/TimeFrame";
   }
 
   /** Get the start time by the given time frame on the dashboard page */
-  public static getStartTimeByTimeFrame(timeFrame: TimeFrame): string {
-    let now = new Date;
+  public static getStartTimeByTimeFrame(timeFrame: TimeFrame): Date {
+    const now = new Date;
     switch (timeFrame) {
       case TimeFrame.HOURS1:
         now.setHours(now.getHours() - 1);
@@ -132,9 +132,9 @@ import {TimeFrame} from "../model/TimeFrame";
         now.setDate(now.getDate() - 30);
         break;
       default:
-        return "";
+        return null;
     }
-    return now.toLocaleDateString();
+    return now;
   }
 
   /** Transforms a search query into a map of (fieldName, value) pairs. */

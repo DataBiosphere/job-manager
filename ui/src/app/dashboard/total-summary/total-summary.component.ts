@@ -25,11 +25,9 @@ export class TotalSummaryComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // return if onInit() has not been called
-    if (changes['summary'] == null) {
-      return;
+    if (changes['summary']) {
+      this.updateStatusCountsMap(changes['summary'].currentValue);
     }
-    this.updateStatusCountsMap(changes['summary'].currentValue);
   }
 
   updateStatusCountsMap(summary: StatusCounts) {
@@ -48,16 +46,14 @@ export class TotalSummaryComponent implements OnInit, OnChanges {
 
   getUrlParams(status: JobStatus) {
     const query = URLSearchParamsUtils.unpackURLSearchParams(this.activatedRoute.snapshot.queryParams['q']);
+    query.statuses = [status];
 
-    let map = new Map<string, string[]>();
-    map.set('statuses', [status.toString()]);
-    map.set('projectId', [query.extensions.projectId]);
     const startTime = URLSearchParamsUtils.getStartTimeByTimeFrame(this.timeFrame);
-    if (startTime != "") {
-      map.set('start', [startTime]);
+    if (startTime) {
+      query.start = startTime;
     }
 
-    return {q: URLSearchParamsUtils.encodeURLSearchParamsFromMap(map)};
+    return {q: URLSearchParamsUtils.encodeURLSearchParams(query)};
   }
 
   getStatusIcon(status: JobStatus): string {

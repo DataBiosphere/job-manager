@@ -90,8 +90,8 @@ export class GroupedSummaryComponent implements OnInit {
     map.set(this.aggregation.key, [entry.get('label')]);
 
     const startTime = URLSearchParamsUtils.getStartTimeByTimeFrame(this.timeFrame);
-    if (startTime != "") {
-      map.set('start', [startTime]);
+    if (startTime) {
+      map.set('start', [startTime.toLocaleDateString()]);
     }
 
     return map;
