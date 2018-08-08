@@ -39,7 +39,8 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
-    //TODO: (zach) dashboard need query params of projectId also timeFrame before it can be activated
+    //TODO: (zach) if the projectId param is missing, it gives a 400 error which is not desired.
+    // Should be redirect to the home page.
     canActivate: [CapabilitiesActivator],
     runGuardsAndResolvers: 'always',
     resolve: {

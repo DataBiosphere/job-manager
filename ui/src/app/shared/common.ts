@@ -39,17 +39,8 @@ export const queryExtensionsDataTypes: Map<string, FieldDataType> = new Map([
   ['submission', FieldDataType.Date]
 ]);
 
-export const stringToTimeFrameMap: Map<String, TimeFrame> = new Map([
-  ['HOURS_1', TimeFrame.HOURS1],
-  ['HOURS_8', TimeFrame.HOURS8],
-  ['HOURS_24', TimeFrame.HOURS24],
-  ['DAYS_7', TimeFrame.DAYS7],
-  ['DAYS_30', TimeFrame.DAYS30],
-  ['ALL_TIME', TimeFrame.ALLTIME],
-]);
-
 export const timeFrameToDescriptionMap = new Map<TimeFrame, string> ([
-  [TimeFrame.HOURS1, 'Past 1 hour'],
+  [TimeFrame.HOURS1, 'Past hour'],
   [TimeFrame.HOURS8, 'Past 8 hours'],
   [TimeFrame.HOURS24, 'Past 24 hours'],
   [TimeFrame.DAYS7, 'Past 7 days'],

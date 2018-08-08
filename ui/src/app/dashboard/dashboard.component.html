@@ -1,10 +1,10 @@
 <jm-header [showControls]="false"></jm-header>
 <div class="aggregation-container">
   <span class="title">Total Jobs</span>
-  <mat-select [placeholder]='timeFrameToDescriptionMap.get(selectedTimeFrame)'
+  <mat-select [placeholder]='tfDescMap.get(selectedTimeFrame)'
               (selectionChange)="onTimeFrameChange($event.value)">
     <mat-option *ngFor="let timeFrame of timeFrames" [value]="timeFrame">
-      {{timeFrameToDescriptionMap.get(timeFrame)}}
+      {{tfDescMap.get(timeFrame)}}
     </mat-option>
   </mat-select>
 

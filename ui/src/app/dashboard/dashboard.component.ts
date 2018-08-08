@@ -14,7 +14,7 @@ import {defaultTimeFrame, timeFrameToDescriptionMap} from "../shared/common";
 export class DashboardComponent implements OnInit {
   aggregationResponse: AggregationResponse;
   statusArray: Array<JobStatus> = [JobStatus.Succeeded, JobStatus.Aborted, JobStatus.Running, JobStatus.Failed];
-  timeFrameToDescriptionMap = timeFrameToDescriptionMap;
+  tfDescMap = timeFrameToDescriptionMap;
 
   selectedTimeFrame = defaultTimeFrame;
   timeFrames: Array<TimeFrame> = [TimeFrame.HOURS1, TimeFrame.HOURS8, TimeFrame.HOURS24,
