@@ -2,23 +2,12 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
-  Output,
-  SimpleChanges,
-  ViewContainerRef
+  Output
 } from '@angular/core';
-import {
-  MatSnackBar,
-  MatSnackBarConfig
-} from '@angular/material'
 
-import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
-import {TaskMetadata} from '../../shared/model/TaskMetadata';
-import {ResourceUtils} from '../../shared/utils/resource-utils';
-import {GcsService} from '../../core/gcs.service';
 
 @Component({
   selector: 'jm-panels',
