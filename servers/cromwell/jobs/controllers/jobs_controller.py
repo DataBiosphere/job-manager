@@ -97,11 +97,11 @@ def get_job(id, **kwargs):
     elif response.status_code == InternalServerError.code:
         raise InternalServerError(job.get('message'))
 
-    failures = None
-    if job.get('failures'):
-        failures = [
-            FailureMessage(failure=f['message']) for f in job['failures']
-        ]
+    failures = [
+        format_failure(name, m)
+        for name, metadata in job.get('calls', {}).items() for m in metadata
+        if m.get('failures') is not None
+    ]
 
     tasks = [
         format_task(task_name, task_metadata)
@@ -150,6 +150,16 @@ def format_task(task_name, task_metadata):
         call_root=latest_attempt.get('callRoot'),
         job_id=latest_attempt.get('subWorkflowId'),
         shard_statuses=None)
+
+
+def format_failure(task_name, metadata):
+    return FailureMessage(
+        task_name=remove_workflow_name(task_name),
+        failure=metadata['failures'][0].get('message'),
+        timestamp=_parse_datetime(metadata.get('end')),
+        stdout=metadata.get('stdout'),
+        stderr=metadata.get('stderr'),
+        call_root=metadata.get('callRoot'))
 
 
 def format_scattered_task(task_name, task_metadata):

@@ -14,7 +14,6 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusIcon} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
-import {MatTabChangeEvent} from '@angular/material';
 
 @Component({
   selector: 'jm-tasks',
@@ -24,6 +23,7 @@ import {MatTabChangeEvent} from '@angular/material';
 export class TaskDetailsComponent implements OnInit, OnChanges {
   @Input() tasks: TaskMetadata[] = [];
   @Input() job: JobMetadataResponse;
+  @Input() selectedTab: number;
 
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
@@ -61,10 +61,6 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   hasTimingUrl(): boolean {
     return this.job.extensions && !!this.job.extensions.timingUrl;
-  }
-
-  tabChanged(event: MatTabChangeEvent) {
-    event.tab.isActive = false;
   }
 
   isScattered(task: TaskMetadata): boolean {
