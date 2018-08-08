@@ -572,10 +572,15 @@ definitions:
         items:
           $ref: '#/definitions/ShardStatusCount'
   FailureMessage:
-    description: Failure messages
+    description: >
+      Failure messages with optional additional information if the failure
+      was from a task or scattered task shard
     required:
       - failure
     properties:
+      taskName:
+        type: string
+        description: If from a task, the name of the task that generated the failure message
       failure:
         type: string
         description: The failure message
@@ -583,6 +588,15 @@ definitions:
         type: string
         format: date-time
         description: The time at which this failure occurred
+      stdout:
+        type: string
+        description: If from a task, path to the standard output file for this task or shard
+      stderr:
+        type: string
+        description: If from a task, path to the standard error file for this task or shard
+      callRoot:
+        type: string
+        description: If from a task, the root directory of the task or shard execution
   FieldType:
     type: string
     default: text
