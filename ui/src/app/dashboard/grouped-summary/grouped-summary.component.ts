@@ -6,6 +6,7 @@ import {ActivatedRoute} from "@angular/router";
 import {URLSearchParamsUtils} from "../../shared/utils/url-search-params.utils";
 import {JobStatusIcon} from "../../shared/common";
 import {Sort} from "@angular/material";
+import {TimeFrame} from "../../shared/model/TimeFrame";
 
 const LABEL_KEY = 'label';
 const DEFAULT_NUM_ROW = 5;
@@ -24,6 +25,7 @@ enum CardStatus {
 export class GroupedSummaryComponent implements OnInit {
   @Input() aggregation: Aggregation;
   @Input() statusArray: Array<JobStatus>;
+  @Input() timeFrame: TimeFrame;
 
   displayedAggregationEntries = new Array<Map<string, string>>();
   originalAggregationEntries = new Array<Map<string, string>>();
@@ -86,6 +88,11 @@ export class GroupedSummaryComponent implements OnInit {
 
     map.set('projectId', [projectId]);
     map.set(this.aggregation.key, [entry.get('label')]);
+
+    const startTime = URLSearchParamsUtils.getStartTimeByTimeFrame(this.timeFrame);
+    if (startTime) {
+      map.set('start', [startTime.toLocaleDateString()]);
+    }
 
     return map;
   }

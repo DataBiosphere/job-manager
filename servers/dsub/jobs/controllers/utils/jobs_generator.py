@@ -95,7 +95,11 @@ def generate_jobs_by_window(provider, project_id, window_min, window_max=None):
     Returns:
         generator: Retrieved jobs
     """
-    create_time_min = window_min - datetime.timedelta(days=_MAX_RUNTIME_DAYS)
+    create_time_min = None
+
+    if window_min is not None:
+        create_time_min = window_min - datetime.timedelta(
+            days=_MAX_RUNTIME_DAYS)
 
     jobs = execute_redirect_stdout(lambda: dstat.lookup_job_tasks(
         provider=provider,
@@ -111,7 +115,7 @@ def generate_jobs_by_window(provider, project_id, window_min, window_max=None):
     for j in jobs:
         job = _query_jobs_result(j, project_id)
         # Filter jobs that do no end within the time window
-        if job.end and (job.end < window_min
+        if job.end and (window_min and job.end < window_min
                         or window_max and job.end > window_max):
             continue
 

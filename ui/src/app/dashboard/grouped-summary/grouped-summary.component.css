@@ -1,4 +1,5 @@
 /*TODO(zachx): fixing the problem that expanding  a card reshuffles other cards */
+/*TODO(zachx): the card is rendered poorly if number of statuses is larger than 4 */
 #container {
   display: inline-block;
   width: 25rem;

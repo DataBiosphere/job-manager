@@ -39,8 +39,10 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
-    //TODO: (zach) dashboard need a query param of project id before it can be activated
+    //TODO: (zach) if the projectId param is missing, it gives a 400 error which is not desired.
+    // Should be redirect to the home page.
     canActivate: [CapabilitiesActivator],
+    runGuardsAndResolvers: 'always',
     resolve: {
       aggregations: DashboardResolver
     }

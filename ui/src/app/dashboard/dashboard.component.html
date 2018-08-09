@@ -1,12 +1,22 @@
 <jm-header [showControls]="false"></jm-header>
-
 <div class="aggregation-container">
-  <jm-total-summary [summary]="aggregationResponse.summary" [statusArray]="statusArray"></jm-total-summary>
+  <span class="title">Total Jobs</span>
+  <mat-select [placeholder]='tfDescMap.get(selectedTimeFrame)'
+              (selectionChange)="onTimeFrameChange($event.value)">
+    <mat-option *ngFor="let timeFrame of timeFrames" [value]="timeFrame">
+      {{tfDescMap.get(timeFrame)}}
+    </mat-option>
+  </mat-select>
+
+  <jm-total-summary [summary]="aggregationResponse.summary"
+                    [statusArray]="statusArray"
+                    [timeFrame]="selectedTimeFrame"></jm-total-summary>
 
   <div class="group-container">
     <jm-grouped-summary *ngFor="let aggregation of aggregationResponse.aggregations"
                         [statusArray]="statusArray"
-                        [aggregation]="aggregation"></jm-grouped-summary>
+                        [aggregation]="aggregation"
+                        [timeFrame]="selectedTimeFrame"></jm-grouped-summary>
   </div>
 </div>
 

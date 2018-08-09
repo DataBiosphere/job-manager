@@ -5,7 +5,8 @@
         <span>{{status}}</span>
       </div>
       <div class="content">
-          {{ statusCountsMap.get(status) }}
+          <!-- Add commas to numbers for better UX -->
+          {{ statusCountsMap.get(status).toLocaleString('en') }}
         <clr-tooltip>
           <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(status)" class="icon"></clr-icon>
         </clr-tooltip>

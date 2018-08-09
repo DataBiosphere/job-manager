@@ -4,6 +4,7 @@ import {CapabilitiesResponse} from "../model/CapabilitiesResponse";
 import {QueryJobsRequest} from "../model/QueryJobsRequest";
 import {JobStatus} from "../model/JobStatus";
 import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from "../common";
+import {TimeFrame} from "../model/TimeFrame";
 
 /** Utilities for working with URLSearchParams*/
   export class URLSearchParamsUtils {
@@ -109,6 +110,31 @@ import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from "../common
     });
 
     return queryRequest;
+  }
+
+  /** Get the start time by the given time frame on the dashboard page */
+  public static getStartTimeByTimeFrame(timeFrame: TimeFrame): Date {
+    const now = new Date;
+    switch (timeFrame) {
+      case TimeFrame.HOURS1:
+        now.setHours(now.getHours() - 1);
+        break;
+      case TimeFrame.HOURS8:
+        now.setHours(now.getHours() - 8);
+        break;
+      case TimeFrame.HOURS24:
+        now.setDate(now.getDate() - 1);
+        break;
+      case TimeFrame.DAYS7:
+        now.setDate(now.getDate() - 7);
+        break;
+      case TimeFrame.DAYS30:
+        now.setDate(now.getDate() - 30);
+        break;
+      default:
+        return null;
+    }
+    return now;
   }
 
   /** Transforms a search query into a map of (fieldName, value) pairs. */

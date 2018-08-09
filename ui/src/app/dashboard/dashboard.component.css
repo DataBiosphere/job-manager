@@ -21,4 +21,8 @@ div {
   margin: 1rem;
 }
 
+mat-select {
+  width: 150px;
+}
+
 
