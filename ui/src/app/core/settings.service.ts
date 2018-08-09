@@ -25,8 +25,12 @@ export class SettingsService {
     this.currentSettings = JSON.parse(this.localStorage.getItem('settings'));
     if (this.currentSettings === null) {
       const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
+      let user: string;
+      if (this.authService.isAuthenticated()) {
+        user = this.authService.userId;
+      }
       this.currentSettings = {
-        'user' : null,
+        'user' : user,
         'project' : null,
         'v1': { 'displayColumns': capabilities.displayFields } };
       this.updateLocalStorage();

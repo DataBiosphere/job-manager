@@ -19,8 +19,6 @@ import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from '../core/capabilities.service';
 import {DisplayField} from "../shared/model/DisplayField";
 import {JobsTableComponent} from "./table/table.component";
-import {Checkbox} from "../../../node_modules/@clr/angular/forms-deprecated/checkbox/checkbox.module";
-import {CheckboxControlValueAccessor} from "@angular/forms";
 
 @Component({
   selector: 'jm-job-list',
@@ -172,7 +170,7 @@ export class JobListComponent implements OnInit {
   }
 
   saveSettings() {
-    this.jobTable.onColumnsChanged.emit(this.displayFields);
+    this.jobTable.ngOnInit();
   }
 }
 

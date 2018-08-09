@@ -40,7 +40,6 @@ export class JobsTableComponent implements OnInit {
   @Input() dataSource: DataSource<QueryJobsResult>;
   @Output() onJobsChanged: EventEmitter<QueryJobsResult[]> = new EventEmitter();
   @Input() displayFields: DisplayField[];
-  @Output() onColumnsChanged: EventEmitter<DisplayField[]> = new EventEmitter();
 
   private mouseoverJob: QueryJobsResult;
 
@@ -52,7 +51,7 @@ export class JobsTableComponent implements OnInit {
   // this should be moved to a config
   public readonly labelCharLimit = 255;
 
-  displayedColumns: string[] = ["Checkbox", "Job", "Details"];
+  displayedColumns: string[];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -63,7 +62,7 @@ export class JobsTableComponent implements OnInit {
     public bulkEditDialog: MatDialog) { }
 
   ngOnInit() {
-    this.setUpFields();
+    this.setUpFieldsAndColumns();
     this.dataSource.connect(null).subscribe((jobs: QueryJobsResult[]) => {
       this.jobs = jobs;
       this.selection.clear();
@@ -297,8 +296,9 @@ export class JobsTableComponent implements OnInit {
     });
   }
 
-  // set up display fields and bulk update-able labels
-  setUpFields() {
+  // set up fields to display as columns and bulk update-able labels for job list table
+  private setUpFieldsAndColumns() {
+    this.displayedColumns = ["Checkbox", "Job", "Details"];
     this.bulkLabelFields = [];
     for (let displayField of this.displayFields) {
       if (displayField.showInListView) {
