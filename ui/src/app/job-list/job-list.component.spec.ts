@@ -7,6 +7,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatDialogModule,
+  MatListModule,
   MatMenuModule,
   MatSelectModule,
   MatSortModule,
@@ -36,6 +37,8 @@ import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {JobStatus} from '../shared/model/JobStatus';
 import {RouteReuse} from '../route-reuse.service';
+import {FakeSettingsService} from "../testing/fake-settings.service";
+import {SettingsService} from "../core/settings.service";
 
 describe('JobListComponent', () => {
 
@@ -61,6 +64,7 @@ describe('JobListComponent', () => {
   let fixture: ComponentFixture<TestJobListComponent>;
   let fakeJobService: FakeJobManagerService;
   let capabilities: CapabilitiesResponse;
+  let fakeSettingsService: FakeSettingsService;
 
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
@@ -90,6 +94,7 @@ describe('JobListComponent', () => {
         MatCheckboxModule,
         MatDialogModule,
         MatDividerModule,
+        MatListModule,
         MatMenuModule,
         MatPaginatorModule,
         MatProgressSpinnerModule,
@@ -106,6 +111,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
+        {provide: SettingsService, useValue: fakeSettingsService},
         {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
         JobListResolver,
         RouteReuse
