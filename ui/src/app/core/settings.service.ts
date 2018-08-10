@@ -18,7 +18,6 @@ type ProjectSettings = {
   // ... other browser-based settings to be saved go here
 }
 
-
 @Injectable()
 export class SettingsService {
   currentSettings: Settings;

@@ -64,7 +64,6 @@ describe('JobListComponent', () => {
   let fixture: ComponentFixture<TestJobListComponent>;
   let fakeJobService: FakeJobManagerService;
   let capabilities: CapabilitiesResponse;
-  let fakeSettingsService: FakeSettingsService;
 
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
@@ -111,7 +110,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: SettingsService, useValue: fakeSettingsService},
+        {provide: SettingsService, useValue: new FakeSettingsService},
         {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
         JobListResolver,
         RouteReuse
