@@ -201,6 +201,7 @@ definitions:
         items:
           type: string
       showInListView:
+        description: Whether or not this field should be shown in the job list view
         type: boolean
         default: true
   CapabilitiesResponse:

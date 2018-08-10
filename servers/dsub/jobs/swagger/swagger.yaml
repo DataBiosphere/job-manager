@@ -219,6 +219,7 @@ definitions:
           type: "string"
       showInListView:
         type: "boolean"
+        description: "Whether or not this field should be shown in the job list view"
         default: true
     description: "Description of a display field"
   CapabilitiesResponse:

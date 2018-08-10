@@ -41,11 +41,11 @@ export class JobListComponent implements OnInit {
     stale: false
   });
   loading = false;
-  lazyLoading = false;
   jobStream: JobStream;
   displayFields: DisplayField[];
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
+  private projectId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -82,7 +82,10 @@ export class JobListComponent implements OnInit {
       }
     });
 
-    this.displayFields = this.settingsService.getDisplayColumns();
+    // set project ID (if any) and get display field info for list columns
+    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
+    this.projectId = req.extensions.projectId;
+    this.displayFields = this.settingsService.getDisplayColumns(this.projectId);
   }
 
   reloadJobs(query: string, lazy = false): void {
@@ -166,11 +169,11 @@ export class JobListComponent implements OnInit {
 
   toggleDisplayColumn(field: DisplayField) {
     const newValue = !field.showInListView;
-    this.displayFields = this.settingsService.setDisplayColumn(field, newValue);
+    this.displayFields = this.settingsService.setDisplayColumnVisibility(this.projectId, field, newValue);
   }
 
   saveSettings() {
-    this.jobTable.ngOnInit();
+    this.jobTable.setUpFieldsAndColumns();
   }
 }
 

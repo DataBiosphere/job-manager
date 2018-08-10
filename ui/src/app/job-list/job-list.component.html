@@ -15,7 +15,7 @@
       </clr-tooltip>
     </button>
   <mat-menu #settingsMenu="matMenu" class="wide-menu settings-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
-    <h2 class="settings-header">Columns to show</h2>
+    <h2 class="settings-header">Displayed columns</h2>
     <mat-list>
       <mat-list-item *ngFor="let df of displayFields">
         <mat-checkbox [checked]="df.showInListView"

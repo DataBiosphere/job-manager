@@ -297,7 +297,7 @@ export class JobsTableComponent implements OnInit {
   }
 
   // set up fields to display as columns and bulk update-able labels for job list table
-  private setUpFieldsAndColumns() {
+  public setUpFieldsAndColumns() {
     this.displayedColumns = ["Checkbox", "Job", "Details"];
     this.bulkLabelFields = [];
     for (let displayField of this.displayFields) {
