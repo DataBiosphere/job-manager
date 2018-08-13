@@ -200,8 +200,7 @@ definitions:
         type: array
         items:
           type: string
-      showInListView:
-        description: Whether or not this field should be shown in the job list view
+      primary:
         type: boolean
         default: true
   CapabilitiesResponse:

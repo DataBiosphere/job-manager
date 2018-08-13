@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AuthService} from '../core/auth.service';
 import {CapabilitiesService} from "./capabilities.service";
-import {DisplayField} from "../shared/model/DisplayField";
 
 type Settings = {
   v1: {
@@ -14,7 +13,7 @@ type Settings = {
 
 type ProjectSettings = {
   projectId: string,
-  displayColumns: DisplayField[]
+  displayColumns: string[]
   // ... other browser-based settings to be saved go here
 }
 
@@ -34,56 +33,40 @@ export class SettingsService {
       || !authService.userId && savedSettings && savedSettings.v1.userId === '') {
       this.currentSettings = savedSettings;
     } else {
-      this.localStorage.setItem('settings', JSON.stringify(''));
-
       let currentUser = '';
       if (authService.userId) {
         currentUser = this.authService.userId;
       }
-      const projectSettings: ProjectSettings[] = [];
       this.currentSettings = {
         'v1': {
           'userId' : currentUser,
-          'projects': projectSettings} };
+          'projects': [{
+            'projectId': '',
+            'displayColumns': []
+          }]} };
       this.updateLocalStorage();
     }
   }
 
   /** return the display columns settings for a project, or if they don't exist, set all
    * possible columns from capabilities service to be displayed and return that */
-  public getDisplayColumns(projectId = ''): DisplayField[] {
+  getDisplayColumns(projectId: string): string[] {
     if (this.getSettingsForProject(projectId) && this.getSettingsForProject(projectId).displayColumns) {
       return this.getSettingsForProject(projectId).displayColumns;
     }
-    const cleanDisplayColumns = this.getDefaultDisplayFieldSettings();
-    this.currentSettings.v1.projects =[{
-      'projectId': projectId,
-      'displayColumns': cleanDisplayColumns
-    } as ProjectSettings];
-    this.updateLocalStorage();
-    return cleanDisplayColumns;
   }
 
   /** update the display columns settings for a project and return the updated array */
-  public setDisplayColumnVisibility(projectId = '', df: DisplayField, value: boolean): DisplayField[] {
-    let displayColumns = this.getDefaultDisplayFieldSettings();
+  setDisplayColumns(fields: string[], projectId: string): void {
     this.currentSettings.v1.projects.forEach((p) => {
       if (p.projectId === projectId) {
-        p.displayColumns.forEach((field) => {
-          if (df == field) {
-            field.showInListView = value;
-            return;
-          }
-        })
-        displayColumns = p.displayColumns;
-        return;
+        p.displayColumns = fields;
       }
     });
     this.updateLocalStorage();
-    return displayColumns;
   }
 
-  public getSettingsForProject(projectId = ''): ProjectSettings {
+  private getSettingsForProject(projectId: string): ProjectSettings {
     let settings: ProjectSettings = null;
     this.currentSettings.v1.projects.forEach((p) => {
       if (p.projectId === projectId) {
@@ -92,14 +75,6 @@ export class SettingsService {
       }
     });
     return settings;
-  }
-
-  private getDefaultDisplayFieldSettings(): DisplayField[] {
-    let capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
-    capabilities.displayFields.forEach((field) => {
-      field.showInListView = true;
-    });
-    return capabilities.displayFields;
   }
 
   private updateLocalStorage(): void {

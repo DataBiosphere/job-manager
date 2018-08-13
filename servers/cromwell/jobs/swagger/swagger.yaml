@@ -217,9 +217,8 @@ definitions:
         description: "A list of values the field can be set to"
         items:
           type: "string"
-      showInListView:
+      primary:
         type: "boolean"
-        description: "Whether or not this field should be shown in the job list view"
         default: true
     description: "Description of a display field"
   CapabilitiesResponse:

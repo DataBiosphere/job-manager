@@ -301,7 +301,7 @@ export class JobsTableComponent implements OnInit {
     this.displayedColumns = ["Checkbox", "Job", "Details"];
     this.bulkLabelFields = [];
     for (let displayField of this.displayFields) {
-      if (displayField.showInListView) {
+      if (displayField.primary) {
         this.displayedColumns.push(displayField.field);
       }
       if (displayField.bulkEditable) {

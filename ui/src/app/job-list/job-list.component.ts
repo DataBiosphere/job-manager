@@ -42,7 +42,7 @@ export class JobListComponent implements OnInit {
   });
   loading = false;
   jobStream: JobStream;
-  displayFields: DisplayField[];
+  displayFields: DisplayField[] = [];
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
   private projectId: string;
@@ -84,8 +84,15 @@ export class JobListComponent implements OnInit {
 
     // set project ID (if any) and get display field info for list columns
     const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
-    this.projectId = req.extensions.projectId;
-    this.displayFields = this.settingsService.getDisplayColumns(this.projectId);
+    this.projectId = req.extensions.projectId || '';
+    const savedColumnSettings = this.settingsService.getDisplayColumns(this.projectId);
+    let field:DisplayField;
+    this.capabilities.displayFields.forEach((df) => {
+      field = df;
+      field.primary = true;
+      field.primary = !(savedColumnSettings.length && !savedColumnSettings.includes(df.field));
+      this.displayFields.push(field);
+    });
   }
 
   reloadJobs(query: string, lazy = false): void {
@@ -168,11 +175,22 @@ export class JobListComponent implements OnInit {
   }
 
   toggleDisplayColumn(field: DisplayField) {
-    const newValue = !field.showInListView;
-    this.displayFields = this.settingsService.setDisplayColumnVisibility(this.projectId, field, newValue);
+    const newValue = !field.primary;
+    this.displayFields.forEach((df) => {
+      if (df.field == field.field) {
+        df.primary = newValue;
+      }
+    })
   }
 
   saveSettings() {
+    let fields: string[] = [];
+    this.displayFields.forEach((field) => {
+      if (field.primary) {
+        fields.push(field.field);
+      }
+    })
+    this.settingsService.setDisplayColumns(fields, this.projectId);
     this.jobTable.setUpFieldsAndColumns();
   }
 }

@@ -37,7 +37,6 @@ import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {JobStatus} from '../shared/model/JobStatus';
 import {RouteReuse} from '../route-reuse.service';
-import {FakeSettingsService} from "../testing/fake-settings.service";
 import {SettingsService} from "../core/settings.service";
 
 describe('JobListComponent', () => {
@@ -74,6 +73,7 @@ describe('JobListComponent', () => {
         {field: 'extensions.userId', display: 'User ID'},
       ]
     };
+
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -110,7 +110,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: SettingsService, useValue: new FakeSettingsService},
+        {provide: SettingsService, useValue: new SettingsService(null, null, localStorage)},
         {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
         JobListResolver,
         RouteReuse
