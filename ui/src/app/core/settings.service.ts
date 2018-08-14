@@ -21,63 +21,62 @@ type ProjectSettings = {
 export class SettingsService {
   currentSettings: Settings;
 
-  /** If there are browser settings for the current user (or for '' if none) get them;
-   * otherwise, empty out the browser settings and set up a clean scaffolding */
+  /** If there are saved browser settings for the current user (or for '' if none) get them;
+   * otherwise, empty out the browser settings, set up a clean scaffolding and save that */
   constructor(
     private readonly authService: AuthService,
     private readonly capabilitiesService: CapabilitiesService,
     private readonly localStorage: Storage
   ) {
     const savedSettings = JSON.parse(this.localStorage.getItem('settings'));
-    if ((authService.userId && savedSettings && (savedSettings.v1.userId == this.authService.userId))
-      || !authService.userId && savedSettings && savedSettings.v1.userId === '') {
+    let currentUser = authService.userId || '';
+    if (savedSettings && (savedSettings.v1.userId === currentUser)) {
       this.currentSettings = savedSettings;
     } else {
-      let currentUser = '';
-      if (authService.userId) {
-        currentUser = this.authService.userId;
-      }
       this.currentSettings = {
-        'v1': {
-          'userId' : currentUser,
-          'projects': [{
-            'projectId': '',
-            'displayColumns': []
-          }]} };
+        v1: {
+          'userId': currentUser,
+          'projects' : []
+        }
+      };
       this.updateLocalStorage();
     }
   }
 
-  /** return the display columns settings for a project, or if they don't exist, set all
-   * possible columns from capabilities service to be displayed and return that */
+  /** return the display columns settings for a project or a clean scaffolding, if they don't exist */
   getDisplayColumns(projectId: string): string[] {
-    if (this.getSettingsForProject(projectId) && this.getSettingsForProject(projectId).displayColumns) {
-      return this.getSettingsForProject(projectId).displayColumns;
+    let settings = this.getSettingsForProject(projectId);
+    if (!settings) {
+      settings = this.createEmptySettingsForProject(projectId);
     }
+    return settings.displayColumns;
   }
 
-  /** update the display columns settings for a project and return the updated array */
+  /** update the display columns settings for a project */
   setDisplayColumns(fields: string[], projectId: string): void {
     this.currentSettings.v1.projects.forEach((p) => {
       if (p.projectId === projectId) {
         p.displayColumns = fields;
+        return;
       }
     });
     this.updateLocalStorage();
   }
 
   private getSettingsForProject(projectId: string): ProjectSettings {
-    let settings: ProjectSettings = null;
-    this.currentSettings.v1.projects.forEach((p) => {
-      if (p.projectId === projectId) {
-        settings = p;
-        return;
-      }
-    });
-    return settings;
+    return this.currentSettings.v1.projects.find(p => p.projectId === projectId);
   }
 
   private updateLocalStorage(): void {
     return this.localStorage.setItem('settings', JSON.stringify(this.currentSettings));
+  }
+
+  private createEmptySettingsForProject(projectId: string): ProjectSettings {
+    this.currentSettings.v1.projects.push({
+      'projectId': projectId,
+      'displayColumns': []
+    });
+    this.updateLocalStorage();
+    return this.getSettingsForProject(projectId);
   }
 }

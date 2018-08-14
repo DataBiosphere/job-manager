@@ -254,7 +254,7 @@ export class JobsTableComponent implements OnInit {
     }
   }
 
-  openbulkEditDialog(): void {
+  openBulkEditDialog(): void {
     // get default values for bulk edit fields in dialog
     for (let bulkFieldItem of this.bulkLabelFields) {
       const label = bulkFieldItem.displayField.field.replace('labels.', '');

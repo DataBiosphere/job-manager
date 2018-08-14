@@ -86,11 +86,11 @@ export class JobListComponent implements OnInit {
     const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
     this.projectId = req.extensions.projectId || '';
     const savedColumnSettings = this.settingsService.getDisplayColumns(this.projectId);
-    let field:DisplayField;
+    let field: DisplayField;
     this.capabilities.displayFields.forEach((df) => {
       field = df;
       field.primary = true;
-      field.primary = !(savedColumnSettings.length && !savedColumnSettings.includes(df.field));
+      field.primary = !savedColumnSettings.length || savedColumnSettings.includes(df.field);
       this.displayFields.push(field);
     });
   }
