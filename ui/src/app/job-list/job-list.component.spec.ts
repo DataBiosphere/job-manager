@@ -113,7 +113,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: SettingsService, useValue: new SettingsService(new FakeAuthService(fakeCapabilitiesService), null, localStorage)},
+        {provide: SettingsService, useValue: new SettingsService(new FakeAuthService(fakeCapabilitiesService), localStorage)},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         JobListResolver,
         RouteReuse
