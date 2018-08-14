@@ -19,7 +19,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
               private request: QueryJobsRequest) {
     super({
       results: [],
-      totalSize: 0,
+      totalSize: undefined,
       exhaustive: false,
       stale: false
     });
@@ -72,7 +72,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
 // by the exhaustive flag.
 export type JobListView = {
   results: QueryJobsResult[];
-  totalSize: number|null;
+  totalSize: number|undefined;
   exhaustive: boolean;
   stale: boolean;
 }

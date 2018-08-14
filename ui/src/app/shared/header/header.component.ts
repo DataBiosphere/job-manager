@@ -281,8 +281,8 @@ export class JobsPaginatorIntl extends MatPaginatorIntl {
   getRangeLabel = (page: number, pageSize: number, length: number) => {
 
     let knownLength = null;
-
-    if (this.backendJobs.value.totalSize !== null) {
+    if (this.backendJobs.value.totalSize ||
+        this.backendJobs.value.totalSize === 0) {
       knownLength = this.backendJobs.value.totalSize;
     } else if (this.backendJobs.value.exhaustive) {
       knownLength = length;
