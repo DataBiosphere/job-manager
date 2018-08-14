@@ -26,7 +26,7 @@ export class SettingsService {
   constructor(
     private readonly authService: AuthService,
     private readonly capabilitiesService: CapabilitiesService,
-    private readonly localStorage: Storage
+    private readonly localStorage?: Storage
   ) {
     const savedSettings = JSON.parse(this.localStorage.getItem('settings'));
     let currentUser = authService.userId || '';
