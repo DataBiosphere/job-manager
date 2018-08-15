@@ -11,14 +11,15 @@
   border: none;
 }
 
-.mat-header-cell, .mat-cell {
+::ng-deep .mat-header-cell, ::ng-deep .mat-cell {
   display: table-cell;
   height: 48px;
   vertical-align: middle;
-  padding: 0 8px;
+  padding: 0 10px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   max-width: 40rem;
   white-space: nowrap;
+  margin: 0 50px 0 0;
 }
 
 .display-field {

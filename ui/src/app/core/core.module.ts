@@ -8,10 +8,12 @@ import {CapabilitiesService} from "./capabilities.service";
 import {AuthService} from "./auth.service";
 import {JobManagerService} from './job-manager.service';
 import {NotifyLoadingService} from './notify-loading.service';
+import {SettingsService} from "./settings.service";
 import {InitialErrorComponent} from "./initial-error/initial-error.component";
 import {JobListResolver} from '../job-list/job-list-resolver.service';
 import {JobDetailsResolver} from '../job-details/job-details-resolver.service';
 import {RouteReuse} from '../route-reuse.service';
+import {STORAGE_REF} from "../shared/common";
 
 /** Provides all of the common singleton components and services that can be
  *  shared across the app and should only ever be instantiated once. */
@@ -34,6 +36,11 @@ import {RouteReuse} from '../route-reuse.service';
     NotifyLoadingService,
     JobListResolver,
     JobDetailsResolver,
+    SettingsService,
+    {
+      provide: STORAGE_REF,
+      useValue: window.localStorage
+    },
     RouteReuse,
     {
       provide: RouteReuseStrategy,

@@ -217,6 +217,12 @@ definitions:
         description: "A list of values the field can be set to"
         items:
           type: "string"
+      primary:
+        type: "boolean"
+        description: "Whether this field is of high importance for display purposes.\
+          \ For example, a UI with limited space should prioritize displaying primary\
+          \ field values.\n"
+        default: true
     description: "Description of a display field"
   CapabilitiesResponse:
     properties:

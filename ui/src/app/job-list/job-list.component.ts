@@ -8,6 +8,7 @@ import {Observable} from 'rxjs/Observable';
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
+import {SettingsService} from '../core/settings.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {JobListView, JobStream} from '../shared/job-stream';
 import {HeaderComponent} from '../shared/header/header.component';
@@ -16,6 +17,8 @@ import {initialBackendPageSize} from "../shared/common";
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from '../core/capabilities.service';
+import {DisplayField} from "../shared/model/DisplayField";
+import {JobsTableComponent} from "./table/table.component";
 
 @Component({
   selector: 'jm-job-list',
@@ -26,6 +29,7 @@ export class JobListComponent implements OnInit {
   @Input() pageSize: number = 50;
 
   @ViewChild(HeaderComponent) header: HeaderComponent;
+  @ViewChild(JobsTableComponent) jobTable: JobsTableComponent;
   dataSource: DataSource<QueryJobsResult>;
 
   // This Subject is synchronized to a JobStream, which we destroy and recreate
@@ -37,15 +41,17 @@ export class JobListComponent implements OnInit {
     stale: false
   });
   loading = false;
-  lazyLoading = false;
   jobStream: JobStream;
+  displayFields: DisplayField[] = [];
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
+  private projectId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly jobManagerService: JobManagerService,
+    private readonly settingsService: SettingsService,
     private readonly viewContainer: ViewContainerRef,
     private snackBar: MatSnackBar,
     private readonly capabilitiesService: CapabilitiesService) {
@@ -74,6 +80,18 @@ export class JobListComponent implements OnInit {
       if (event instanceof NavigationError) {
         this.handleError(event.error);
       }
+    });
+
+    // set project ID (if any) and get display field info for list columns
+    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
+    this.projectId = req.extensions.projectId || '';
+    const savedColumnSettings = this.settingsService.getDisplayColumns(this.projectId);
+    let field: DisplayField;
+    this.capabilities.displayFields.forEach((df) => {
+      field = df;
+      field.primary = true;
+      field.primary = !savedColumnSettings.length || savedColumnSettings.includes(df.field);
+      this.displayFields.push(field);
     });
   }
 
@@ -133,6 +151,10 @@ export class JobListComponent implements OnInit {
     this.reloadJobs(this.route.snapshot.queryParams['q']);
   }
 
+  handleColumnsChanged() {
+    this.jobTable.displayFields = this.displayFields;
+  }
+
   private setLoading(loading: boolean, lazy: boolean): void {
     if (!lazy) {
       this.loading = loading;
@@ -150,6 +172,26 @@ export class JobListComponent implements OnInit {
     // display page n+1.
     this.jobStream.loadAtLeast((e.pageIndex+2) * e.pageSize)
       .catch((error) => this.handleError(error));
+  }
+
+  toggleDisplayColumn(field: DisplayField) {
+    const newValue = !field.primary;
+    this.displayFields.forEach((df) => {
+      if (df.field == field.field) {
+        df.primary = newValue;
+      }
+    })
+  }
+
+  saveSettings() {
+    let fields: string[] = [];
+    this.displayFields.forEach((field) => {
+      if (field.primary) {
+        fields.push(field.field);
+      }
+    })
+    this.settingsService.setDisplayColumns(fields, this.projectId);
+    this.jobTable.setUpFieldsAndColumns();
   }
 }
 
