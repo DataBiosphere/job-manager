@@ -5,12 +5,12 @@ type Settings = {
   v1: {
     // set to '' for basic auth users
     userId: string
-    // set to '' for non-project-based job manager
     projects: ProjectSettings[]
   }
 };
 
 type ProjectSettings = {
+  // set to '' for non-project-based job manager
   projectId: string,
   displayColumns: string[]
   // ... other browser-based settings to be saved go here
