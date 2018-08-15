@@ -1,5 +1,6 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {AuthService} from '../core/auth.service';
+import {STORAGE_REF} from "../shared/common";
 
 type Settings = {
   v1: {
@@ -24,7 +25,7 @@ export class SettingsService {
    * otherwise, empty out the browser settings, set up a clean scaffolding and save that */
   constructor(
     private readonly authService: AuthService,
-    private readonly localStorage: Storage
+    @Inject(STORAGE_REF) private readonly localStorage: Storage
   ) {
     const savedSettings = JSON.parse(this.localStorage.getItem('settings'));
     let currentUser = authService.userId || '';
