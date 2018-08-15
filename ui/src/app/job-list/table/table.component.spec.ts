@@ -37,7 +37,6 @@ import {FieldType} from "../../shared/model/FieldType";
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {SharedModule} from '../../shared/shared.module';
 import {JobStatusIcon} from "../../shared/common";
-import {DisplayField} from "../../shared/model/DisplayField";
 
 describe('JobsTableComponent', () => {
 
@@ -49,12 +48,12 @@ describe('JobsTableComponent', () => {
   let capabilities: CapabilitiesResponse =
     {
       displayFields: [
-        {field: 'status', display: 'Status', primary: true},
-        {field: 'submission', display: 'Submitted', primary: true},
-        {field: 'extensions.userId', display: 'User ID', primary: true},
-        {field: 'labels.status-detail', display: 'Status Detail', primary: true},
-        {field: 'labels.label', display: 'Label', fieldType: FieldType.Text, editable: true, bulkEditable: true, primary: true},
-        {field: 'labels.comment', display: 'Comment', fieldType: FieldType.Text, editable: true, primary: true}
+        {field: 'status', display: 'Status'},
+        {field: 'submission', display: 'Submitted'},
+        {field: 'extensions.userId', display: 'User ID'},
+        {field: 'labels.status-detail', display: 'Status Detail'},
+        {field: 'labels.label', display: 'Label', fieldType: FieldType.Text, editable: true, bulkEditable: true},
+        {field: 'labels.comment', display: 'Comment', fieldType: FieldType.Text, editable: true}
       ]
     };
 
@@ -414,13 +413,11 @@ describe('JobsTableComponent', () => {
   @Component({
     selector: 'jm-test-table-component',
     template:
-      `<jm-job-list-table [dataSource]="dataSource" [displayFields]="displayFields"></jm-job-list-table>`
+      `<jm-job-list-table [dataSource]="dataSource"></jm-job-list-table>`
   })
   class TestTableComponent {
     public jobs = new BehaviorSubject<QueryJobsResult[]>([]);
     public dataSource = new TestDataSource(this.jobs);
-    public displayFields: DisplayField[] = capabilities.displayFields;
-
     @ViewChild(JobsTableComponent)
     public jobsTableComponent: JobsTableComponent;
   }

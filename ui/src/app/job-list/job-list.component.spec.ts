@@ -7,7 +7,6 @@ import {
   MatButtonModule,
   MatCardModule,
   MatDialogModule,
-  MatListModule,
   MatMenuModule,
   MatSelectModule,
   MatSortModule,
@@ -37,8 +36,6 @@ import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {JobStatus} from '../shared/model/JobStatus';
 import {RouteReuse} from '../route-reuse.service';
-import {SettingsService} from "../core/settings.service";
-import {FakeAuthService} from "../testing/fake-auth.service";
 
 describe('JobListComponent', () => {
 
@@ -64,19 +61,16 @@ describe('JobListComponent', () => {
   let fixture: ComponentFixture<TestJobListComponent>;
   let fakeJobService: FakeJobManagerService;
   let capabilities: CapabilitiesResponse;
-  let fakeCapabilitiesService: FakeCapabilitiesService;
 
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
     capabilities = {
       displayFields: [
-        {field: 'status', display: 'Status', primary: true},
-        {field: 'submission', display: 'Submitted', primary: true},
-        {field: 'extensions.userId', display: 'User ID', primary: true}
+        {field: 'status', display: 'Status'},
+        {field: 'submission', display: 'Submitted'},
+        {field: 'extensions.userId', display: 'User ID'},
       ]
     };
-    fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
-
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -96,7 +90,6 @@ describe('JobListComponent', () => {
         MatCheckboxModule,
         MatDialogModule,
         MatDividerModule,
-        MatListModule,
         MatMenuModule,
         MatPaginatorModule,
         MatProgressSpinnerModule,
@@ -113,8 +106,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: SettingsService, useValue: new SettingsService(new FakeAuthService(fakeCapabilitiesService), localStorage)},
-        {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
+        {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
         JobListResolver,
         RouteReuse
       ],
