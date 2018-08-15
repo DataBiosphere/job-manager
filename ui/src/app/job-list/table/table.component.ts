@@ -39,10 +39,10 @@ import {UpdateJobLabelsResponse} from "../../shared/model/UpdateJobLabelsRespons
 export class JobsTableComponent implements OnInit {
   @Input() dataSource: DataSource<QueryJobsResult>;
   @Output() onJobsChanged: EventEmitter<QueryJobsResult[]> = new EventEmitter();
-  @Input() displayFields: DisplayField[];
 
   private mouseoverJob: QueryJobsResult;
 
+  public displayFields: DisplayField[];
   public bulkLabelFields: BulkLabelField[];
   public selection = new SelectionModel<QueryJobsResult>(/* allowMultiSelect */ true, []);
   public jobs: QueryJobsResult[] = [];
@@ -51,7 +51,7 @@ export class JobsTableComponent implements OnInit {
   // this should be moved to a config
   public readonly labelCharLimit = 255;
 
-  displayedColumns: string[];
+  displayedColumns: string[] = ["Checkbox", "Job", "Details"];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -62,7 +62,16 @@ export class JobsTableComponent implements OnInit {
     public bulkEditDialog: MatDialog) { }
 
   ngOnInit() {
-    this.setUpFieldsAndColumns();
+    // set up display fields and bulk update-able labels
+    this.displayFields = this.capabilitiesService.getCapabilitiesSynchronous().displayFields;
+    this.bulkLabelFields = [];
+    for (let displayField of this.displayFields) {
+      this.displayedColumns.push(displayField.field);
+      if (displayField.bulkEditable) {
+        this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
+      }
+    }
+
     this.dataSource.connect(null).subscribe((jobs: QueryJobsResult[]) => {
       this.jobs = jobs;
       this.selection.clear();
@@ -254,7 +263,7 @@ export class JobsTableComponent implements OnInit {
     }
   }
 
-  openBulkEditDialog(): void {
+  openbulkEditDialog(): void {
     // get default values for bulk edit fields in dialog
     for (let bulkFieldItem of this.bulkLabelFields) {
       const label = bulkFieldItem.displayField.field.replace('labels.', '');
@@ -294,20 +303,6 @@ export class JobsTableComponent implements OnInit {
           this.onJobsChanged.emit(result.jobs);
         });
     });
-  }
-
-  // set up fields to display as columns and bulk update-able labels for job list table
-  public setUpFieldsAndColumns() {
-    this.displayedColumns = ["Checkbox", "Job", "Details"];
-    this.bulkLabelFields = [];
-    for (let displayField of this.displayFields) {
-      if (displayField.primary) {
-        this.displayedColumns.push(displayField.field);
-      }
-      if (displayField.bulkEditable) {
-        this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
-      }
-    }
   }
 
   private prepareUpdateJobLabelsRequest (fieldValues: {}): UpdateJobLabelsRequest {
