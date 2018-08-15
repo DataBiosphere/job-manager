@@ -73,7 +73,7 @@ export class SettingsService {
   private createEmptySettingsForProject(projectId: string): ProjectSettings {
     this.currentSettings.v1.projects.push({
       'projectId': projectId,
-      'displayColumns': []
+      'displayColumns': null
     });
     this.updateLocalStorage();
     return this.getSettingsForProject(projectId);

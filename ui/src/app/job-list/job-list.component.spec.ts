@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/t
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
-import {Component, DebugElement} from '@angular/core';
+import {Component, DebugElement, NgZone} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
@@ -38,7 +38,7 @@ import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {JobStatus} from '../shared/model/JobStatus';
 import {RouteReuse} from '../route-reuse.service';
 import {SettingsService} from "../core/settings.service";
-import {FakeAuthService} from "../testing/fake-auth.service";
+import {AuthService} from "../core/auth.service";
 
 describe('JobListComponent', () => {
 
@@ -113,7 +113,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: SettingsService, useValue: new SettingsService(new FakeAuthService(fakeCapabilitiesService), localStorage)},
+        {provide: SettingsService, useValue: new SettingsService(new AuthService(null, fakeCapabilitiesService, null), localStorage)},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         JobListResolver,
         RouteReuse

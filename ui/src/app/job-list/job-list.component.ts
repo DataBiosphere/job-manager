@@ -86,12 +86,13 @@ export class JobListComponent implements OnInit {
     const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
     this.projectId = req.extensions.projectId || '';
     const savedColumnSettings = this.settingsService.getDisplayColumns(this.projectId);
-    let field: DisplayField;
-    this.capabilities.displayFields.forEach((df) => {
-      field = df;
-      field.primary = true;
-      field.primary = !savedColumnSettings.length || savedColumnSettings.includes(df.field);
-      this.displayFields.push(field);
+
+    // assign this.displayFields to a copy of this.capabilities.displayFields and then
+    // update with saved settings, if any
+    this.capabilities.displayFields.forEach((df) => this.displayFields.push(Object.assign({}, df)));
+
+    this.displayFields.forEach((df) => {
+      df.primary = (savedColumnSettings == null) || savedColumnSettings.includes(df.field);
     });
   }
 
@@ -151,10 +152,6 @@ export class JobListComponent implements OnInit {
     this.reloadJobs(this.route.snapshot.queryParams['q']);
   }
 
-  handleColumnsChanged() {
-    this.jobTable.displayFields = this.displayFields;
-  }
-
   private setLoading(loading: boolean, lazy: boolean): void {
     if (!lazy) {
       this.loading = loading;
@@ -189,7 +186,7 @@ export class JobListComponent implements OnInit {
       if (field.primary) {
         fields.push(field.field);
       }
-    })
+    });
     this.settingsService.setDisplayColumns(fields, this.projectId);
     this.jobTable.setUpFieldsAndColumns();
   }
