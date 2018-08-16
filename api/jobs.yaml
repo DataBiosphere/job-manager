@@ -200,6 +200,13 @@ definitions:
         type: array
         items:
           type: string
+      primary:
+        description: >
+          Whether this field is of high importance for display purposes.
+          For example, a UI with limited space should prioritize displaying
+          primary field values.
+        type: boolean
+        default: true
   CapabilitiesResponse:
     description: Specification of the backend's capabilities
     properties:

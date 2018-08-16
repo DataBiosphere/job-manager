@@ -4,6 +4,8 @@
 
 import {TimeFrame} from "./model/TimeFrame";
 
+export const STORAGE_REF = 'storage-ref';
+
 export enum JobStatusIcon {
   Submitted = 'minus',
   Running = 'sync',
