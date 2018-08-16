@@ -89,7 +89,7 @@ export class JobListComponent implements OnInit {
 
     // assign this.displayFields to a copy of this.capabilities.displayFields and then
     // update with saved settings, if any
-    this.capabilities.displayFields.forEach((df) => this.displayFields.push(Object.assign({}, df)));
+    this.displayFields = this.capabilities.displayFields.map((df) => Object.assign({}, df));
 
     this.displayFields.forEach((df) => {
       df.primary = (savedColumnSettings == null) || savedColumnSettings.includes(df.field);
