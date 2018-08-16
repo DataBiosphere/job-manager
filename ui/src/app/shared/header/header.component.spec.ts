@@ -39,7 +39,7 @@ describe('HeaderComponent', () => {
 
   const initJobs: JobListView = {
     results: [testJob1, testJob2, testJob3],
-    totalSize: null,
+    totalSize: undefined,
     exhaustive: false,
     stale: false
   };
@@ -139,7 +139,7 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
-      totalSize: null,
+      totalSize: undefined,
       exhaustive: true,
       stale: false
     });
@@ -156,7 +156,7 @@ describe('HeaderComponent', () => {
     testComponent.chips.delete('statuses');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
-      totalSize: null,
+      totalSize: undefined,
       exhaustive: false,
       stale: false
     });
@@ -172,7 +172,7 @@ describe('HeaderComponent', () => {
   it('should not show length of inexhaustive job streams of unknown length', async(() => {
     testComponent.jobs.next({
       results: [testJob1],
-      totalSize: null,
+      totalSize: undefined,
       exhaustive: false,
       stale: false
     });
@@ -184,7 +184,7 @@ describe('HeaderComponent', () => {
     // Transition to exhaustive, "of X" should now display length (even though totalSize is still null).
     testComponent.jobs.next({
       results: [testJob1, testJob2],
-      totalSize: null,
+      totalSize: undefined,
       exhaustive: true,
       stale: false
     });
