@@ -16,14 +16,14 @@ import {ConfigLoaderService} from "../../environments/config-loader.service";
 @Injectable()
 export class JobManagerService {
 
-  private static readonly defaultErrorDetail = "An unknown error has ocurred. Please try again later.";
+  private static readonly defaultErrorDetail = "An unknown error has occurred. Please try again later.";
   private static readonly defaultErrorTitle = "Unknown";
 
   constructor(private readonly authService: AuthService, private http: Http,
               private configLoader:ConfigLoaderService) {}
 
   private convertToJobMetadataResponse(json: object): JobMetadataResponse {
-    var metadata: JobMetadataResponse = json as JobMetadataResponse;
+    let metadata: JobMetadataResponse = json as JobMetadataResponse;
     metadata.submission = new Date(metadata.submission);
     if (metadata.start) {
       metadata.start = new Date(metadata.start);
