@@ -19,6 +19,7 @@ import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from '../core/capabilities.service';
 import {DisplayField} from "../shared/model/DisplayField";
 import {JobsTableComponent} from "./table/table.component";
+import {FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'jm-job-list',
@@ -26,7 +27,7 @@ import {JobsTableComponent} from "./table/table.component";
   styleUrls: ['./job-list.component.css'],
 })
 export class JobListComponent implements OnInit {
-  @Input() pageSize: number = 50;
+  @Input() pageSize: number;
 
   @ViewChild(HeaderComponent) header: HeaderComponent;
   @ViewChild(JobsTableComponent) jobTable: JobsTableComponent;
@@ -46,6 +47,10 @@ export class JobListComponent implements OnInit {
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
   private projectId: string;
+  pageSizeFormControl = new FormControl('', [
+    Validators.required,
+    Validators.min(1)
+  ]);
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -67,8 +72,11 @@ export class JobListComponent implements OnInit {
         this.reloadJobs(this.route.snapshot.queryParams['q'], true);
       }
     });
+    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
+    this.projectId = req.extensions.projectId || '';
 
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
+    this.pageSize = this.settingsService.getPageSize(this.projectId) || 50;
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
       pageIndex: 0,
@@ -83,8 +91,6 @@ export class JobListComponent implements OnInit {
     });
 
     // set project ID (if any) and get display field info for list columns
-    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
-    this.projectId = req.extensions.projectId || '';
     const savedColumnSettings = this.settingsService.getDisplayColumns(this.projectId);
 
     // assign this.displayFields to a copy of this.capabilities.displayFields and then
@@ -180,6 +186,11 @@ export class JobListComponent implements OnInit {
     })
   }
 
+  updatePerPage(event: Event): void {
+    const inputElement = event.srcElement as HTMLInputElement;
+    this.pageSize = Number(inputElement.value);
+  }
+
   saveSettings() {
     let fields: string[] = [];
     this.displayFields.forEach((field) => {
@@ -188,6 +199,12 @@ export class JobListComponent implements OnInit {
       }
     });
     this.settingsService.setDisplayColumns(fields, this.projectId);
+    this.settingsService.setPageSize(this.pageSize, this.projectId);
+    this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
+      pageSize: this.pageSize,
+      pageIndex: 0,
+      length: 0,
+    });
     this.jobTable.setUpFieldsAndColumns();
   }
 }

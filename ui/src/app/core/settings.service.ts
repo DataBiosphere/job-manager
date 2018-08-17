@@ -13,7 +13,8 @@ type Settings = {
 type ProjectSettings = {
   // set to '' for non-project-based job manager
   projectId: string,
-  displayColumns: string[]
+  displayColumns: string[],
+  pageSize: number
   // ... other browser-based settings to be saved go here
 }
 
@@ -45,10 +46,12 @@ export class SettingsService {
   /** return the display columns settings for a project or a clean scaffolding, if they don't exist */
   getDisplayColumns(projectId: string): string[] {
     let settings = this.getSettingsForProject(projectId);
-    if (!settings) {
-      settings = this.createEmptySettingsForProject(projectId);
-    }
     return settings.displayColumns;
+  }
+
+  getPageSize(projectId: string): number {
+    let settings = this.getSettingsForProject(projectId);
+    return settings.pageSize;
   }
 
   /** update the display columns settings for a project */
@@ -62,8 +65,22 @@ export class SettingsService {
     this.updateLocalStorage();
   }
 
+  setPageSize(pageSize: number, projectId: string): void {
+    this.currentSettings.v1.projects.forEach((p) => {
+      if (p.projectId === projectId) {
+        p.pageSize = pageSize;
+        return;
+      }
+    });
+    this.updateLocalStorage();
+  }
+
   private getSettingsForProject(projectId: string): ProjectSettings {
-    return this.currentSettings.v1.projects.find(p => p.projectId === projectId);
+    let settings = this.currentSettings.v1.projects.find(p => p.projectId === projectId);
+    if (!settings) {
+      settings = this.createEmptySettingsForProject(projectId);
+    }
+    return settings;
   }
 
   private updateLocalStorage(): void {
@@ -73,7 +90,8 @@ export class SettingsService {
   private createEmptySettingsForProject(projectId: string): ProjectSettings {
     this.currentSettings.v1.projects.push({
       'projectId': projectId,
-      'displayColumns': null
+      'displayColumns': null,
+      'pageSize': null
     });
     this.updateLocalStorage();
     return this.getSettingsForProject(projectId);

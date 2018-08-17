@@ -23,10 +23,17 @@
                       (click)="$event.stopPropagation()">{{ df.display }}</mat-checkbox>
       </mat-list-item>
     </mat-list>
-   <mat-divider></mat-divider>
-   <div class="settings-button-container">
-     <button class="apply-link" (click)="saveSettings()">Done</button>
-   </div>
+    <mat-divider></mat-divider>
+    <div class="field-container">
+      <mat-form-field class="page-count">
+        <input matInput placeholder="Jobs per page" [formControl]="pageSizeFormControl" [value]="pageSize" (click)="$event.stopPropagation()" (change)="updatePerPage($event)">
+        <mat-error *ngIf="pageSizeFormControl.hasError('min') || pageSizeFormControl.hasError('required')">must be at least 1</mat-error>
+      </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="settings-button-container">
+      <button class="apply-link" (click)="saveSettings()">Done</button>
+    </div>
   </mat-menu>
   </span>
   <jm-job-list-table

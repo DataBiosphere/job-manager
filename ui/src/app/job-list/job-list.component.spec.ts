@@ -7,6 +7,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatDialogModule,
+  MatInputModule,
   MatListModule,
   MatMenuModule,
   MatSelectModule,
@@ -15,7 +16,7 @@ import {
   MatPaginatorModule,
   MatSnackBarModule,
   MatTooltipModule,
-  MatCheckboxModule
+  MatCheckboxModule,
 } from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -39,6 +40,7 @@ import {JobStatus} from '../shared/model/JobStatus';
 import {RouteReuse} from '../route-reuse.service';
 import {SettingsService} from "../core/settings.service";
 import {AuthService} from "../core/auth.service";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 describe('JobListComponent', () => {
 
@@ -91,11 +93,13 @@ describe('JobListComponent', () => {
         ClrIconModule,
         ClrTooltipModule,
         CommonModule,
+        FormsModule,
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
         MatDialogModule,
         MatDividerModule,
+        MatInputModule,
         MatListModule,
         MatMenuModule,
         MatPaginatorModule,
@@ -105,6 +109,7 @@ describe('JobListComponent', () => {
         MatSortModule,
         MatTableModule,
         MatTooltipModule,
+        ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {path: 'jobs', component: TestJobListComponent, resolve: {stream: JobListResolver}},
           {path: 'projects', component: FakeProjectsComponent}
