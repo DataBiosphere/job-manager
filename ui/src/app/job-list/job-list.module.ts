@@ -23,6 +23,7 @@ import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
+
 import {JobListComponent} from './job-list.component';
 import {JobsBulkEditComponent} from "./table/bulk-edit/bulk-edit.component";
 import {JobsTableComponent} from './table/table.component';
