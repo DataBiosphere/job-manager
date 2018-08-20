@@ -56,7 +56,6 @@ import {SharedModule} from '../shared/shared.module';
     ReactiveFormsModule,
     RouterModule,
     SharedModule,
-
   ],
   entryComponents: [
     JobsBulkEditComponent
