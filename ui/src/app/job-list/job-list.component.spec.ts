@@ -138,6 +138,8 @@ describe('JobListComponent', () => {
     tick();
 
     testComponent = fixture.debugElement.query(By.css('jm-job-list')).componentInstance;
+    testComponent.pageSize = 3;
+    testComponent.header.paginator._changePageSize(testComponent.pageSize);
   }));
 
   function expectJobsRendered(jobs: QueryJobsResult[]) {
@@ -169,7 +171,6 @@ describe('JobListComponent', () => {
   it('renders job rows', fakeAsync(() => {
     fixture.detectChanges();
     tick();
-
     expectJobsRendered(fakeJobService.jobs.slice(0, 3));
   }));
 

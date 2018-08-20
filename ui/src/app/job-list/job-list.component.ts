@@ -200,11 +200,7 @@ export class JobListComponent implements OnInit {
     });
     this.settingsService.setDisplayColumns(fields, this.projectId);
     this.settingsService.setPageSize(this.pageSize, this.projectId);
-    this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
-      pageSize: this.pageSize,
-      pageIndex: 0,
-      length: 0,
-    });
+    this.header.paginator._changePageSize(this.pageSize);
     this.jobTable.setUpFieldsAndColumns();
   }
 }

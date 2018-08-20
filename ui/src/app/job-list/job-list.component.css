@@ -82,6 +82,10 @@ h2.settings-header {
   padding: 5px;
 }
 
+.mat-form-field.page-count {
+  padding: 0 0.75rem;
+}
+
 button.apply-link {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 12px;
