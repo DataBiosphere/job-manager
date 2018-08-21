@@ -15,7 +15,7 @@ import {
   MatPaginatorModule,
   MatSnackBarModule,
   MatTooltipModule,
-  MatCheckboxModule,
+  MatCheckboxModule
 } from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -133,8 +133,6 @@ describe('JobListComponent', () => {
     tick();
 
     testComponent = fixture.debugElement.query(By.css('jm-job-list')).componentInstance;
-    testComponent.pageSize = 3;
-    testComponent.header.paginator._changePageSize(testComponent.pageSize);
   }));
 
   function expectJobsRendered(jobs: QueryJobsResult[]) {

@@ -26,7 +26,7 @@ import {JobsTableComponent} from "./table/table.component";
   styleUrls: ['./job-list.component.css'],
 })
 export class JobListComponent implements OnInit {
-  @Input() pageSize: number;
+  @Input() pageSize: number = 50;
 
   @ViewChild(HeaderComponent) header: HeaderComponent;
   @ViewChild(JobsTableComponent) jobTable: JobsTableComponent;
@@ -71,7 +71,10 @@ export class JobListComponent implements OnInit {
     this.projectId = req.extensions.projectId || '';
 
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
-    this.pageSize = this.settingsService.getPageSize(this.projectId) || 50;
+    const savedPageSettings = this.settingsService.getPageSize(this.projectId);
+    if (savedPageSettings) {
+      this.pageSize = savedPageSettings;
+    }
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
       pageIndex: 0,
@@ -166,7 +169,9 @@ export class JobListComponent implements OnInit {
   }
 
   private onClientPaginate(e: PageEvent) {
-    this.settingsService.setPageSize(e.pageSize, this.projectId);
+    if (e.pageSize != this.pageSize) {
+      this.settingsService.setPageSize(e.pageSize, this.projectId);
+    }
     // If the client just navigated to page n, ensure we have enough jobs to
     // display page n+1.
     this.jobStream.loadAtLeast((e.pageIndex+2) * e.pageSize)

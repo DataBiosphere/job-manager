@@ -15,7 +15,7 @@ import {
   MatSelectModule,
   MatSortModule,
   MatTableModule,
-  MatTooltipModule,
+  MatTooltipModule
 } from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
