@@ -2,12 +2,11 @@ import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/t
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
-import {Component, DebugElement, NgZone} from '@angular/core';
+import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
   MatDialogModule,
-  MatInputModule,
   MatListModule,
   MatMenuModule,
   MatSelectModule,
@@ -40,7 +39,6 @@ import {JobStatus} from '../shared/model/JobStatus';
 import {RouteReuse} from '../route-reuse.service';
 import {SettingsService} from "../core/settings.service";
 import {AuthService} from "../core/auth.service";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 describe('JobListComponent', () => {
 
@@ -93,13 +91,11 @@ describe('JobListComponent', () => {
         ClrIconModule,
         ClrTooltipModule,
         CommonModule,
-        FormsModule,
         MatButtonModule,
         MatCardModule,
         MatCheckboxModule,
         MatDialogModule,
         MatDividerModule,
-        MatInputModule,
         MatListModule,
         MatMenuModule,
         MatPaginatorModule,
@@ -109,7 +105,6 @@ describe('JobListComponent', () => {
         MatSortModule,
         MatTableModule,
         MatTooltipModule,
-        ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {path: 'jobs', component: TestJobListComponent, resolve: {stream: JobListResolver}},
           {path: 'projects', component: FakeProjectsComponent}

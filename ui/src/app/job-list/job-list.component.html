@@ -24,14 +24,6 @@
       </mat-list-item>
     </mat-list>
     <mat-divider></mat-divider>
-    <div class="field-container">
-      <h2 class="settings-header">Displayed rows/page</h2>
-      <mat-form-field class="page-count">
-        <input matInput [formControl]="pageSizeFormControl" [value]="pageSize" (click)="$event.stopPropagation()" (change)="updatePerPage($event)">
-        <mat-error *ngIf="pageSizeFormControl.hasError('min') || pageSizeFormControl.hasError('required')">must be at least 1</mat-error>
-      </mat-form-field>
-    </div>
-    <mat-divider></mat-divider>
     <div class="settings-button-container">
       <button class="apply-link" (click)="saveSettings()">Done</button>
     </div>

@@ -20,7 +20,7 @@ import {
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {NgModule} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
@@ -53,7 +53,6 @@ import {SharedModule} from '../shared/shared.module';
     MatSortModule,
     MatTableModule,
     MatTooltipModule,
-    ReactiveFormsModule,
     RouterModule,
     SharedModule,
   ],

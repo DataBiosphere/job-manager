@@ -19,7 +19,6 @@ import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {CapabilitiesService} from '../core/capabilities.service';
 import {DisplayField} from "../shared/model/DisplayField";
 import {JobsTableComponent} from "./table/table.component";
-import {FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'jm-job-list',
@@ -47,10 +46,6 @@ export class JobListComponent implements OnInit {
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
   private projectId: string;
-  pageSizeFormControl = new FormControl('', [
-    Validators.required,
-    Validators.min(1)
-  ]);
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -171,6 +166,7 @@ export class JobListComponent implements OnInit {
   }
 
   private onClientPaginate(e: PageEvent) {
+    this.settingsService.setPageSize(e.pageSize, this.projectId);
     // If the client just navigated to page n, ensure we have enough jobs to
     // display page n+1.
     this.jobStream.loadAtLeast((e.pageIndex+2) * e.pageSize)
@@ -187,8 +183,7 @@ export class JobListComponent implements OnInit {
   }
 
   updatePerPage(event: Event): void {
-    const inputElement = event.srcElement as HTMLInputElement;
-    this.pageSize = Number(inputElement.value);
+    this.settingsService.setPageSize(this.pageSize, this.projectId);
   }
 
   saveSettings() {
@@ -199,8 +194,6 @@ export class JobListComponent implements OnInit {
       }
     });
     this.settingsService.setDisplayColumns(fields, this.projectId);
-    this.settingsService.setPageSize(this.pageSize, this.projectId);
-    this.header.paginator._changePageSize(this.pageSize);
     this.jobTable.setUpFieldsAndColumns();
   }
 }
