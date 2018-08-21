@@ -182,10 +182,6 @@ export class JobListComponent implements OnInit {
     })
   }
 
-  updatePerPage(event: Event): void {
-    this.settingsService.setPageSize(this.pageSize, this.projectId);
-  }
-
   saveSettings() {
     let fields: string[] = [];
     this.displayFields.forEach((field) => {
