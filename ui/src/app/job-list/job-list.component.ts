@@ -171,6 +171,7 @@ export class JobListComponent implements OnInit {
   private onClientPaginate(e: PageEvent) {
     if (e.pageSize != this.pageSize) {
       this.settingsService.setPageSize(e.pageSize, this.projectId);
+      this.pageSize = e.pageSize;
     }
     // If the client just navigated to page n, ensure we have enough jobs to
     // display page n+1.
