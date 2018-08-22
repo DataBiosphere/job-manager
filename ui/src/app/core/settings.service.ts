@@ -45,13 +45,11 @@ export class SettingsService {
 
   /** return the display columns settings for a project or a clean scaffolding, if they don't exist */
   getDisplayColumns(projectId: string): string[] {
-    let settings = this.getSettingsForProject(projectId);
-    return settings.displayColumns;
+    return this.getSettingsForProject(projectId).displayColumns;
   }
 
   getPageSize(projectId: string): number {
-    let settings = this.getSettingsForProject(projectId);
-    return settings.pageSize;
+    return this.getSettingsForProject(projectId).pageSize;
   }
 
   /** update the display columns settings for a project */
@@ -89,9 +87,9 @@ export class SettingsService {
 
   private createEmptySettingsForProject(projectId: string): ProjectSettings {
     this.currentSettings.v1.projects.push({
-      'projectId': projectId,
-      'displayColumns': null,
-      'pageSize': null
+      projectId: projectId,
+      displayColumns: null,
+      pageSize: null
     });
     this.updateLocalStorage();
     return this.getSettingsForProject(projectId);
