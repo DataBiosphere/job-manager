@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/t
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
-import {Component, DebugElement, NgZone} from '@angular/core';
+import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
@@ -164,7 +164,6 @@ describe('JobListComponent', () => {
   it('renders job rows', fakeAsync(() => {
     fixture.detectChanges();
     tick();
-
     expectJobsRendered(fakeJobService.jobs.slice(0, 3));
   }));
 
