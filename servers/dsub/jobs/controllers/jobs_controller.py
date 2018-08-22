@@ -121,8 +121,8 @@ def query_jobs(body):
     query.end = query.end.replace(tzinfo=tzlocal()).replace(
         microsecond=0) if query.end else None
     if query.submission:
-        query.submission = query.submission.replace(
-            tzinfo=tzlocal()).replace(microsecond=0)
+        query.submission = query.submission.replace(tzinfo=tzlocal()).replace(
+            microsecond=0)
 
     if query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
