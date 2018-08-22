@@ -67,8 +67,14 @@ export class JobListComponent implements OnInit {
         this.reloadJobs(this.route.snapshot.queryParams['q'], true);
       }
     });
+    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
+    this.projectId = req.extensions.projectId || '';
 
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
+    const savedPageSettings = this.settingsService.getPageSize(this.projectId);
+    if (savedPageSettings) {
+      this.pageSize = savedPageSettings;
+    }
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
       pageIndex: 0,
@@ -83,8 +89,6 @@ export class JobListComponent implements OnInit {
     });
 
     // set project ID (if any) and get display field info for list columns
-    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
-    this.projectId = req.extensions.projectId || '';
     const savedColumnSettings = this.settingsService.getDisplayColumns(this.projectId);
 
     // assign this.displayFields to a copy of this.capabilities.displayFields and then
@@ -165,6 +169,10 @@ export class JobListComponent implements OnInit {
   }
 
   private onClientPaginate(e: PageEvent) {
+    if (e.pageSize != this.pageSize) {
+      this.settingsService.setPageSize(e.pageSize, this.projectId);
+      this.pageSize = e.pageSize;
+    }
     // If the client just navigated to page n, ensure we have enough jobs to
     // display page n+1.
     this.jobStream.loadAtLeast((e.pageIndex+2) * e.pageSize)
