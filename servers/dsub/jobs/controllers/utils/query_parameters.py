@@ -33,11 +33,11 @@ def api_to_dsub(query):
             for (k, v) in query.labels.items()
             if k not in ['job-id', 'task-id']
         }
+    if query.submission:
+        dstat_params['create_time'] = query.submission
 
     if query.extensions:
         if query.extensions.user_id:
             dstat_params['user_ids'] = {query.extensions.user_id}
-        if query.extensions.submission:
-            dstat_params['create_time'] = query.extensions.submission
 
     return dstat_params

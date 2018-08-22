@@ -32,13 +32,13 @@ export const queryDataTypes: Map<string, FieldDataType> = new Map([
   ['name', FieldDataType.Text],
   ['statuses', FieldDataType.Enum],
   ['start', FieldDataType.Date],
-  ['end', FieldDataType.Date]
+  ['end', FieldDataType.Date],
+  ['submission', FieldDataType.Date]
 ]);
 
 export const queryExtensionsDataTypes: Map<string, FieldDataType> = new Map([
   ['projectId', FieldDataType.Text],
-  ['userId', FieldDataType.Text],
-  ['submission', FieldDataType.Date]
+  ['userId', FieldDataType.Text]
 ]);
 
 export const timeFrameToDescriptionMap = new Map<TimeFrame, string> ([
