@@ -321,9 +321,7 @@ def cromwell_query_params(query, page, page_size):
     return query_params
 
 
-def format_job(job, now):
-    if now is None:
-        now = datetime.utcnow()
+def format_job(job, now=datetime.utcnow()):
     start = _parse_datetime(job.get('start'))
     submission = _parse_datetime(job.get('submission'))
     if submission is None:
