@@ -321,7 +321,9 @@ def cromwell_query_params(query, page, page_size):
     return query_params
 
 
-def format_job(job):
+def format_job(job, now):
+    if now is None:
+        now = datetime.utcnow()
     start = _parse_datetime(job.get('start'))
     submission = _parse_datetime(job.get('submission'))
     if submission is None:
@@ -329,7 +331,7 @@ def format_job(job):
         # for subworkflows in which case we fallback to the workflow start time
         # or, if not started, the current time. This fallback logic may be
         # removed if/when Cromwell changes behavior per https://github.com/broadinstitute/cromwell/issues/2968.
-        submission = start or datetime.utcnow()
+        submission = start or now
     end = _parse_datetime(job.get('end'))
     return QueryJobsResult(
         id=job.get('id'),
