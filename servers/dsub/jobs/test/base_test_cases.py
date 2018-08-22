@@ -391,17 +391,13 @@ class BaseTestCases:
             fourth_time = datetime.datetime.now()
 
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(submission=first_time)),
+                QueryJobsRequest(submission=first_time),
                 [first_job, second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(submission=second_time)),
+                QueryJobsRequest(submission=second_time),
                 [second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(submission=third_time)),
-                [third_job])
+                QueryJobsRequest(submission=third_time), [third_job])
             self.assert_query_matches(
                 QueryJobsRequest(end=second_time), [first_job])
             self.assert_query_matches(
