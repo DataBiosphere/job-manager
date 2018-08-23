@@ -266,7 +266,10 @@ def query_jobs(body, **kwargs):
     total_results = int(response.json()['totalResultsCount'])
     last_page = get_last_page(total_results, query_page_size)
 
-    jobs_list = [format_job(job) for job in response.json()['results']]
+    jobs_list = [
+        format_job(job, datetime.utcnow())
+        for job in response.json()['results']
+    ]
     if page >= last_page:
         return QueryJobsResponse(results=jobs_list, total_size=total_results)
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
@@ -321,7 +324,7 @@ def cromwell_query_params(query, page, page_size):
     return query_params
 
 
-def format_job(job, now=datetime.utcnow()):
+def format_job(job, now):
     start = _parse_datetime(job.get('start'))
     submission = _parse_datetime(job.get('submission'))
     if submission is None:
