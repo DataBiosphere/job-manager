@@ -266,8 +266,10 @@ def query_jobs(body, **kwargs):
     total_results = int(response.json()['totalResultsCount'])
     last_page = get_last_page(total_results, query_page_size)
 
-    now = datetime.utcnow()
-    jobs_list = [format_job(job, now) for job in response.json()['results']]
+    jobs_list = [
+        format_job(job, datetime.utcnow())
+        for job in response.json()['results']
+    ]
     if page >= last_page:
         return QueryJobsResponse(results=jobs_list, total_size=total_results)
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
@@ -299,6 +301,10 @@ def cromwell_query_params(query, page, page_size):
     if query.end:
         end = datetime.strftime(query.end, '%Y-%m-%dT%H:%M:%S.%fZ')
         query_params.append({'end': end})
+    if query.submission:
+        submission = datetime.strftime(query.submission,
+                                       '%Y-%m-%dT%H:%M:%S.%fZ')
+        query_params.append({'submission': submission})
     if query.name:
         query_params.append({'name': query.name})
     if query.statuses:
@@ -320,14 +326,13 @@ def cromwell_query_params(query, page, page_size):
 
 def format_job(job, now):
     start = _parse_datetime(job.get('start'))
-    submission = start
+    submission = _parse_datetime(job.get('submission'))
     if submission is None:
-        # Submission is required by the common jobs API. Submission is not
-        # currently returned via Cromwell QueryJobs, so start is used as a
-        # stand-in value. If the job hasn't actually started yet, fake the
-        # submission time as 'now' rather than returning null. Switch to true
-        # submission time if/when supported by Cromwell: https://github.com/broadinstitute/cromwell/issues/3167.
-        submission = now
+        # Submission is required by the common jobs API. Submission may be missing
+        # for subworkflows in which case we fallback to the workflow start time
+        # or, if not started, the current time. This fallback logic may be
+        # removed if/when Cromwell changes behavior per https://github.com/broadinstitute/cromwell/issues/2968.
+        submission = start or now
     end = _parse_datetime(job.get('end'))
     return QueryJobsResult(
         id=job.get('id'),

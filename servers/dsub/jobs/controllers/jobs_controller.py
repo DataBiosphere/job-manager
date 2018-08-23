@@ -120,9 +120,9 @@ def query_jobs(body):
         microsecond=0) if query.start else None
     query.end = query.end.replace(tzinfo=tzlocal()).replace(
         microsecond=0) if query.end else None
-    if query.extensions and query.extensions.submission:
-        query.extensions.submission = query.extensions.submission.replace(
-            tzinfo=tzlocal()).replace(microsecond=0)
+    if query.submission:
+        query.submission = query.submission.replace(tzinfo=tzlocal()).replace(
+            microsecond=0)
 
     if query.page_size < 0:
         raise BadRequest("The pageSize query parameter must be non-negative.")
@@ -131,11 +131,11 @@ def query_jobs(body):
     if query.start and create_time_max and query.start > create_time_max:
         raise BadRequest(
             "Invalid query: start date is invalid with pagination token.")
-    if query.extensions and query.extensions.submission:
-        if query.start and query.extensions.submission > query.start:
+    if query.submission:
+        if query.start and query.submission > query.start:
             raise BadRequest(
                 "Invalid query: submission date must be <= start date.")
-        if query.end and query.extensions.submission >= query.end:
+        if query.end and query.submission >= query.end:
             raise BadRequest(
                 "Invalid query: submission date must precede end date.")
 

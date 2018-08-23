@@ -391,17 +391,13 @@ class BaseTestCases:
             fourth_time = datetime.datetime.now()
 
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(submission=first_time)),
+                QueryJobsRequest(submission=first_time),
                 [first_job, second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(submission=second_time)),
+                QueryJobsRequest(submission=second_time),
                 [second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(submission=third_time)),
-                [third_job])
+                QueryJobsRequest(submission=third_time), [third_job])
             self.assert_query_matches(
                 QueryJobsRequest(end=second_time), [first_job])
             self.assert_query_matches(
@@ -410,9 +406,7 @@ class BaseTestCases:
                 QueryJobsRequest(end=fourth_time),
                 [first_job, second_job, third_job])
             self.assert_query_matches(
-                QueryJobsRequest(
-                    end=fourth_time,
-                    extensions=ExtendedQueryFields(submission=second_time)),
+                QueryJobsRequest(end=fourth_time, submission=second_time),
                 [second_job, third_job])
 
         def test_query_jobs_pagination(self):
@@ -447,22 +441,18 @@ class BaseTestCases:
             job6 = self.start_job('echo SIXTH_JOB', name='job_u')
 
             response = self.assert_query_matches(
-                QueryJobsRequest(
-                    page_size=2,
-                    extensions=ExtendedQueryFields(submission=min_time)),
+                QueryJobsRequest(page_size=2, submission=min_time),
                 [job5, job6])
             response = self.assert_query_matches(
                 QueryJobsRequest(
                     page_size=2,
                     page_token=response.next_page_token,
-                    extensions=ExtendedQueryFields(submission=min_time)),
-                [job3, job4])
+                    submission=min_time), [job3, job4])
             response = self.assert_query_matches(
                 QueryJobsRequest(
                     page_size=2,
                     page_token=response.next_page_token,
-                    extensions=ExtendedQueryFields(submission=min_time)),
-                [job2])
+                    submission=min_time), [job2])
 
         def status_counts_to_dict(self, status_counts):
             return {

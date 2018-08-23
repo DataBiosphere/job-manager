@@ -26,6 +26,9 @@ import {TimeFrame} from "../model/TimeFrame";
     if (request.end) {
       urlSearchParams.set('end', request.end.toISOString());
     }
+    if (request.submission) {
+      urlSearchParams.set('submission', request.submission.toISOString());
+    }
 
     if (request.extensions) {
       if (request.extensions.projectId) {
@@ -33,9 +36,6 @@ import {TimeFrame} from "../model/TimeFrame";
       }
       if (request.extensions.userId) {
         urlSearchParams.set('userId', request.extensions.userId);
-      }
-      if (request.extensions.submission) {
-        urlSearchParams.set('submission', request.extensions.submission.toISOString());
       }
     }
 
