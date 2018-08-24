@@ -1,14 +1,28 @@
+FROM openjdk
+
+WORKDIR /job-manager
+
+ADD ./ /job-manager
+
+RUN /bin/bash -c scripts/rebuild_swagger.sh
+RUN scripts/await_md5_match.sh /job-manager/ui/src/app/shared/model/.jobs.yaml.md5
+
 FROM node
 
 WORKDIR /ui
-ADD package-lock.json package.json tsconfig.json .angular-cli.json /ui/
+
+COPY --from=0 /job-manager/ui/src /ui/src
+
+ADD ./ui/package-lock.json /ui/
+ADD ./ui/package.json /ui/
+ADD ./ui/tsconfig.json /ui/
+ADD ./ui/.angular-cli.json /ui/
+
 RUN npm install
 
-ADD src /ui/src
-RUN node_modules/.bin/ng build --prod
+RUN /ui/node_modules/.bin/ng build --prod
 
 FROM nginx
 
-COPY --from=0 /ui/dist /ui/dist
-ADD nginx.prod.conf /etc/nginx/nginx.conf
-ENTRYPOINT [ "/scripts/await_md5_match.sh", "/ui/src/app/shared/model/.jobs.yaml.md5", "--" ]
+COPY --from=1 /ui/dist /ui/dist
+ADD ./ui/nginx.prod.conf /etc/nginx/nginx.conf
