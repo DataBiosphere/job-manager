@@ -180,17 +180,17 @@ From v0.2.0, Job Manager starts to release stock docker images on [DockerHub](ht
 
 - To build the `job-manager-ui` image with `$TAG` from the root of this Github repository:
     ```
-    cd ui && docker build -t job-manager-ui:$TAG . -f Dockerfile
+    docker build -t job-manager-ui:$TAG . -f ui/Dockerfile
     ```
     
 - **Cromwell:** To build the `job-manager-api-cromwell` image with `$TAG` from the root of this Github repository:
     ```
-    docker build -t job-manager-api-cromwell:v0.2.0 . -f servers/cromwell/Dockerfile
+    docker build -t job-manager-api-cromwell:$TAG . -f servers/cromwell/Dockerfile
     ```
     
 - **dsub:** To build the `job-manager-api-dsub` image with `$TAG` from the root of this Github repository:
     ```
-    cd servers && docker build -t job-manager-api-dsub:v0.2.0 . -f dsub/Dockerfile
+    docker build -t job-manager-api-dsub:$TAG . -f servers/dsub/Dockerfile
     ```
 
 ### Add a github release pointing to the dockerhub images
