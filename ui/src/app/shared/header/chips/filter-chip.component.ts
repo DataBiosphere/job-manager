@@ -43,6 +43,10 @@ export class FilterChipComponent implements OnInit {
       // Wait for the form expansion animation to complete before expanding the calendar
       setTimeout(() => this.datePickerInput.expandCalendar(), 100);
     }
+    if (this.getCurrentChipType() == FieldDataType[FieldDataType.Boolean]) {
+      this.chipMenuTrigger.closeMenu();
+      this.updateValue.emit(this.chipKey);
+    }
   }
 
   getCurrentChipType(): string {
@@ -54,7 +58,10 @@ export class FilterChipComponent implements OnInit {
   }
 
   getDisplayValue() {
-    return this.chipKey + ': ' + this.currentChipValue;
+    if (this.currentChipValue !== '') {
+      return this.chipKey + ': ' + this.currentChipValue;
+    }
+    return this.chipKey;
   }
 
   removeThisChip(): void {
@@ -73,5 +80,4 @@ export class FilterChipComponent implements OnInit {
     this.chipMenuTrigger.openMenu();
     this.focusInput();
   }
-
 }

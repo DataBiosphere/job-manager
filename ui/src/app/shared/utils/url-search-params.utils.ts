@@ -37,6 +37,9 @@ import {TimeFrame} from "../model/TimeFrame";
       if (request.extensions.userId) {
         urlSearchParams.set('userId', request.extensions.userId);
       }
+      if (request.extensions.hideArchived === true) {
+        urlSearchParams.set('hideArchived', request.extensions.userId.toString());
+      }
     }
 
     if (request.labels) {
@@ -93,6 +96,10 @@ import {TimeFrame} from "../model/TimeFrame";
               statuses.push(JobStatus[status]);
             }
             value = statuses;
+          }
+          case FieldDataType.Boolean: {
+            value = true;
+            break;
           }
         }
 

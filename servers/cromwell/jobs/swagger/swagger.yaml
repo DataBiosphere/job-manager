@@ -423,6 +423,9 @@ definitions:
       userId:
         type: "string"
         description: "Returns only jobs with the specified user ID.\n"
+      hideArchived:
+        type: "boolean"
+        description: "Returns only jobs that do not have the label 'flag' set to 'archive'\n"
     description: "Extended fields to query by which may not be supported by all backends.\n"
   QueryJobsResponse:
     required:
