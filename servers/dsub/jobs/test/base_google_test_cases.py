@@ -11,6 +11,7 @@ from jobs.controllers.utils.job_statuses import ApiStatus
 from jobs.models.extended_query_fields import ExtendedQueryFields
 from jobs.models.query_jobs_request import QueryJobsRequest
 
+
 class BaseGoogleTestCases:
     class BaseGoogleTestCase(BaseTestCases.JobsControllerTestCase):
         """ JobsController integration tests for local provider """
@@ -28,7 +29,8 @@ class BaseGoogleTestCases:
         def setUp(self):
             self.log_path = '{}/logging'.format(self.testing_root)
             self.test_token_label = {
-                'test_token': datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
+                'test_token':
+                datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')
             }
             super(BaseGoogleTestCases.BaseGoogleTestCase, self).setUp()
 
@@ -42,8 +44,8 @@ class BaseGoogleTestCases:
                 query_params.labels.update(self.test_token_label)
             else:
                 query_params.labels = self.test_token_label
-            return super(BaseGoogleTestCases.BaseGoogleTestCase, self).assert_query_matches(
-                query_params, job_list)
+            return super(BaseGoogleTestCases.BaseGoogleTestCase,
+                         self).assert_query_matches(query_params, job_list)
 
         def test_abort_job(self):
             started = self.start_job('sleep 30')
@@ -54,7 +56,8 @@ class BaseGoogleTestCases:
 
         def test_query_jobs_invalid_project(self):
             params = QueryJobsRequest(
-                extensions=ExtendedQueryFields(project_id='some-bogus-project-id'))
+                extensions=ExtendedQueryFields(
+                    project_id='some-bogus-project-id'))
             resp = self.client.open(
                 '/jobs/query',
                 method='POST',

@@ -7,7 +7,8 @@ import requests
 
 from jobs.common import enum
 
-ProviderType = enum(GOOGLE='google', GOOGLE_V2='google-v2', LOCAL='local', STUB='stub')
+ProviderType = enum(
+    GOOGLE='google', GOOGLE_V2='google-v2', LOCAL='local', STUB='stub')
 
 
 def get_provider(provider_type, project_id=None, auth_token=None):

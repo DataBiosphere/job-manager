@@ -265,8 +265,8 @@ class BaseTestCases:
                 'INPUT_KEY': '{}/inputs/test-input'.format(self.testing_root)
             }
             outputs = {
-                'OUTPUT_KEY':
-                '{}/outputs/test-output'.format(self.testing_root)
+                'OUTPUT_KEY': '{}/outputs/test-output'.format(
+                    self.testing_root)
             }
             started = self.start_job(
                 'echo -n >${OUTPUT_KEY}',
