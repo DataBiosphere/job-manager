@@ -26,7 +26,7 @@ def get_capabilities():
         common_labels=['job-id', 'task-id'],
         query_extensions=['userId'])
 
-    if _provider_type() == ProviderType.GOOGLE:
+    if _provider_type() in [ProviderType.GOOGLE, ProviderType.GOOGLE_V2]:
         capabilities.authentication = AuthenticationCapability(
             is_required=True,
             scopes=[

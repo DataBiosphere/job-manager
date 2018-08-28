@@ -3,13 +3,13 @@ from __future__ import absolute_import
 from jobs.test.base_google_test_cases import BaseGoogleTestCases
 
 
-class TestJobsControllerGoogle(BaseGoogleTestCases.BaseGoogleTestCase):
+class TestJobsControllerGoogleV2(BaseGoogleTestCases.BaseGoogleTestCase):
     """ JobsController integration tests for google provider """
 
     def create_app(self):
-        app = super(TestJobsControllerGoogle, self).create_app()
+        app = super(TestJobsControllerGoogleV2, self).create_app()
         app.config.update({
-            'PROVIDER_TYPE': 'google',
+            'PROVIDER_TYPE': 'google-v2',
             'REQUIRES_AUTH': False,
         })
         return app
