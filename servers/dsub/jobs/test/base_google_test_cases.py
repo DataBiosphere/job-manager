@@ -14,8 +14,6 @@ from jobs.models.query_jobs_request import QueryJobsRequest
 
 class BaseGoogleTestCases:
     class BaseGoogleTestCase(BaseTestCases.JobsControllerTestCase):
-        """ JobsController integration tests for local provider """
-
         @classmethod
         def setUpClass(cls):
             super(BaseGoogleTestCases.BaseGoogleTestCase, cls).setUpClass()
