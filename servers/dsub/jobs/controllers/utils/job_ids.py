@@ -22,7 +22,7 @@ def api_to_dsub(api_id, provider_type):
     project, job, task = None, None, None
     id_split = api_id.split('+')
 
-    if provider_type == ProviderType.GOOGLE:
+    if provider_type in [ProviderType.GOOGLE, ProviderType.GOOGLE_V2]:
         # If we are running on Google cloud the id format should be:
         # <project-id>+<job-id>+<task-id> or <project-id>+<job-id> if there is
         # no task ID
