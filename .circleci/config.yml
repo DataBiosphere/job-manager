@@ -80,7 +80,8 @@ jobs:
           command: |
             if [[ -z "$GCLOUD_SERVICE_KEY" || "${CIRCLE_BRANCH}" != "master" ]]; then
               detox -n 8 -c ./servers/dsub -- \
-                --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle
+                --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle \
+                --exclude-test=jobs.test.test_jobs_controller_google_v2.TestJobsControllerGoogleV2
             else
               echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > /home/circleci/gcloud-service-key.json
               detox -n 8 -c ./servers/dsub
