@@ -48,4 +48,5 @@ def dsub_to_api(proj_id, job_id, task_id, attempt):
     """
     if not job_id:
         raise BadRequest('Invalid dsub ID format, no job_id was provided')
-    return '{}+{}+{}+{}'.format(proj_id, job_id, task_id, attempt)
+    return '{}+{}+{}+{}'.format(proj_id or '', job_id or '', task_id or '',
+                                attempt or '')
