@@ -26,10 +26,10 @@ def abort_job(id):
 
     Returns: None
     """
-    proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
+    # Attempt is unused in aborting because only one attempt can be running at
+    # a time.
+    project, job, task, _ = job_ids.api_to_dsub(id, _provider_type())
     provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
-    # If task-id is not specified, pass None instead of [None]
-    task_ids = {task_id} if task_id else None
 
     # TODO(bryancrampton): Add flag to ddel to support deleting only
     # 'singleton' tasks.
@@ -48,7 +48,9 @@ def abort_job(id):
     # hacky re-routing of stdout once dsub removes it from the python API
     deleted = execute_redirect_stdout(lambda:
         ddel.ddel_tasks(
-            provider=provider, job_ids={job_id}, task_ids=task_ids))
+            provider=provider,
+            job_ids={job_id},
+            task_ids= {task} if task else None))
     if len(deleted) != 1:
         raise InternalServerError('Failed to abort dsub job')
 
@@ -73,19 +75,20 @@ def get_job(id):
     Returns:
         JobMetadataResponse: Response containing relevant metadata
     """
-    proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
-    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
+    project, job, task, attempt = job_ids.api_to_dsub(id, _provider_type())
+    provider = providers.get_provider(_provider_type(), project, _auth_token())
 
     jobs = []
     try:
         jobs = execute_redirect_stdout(lambda: dstat.dstat_job_producer(
             provider=provider,
             statuses={'*'},
-            job_ids={job_id},
-            task_ids={task_id} if task_id else None,
+            job_ids={job},
+            task_ids={task} if task else None,
+            task_attempts={attempt} if attempt else None,
             full_output=True).next())
     except apiclient.errors.HttpError as error:
-        _handle_http_error(error, proj_id)
+        _handle_http_error(error, project)
 
     # A job_id and task_id define a unique job (should only be one)
     if len(jobs) > 1:

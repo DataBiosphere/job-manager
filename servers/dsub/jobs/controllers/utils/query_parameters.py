@@ -28,10 +28,12 @@ def api_to_dsub(query):
             dstat_params['job_ids'] = {query.labels['job-id']}
         if query.labels.get('task-id'):
             dstat_params['task_ids'] = {query.labels['task-id']}
+        if query.labels.get('attempt'):
+            dstat_params['task_attempts'] = {query.labels['attempt']}
         dstat_params['labels'] = {
             job_model.LabelParam(k, v)
             for (k, v) in query.labels.items()
-            if k not in ['job-id', 'task-id']
+            if k not in ['job-id', 'task-id', 'attempt']
         }
     if query.submission:
         dstat_params['create_time'] = query.submission
