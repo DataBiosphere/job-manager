@@ -28,8 +28,8 @@ def abort_job(id):
     """
     # Attempt is unused in aborting because only one attempt can be running at
     # a time.
-    project, job, task, _ = job_ids.api_to_dsub(id, _provider_type())
-    provider = providers.get_provider(_provider_type(), project, _auth_token())
+    proj_id, job_id, task_id, _ = job_ids.api_to_dsub(id, _provider_type())
+    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
 
     # TODO(bryancrampton): Add flag to ddel to support deleting only
     # 'singleton' tasks.
@@ -49,8 +49,8 @@ def abort_job(id):
     deleted = execute_redirect_stdout(lambda:
         ddel.ddel_tasks(
             provider=provider,
-            job_ids={job},
-            task_ids={task} if task else None))
+            job_ids={job_id},
+            task_ids={task_id} if task_id else None))
     if len(deleted) != 1:
         raise InternalServerError('Failed to abort dsub job')
 
@@ -85,7 +85,7 @@ def get_job(id):
             provider=provider,
             statuses={'*'},
             job_ids={job_id},
-            task_ids={task_id} if task else None,
+            task_ids={task_id} if task_id else None,
             task_attempts={attempt} if attempt else None,
             full_output=True).next())
     except apiclient.errors.HttpError as error:
