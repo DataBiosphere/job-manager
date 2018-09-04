@@ -24,9 +24,8 @@ def api_to_dsub(api_id, provider_type):
     if len(id_split) != 4:
         raise BadRequest(
             'Job ID format is: <project-id>+<job-id>+<task-id>+<attempt>')
-    project, job, task, attempt = id_split
     google_providers = [ProviderType.GOOGLE, ProviderType.GOOGLE_V2]
-    if not project and provider_type in google_providers:
+    if not id_split[0] and provider_type in google_providers:
         raise BadRequest(
             'Job ID is missing project ID component with google provider')
     return id_split

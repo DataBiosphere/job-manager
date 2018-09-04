@@ -50,7 +50,7 @@ def abort_job(id):
         ddel.ddel_tasks(
             provider=provider,
             job_ids={job},
-            task_ids= {task} if task else None))
+            task_ids={task} if task else None))
     if len(deleted) != 1:
         raise InternalServerError('Failed to abort dsub job')
 
@@ -75,20 +75,21 @@ def get_job(id):
     Returns:
         JobMetadataResponse: Response containing relevant metadata
     """
-    project, job, task, attempt = job_ids.api_to_dsub(id, _provider_type())
-    provider = providers.get_provider(_provider_type(), project, _auth_token())
+    proj_id, job_id, task_id, attempt = job_ids.api_to_dsub(
+        id, _provider_type())
+    provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
 
     jobs = []
     try:
         jobs = execute_redirect_stdout(lambda: dstat.dstat_job_producer(
             provider=provider,
             statuses={'*'},
-            job_ids={job},
-            task_ids={task} if task else None,
+            job_ids={job_id},
+            task_ids={task_id} if task else None,
             task_attempts={attempt} if attempt else None,
             full_output=True).next())
     except apiclient.errors.HttpError as error:
-        _handle_http_error(error, project)
+        _handle_http_error(error, proj_id)
 
     # A job_id and task_id define a unique job (should only be one)
     if len(jobs) > 1:
