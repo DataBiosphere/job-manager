@@ -1,4 +1,4 @@
-from dsub.providers import google, local, stub
+from dsub.providers import google, google_v2, local, stub
 from dsub.lib import resources
 from flask import current_app
 from werkzeug.exceptions import BadRequest, Unauthorized, NotImplemented
@@ -7,7 +7,8 @@ import requests
 
 from jobs.common import enum
 
-ProviderType = enum(GOOGLE='google', LOCAL='local', STUB='stub')
+ProviderType = enum(
+    GOOGLE='google', GOOGLE_V2='google-v2', LOCAL='local', STUB='stub')
 
 
 def get_provider(provider_type, project_id=None, auth_token=None):
@@ -23,8 +24,8 @@ def get_provider(provider_type, project_id=None, auth_token=None):
             JobProvider: Instance of LocalJobProvider, GoogleJobProvider, or
                 StubJobProvider.
     """
-    if provider_type == ProviderType.GOOGLE:
-        return _get_google_provider(project_id, auth_token)
+    if provider_type in [ProviderType.GOOGLE, ProviderType.GOOGLE_V2]:
+        return _get_google_provider(project_id, auth_token, provider_type)
     elif project_id or auth_token:
         raise BadRequest(
             'The Local provider does not support the `{}` field .'.format(
@@ -37,7 +38,7 @@ def get_provider(provider_type, project_id=None, auth_token=None):
         return stub.StubJobProvider()
 
 
-def _get_google_provider(project_id, auth_token):
+def _get_google_provider(project_id, auth_token, provider_type):
     if not project_id:
         raise BadRequest('Missing required field `extensions.projectId`.')
     if not auth_token:
@@ -56,8 +57,12 @@ def _get_google_provider(project_id, auth_token):
 
     try:
         credentials = AccessTokenCredentials(auth_token, 'user-agent')
-        return google.GoogleJobProvider(
-            False, False, project_id, credentials=credentials)
+        if provider_type == ProviderType.GOOGLE:
+            return google.GoogleJobProvider(
+                False, False, project_id, credentials=credentials)
+        else:
+            return google_v2.GoogleV2JobProvider(
+                False, False, project_id, credentials=credentials)
     except AccessTokenCredentialsError as e:
         raise Unauthorized('Invalid authentication token:{}.'.format(e))
 
