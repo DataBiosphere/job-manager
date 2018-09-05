@@ -43,6 +43,7 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
         user_ids=dstat_params.get('user_ids'),
         job_ids=dstat_params.get('job_ids'),
         task_ids=dstat_params.get('task_ids'),
+        task_attempts=dstat_params.get('task_attempts'),
         create_time_min=create_time_min,
         create_time_max=create_time_max,
         job_names=dstat_params.get('job_names'),
@@ -124,7 +125,8 @@ def generate_jobs_by_window(provider, project_id, window_min, window_max=None):
 
 def _query_jobs_result(job, project_id=None):
     return QueryJobsResult(
-        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id')),
+        id=job_ids.dsub_to_api(project_id, job['job-id'], job.get('task-id'),
+                               job.get('task-attempt')),
         name=job['job-name'],
         status=job_statuses.dsub_to_api(job),
         # The LocalJobProvider returns create-time with millisecond granularity.

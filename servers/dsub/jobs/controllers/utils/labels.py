@@ -12,4 +12,6 @@ def dsub_to_api(job):
         labels['job-id'] = job['job-id']
     if 'task-id' in job:
         labels['task-id'] = job['task-id']
+    if 'task-attempt' in job:
+        labels['attempt'] = job['task-attempt']
     return labels

@@ -117,7 +117,7 @@ def _to_top_labels_aggregations(label_summaries):
     label_freq = {}
     for label, item in label_summaries.items():
         # job-id and task-id are assigned by dsub and are not meaningful for aggregation
-        if label == 'job-id' or label == 'task-id':
+        if label == 'job-id' or label == 'task-id' or label == 'task-attempt':
             continue
         total_count = 0
         for _, counts in item.items():
