@@ -44,8 +44,7 @@ export class FilterChipComponent implements OnInit {
       setTimeout(() => this.datePickerInput.expandCalendar(), 100);
     }
     if (this.getCurrentChipType() == FieldDataType[FieldDataType.Boolean]) {
-      this.chipMenuTrigger.closeMenu();
-      this.updateValue.emit(this.chipKey);
+      this.setChipValue(this.chipKey);
     }
   }
 

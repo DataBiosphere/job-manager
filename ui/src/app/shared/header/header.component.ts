@@ -28,7 +28,7 @@ import {
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
 import {JobStatus} from '../model/JobStatus';
-import {FieldDataType} from '../common';
+import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
 
@@ -102,11 +102,14 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   }
 
   ngAfterViewChecked(): void {
+    let dataType = queryDataTypes.has(this.chipToExpand) ? queryDataTypes.get(this.chipToExpand) : queryExtensionsDataTypes.get(this.chipToExpand);
     if (this.chipToExpand) {
       // Search for a newly added chip in the DOM now that it's been rendered
       this.chipElements.toArray().forEach((chip) => {
-        if (chip.chipKey == this.chipToExpand) {
+        if (chip.chipKey == this.chipToExpand && (dataType != FieldDataType.Boolean)) {
           chip.expandMenu();
+        } else if (chip.chipKey == this.chipToExpand && (dataType == FieldDataType.Boolean)) {
+          chip.focusInput();
         }
       });
       this.chipToExpand = null;
