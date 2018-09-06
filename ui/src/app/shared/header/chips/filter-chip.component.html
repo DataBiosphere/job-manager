@@ -31,5 +31,5 @@
     [initialChipValue]="currentChipValue"
     (updateValue)="setChipValue($event)">
   </jm-datepicker-input>
-  <mat-chip *ngSwitchCase="'Boolean'" (updateValue)="setChipValue($event)" [value]="true">{{ chipKey }}</mat-chip>
+  <mat-chip *ngSwitchCase="'Boolean'" (updateValue)="setChipValue($event)" [value]="chipKey">{{ chipKey }}</mat-chip>
 </mat-menu>

@@ -58,10 +58,7 @@ export class FilterChipComponent implements OnInit {
   }
 
   getDisplayValue() {
-    if (this.currentChipValue !== '') {
-      return this.chipKey + ': ' + this.currentChipValue;
-    }
-    return this.chipKey;
+    return this.chipKey + ': ' + this.currentChipValue;
   }
 
   removeThisChip(): void {

@@ -408,7 +408,7 @@ definitions:
         description: >
           Returns only jobs with the specified user ID.
       hideArchived:
-        type: boolean
+        type: string
         description: >
           Returns only jobs that do not have the label 'flag' set to 'archive'
   QueryJobsResponse:

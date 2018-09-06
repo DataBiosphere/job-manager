@@ -1,0 +1,47 @@
+{
+  "displayFields": [
+    {
+      "field": "status",
+      "display": "Status"
+    },
+    {
+      "field": "submission",
+      "display": "Submitted"
+    },
+    {
+      "field": "labels.cromwell-workflow-id",
+      "display": "Workflow ID"
+    },
+    {
+      "field": "labels.flag",
+      "display": "Flag",
+      "editable": true,
+      "bulkEditable": true,
+      "fieldType": "list",
+      "validFieldValues": [
+        "archive",
+        "follow-up"
+      ]
+    },
+    {
+      "field": "labels.label",
+      "display": "Label",
+      "fieldType": "text",
+      "editable": true,
+      "bulkEditable": true
+    },
+    {
+      "field": "labels.comment",
+      "display": "Comment"
+    }
+  ],
+  "commonLabels": [
+    "cromwell-workflow-id",
+    "workflow-name",
+    "comment",
+    "flag"
+  ],
+  "queryExtensions": [
+    "hideArchived"
+  ]
+}

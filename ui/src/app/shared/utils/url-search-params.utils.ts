@@ -37,8 +37,8 @@ import {TimeFrame} from "../model/TimeFrame";
       if (request.extensions.userId) {
         urlSearchParams.set('userId', request.extensions.userId);
       }
-      if (request.extensions.hideArchived === true) {
-        urlSearchParams.set('hideArchived', '');
+      if (request.extensions.hideArchived) {
+        urlSearchParams.set('hideArchived', 'hideArchived');
       }
     }
 
@@ -56,21 +56,10 @@ import {TimeFrame} from "../model/TimeFrame";
   public static encodeURLSearchParamsFromMap(params: Map<String, String[]>): string {
     let urlSearchParams = new URLSearchParams();
     params.forEach((values: string[], key: string) => {
-      let dataType = queryDataTypes.has(key) ? queryDataTypes.get(key) : queryExtensionsDataTypes.get(key);
       if (values.length == 1) {
-        if (dataType != FieldDataType.Boolean) {
-          urlSearchParams.set(key, values[0]);
-        } else {
-          urlSearchParams.set(key, '');
-        }
+        urlSearchParams.set(key, values[0]);
       } else {
-        values.forEach(value => {
-          if (dataType != FieldDataType.Boolean) {
-            urlSearchParams.set(key, values[0]);
-          } else {
-            urlSearchParams.set(key, '');
-          }
-        });
+        values.forEach(value => urlSearchParams.append(key, value));
       }
     });
     return urlSearchParams.toString();
@@ -100,7 +89,7 @@ import {TimeFrame} from "../model/TimeFrame";
             break;
           }
           case FieldDataType.Boolean: {
-            value = true;
+            value = key;
             break;
           }
           case FieldDataType.Enum: {
