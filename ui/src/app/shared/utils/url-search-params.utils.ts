@@ -38,7 +38,7 @@ import {TimeFrame} from "../model/TimeFrame";
         urlSearchParams.set('userId', request.extensions.userId);
       }
       if (request.extensions.hideArchived === true) {
-        urlSearchParams.set('hideArchived', request.extensions.userId.toString());
+        urlSearchParams.set('hideArchived', '');
       }
     }
 
@@ -56,10 +56,21 @@ import {TimeFrame} from "../model/TimeFrame";
   public static encodeURLSearchParamsFromMap(params: Map<String, String[]>): string {
     let urlSearchParams = new URLSearchParams();
     params.forEach((values: string[], key: string) => {
+      let dataType = queryDataTypes.has(key) ? queryDataTypes.get(key) : queryExtensionsDataTypes.get(key);
       if (values.length == 1) {
-        urlSearchParams.set(key, values[0]);
+        if (dataType != FieldDataType.Boolean) {
+          urlSearchParams.set(key, values[0]);
+        } else {
+          urlSearchParams.set(key, '');
+        }
       } else {
-        values.forEach(value => urlSearchParams.append(key, value));
+        values.forEach(value => {
+          if (dataType != FieldDataType.Boolean) {
+            urlSearchParams.set(key, values[0]);
+          } else {
+            urlSearchParams.set(key, '');
+          }
+        });
       }
     });
     return urlSearchParams.toString();
@@ -88,6 +99,10 @@ import {TimeFrame} from "../model/TimeFrame";
             value = new Date(urlSearchParams.get(key));
             break;
           }
+          case FieldDataType.Boolean: {
+            value = true;
+            break;
+          }
           case FieldDataType.Enum: {
             // Handle enum data types. Currently this is only statuses, if we
             // add additional ones this has to be updated.
@@ -96,10 +111,6 @@ import {TimeFrame} from "../model/TimeFrame";
               statuses.push(JobStatus[status]);
             }
             value = statuses;
-          }
-          case FieldDataType.Boolean: {
-            value = true;
-            break;
           }
         }
 
