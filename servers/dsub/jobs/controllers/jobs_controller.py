@@ -26,10 +26,10 @@ def abort_job(id):
 
     Returns: None
     """
-    proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
+    # Attempt is unused in aborting because only one attempt can be running at
+    # a time.
+    proj_id, job_id, task_id, _ = job_ids.api_to_dsub(id, _provider_type())
     provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
-    # If task-id is not specified, pass None instead of [None]
-    task_ids = {task_id} if task_id else None
 
     # TODO(bryancrampton): Add flag to ddel to support deleting only
     # 'singleton' tasks.
@@ -48,7 +48,9 @@ def abort_job(id):
     # hacky re-routing of stdout once dsub removes it from the python API
     deleted = execute_redirect_stdout(lambda:
         ddel.ddel_tasks(
-            provider=provider, job_ids={job_id}, task_ids=task_ids))
+            provider=provider,
+            job_ids={job_id},
+            task_ids={task_id} if task_id else None))
     if len(deleted) != 1:
         raise InternalServerError('Failed to abort dsub job')
 
@@ -73,7 +75,8 @@ def get_job(id):
     Returns:
         JobMetadataResponse: Response containing relevant metadata
     """
-    proj_id, job_id, task_id = job_ids.api_to_dsub(id, _provider_type())
+    proj_id, job_id, task_id, attempt = job_ids.api_to_dsub(
+        id, _provider_type())
     provider = providers.get_provider(_provider_type(), proj_id, _auth_token())
 
     jobs = []
@@ -83,18 +86,16 @@ def get_job(id):
             statuses={'*'},
             job_ids={job_id},
             task_ids={task_id} if task_id else None,
+            task_attempts={attempt} if attempt else None,
             full_output=True).next())
     except apiclient.errors.HttpError as error:
         _handle_http_error(error, proj_id)
 
     # A job_id and task_id define a unique job (should only be one)
     if len(jobs) > 1:
-        raise BadRequest('Found more than one job with ID {}+{}'.format(
-            job_id, task_id))
+        raise BadRequest('Found more than one job with ID {}'.format(id))
     elif len(jobs) == 0:
-        raise NotFound('Could not find any jobs with ID {}+{}'.format(
-            job_id, task_id))
-
+        raise NotFound('Could not find any jobs with ID {}'.format(id))
     return _metadata_response(id, jobs[0])
 
 

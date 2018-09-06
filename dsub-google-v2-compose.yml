@@ -1,0 +1,33 @@
+version: '2.1'
+services:
+  rebuild-swagger:
+    extends:
+      file: common-compose.yml
+      service: rebuild-swagger
+  jmui:
+    extends:
+      file: common-compose.yml
+      service: jmui
+    # Use --host "jmui" to match the container name, as this is how nginx will
+    # access the UI on the network. This must match to avoid "Invalid Host"
+    # errors. See also https://github.com/angular/angular-cli/issues/6349.
+    command: ["npm", "run-script", "ng", "--", "serve", "--host", "jmui"]
+    volumes:
+      - ${PWD}/ui/assets/environments/environment.dsub.google.json:/ui/src/assets/environments/environment.json
+  dsub:
+    build:
+      context: servers
+      dockerfile: dsub/Dockerfile
+    extends:
+      file: common-compose.yml
+      service: dsub
+    environment:
+      - PROVIDER_TYPE=google-v2
+      - REQUIRES_AUTH=1
+  jobs-proxy:
+    extends:
+      file: common-compose.yml
+      service: jobs-proxy
+    links:
+      - jmui
+      - dsub:jmapi
