@@ -19,14 +19,15 @@ def get_capabilities():
             DisplayField(field='submission', display='Submitted'),
             DisplayField(field='labels.job-id', display='Job ID'),
             DisplayField(field='labels.task-id', display='Task ID'),
+            DisplayField(field='labels.attempt', display='Attempt'),
             DisplayField(field='extensions.userId', display='User ID'),
             DisplayField(
                 field='extensions.statusDetail', display='Status Detail'),
         ],
-        common_labels=['job-id', 'task-id'],
+        common_labels=['job-id', 'task-id', 'attempt'],
         query_extensions=['userId'])
 
-    if _provider_type() == ProviderType.GOOGLE:
+    if _provider_type() in [ProviderType.GOOGLE, ProviderType.GOOGLE_V2]:
         capabilities.authentication = AuthenticationCapability(
             is_required=True,
             scopes=[

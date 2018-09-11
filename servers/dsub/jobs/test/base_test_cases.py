@@ -87,8 +87,9 @@ class BaseTestCases:
 
         def api_job_id(self, dsub_job):
             return job_ids.dsub_to_api(self.testing_project,
-                                       dsub_job.get('job-id'),
-                                       dsub_job.get('task-id'))
+                                       dsub_job['job-id'],
+                                       dsub_job.get('task-id', ''),
+                                       dsub_job.get('task-attempt', ''))
 
         def job_has_status(self, job, status):
             return job.status == status
