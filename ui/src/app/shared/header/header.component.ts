@@ -109,7 +109,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
         if (chip.chipKey == this.chipToExpand && (dataType != FieldDataType.Boolean)) {
           chip.expandMenu();
         } else if (chip.chipKey == this.chipToExpand && (dataType == FieldDataType.Boolean)) {
-          chip.focusInput();
+          this.updateValue(this.chipToExpand, this.chipToExpand);
         }
       });
       this.chipToExpand = null;

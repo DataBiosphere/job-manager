@@ -20,7 +20,6 @@ export class FilterChipComponent implements OnInit {
   @Output() removeChip: EventEmitter<null> = new EventEmitter();
 
   @ViewChild('freeTextInput') freeTextInput: ElementRef;
-  @ViewChild('booleanChip') booleanChip: ElementRef;
   @ViewChild(MatMenuTrigger) chipMenuTrigger: MatMenuTrigger;
   @ViewChild(DatepickerInputComponent) datePickerInput: DatepickerInputComponent;
 
@@ -43,9 +42,6 @@ export class FilterChipComponent implements OnInit {
     } else if (this.datePickerInput) {
       // Wait for the form expansion animation to complete before expanding the calendar
       setTimeout(() => this.datePickerInput.expandCalendar(), 100);
-    }
-    else if (this.booleanChip) {
-      this.setChipValue(this.chipKey);
     }
   }
 
@@ -77,4 +73,5 @@ export class FilterChipComponent implements OnInit {
     this.chipMenuTrigger.openMenu();
     this.focusInput();
   }
+
 }
