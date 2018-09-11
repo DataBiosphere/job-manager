@@ -42,6 +42,8 @@ export class FilterChipComponent implements OnInit {
     } else if (this.datePickerInput) {
       // Wait for the form expansion animation to complete before expanding the calendar
       setTimeout(() => this.datePickerInput.expandCalendar(), 100);
+    } else if (this.getCurrentChipType() == 'Boolean') {
+      this.setChipValue(this.chipKey);
     }
   }
 
