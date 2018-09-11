@@ -58,8 +58,8 @@ class TestJobsController(BaseTestCase):
                 'status':
                 'error',
                 'message':
-                'Couldn\'t abort {} because no workflow with that ID is in progress'.
-                format(workflow_id)
+                'Couldn\'t abort {} because no workflow with that ID is in progress'
+                .format(workflow_id)
             }
 
         abort_url = self.base_url + '/{id}/abort'.format(id=workflow_id)
