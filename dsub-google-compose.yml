@@ -17,7 +17,7 @@ services:
   dsub:
     build:
       context: servers
-      dockerfile: dsub/Dockerfile
+      dockerfile: dsub/Dockerfile.dev
     extends:
       file: common-compose.yml
       service: dsub

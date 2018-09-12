@@ -14,7 +14,7 @@ services:
   cromwell:
     build:
       context: .
-      dockerfile: servers/cromwell/Dockerfile
+      dockerfile: servers/cromwell/Dockerfile.dev
     extends:
       file: common-compose.yml
       service: cromwell
