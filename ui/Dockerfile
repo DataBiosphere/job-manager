@@ -5,7 +5,6 @@ WORKDIR /job-manager
 ADD ./ /job-manager
 
 RUN /bin/bash -c scripts/rebuild_swagger.sh
-RUN scripts/await_md5_match.sh /job-manager/ui/src/app/shared/model/.jobs.yaml.md5
 
 FROM node
 

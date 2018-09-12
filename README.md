@@ -178,6 +178,8 @@ For `cromwell` server documentation, see [servers/cromwell](servers/cromwell/REA
 
 From v0.2.0, Job Manager starts to release stock docker images on [DockerHub](https://hub.docker.com/u/databiosphere)
 
+- Setting the docker tag first in bash, e.g. `TAG="v0.1.0"`
+
 - To build the `job-manager-ui` image with `$TAG` from the root of this Github repository:
     ```
     docker build -t job-manager-ui:$TAG . -f ui/Dockerfile
