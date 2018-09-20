@@ -483,7 +483,8 @@ class BaseTestCases:
             # Set the current test_token as global config parameter
             # so that the aggregation_controller can filter out unrelated jobs
             current_app.config[
-                'AGGREGATION_JOB_LABEL_FILTER'] = "test_token=" + self.test_token_label['test_token']
+                'AGGREGATION_JOB_LABEL_FILTER'] = "test_token=" + self.test_token_label[
+                    'test_token']
 
             labels = {
                 'aggregation-testing-unique-1': 'testing-rocks',
