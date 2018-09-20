@@ -20,6 +20,7 @@ class TestJobStatuses(BaseTestCase):
     # yapf: enable
 
     def test_unrecognized_job_status_causes_exception(self):
+        # yapf: disable
         with self.assertRaises(ValueError):
-            job_statuses.cromwell_workflow_status_to_api(
-                'Not a valid job status')
+            job_statuses.cromwell_workflow_status_to_api('Not a valid job status')
+    # yapf: enable
