@@ -47,8 +47,7 @@ def get_job_aggregations(timeFrame, projectId=None):
 
     try:
         for job in jobs:
-            if has_aggregation_filter and job.labels[
-                    filter_key] != filter_value:
+            if has_aggregation_filter and job.labels[filter_key] != filter_value:
                 continue
 
             _count_total_summary(job, total_summary)

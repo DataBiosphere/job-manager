@@ -190,8 +190,9 @@ def make_or_replace_or_reuse_directory(path_to_make, exit_if_invalid):
                     valid = False
                     time_to_exit = True
             else:
-                print('Invalid input: got {0} but expected one of (1/2)'.
-                      format(provided))
+                print(
+                    'Invalid input: got {0} but expected one of (1/2)'.format(
+                        provided))
                 valid = False
                 time_to_exit = False
         else:
@@ -253,11 +254,12 @@ def request_input_with_default(message, default):
 def guess_local_ip():
     default = '<IP ADDRESS>'
     try:
-        result = subprocess.run([
-            'sh', '-c',
-            'ifconfig | grep \'inet \' | grep -v 127.0.0.1 | head -n1 | awk \'{print $2}\''
-        ],
-                                stdout=subprocess.PIPE)
+        result = subprocess.run(
+            [
+                'sh', '-c',
+                'ifconfig | grep \'inet \' | grep -v 127.0.0.1 | head -n1 | awk \'{print $2}\''
+            ],
+            stdout=subprocess.PIPE)
         if result.returncode == 0:
             return result.stdout.decode('UTF-8').strip()
         else:
