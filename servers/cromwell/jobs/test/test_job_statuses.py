@@ -8,19 +8,14 @@ from jobs.controllers.utils import job_statuses
 
 
 class TestJobStatuses(BaseTestCase):
-    # yapf: disable
-    def test_cromwell_execution_to_api_maps_all_job_execution_statuses_correctly(self):
-        self.assertEqual(job_statuses.cromwell_workflow_status_to_api('Submitted'), 'Submitted')
-        self.assertEqual(job_statuses.cromwell_workflow_status_to_api('Running'), 'Running')
-        self.assertEqual(job_statuses.cromwell_workflow_status_to_api('On Hold'), 'OnHold')
-        self.assertEqual(job_statuses.cromwell_workflow_status_to_api('Aborting'), 'Aborting')
-        self.assertEqual(job_statuses.cromwell_workflow_status_to_api('Aborted'), 'Aborted')
-        self.assertEqual(job_statuses.cromwell_workflow_status_to_api('Failed'), 'Failed')
-        self.assertEqual(job_statuses.cromwell_workflow_status_to_api('Succeeded'), 'Succeeded')
-    # yapf: enable
+    def test_cromwell_execution_statuses_conver_correctly(self):
+        for key, status in job_statuses.ApiStatus.__dict__.items():
+            if not key.startswith('__'):
+                converted = job_statuses.cromwell_workflow_status_to_api(
+                    job_statuses.api_workflow_status_to_cromwell(status))
+                self.assertEqual(status, converted)
 
     def test_unrecognized_job_status_causes_exception(self):
-        # yapf: disable
         with self.assertRaises(ValueError):
-            job_statuses.cromwell_workflow_status_to_api('Not a valid job status')
-    # yapf: enable
+            job_statuses.cromwell_workflow_status_to_api(
+                'Not a valid job status')
