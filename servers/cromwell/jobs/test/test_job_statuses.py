@@ -7,7 +7,7 @@ from . import BaseTestCase
 from jobs.controllers.utils import job_statuses
 
 
-class TestTaskStatuses(BaseTestCase):
+class TestJobStatuses(BaseTestCase):
     # yapf: disable
     def test_cromwell_execution_to_api_maps_all_job_execution_statuses_correctly(self):
         self.assertEqual(job_statuses.cromwell_execution_to_api('Submitted'), 'Submitted')
