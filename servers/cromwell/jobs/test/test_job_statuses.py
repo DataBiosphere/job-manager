@@ -8,7 +8,7 @@ from jobs.controllers.utils import job_statuses
 
 
 class TestJobStatuses(BaseTestCase):
-    def test_cromwell_execution_statuses_conver_correctly(self):
+    def test_cromwell_execution_status_converts_correctly(self):
         for key, status in job_statuses.ApiStatus.__dict__.items():
             if not key.startswith('__'):
                 converted = job_statuses.cromwell_workflow_status_to_api(
