@@ -26,9 +26,4 @@ class TestTaskStatuses(BaseTestCase):
 
     def test_unrecognized_task_status_causes_exception(self):
         with self.assertRaises(ValueError):
-            task_statuses.cromwell_execution_to_api('Not a valid status')
-
-
-if __name__ == '__main__':
-    import unittest
-    unittest.main()
+            task_statuses.cromwell_execution_to_api('Not a valid task status')
