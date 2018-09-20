@@ -9,7 +9,8 @@ import {
   Input,
   NgZone,
   OnDestroy,
-  OnInit, QueryList,
+  OnInit,
+  QueryList,
   ViewChild,
   ViewChildren
 } from '@angular/core';
@@ -28,7 +29,7 @@ import {
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
 import {JobStatus} from '../model/JobStatus';
-import {FieldDataType} from '../common';
+import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
 
@@ -105,9 +106,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     if (this.chipToExpand) {
       // Search for a newly added chip in the DOM now that it's been rendered
       this.chipElements.toArray().forEach((chip) => {
-        if (chip.chipKey == this.chipToExpand && (chip.getCurrentChipType() == 'Boolean')) {
-          chip.focusInput();
-        } else if (chip.chipKey == this.chipToExpand) {
+        if (chip.chipKey == this.chipToExpand) {
           chip.expandMenu();
         }
       });
@@ -136,6 +135,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
         let keyVal: string[] = value.split(':');
         this.deleteChipIfExists(keyVal[0].trim());
         this.chips.set(keyVal[0].trim(), keyVal[1].trim());
+        this.search();
+      } else if (this.getChipType(value) == 'Boolean') {
+        this.chips.set(value, 'true');
         this.search();
       }
       else {
@@ -255,6 +257,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     if (this.chips.has(key)) {
       this.chips.delete(key);
     }
+  }
+
+  private getChipType(key: string): string {
+    const dataType = queryDataTypes.has(key) ? queryDataTypes.get(key) : queryExtensionsDataTypes.get(key);
+    return FieldDataType[dataType];
   }
 }
 

@@ -1,5 +1,10 @@
 import {
-  Component, ElementRef, EventEmitter, Input, OnInit, Output,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
   ViewChild
 } from "@angular/core";
 import {FieldDataType} from "../../common";
@@ -43,7 +48,7 @@ export class FilterChipComponent implements OnInit {
       // Wait for the form expansion animation to complete before expanding the calendar
       setTimeout(() => this.datePickerInput.expandCalendar(), 100);
     } else if (this.getCurrentChipType() == 'Boolean') {
-      this.setChipValue(this.chipKey);
+      this.chipMenuTrigger.closeMenu();
     }
   }
 

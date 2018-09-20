@@ -38,7 +38,7 @@ import {TimeFrame} from "../model/TimeFrame";
         urlSearchParams.set('userId', request.extensions.userId);
       }
       if (request.extensions.hideArchived) {
-        urlSearchParams.set('hideArchived', 'hideArchived');
+        urlSearchParams.set('hideArchived', 'true');
       }
     }
 
@@ -77,8 +77,8 @@ import {TimeFrame} from "../model/TimeFrame";
     urlSearchParams.paramsMap.forEach((values: string[], key: string) => {
       if (queryDataTypes.has(key) || queryExtensionsDataTypes.has(key)) {
         // If this is a known field, handle the data type explicitly
-        var value: any;
-        let dataType = queryDataTypes.has(key) ? queryDataTypes.get(key) : queryExtensionsDataTypes.get(key);
+        let value: any;
+        const dataType = queryDataTypes.has(key) ? queryDataTypes.get(key) : queryExtensionsDataTypes.get(key);
         switch (dataType) {
           case FieldDataType.Text: {
             value = urlSearchParams.get(key);
@@ -89,7 +89,7 @@ import {TimeFrame} from "../model/TimeFrame";
             break;
           }
           case FieldDataType.Boolean: {
-            value = key;
+            value = 'true';
             break;
           }
           case FieldDataType.Enum: {
