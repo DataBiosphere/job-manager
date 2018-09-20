@@ -22,3 +22,8 @@ class TestJobStatuses(BaseTestCase):
     def test_unrecognized_job_status_causes_exception(self):
         with self.assertRaises(ValueError):
             job_statuses.cromwell_execution_to_api('Not a valid status')
+
+
+if __name__ == '__main__':
+    import unittest
+    unittest.main()
