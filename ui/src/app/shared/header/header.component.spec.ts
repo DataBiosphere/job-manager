@@ -26,6 +26,8 @@ import {HeaderComponent} from "./header.component";
 import {CapabilitiesResponse} from '../model/CapabilitiesResponse';
 import {QueryJobsResult} from '../model/QueryJobsResult';
 import {JobStatus} from "../model/JobStatus";
+import {SettingsService} from "../../core/settings.service";
+import {AuthService} from "../../core/auth.service";
 
 
 describe('HeaderComponent', () => {
@@ -56,6 +58,8 @@ describe('HeaderComponent', () => {
     queryExtensions: ['projectId']
   };
 
+  const fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
+
   beforeEach(async(() => {
 
     TestBed.configureTestingModule({
@@ -81,7 +85,8 @@ describe('HeaderComponent', () => {
         ]),
       ],
       providers: [
-        {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)}
+        {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
+        {provide: SettingsService, useValue: new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage)}
       ]
     }).compileComponents();
   }));

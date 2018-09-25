@@ -104,11 +104,15 @@ export class SettingsService {
 
   private createEmptySettingsForProject(projectId: string): ProjectSettings {
     const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
+    let hideArchivedValue;
+    if (capabilities.queryExtensions) {
+      hideArchivedValue = capabilities.queryExtensions.includes('hideArchived');
+    }
     this.currentSettings.v1.projects.push({
       projectId: projectId,
       displayColumns: null,
       pageSize: null,
-      hideArchived: capabilities.queryExtensions.includes('hideArchived')
+      hideArchived: hideArchivedValue
     });
     this.updateLocalStorage();
     return this.getSettingsForProject(projectId);

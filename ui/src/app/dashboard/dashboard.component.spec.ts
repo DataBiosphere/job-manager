@@ -28,6 +28,8 @@ import {CapabilitiesService} from "../core/capabilities.service";
 import {FakeCapabilitiesService} from "../testing/fake-capabilities.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
+import {SettingsService} from "../core/settings.service";
+import {AuthService} from "../core/auth.service";
 
 const TEST_AGGREGATION_RESPONSE: AggregationResponse =
   {
@@ -136,6 +138,7 @@ describe('DashboardComponent', () => {
         {field: 'extensions.userId', display: 'User ID'},
       ]
     };
+    const fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
 
     TestBed.configureTestingModule({
       declarations: [
@@ -163,7 +166,8 @@ describe('DashboardComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)},
+        {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
+        {provide: SettingsService, useValue: new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage)},
         DashboardResolver,
         RouteReuse
       ],
