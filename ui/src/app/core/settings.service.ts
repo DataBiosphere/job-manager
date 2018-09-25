@@ -59,7 +59,6 @@ export class SettingsService {
     return this.getSettingsForProject(projectId).hideArchived;
   }
 
-  /** update the display columns settings for a project */
   setDisplayColumns(fields: string[], projectId: string): void {
     this.currentSettings.v1.projects.forEach((p) => {
       if (p.projectId === projectId) {

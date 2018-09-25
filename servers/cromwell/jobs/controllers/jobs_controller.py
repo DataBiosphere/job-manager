@@ -321,9 +321,8 @@ def cromwell_query_params(query, page, page_size):
     query_params.append({'additionalQueryResultFields': 'parentWorkflowId'})
     query_params.append({'additionalQueryResultFields': 'labels'})
     query_params.append({'includeSubworkflows': 'false'})
-    if query.extensions:
-        if query.extensions.hide_archived:
-            query_params.append({'excludeLabelAnd': 'flag:archive'})
+    if query.extensions and query.extensions.hide_archived:
+        query_params.append({'excludeLabelAnd': 'flag:archive'})
 
     return query_params
 
