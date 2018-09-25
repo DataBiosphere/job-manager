@@ -1,0 +1,5 @@
+{
+    "apiUrl": "/api/v1",
+    "clientId": "{{ env "CLIENT_ID" }}",
+    "dashboardEnabled": false
+}

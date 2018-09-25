@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: job-manager-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: {{env "EXTERNAL_IP_NAME"}}
+    kubernetes.io/ingress.class: "gce"
+spec:
+  tls:
+    - secretName: {{ env "TLS_SECRET_NAME" }}
+  backend:
+    serviceName: jm-service
+    servicePort: 80

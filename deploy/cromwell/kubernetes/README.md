@@ -1,20 +1,42 @@
-# Deploy Job Manager against Cromwell with Kubernetes(GKE)
+# Job Manager
 
-1. Prepare the config files following the [main instructions](../../README.md), based on your requirements.
+This folder hosts the config files and script for deploying the Job Manager on GreenBox's Cromwell instance. 
 
-2. Make sure your network settings are correct, e.g. DNS, TLS certs.
+## Available Environments
+- dev
+- staging
+- integration
+- caas-dev
+- prod: _No production deployments yet_
 
-3. Make sure your Kubernetes cluster is ready.
+## Deployment Process
 
-4. Make sure you are in the same directory of where the kubernetes config files are hosted.
+To deploy the Job Manager, please checkout this repository and:
 
-5. Create the corresponding secret objects and configMap objects with `kubectl create secret generic --from-file` and 
-`kubectl create configmap --from-file` commands.
+1. Make sure your deployment environment is authenticated with Vault.
 
-6. Create the ingress with `kubectl apply -f ingress.yaml`.
+2. Make sure you have created the ingress for the job-manager in advance, refer to `job-manager-ingress.yaml.ctmpl` for the content of the ingress YAML file.
+Use `kubectl apply -f job-manager-ingress.yaml` to apple the ingress.
 
-7. Create the service with `kubectl apply -f service.yaml`.
+3. Make sure the following files exist in the same directory with `deploy.sh`:
+    - `api-config.json.ctmpl`
+    - `capabilities_config.json` or `capabilities_config_caas.json`
+    - `ui-config.json.ctmpl`
+    - `nginx.conf.ctmpl`
+    - `job-manager-deployment.yaml.ctmpl`
+    - `job-manager-service.yaml`
+    - `gunicorn_args.txt`
 
-8. Create the deployment with `kubectl apply -f deployment.yaml`.
+4. Make sure the following CLIs installed and configured in your current working environment correctly:
+    - `kubectl`
+    - `docker`
+    - `htpasswd`
 
-9. Check if the health checks is working.
+5. Make sure your have a valid Vault token file exists in `$HOME/.vault-token`.
+Otherwise you need to pass the path to the token file as the 5th argument of `deploy.sh` later.
+
+6. Run the following command with arguments:
+
+    - `bash deploy.sh ENV(dev/staging/test) GIT_TAG USERNAME PASSWORD VAULT_TOKEN_FILE(optional)`
+
+7. Check the `/version` and `/health` endpoints of the deployed UI to validate the deployment.
