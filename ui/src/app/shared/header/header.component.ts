@@ -32,6 +32,7 @@ import {JobStatus} from '../model/JobStatus';
 import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
+import {SettingsService} from "../../core/settings.service";
 
 @Component({
   selector: 'jm-header',
@@ -61,11 +62,13 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   private readonly completedStatuses = [JobStatus.Succeeded, JobStatus.Aborted];
   private readonly failedStatuses = [JobStatus.Failed];
   private readonly onHoldStatuses = [JobStatus.OnHold];
+  private projectId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly capabilitiesService: CapabilitiesService,
+    private readonly settingsService: SettingsService,
     private zone: NgZone,
     private cdr: ChangeDetectorRef,
   ) {
@@ -75,6 +78,12 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   ngOnInit(): void {
     if (this.route.snapshot.queryParams['q']) {
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
+    }
+
+    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
+    this.projectId = req.extensions.projectId || '';
+    if (this.settingsService.getHideArchived(this.projectId) === true) {
+      this.addChip('hideArchived');
     }
 
     this.options = URLSearchParamsUtils.getQueryFields(
@@ -138,6 +147,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
         this.search();
       } else if (this.getChipType(value) == 'Boolean') {
         this.chips.set(value, 'true');
+        if (value == 'hideArchived') {
+          this.settingsService.setHideArchived( true, this.projectId);
+        }
         this.search();
       }
       else {
@@ -174,6 +186,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
   removeChip(chipKey: string): void {
     this.chips.delete(chipKey);
+    if (chipKey == 'hideArchived') {
+      this.settingsService.setHideArchived( false, this.projectId);
+    }
     this.search();
   }
 

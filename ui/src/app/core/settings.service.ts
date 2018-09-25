@@ -1,6 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {AuthService} from '../core/auth.service';
 import {STORAGE_REF} from "../shared/common";
+import {CapabilitiesService} from "./capabilities.service";
 
 type Settings = {
   v1: {
@@ -14,7 +15,8 @@ type ProjectSettings = {
   // set to '' for non-project-based job manager
   projectId: string,
   displayColumns: string[],
-  pageSize: number
+  pageSize: number,
+  hideArchived: boolean
   // ... other browser-based settings to be saved go here
 }
 
@@ -26,6 +28,7 @@ export class SettingsService {
    * otherwise, empty out the browser settings, set up a clean scaffolding and save that */
   constructor(
     private readonly authService: AuthService,
+    private readonly capabilitiesService: CapabilitiesService,
     @Inject(STORAGE_REF) private readonly localStorage: Storage
   ) {
     const savedSettings = JSON.parse(this.localStorage.getItem('settings'));
@@ -52,6 +55,10 @@ export class SettingsService {
     return this.getSettingsForProject(projectId).pageSize;
   }
 
+  getHideArchived(projectId: string): boolean {
+    return this.getSettingsForProject(projectId).hideArchived;
+  }
+
   /** update the display columns settings for a project */
   setDisplayColumns(fields: string[], projectId: string): void {
     this.currentSettings.v1.projects.forEach((p) => {
@@ -73,6 +80,16 @@ export class SettingsService {
     this.updateLocalStorage();
   }
 
+  setHideArchived(hideArchived: boolean, projectId: string): void {
+    this.currentSettings.v1.projects.forEach((p) => {
+      if (p.projectId === projectId) {
+        p.hideArchived = hideArchived;
+        return;
+      }
+    });
+    this.updateLocalStorage();
+  }
+
   private getSettingsForProject(projectId: string): ProjectSettings {
     let settings = this.currentSettings.v1.projects.find(p => p.projectId === projectId);
     if (!settings) {
@@ -86,10 +103,12 @@ export class SettingsService {
   }
 
   private createEmptySettingsForProject(projectId: string): ProjectSettings {
+    const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
     this.currentSettings.v1.projects.push({
       projectId: projectId,
       displayColumns: null,
-      pageSize: null
+      pageSize: null,
+      hideArchived: capabilities.queryExtensions.includes('hideArchived')
     });
     this.updateLocalStorage();
     return this.getSettingsForProject(projectId);
