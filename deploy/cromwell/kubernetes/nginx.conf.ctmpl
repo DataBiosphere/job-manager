@@ -1,0 +1,56 @@
+# nginx server for static assets. For directive documentation, see
+# http://nginx.org/en/docs/dirindex.html
+
+# Required - just leave the defaults for now.
+events {}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    gzip on;
+    gzip_disable "msie6";
+
+    server {
+        listen 80;
+
+        root /ui/dist;
+
+        # Set up HTTP Basic Auth for Nginx here:
+
+        {{ if env "USE_PROXY" | parseBool }}
+        auth_basic "Username and password required";
+        auth_basic_user_file /etc/apache2/.htpasswd;
+        {{ else }}
+        auth_basic off;
+        {{ end }}
+
+        location / {
+            try_files $uri$args $uri$args/ /index.html;
+            # proxy_pass http://ui;
+        }
+
+        location /api {
+            proxy_pass http://127.0.0.1:8190;
+        }
+
+        # This is used for health check
+        location /health {
+            auth_basic off;
+            return 200 "healthy!\n";
+            # because default content-type is application/octet-stream,
+            # browser will by default try to save the file
+            # below line allows you to see it in the web page
+            add_header Content-Type text/plain;
+        }
+
+        location /version {
+            auth_basic off;
+            return 200 "{\"version\": \"{{ env "JMUI_VERSION" }}\"}";
+            # because default content-type is application/octet-stream,
+            # browser will by default try to save the file
+            # below line allows you to see it in the web page
+            add_header Content-Type application/json;
+        }
+    }
+}
