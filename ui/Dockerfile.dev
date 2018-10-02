@@ -1,3 +1,5 @@
+# Note: This is the dockerfile for development purposes
+
 FROM node
 
 WORKDIR /ui
