@@ -140,7 +140,8 @@ def format_task(task_name, task_metadata):
         execution_id=latest_attempt.get('jobId'),
         execution_status=task_statuses.cromwell_execution_to_api(
             latest_attempt.get('executionStatus')),
-        start=_parse_datetime(latest_attempt.get('start')),
+        start=_parse_datetime(latest_attempt.get('start'))
+        or datetime.utcnow(),
         end=_parse_datetime(latest_attempt.get('end')),
         stderr=latest_attempt.get('stderr'),
         stdout=latest_attempt.get('stdout'),
@@ -328,14 +329,14 @@ def cromwell_query_params(query, page, page_size):
 
 
 def format_job(job, now):
-    start = _parse_datetime(job.get('start'))
+    start = _parse_datetime(job.get('start')) or now
     submission = _parse_datetime(job.get('submission'))
     if submission is None:
         # Submission is required by the common jobs API. Submission may be missing
         # for subworkflows in which case we fallback to the workflow start time
         # or, if not started, the current time. This fallback logic may be
         # removed if/when Cromwell changes behavior per https://github.com/broadinstitute/cromwell/issues/2968.
-        submission = start or now
+        submission = start
     end = _parse_datetime(job.get('end'))
     return QueryJobsResult(
         id=job.get('id'),
