@@ -60,7 +60,6 @@ describe('HeaderComponent', () => {
 
   const fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
   localStorage.clear();
-  const fakeSettingsService = new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage)
 
   beforeEach(async(() => {
 
@@ -88,7 +87,7 @@ describe('HeaderComponent', () => {
       ],
       providers: [
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
-        {provide: SettingsService, useValue: fakeSettingsService}
+        {provide: SettingsService, useValue: new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage)}
       ]
     }).compileComponents();
   }));
@@ -218,12 +217,14 @@ describe('HeaderComponent', () => {
     testComponent.search();
     fixture.detectChanges();
     tick();
+    fixture.detectChanges();
     const de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('jm-filter-chip')).length).toEqual(2);
+
+    expect(de.queryAll(By.css('jm-filter-chip')).length).toEqual(3);
     de.query(By.css('.completed-button')).nativeElement.click();
     tick();
     fixture.detectChanges();
-    const lastFilter = de.queryAll(By.css('jm-filter-chip'))[2].componentInstance;
+    const lastFilter = de.queryAll(By.css('jm-filter-chip'))[3].componentInstance;
     expect(lastFilter.chipKey).toEqual('statuses');
   }));
 
