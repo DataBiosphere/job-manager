@@ -1,6 +1,6 @@
 import {Inject, Injectable} from '@angular/core';
 import {AuthService} from '../core/auth.service';
-import {STORAGE_REF} from "../shared/common";
+import {FieldDataType, queryDataTypes, queryExtensionsDataTypes, STORAGE_REF} from "../shared/common";
 import {CapabilitiesService} from "./capabilities.service";
 
 type Settings = {
@@ -16,8 +16,13 @@ type ProjectSettings = {
   projectId: string,
   displayColumns: string[],
   pageSize: number,
-  hideArchived: boolean
+  filters: Filter[]
   // ... other browser-based settings to be saved go here
+}
+
+export type Filter = {
+  key: string
+  value: any
 }
 
 @Injectable()
@@ -55,8 +60,8 @@ export class SettingsService {
     return this.getSettingsForProject(projectId).pageSize;
   }
 
-  getHideArchived(projectId: string): boolean {
-    return this.getSettingsForProject(projectId).hideArchived;
+  getFilters(projectId: string): Filter[] {
+    return this.getSettingsForProject(projectId).filters;
   }
 
   setDisplayColumns(fields: string[], projectId: string): void {
@@ -79,10 +84,10 @@ export class SettingsService {
     this.updateLocalStorage();
   }
 
-  setHideArchived(hideArchived: boolean, projectId: string): void {
+  setFilters(filters: Filter[], projectId: string): void {
     this.currentSettings.v1.projects.forEach((p) => {
       if (p.projectId === projectId) {
-        p.hideArchived = hideArchived;
+        p.filters = filters;
         return;
       }
     });
@@ -101,17 +106,22 @@ export class SettingsService {
     return this.localStorage.setItem('settings', JSON.stringify(this.currentSettings));
   }
 
-  private createEmptySettingsForProject(projectId: string): ProjectSettings {
+  createEmptySettingsForProject(projectId: string): ProjectSettings {
     const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
-    let hideArchivedValue;
+    let filters: Filter[] = [];
     if (capabilities.queryExtensions) {
-      hideArchivedValue = capabilities.queryExtensions.includes('hideArchived');
+      capabilities.queryExtensions.forEach((f) => {
+        const dataType = queryDataTypes.has(f) ? queryDataTypes.get(f) : queryExtensionsDataTypes.get(f);
+        if (dataType == FieldDataType.Boolean) {
+          filters.push({key: f, value: 'true'});
+        }
+      });
     }
     this.currentSettings.v1.projects.push({
       projectId: projectId,
       displayColumns: null,
       pageSize: null,
-      hideArchived: hideArchivedValue
+      filters: filters
     });
     this.updateLocalStorage();
     return this.getSettingsForProject(projectId);

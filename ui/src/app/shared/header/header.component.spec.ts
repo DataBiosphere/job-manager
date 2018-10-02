@@ -59,6 +59,8 @@ describe('HeaderComponent', () => {
   };
 
   const fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
+  localStorage.clear();
+  const fakeSettingsService = new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage)
 
   beforeEach(async(() => {
 
@@ -86,7 +88,7 @@ describe('HeaderComponent', () => {
       ],
       providers: [
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
-        {provide: SettingsService, useValue: new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage)}
+        {provide: SettingsService, useValue: fakeSettingsService}
       ]
     }).compileComponents();
   }));

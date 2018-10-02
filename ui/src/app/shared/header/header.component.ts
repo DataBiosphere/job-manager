@@ -32,7 +32,7 @@ import {JobStatus} from '../model/JobStatus';
 import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
-import {SettingsService} from "../../core/settings.service";
+import {SettingsService, Filter} from "../../core/settings.service";
 
 @Component({
   selector: 'jm-header',
@@ -82,9 +82,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
     const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
     this.projectId = req.extensions.projectId || '';
-    if (this.settingsService.getHideArchived(this.projectId) === true) {
-      this.addChip('hideArchived');
-    }
+    this.settingsService.getFilters(this.projectId).forEach((f) => {
+      this.addChip(f.key + ':' + f.value);
+    });
 
     this.options = URLSearchParamsUtils.getQueryFields(
       this.capabilitiesService.getCapabilitiesSynchronous());
@@ -147,9 +147,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
         this.search();
       } else if (this.getChipType(value) == 'Boolean') {
         this.chips.set(value, 'true');
-        if (value == 'hideArchived') {
-          this.settingsService.setHideArchived( true, this.projectId);
-        }
         this.search();
       }
       else {
@@ -186,9 +183,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
   removeChip(chipKey: string): void {
     this.chips.delete(chipKey);
-    if (chipKey == 'hideArchived') {
-      this.settingsService.setHideArchived( false, this.projectId);
-    }
     this.search();
   }
 
@@ -200,11 +194,14 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   // TODO: Cut the dependency on string parsing to represent lists here
   search(): void {
     let paramMap: Map<string, string[]> = new Map();
+    let filters: Filter[] = [];
     this.chips.forEach((value: string, key: string) => {
       if (value && value.length > 0) {
         paramMap.set(key, value.split(','));
+        filters.push({key: key, value: value});
       }
     });
+    this.settingsService.setFilters(filters, this.projectId);
     let query: string = URLSearchParamsUtils.encodeURLSearchParamsFromMap(paramMap);
     if (query) {
       this.router.navigate(
@@ -264,7 +261,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
       j => this.onHoldStatuses.includes(j.status)).length;
   }
 
-  private refreshChips(query: string): void {
+  refreshChips(query: string): void {
     this.zone.run(() => this.chips = URLSearchParamsUtils.getChips(query));
   }
 
