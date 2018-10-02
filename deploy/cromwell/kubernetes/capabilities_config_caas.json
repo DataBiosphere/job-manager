@@ -1,0 +1,83 @@
+{
+  "displayFields": [
+    {
+      "field": "status",
+      "display": "Status"
+    },
+    {
+      "field": "submission",
+      "display": "Submitted"
+    },
+    {
+      "field": "end",
+      "display": "End Time"
+    },
+    {
+      "field": "labels.cromwell-workflow-id",
+      "display": "Workflow ID"
+    },
+    {
+      "field": "labels.workflow-version",
+      "display": "Workflow Version",
+      "fieldType": "text"
+    },
+    {
+      "field": "labels.bundle-version",
+      "display": "Bundle Version",
+      "fieldType": "text"
+    },
+    {
+      "field": "labels.bundle-uuid",
+      "display": "Bundle UUID",
+      "fieldType": "text"
+    },
+    {
+      "field": "labels.caas-collection-name",
+      "display": "CaaS Collection",
+      "fieldType": "text"
+    },
+    {
+      "field": "labels.project_shortname",
+      "display": "Project Shortname",
+      "fieldType": "text"
+    },
+    {
+      "field": "labels.sample_id",
+      "display": "Sample ID",
+      "fieldType": "text"
+    },
+    {
+      "field": "labels.submitter_id",
+      "display": "Submitter ID",
+      "fieldType": "text"
+    },
+    {
+      "field": "labels.comment",
+      "display": "Comment",
+      "fieldType": "text",
+      "editable": true,
+      "bulkEditable": true
+    }
+  ],
+  "commonLabels": [
+    "cromwell-workflow-id",
+    "bundle-uuid",
+    "bundle-version",
+    "workflow-version",
+    "workflow-name",
+    "comment",
+    "caas-collection-name",
+    "submitter_id",
+    "sample_id",
+    "project_shortname"
+  ],
+  "queryExtensions": [],
+  "authentication": {
+    "isRequired": true,
+    "scopes": [
+      "openid",
+      "email",
+      "profile"
+    ]
+  }
+}
