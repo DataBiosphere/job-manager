@@ -87,7 +87,7 @@ export class SettingsService {
       projectId: projectId,
       displayColumns: null,
       pageSize: null,
-      hideArchived: capabilities.queryExtensions.includes('hideArchived')
+      hideArchived: capabilities.queryExtensions && capabilities.queryExtensions.includes('hideArchived')
     });
     this.updateLocalStorage();
     return this.getSettingsForProject(projectId);
