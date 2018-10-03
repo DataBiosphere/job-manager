@@ -71,7 +71,7 @@ export class JobListComponent implements OnInit {
     this.projectId = req.extensions.projectId || '';
 
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
-    const savedPageSettings = this.settingsService.getPageSize(this.projectId);
+    const savedPageSettings = this.settingsService.getSavedSettingValue('pageSize', this.projectId);
     if (savedPageSettings) {
       this.pageSize = savedPageSettings;
     }
@@ -89,7 +89,7 @@ export class JobListComponent implements OnInit {
     });
 
     // set project ID (if any) and get display field info for list columns
-    const savedColumnSettings = this.settingsService.getDisplayColumns(this.projectId);
+    const savedColumnSettings = this.settingsService.getSavedSettingValue('displayColumns', this.projectId);
 
     // assign this.displayFields to a copy of this.capabilities.displayFields and then
     // update with saved settings, if any
@@ -170,7 +170,7 @@ export class JobListComponent implements OnInit {
 
   private onClientPaginate(e: PageEvent) {
     if (e.pageSize != this.pageSize) {
-      this.settingsService.setPageSize(e.pageSize, this.projectId);
+      this.settingsService.setSavedSettingValue('pageSize', e.pageSize, this.projectId);
       this.pageSize = e.pageSize;
     }
     // If the client just navigated to page n, ensure we have enough jobs to
@@ -195,7 +195,7 @@ export class JobListComponent implements OnInit {
         fields.push(field.field);
       }
     });
-    this.settingsService.setDisplayColumns(fields, this.projectId);
+    this.settingsService.setSavedSettingValue('displayColumns', fields, this.projectId);
     this.jobTable.setUpFieldsAndColumns();
   }
 }
