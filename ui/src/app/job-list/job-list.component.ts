@@ -2,13 +2,13 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
 import {DataSource} from '@angular/cdk/collections';
-import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {PageEvent, MatSnackBar} from '@angular/material'
 import {Observable} from 'rxjs/Observable';
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
-import {SettingsService} from '../core/settings.service';
+import {ProjectSettings, SettingsService} from '../core/settings.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {JobListView, JobStream} from '../shared/job-stream';
 import {HeaderComponent} from '../shared/header/header.component';
@@ -30,6 +30,7 @@ export class JobListComponent implements OnInit {
 
   @ViewChild(HeaderComponent) header: HeaderComponent;
   @ViewChild(JobsTableComponent) jobTable: JobsTableComponent;
+  @ViewChild('hideArchivedToggle') hideArchivedToggle: HTMLInputElement;
   dataSource: DataSource<QueryJobsResult>;
 
   // This Subject is synchronized to a JobStream, which we destroy and recreate
@@ -43,6 +44,7 @@ export class JobListComponent implements OnInit {
   loading = false;
   jobStream: JobStream;
   displayFields: DisplayField[] = [];
+  savedPageSettings: ProjectSettings;
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
   private projectId: string;
@@ -71,9 +73,9 @@ export class JobListComponent implements OnInit {
     this.projectId = req.extensions.projectId || '';
 
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
-    const savedPageSettings = this.settingsService.getSavedSettingValue('pageSize', this.projectId);
-    if (savedPageSettings) {
-      this.pageSize = savedPageSettings;
+    this.savedPageSettings = this.settingsService.getSettingsForProject(this.projectId);
+    if (this.savedPageSettings.pageSize) {
+      this.pageSize = this.savedPageSettings.pageSize;
     }
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
@@ -195,6 +197,10 @@ export class JobListComponent implements OnInit {
         fields.push(field.field);
       }
     });
+    if (this.hideArchivedToggle) {
+      console.log(this.hideArchivedToggle);
+      this.settingsService.setSavedSettingValue('hideArchived', this.hideArchivedToggle.checked, this.projectId);
+    }
     this.settingsService.setSavedSettingValue('displayColumns', fields, this.projectId);
     this.jobTable.setUpFieldsAndColumns();
   }

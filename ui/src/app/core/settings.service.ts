@@ -11,7 +11,7 @@ type Settings = {
   }
 };
 
-type ProjectSettings = {
+export type ProjectSettings = {
   // set to '' for non-project-based job manager
   projectId: string,
   displayColumns: string[],
@@ -69,7 +69,7 @@ export class SettingsService {
     this.updateLocalStorage();
   }
 
-  private getSettingsForProject(projectId: string): ProjectSettings {
+  getSettingsForProject(projectId: string): ProjectSettings {
     let settings = this.currentSettings.v1.projects.find(p => p.projectId === projectId);
     if (!settings) {
       settings = this.createEmptySettingsForProject(projectId);
@@ -83,11 +83,15 @@ export class SettingsService {
 
   private createEmptySettingsForProject(projectId: string): ProjectSettings {
     const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
+    let hideArchived = null;
+    if (capabilities.queryExtensions && capabilities.queryExtensions.includes('hideArchived')) {
+      hideArchived = true;
+    }
     this.currentSettings.v1.projects.push({
       projectId: projectId,
       displayColumns: null,
       pageSize: null,
-      hideArchived: capabilities.queryExtensions && capabilities.queryExtensions.includes('hideArchived')
+      hideArchived: hideArchived
     });
     this.updateLocalStorage();
     return this.getSettingsForProject(projectId);
