@@ -744,6 +744,7 @@ class TestJobsController(BaseTestCase):
             id=job.get('id'),
             name=job.get('name'),
             status=job.get('status'),
+            start=formatted_time,
             submission=formatted_time,
             extensions=ExtendedFields())
         self.assertEqual(
