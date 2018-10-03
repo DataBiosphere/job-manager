@@ -22,7 +22,8 @@ export enum JobStatusIcon {
 export enum FieldDataType {
   Date,
   Enum,
-  Text
+  Text,
+  Boolean
 }
 
 /** Constant strings for non-configurable primary fields that can be queried
@@ -36,9 +37,11 @@ export const queryDataTypes: Map<string, FieldDataType> = new Map([
   ['submission', FieldDataType.Date]
 ]);
 
+/** NOTE: Currently, a query extension of type Boolean will default to true */
 export const queryExtensionsDataTypes: Map<string, FieldDataType> = new Map([
   ['projectId', FieldDataType.Text],
-  ['userId', FieldDataType.Text]
+  ['userId', FieldDataType.Text],
+  ['hideArchived', FieldDataType.Boolean]
 ]);
 
 export const timeFrameToDescriptionMap = new Map<TimeFrame, string> ([

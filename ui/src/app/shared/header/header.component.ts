@@ -9,7 +9,8 @@ import {
   Input,
   NgZone,
   OnDestroy,
-  OnInit, QueryList,
+  OnInit,
+  QueryList,
   ViewChild,
   ViewChildren
 } from '@angular/core';
@@ -28,9 +29,10 @@ import {
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
 import {JobStatus} from '../model/JobStatus';
-import {FieldDataType} from '../common';
+import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
+import {SettingsService, Filter} from "../../core/settings.service";
 
 @Component({
   selector: 'jm-header',
@@ -60,11 +62,13 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   private readonly completedStatuses = [JobStatus.Succeeded, JobStatus.Aborted];
   private readonly failedStatuses = [JobStatus.Failed];
   private readonly onHoldStatuses = [JobStatus.OnHold];
+  private projectId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly capabilitiesService: CapabilitiesService,
+    private readonly settingsService: SettingsService,
     private zone: NgZone,
     private cdr: ChangeDetectorRef,
   ) {
@@ -75,6 +79,12 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     if (this.route.snapshot.queryParams['q']) {
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
     }
+
+    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
+    this.projectId = req.extensions.projectId || '';
+    this.settingsService.getFilters(this.projectId).forEach((f) => {
+      this.addChip(f.key + ':' + f.value);
+    });
 
     this.options = URLSearchParamsUtils.getQueryFields(
       this.capabilitiesService.getCapabilitiesSynchronous());
@@ -135,6 +145,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
         this.deleteChipIfExists(keyVal[0].trim());
         this.chips.set(keyVal[0].trim(), keyVal[1].trim());
         this.search();
+      } else if (this.getChipType(value) == 'Boolean') {
+        this.chips.set(value, 'true');
+        this.search();
       }
       else {
         // Parse as just the key
@@ -181,11 +194,14 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   // TODO: Cut the dependency on string parsing to represent lists here
   search(): void {
     let paramMap: Map<string, string[]> = new Map();
+    let filters: Filter[] = [];
     this.chips.forEach((value: string, key: string) => {
       if (value && value.length > 0) {
         paramMap.set(key, value.split(','));
+        filters.push({key: key, value: value});
       }
     });
+    this.settingsService.setFilters(filters, this.projectId);
     let query: string = URLSearchParamsUtils.encodeURLSearchParamsFromMap(paramMap);
     if (query) {
       this.router.navigate(
@@ -253,6 +269,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     if (this.chips.has(key)) {
       this.chips.delete(key);
     }
+  }
+
+  private getChipType(key: string): string {
+    const dataType = queryDataTypes.has(key) ? queryDataTypes.get(key) : queryExtensionsDataTypes.get(key);
+    return FieldDataType[dataType];
   }
 }
 

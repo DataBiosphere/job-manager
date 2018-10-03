@@ -65,6 +65,7 @@ describe('JobListComponent', () => {
   let fakeJobService: FakeJobManagerService;
   let capabilities: CapabilitiesResponse;
   let fakeCapabilitiesService: FakeCapabilitiesService;
+  let fakeSettingsService: SettingsService;
 
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
@@ -76,6 +77,9 @@ describe('JobListComponent', () => {
       ]
     };
     fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
+    localStorage.clear();
+    fakeSettingsService = new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage);
+    fakeSettingsService.createEmptySettingsForProject('ProjectID');
 
     TestBed.configureTestingModule({
       declarations: [
@@ -113,7 +117,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: SettingsService, useValue: new SettingsService(new AuthService(null, fakeCapabilitiesService, null), localStorage)},
+        {provide: SettingsService, useValue: fakeSettingsService},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         JobListResolver,
         RouteReuse
@@ -122,6 +126,9 @@ describe('JobListComponent', () => {
   }));
 
   beforeEach(fakeAsync(() => {
+    fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
+    localStorage.clear();
+    fakeSettingsService = new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage);
     fixture = TestBed.createComponent(AppComponent);
 
     const router: Router = TestBed.get(Router);

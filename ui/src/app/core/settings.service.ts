@@ -1,6 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {AuthService} from '../core/auth.service';
-import {STORAGE_REF} from "../shared/common";
+import {FieldDataType, queryDataTypes, queryExtensionsDataTypes, STORAGE_REF} from "../shared/common";
+import {CapabilitiesService} from "./capabilities.service";
 
 type Settings = {
   v1: {
@@ -14,8 +15,14 @@ type ProjectSettings = {
   // set to '' for non-project-based job manager
   projectId: string,
   displayColumns: string[],
-  pageSize: number
+  pageSize: number,
+  filters: Filter[]
   // ... other browser-based settings to be saved go here
+}
+
+export type Filter = {
+  key: string
+  value: any
 }
 
 @Injectable()
@@ -26,6 +33,7 @@ export class SettingsService {
    * otherwise, empty out the browser settings, set up a clean scaffolding and save that */
   constructor(
     private readonly authService: AuthService,
+    private readonly capabilitiesService: CapabilitiesService,
     @Inject(STORAGE_REF) private readonly localStorage: Storage
   ) {
     const savedSettings = JSON.parse(this.localStorage.getItem('settings'));
@@ -52,7 +60,10 @@ export class SettingsService {
     return this.getSettingsForProject(projectId).pageSize;
   }
 
-  /** update the display columns settings for a project */
+  getFilters(projectId: string): Filter[] {
+    return this.getSettingsForProject(projectId).filters;
+  }
+
   setDisplayColumns(fields: string[], projectId: string): void {
     this.currentSettings.v1.projects.forEach((p) => {
       if (p.projectId === projectId) {
@@ -73,6 +84,16 @@ export class SettingsService {
     this.updateLocalStorage();
   }
 
+  setFilters(filters: Filter[], projectId: string): void {
+    for (let p of this.currentSettings.v1.projects) {
+      if (p.projectId === projectId) {
+        p.filters = filters;
+        break;
+      }
+    }
+    this.updateLocalStorage();
+  }
+
   private getSettingsForProject(projectId: string): ProjectSettings {
     let settings = this.currentSettings.v1.projects.find(p => p.projectId === projectId);
     if (!settings) {
@@ -85,11 +106,21 @@ export class SettingsService {
     return this.localStorage.setItem('settings', JSON.stringify(this.currentSettings));
   }
 
-  private createEmptySettingsForProject(projectId: string): ProjectSettings {
+  createEmptySettingsForProject(projectId: string): ProjectSettings {
+    const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
+    let filters: Filter[] = [];
+    if (capabilities.queryExtensions) {
+      capabilities.queryExtensions.forEach((f) => {
+        if (queryExtensionsDataTypes.get(f) == FieldDataType.Boolean) {
+          filters.push({key: f, value: 'true'});
+        }
+      });
+    }
     this.currentSettings.v1.projects.push({
       projectId: projectId,
       displayColumns: null,
-      pageSize: null
+      pageSize: null,
+      filters: filters
     });
     this.updateLocalStorage();
     return this.getSettingsForProject(projectId);

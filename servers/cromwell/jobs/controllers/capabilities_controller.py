@@ -41,5 +41,5 @@ def get_capabilities():
                 field_type='text')
         ],
         common_labels=['cromwell-workflow-id', 'label', 'flag'],
-        query_extensions=[])
+        query_extensions=['hideArchived'])
     return capabilities
