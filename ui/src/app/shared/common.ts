@@ -37,6 +37,7 @@ export const queryDataTypes: Map<string, FieldDataType> = new Map([
   ['submission', FieldDataType.Date]
 ]);
 
+/** NOTE: Currently, a query extension of type Boolean will default to true */
 export const queryExtensionsDataTypes: Map<string, FieldDataType> = new Map([
   ['projectId', FieldDataType.Text],
   ['userId', FieldDataType.Text],

@@ -85,12 +85,12 @@ export class SettingsService {
   }
 
   setFilters(filters: Filter[], projectId: string): void {
-    this.currentSettings.v1.projects.forEach((p) => {
+    for (let p of this.currentSettings.v1.projects) {
       if (p.projectId === projectId) {
         p.filters = filters;
-        return;
+        break;
       }
-    });
+    }
     this.updateLocalStorage();
   }
 
@@ -111,8 +111,7 @@ export class SettingsService {
     let filters: Filter[] = [];
     if (capabilities.queryExtensions) {
       capabilities.queryExtensions.forEach((f) => {
-        const dataType = queryDataTypes.has(f) ? queryDataTypes.get(f) : queryExtensionsDataTypes.get(f);
-        if (dataType == FieldDataType.Boolean) {
+        if (queryExtensionsDataTypes.get(f) == FieldDataType.Boolean) {
           filters.push({key: f, value: 'true'});
         }
       });

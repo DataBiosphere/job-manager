@@ -261,7 +261,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
       j => this.onHoldStatuses.includes(j.status)).length;
   }
 
-  refreshChips(query: string): void {
+  private refreshChips(query: string): void {
     this.zone.run(() => this.chips = URLSearchParamsUtils.getChips(query));
   }
 
