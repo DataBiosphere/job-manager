@@ -10,5 +10,7 @@ pages are intended to help you to:
 - Get started with Job Manager!
 - Learn how to deploy in a variety of situations
 
-The easiest way to get started with Job Manager is to use the [quick start command](GettingStarted/QuickStart.md)!
+## Quick Start
+
+**The easiest way to get started with Job Manager is to use the [quick start command](GettingStarted/QuickStart.md)!**
 
