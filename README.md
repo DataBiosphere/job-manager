@@ -8,7 +8,7 @@ _This product is in Alpha and not yet ready for production use. We welcome all f
 
 Welcome to the Job Manager repository! If you're a developer you're in the right place.
 
-However, if you just want to try out or deploy Job Manager, you will probably find our user and deployment focussed content in
+However, if you just want to try out or deploy Job Manager, you will probably find our user and deployment focused content in
 our ReadTheDocs pages: https://data-biosphere-job-manager.readthedocs.io/en/latest/
 
 ### Try it out, NOW!
