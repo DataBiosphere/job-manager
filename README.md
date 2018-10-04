@@ -8,24 +8,13 @@ _This product is in Alpha and not yet ready for production use. We welcome all f
 
 Welcome to the Job Manager repository! If you're a developer you're in the right place.
 
-However, if you just want to try out or deploy Job Manager, you will probably find more tailored content in
-our ReadTheDocs pages: https://databiospherejobmanager.readthedocs.io/en/stable/
+However, if you just want to try out or deploy Job Manager, you will probably find our user and deployment focussed content in
+our ReadTheDocs pages: https://data-biosphere-job-manager.readthedocs.io/en/stable/
 
-## Try it out!
+### Try it out, NOW!
 
-This script is not perfect but you should be able to get started by copying the following command into a terminal window and following the prompts:
-`
-curl -s https://raw.githubusercontent.com/DataBiosphere/job-manager/master/deploy/quickstart/quick_start.py > /tmp/jmui.py && python3 /tmp/jmui.py
-`
-
-Note: This quickstart script relies on the following being available before starting:
-
-- Linux or MacOS based system
-- Python 3
-- docker
-- docker-compose
-- ifconfig (to provide a hint about your IP address)
-
+The easiest way to try out Job Manager is to use the [getting started script](https://data-biosphere-job-manager.readthedocs.io/en/stable/GettingStarted/QuickStart)
+ 
 ## Welcome
 
 See the [development guide](#development) below.
