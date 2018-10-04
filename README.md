@@ -4,6 +4,12 @@
 
 _This product is in Alpha and not yet ready for production use. We welcome all feedback!_
 
+## User facing documentation
+
+Welcome to the Job Manager repository! If you're a developer you're in the right place.
+
+However, if you just want to try out or deploy Job Manager, you will probably find more tailored content in
+our ReadTheDocs pages: https://databiospherejobmanager.readthedocs.io/en/stable/
 
 ## Try it out!
 
