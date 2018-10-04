@@ -6,7 +6,9 @@ site_author: Data Biosphere
 repo_url: https://github.com/DataBiosphere/job-manager
 
 pages:
-- Introduction: index.md
+- Welcome: index.md
+- Getting Started:
+  - Quick Start Script: GettingStarted/QuickStart.md
 
 theme: readthedocs
 
