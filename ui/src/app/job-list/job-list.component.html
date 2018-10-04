@@ -23,9 +23,9 @@
                       (click)="$event.stopPropagation()">{{ df.display }}</mat-checkbox>
       </mat-list-item>
     </mat-list>
-    <div *ngIf="this.savedPageSettings.hideArchived != null">
+    <div *ngIf="this.savedProjectSettings.hideArchived != null">
       <mat-divider></mat-divider>
-      <mat-slide-toggle #hideArchivedToggle [checked]="this.savedPageSettings.hideArchived" (click)="$event.stopPropagation()">Hide archived jobs</mat-slide-toggle>
+      <mat-slide-toggle #hideArchivedToggle [checked]="this.savedProjectSettings.hideArchived" (click)="$event.stopPropagation()">Hide archived jobs</mat-slide-toggle>
     </div>
     <mat-divider></mat-divider>
     <div class="settings-button-container">

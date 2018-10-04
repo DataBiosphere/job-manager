@@ -44,7 +44,7 @@ export class JobListComponent implements OnInit {
   loading = false;
   jobStream: JobStream;
   displayFields: DisplayField[] = [];
-  savedPageSettings: ProjectSettings;
+  savedProjectSettings: ProjectSettings;
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
   private projectId: string;
@@ -73,9 +73,9 @@ export class JobListComponent implements OnInit {
     this.projectId = req.extensions.projectId || '';
 
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
-    this.savedPageSettings = this.settingsService.getSettingsForProject(this.projectId);
-    if (this.savedPageSettings.pageSize) {
-      this.pageSize = this.savedPageSettings.pageSize;
+    this.savedProjectSettings = this.settingsService.getSettingsForProject(this.projectId);
+    if (this.savedProjectSettings.pageSize) {
+      this.pageSize = this.savedProjectSettings.pageSize;
     }
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
@@ -91,7 +91,7 @@ export class JobListComponent implements OnInit {
     });
 
     // set project ID (if any) and get display field info for list columns
-    const savedColumnSettings = this.settingsService.getSavedSettingValue('displayColumns', this.projectId);
+    const savedColumnSettings = this.savedProjectSettings.displayColumns;
 
     // assign this.displayFields to a copy of this.capabilities.displayFields and then
     // update with saved settings, if any
@@ -110,7 +110,7 @@ export class JobListComponent implements OnInit {
 
     this.setLoading(true, lazy);
 
-    const req = URLSearchParamsUtils.unpackURLSearchParams(query);
+    let req = URLSearchParamsUtils.unpackURLSearchParams(query);
     if (!req.extensions.projectId &&
         this.capabilities.queryExtensions &&
         this.capabilities.queryExtensions.includes('projectId')) {
@@ -118,6 +118,9 @@ export class JobListComponent implements OnInit {
       // project, send them back to the project selection page.
       this.router.navigate(['projects']);
       return;
+    }
+    if (this.hideArchivedToggle != null &&  this.savedProjectSettings['hideArchived']) {
+      req.extensions.hideArchived = 'true';
     }
 
     this.streamSubscription.unsubscribe();
@@ -197,9 +200,10 @@ export class JobListComponent implements OnInit {
         fields.push(field.field);
       }
     });
-    if (this.hideArchivedToggle) {
-      console.log(this.hideArchivedToggle);
+    if (this.hideArchivedToggle && (this.savedProjectSettings['hideArchived'] != this.hideArchivedToggle.checked)) {
       this.settingsService.setSavedSettingValue('hideArchived', this.hideArchivedToggle.checked, this.projectId);
+      this.savedProjectSettings['hideArchived'] = this.hideArchivedToggle.checked;
+      this.reloadJobs(this.route.snapshot.queryParams['q'], true);
     }
     this.settingsService.setSavedSettingValue('displayColumns', fields, this.projectId);
     this.jobTable.setUpFieldsAndColumns();
