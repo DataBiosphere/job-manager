@@ -1,6 +1,4 @@
-# Job Manager
-
-## Welcome
+# Welcome to Job Manager!
 
 Welcome to our user-facing documentation for Job Manager!
 
@@ -10,7 +8,12 @@ pages are intended to help you to:
 - Get started with Job Manager!
 - Learn how to deploy in a variety of situations
 
-## Quick Start
+# Quickest Start
+
+- Already have a Cromwell or dsub installation?
+- Want to set up and try JMUI immediately? 
+
+Good news!
 
 **The easiest way to get started with Job Manager is to use the [quick start command](GettingStarted/QuickStart.md)!**
 
