@@ -2,7 +2,7 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subject} from 'rxjs/Subject';
 import {Subscription} from 'rxjs/Subscription';
 import {DataSource} from '@angular/cdk/collections';
-import {Component, ElementRef, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {PageEvent, MatSnackBar} from '@angular/material'
 import {Observable} from 'rxjs/Observable';
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
