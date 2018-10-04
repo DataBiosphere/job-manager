@@ -6,7 +6,7 @@ import subprocess
 
 
 def quick_start():
-    version = 'v0.2.0'
+    version = request_input_with_default("Select a version", 'v0.3.0')
 
     home = os.getenv('HOME')
     install_dir = request_input_path('Select an installation directory',
@@ -64,6 +64,7 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
 
     replace_in_file(docker_compose, 'image: job-manager',
                     'image: databiosphere/job-manager')
+    replace_in_file(docker_compose, 'v0.2.0', version)
 
     shim_type = request_input_from_list(
         'Setting up for single-instance or against Caas?',
