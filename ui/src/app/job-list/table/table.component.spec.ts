@@ -79,7 +79,7 @@ describe('JobsTableComponent', () => {
       status: JobStatus.Running,
       submission: new Date('2015-04-20T20:00:00'),
       start: new Date('1994-03-29T21:00:00'),
-      labels: {'status-detail': 'status-detail-1'},
+      labels: {'status-detail': 'status-detail-1', 'label' : 'test'},
       extensions: {userId: 'user-1'}
     }, {
       id: 'JOB2',
@@ -95,7 +95,7 @@ describe('JobsTableComponent', () => {
       submission: new Date('2015-04-20T20:00:00'),
       start: new Date('2015-04-20T21:00:00'),
       end: new Date('2015-04-20T22:00:00'),
-      labels: {'status-detail': 'status-detail-3', 'comment': 'this was aborted for reasons'},
+      labels: {'status-detail': 'status-detail-3', 'label' : 'test', 'comment': 'this was aborted for reasons'},
       extensions: {userId: 'user-3'}
     }, {
       id: 'JOB4',
@@ -222,23 +222,6 @@ describe('JobsTableComponent', () => {
   it('should not display editable field for job label if config has not explicitly said it is editable', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('.cdk-column-labels-status-detail .edit-field')).length)
-      .toEqual(0);
-  }))
-
-  it('should display editable field for job label if config has explicitly said it is editable', async(() => {
-    fixture.detectChanges();
-    let de: DebugElement = fixture.debugElement;
-    const numOfEditableLabelsPerField = 5;
-    expect(de.queryAll(By.css('.cdk-column-labels-comment .edit-field')).length)
-      .toEqual(numOfEditableLabelsPerField);
-    expect(de.queryAll(By.css('.cdk-column-labels-label .edit-field')).length)
-      .toEqual(numOfEditableLabelsPerField);
-  }))
-
-  it('should not display editable field for job label if config has not explicitly said it is editable', async(() => {
-    fixture.detectChanges();
-    let de: DebugElement = fixture.debugElement;
 
     // because status-detail isn't editable, there shouldn't be any edit-field blocks within that column's fields
     expect(de.queryAll(By.css('.cdk-column-labels-status-detail .edit-field')).length)
@@ -250,6 +233,7 @@ describe('JobsTableComponent', () => {
     let de: DebugElement = fixture.debugElement;
 
     // because comment is editable, there should be one edit-field block within that column's fields per row (except header row)
+    expect(de.queryAll(By.css('.cdk-column-labels-comment .edit-field')).length > 0);
     expect(de.queryAll(By.css('.cdk-column-labels-comment .edit-field')).length)
       .toEqual(de.queryAll(By.css('.cdk-column-labels-comment')).length - 1);
   }));
