@@ -258,8 +258,9 @@ export class JobsTableComponent implements OnInit {
     // get default values for bulk edit fields in dialog
     for (let bulkFieldItem of this.bulkLabelFields) {
       const label = bulkFieldItem.displayField.field.replace('labels.', '');
-      bulkFieldItem.default = this.selection.selected[0].labels[label];
+      bulkFieldItem.default = this.selection.selected[0].labels[label] || '';
       for (let job of this.selection.selected) {
+        console.log(job.labels[label]);
         const jobLabelValue = job.labels[label] || '';
         if (bulkFieldItem.default !== jobLabelValue) {
           bulkFieldItem.default = null;
