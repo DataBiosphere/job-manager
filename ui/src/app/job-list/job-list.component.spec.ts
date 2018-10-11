@@ -45,8 +45,6 @@ describe('JobListComponent', () => {
 
   // Jobs with IDs JOB0 -> JOB4.
   function testJobs(count: number): QueryJobsResult[] {
-    const flags = ['archive','','archive','','archive'];
-
     const base = {
       status: JobStatus.Running,
       submission: new Date('2015-04-20T20:00:00'),
@@ -58,8 +56,7 @@ describe('JobListComponent', () => {
       return {
         ...base,
         id: `JOB${i}`,
-        name: `JOB ${i}`,
-        labels: {flag: flags[i]}
+        name: `JOB ${i}`
       };
     });
   }
@@ -336,25 +333,25 @@ describe('JobListComponent', () => {
   }));
 
   it('does not display the hide archived setting without the right project setting', async(() => {
-    testComponent.savedProjectSettings['hideArchived'] = null;
+    testComponent.settingsService.setSavedSettingValue('hideArchived', null, testComponent.projectId);
     fixture.detectChanges();
     const de: DebugElement = fixture.debugElement;
 
     de.query(By.css('button.settings-icon')).nativeElement.click();
     fixture.detectChanges();
 
-    expect(de.queryAll(By.css('.settings-menu .mat-slide-toggle label')).length).toEqual(0);
+    expect(de.queryAll(By.css('.settings-menu .mat-slide-toggle.hide-archived')).length).toEqual(0);
   }));
 
   it('displays the hide archived setting when the project setting is set', async(() => {
-    testComponent.savedProjectSettings['hideArchived'] = true;
+    testComponent.settingsService.setSavedSettingValue('hideArchived', true, testComponent.projectId);
     fixture.detectChanges();
     const de: DebugElement = fixture.debugElement;
 
     de.query(By.css('button.settings-icon')).nativeElement.click();
     fixture.detectChanges();
 
-    expect(de.queryAll(By.css('.settings-menu .mat-slide-toggle label')).length).toEqual(1);
+    expect(de.queryAll(By.css('.settings-menu .mat-slide-toggle.hide-archived')).length).toEqual(1);
   }));
 
   @Component({

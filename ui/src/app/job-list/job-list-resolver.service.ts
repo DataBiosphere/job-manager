@@ -39,7 +39,7 @@ export class JobListResolver implements Resolve<JobStream> {
     const projectId = jobsRequest.extensions.projectId || '';
     const settings = this.settingsService.getSettingsForProject(projectId);
     if (settings && settings.hideArchived) {
-      jobsRequest.extensions['hideArchived'] = 'true';
+      jobsRequest.extensions['hideArchived'] = true;
     }
 
     const jobStream = new JobStream(this.jobManagerService, jobsRequest);

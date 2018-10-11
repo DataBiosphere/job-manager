@@ -8,7 +8,7 @@ import {Observable} from 'rxjs/Observable';
 import {ActivatedRoute, NavigationError, Router} from '@angular/router';
 
 import {JobManagerService} from '../core/job-manager.service';
-import {ProjectSettings, SettingsService} from '../core/settings.service';
+import {SettingsService} from '../core/settings.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {JobListView, JobStream} from '../shared/job-stream';
 import {HeaderComponent} from '../shared/header/header.component';
@@ -44,18 +44,17 @@ export class JobListComponent implements OnInit {
   loading = false;
   jobStream: JobStream;
   displayFields: DisplayField[] = [];
-  savedProjectSettings: ProjectSettings;
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
-  private projectId: string;
+  projectId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly jobManagerService: JobManagerService,
-    private readonly settingsService: SettingsService,
     private readonly viewContainer: ViewContainerRef,
     private snackBar: MatSnackBar,
+    readonly settingsService: SettingsService,
     private readonly capabilitiesService: CapabilitiesService) {
     this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
     route.queryParams.subscribe(params => this.reloadJobs(params['q']));
@@ -73,9 +72,8 @@ export class JobListComponent implements OnInit {
     this.projectId = req.extensions.projectId || '';
 
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
-    this.savedProjectSettings = this.settingsService.getSettingsForProject(this.projectId);
-    if (this.savedProjectSettings.pageSize) {
-      this.pageSize = this.savedProjectSettings.pageSize;
+    if (this.settingsService.getSavedSettingValue('pageSize', this.projectId)) {
+      this.pageSize = this.settingsService.getSavedSettingValue('pageSize', this.projectId);
     }
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
@@ -91,7 +89,7 @@ export class JobListComponent implements OnInit {
     });
 
     // set project ID (if any) and get display field info for list columns
-    const savedColumnSettings = this.savedProjectSettings.displayColumns;
+    const savedColumnSettings = this.settingsService.getSavedSettingValue('displayColumns', this.projectId);
 
     // assign this.displayFields to a copy of this.capabilities.displayFields and then
     // update with saved settings, if any
@@ -119,8 +117,8 @@ export class JobListComponent implements OnInit {
       this.router.navigate(['projects']);
       return;
     }
-    if (this.hideArchivedToggle != null &&  this.savedProjectSettings['hideArchived']) {
-      req.extensions.hideArchived = 'true';
+    if (this.hideArchivedToggle != null && this.settingsService.getSavedSettingValue('hideArchived', this.projectId)) {
+      req.extensions.hideArchived = true;
     }
 
     this.streamSubscription.unsubscribe();
@@ -200,9 +198,8 @@ export class JobListComponent implements OnInit {
         fields.push(field.field);
       }
     });
-    if (this.hideArchivedToggle && (this.savedProjectSettings['hideArchived'] != this.hideArchivedToggle.checked)) {
+    if (this.hideArchivedToggle && (this.settingsService.getSavedSettingValue('hideArchived', this.projectId) != this.hideArchivedToggle.checked)) {
       this.settingsService.setSavedSettingValue('hideArchived', this.hideArchivedToggle.checked, this.projectId);
-      this.savedProjectSettings['hideArchived'] = this.hideArchivedToggle.checked;
       this.reloadJobs(this.route.snapshot.queryParams['q'], true);
     }
     this.settingsService.setSavedSettingValue('displayColumns', fields, this.projectId);
