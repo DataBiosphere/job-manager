@@ -47,14 +47,13 @@ export class SettingsService {
   }
 
   getSavedSettingValue(settingKey: string, projectId: string): any {
-    let value = null;
     const settings = this.getSettingsForProject(projectId);
     for (let key in settings) {
       if (key == settingKey) {
-        value = settings[key];
+        return settings[key];
       }
     }
-    return value;
+    return null;
   }
 
   setSavedSettingValue(settingKey: string, value: any, projectId: string): void {
