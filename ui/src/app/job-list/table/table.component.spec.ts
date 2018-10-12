@@ -79,7 +79,7 @@ describe('JobsTableComponent', () => {
       status: JobStatus.Running,
       submission: new Date('2015-04-20T20:00:00'),
       start: new Date('1994-03-29T21:00:00'),
-      labels: {'status-detail': 'status-detail-1', 'label' : 'test'},
+      labels: {'status-detail': 'status-detail-1'},
       extensions: {userId: 'user-1'}
     }, {
       id: 'JOB2',
@@ -95,7 +95,7 @@ describe('JobsTableComponent', () => {
       submission: new Date('2015-04-20T20:00:00'),
       start: new Date('2015-04-20T21:00:00'),
       end: new Date('2015-04-20T22:00:00'),
-      labels: {'status-detail': 'status-detail-3', 'label' : 'test', 'comment': 'this was aborted for reasons'},
+      labels: {'status-detail': 'status-detail-3', 'comment': 'this was aborted for reasons'},
       extensions: {userId: 'user-3'}
     }, {
       id: 'JOB4',
