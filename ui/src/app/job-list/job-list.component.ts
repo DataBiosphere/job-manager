@@ -30,6 +30,7 @@ export class JobListComponent implements OnInit {
 
   @ViewChild(HeaderComponent) header: HeaderComponent;
   @ViewChild(JobsTableComponent) jobTable: JobsTableComponent;
+  @ViewChild('hideArchivedToggle') hideArchivedToggle: HTMLInputElement;
   dataSource: DataSource<QueryJobsResult>;
 
   // This Subject is synchronized to a JobStream, which we destroy and recreate
@@ -45,15 +46,15 @@ export class JobListComponent implements OnInit {
   displayFields: DisplayField[] = [];
   private streamSubscription: Subscription;
   private readonly capabilities: CapabilitiesResponse;
-  private projectId: string;
+  projectId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly jobManagerService: JobManagerService,
-    private readonly settingsService: SettingsService,
     private readonly viewContainer: ViewContainerRef,
     private snackBar: MatSnackBar,
+    readonly settingsService: SettingsService,
     private readonly capabilitiesService: CapabilitiesService) {
     this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
     route.queryParams.subscribe(params => this.reloadJobs(params['q']));
@@ -71,9 +72,8 @@ export class JobListComponent implements OnInit {
     this.projectId = req.extensions.projectId || '';
 
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
-    const savedPageSettings = this.settingsService.getPageSize(this.projectId);
-    if (savedPageSettings) {
-      this.pageSize = savedPageSettings;
+    if (this.settingsService.getSavedSettingValue('pageSize', this.projectId)) {
+      this.pageSize = this.settingsService.getSavedSettingValue('pageSize', this.projectId);
     }
     this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
       pageSize: this.pageSize,
@@ -89,7 +89,7 @@ export class JobListComponent implements OnInit {
     });
 
     // set project ID (if any) and get display field info for list columns
-    const savedColumnSettings = this.settingsService.getDisplayColumns(this.projectId);
+    const savedColumnSettings = this.settingsService.getSavedSettingValue('displayColumns', this.projectId);
 
     // assign this.displayFields to a copy of this.capabilities.displayFields and then
     // update with saved settings, if any
@@ -108,7 +108,7 @@ export class JobListComponent implements OnInit {
 
     this.setLoading(true, lazy);
 
-    const req = URLSearchParamsUtils.unpackURLSearchParams(query);
+    let req = URLSearchParamsUtils.unpackURLSearchParams(query);
     if (!req.extensions.projectId &&
         this.capabilities.queryExtensions &&
         this.capabilities.queryExtensions.includes('projectId')) {
@@ -116,6 +116,9 @@ export class JobListComponent implements OnInit {
       // project, send them back to the project selection page.
       this.router.navigate(['projects']);
       return;
+    }
+    if (this.hideArchivedToggle != null && this.settingsService.getSavedSettingValue('hideArchived', this.projectId)) {
+      req.extensions.hideArchived = true;
     }
 
     this.streamSubscription.unsubscribe();
@@ -170,7 +173,7 @@ export class JobListComponent implements OnInit {
 
   private onClientPaginate(e: PageEvent) {
     if (e.pageSize != this.pageSize) {
-      this.settingsService.setPageSize(e.pageSize, this.projectId);
+      this.settingsService.setSavedSettingValue('pageSize', e.pageSize, this.projectId);
       this.pageSize = e.pageSize;
     }
     // If the client just navigated to page n, ensure we have enough jobs to
@@ -188,6 +191,10 @@ export class JobListComponent implements OnInit {
     })
   }
 
+  getSavedSetting(settingName: string) {
+    return this.settingsService.getSavedSettingValue(settingName, this.projectId)
+  }
+
   saveSettings() {
     let fields: string[] = [];
     this.displayFields.forEach((field) => {
@@ -195,7 +202,11 @@ export class JobListComponent implements OnInit {
         fields.push(field.field);
       }
     });
-    this.settingsService.setDisplayColumns(fields, this.projectId);
+    if (this.hideArchivedToggle && (this.settingsService.getSavedSettingValue('hideArchived', this.projectId) != this.hideArchivedToggle.checked)) {
+      this.settingsService.setSavedSettingValue('hideArchived', this.hideArchivedToggle.checked, this.projectId);
+      this.reloadJobs(this.route.snapshot.queryParams['q'], true);
+    }
+    this.settingsService.setSavedSettingValue('displayColumns', fields, this.projectId);
     this.jobTable.setUpFieldsAndColumns();
   }
 }

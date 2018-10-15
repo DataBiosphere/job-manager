@@ -14,11 +14,13 @@ import {JobStream} from '../shared/job-stream';
 import {RouteReuse} from '../route-reuse.service';
 
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
+import {SettingsService} from "../core/settings.service";
 
 @Injectable()
 export class JobListResolver implements Resolve<JobStream> {
   constructor(
     private jobManagerService: JobManagerService,
+    private settingsService: SettingsService,
     private router: Router,
     private routeReuse: RouteReuse,
   ) {}
@@ -33,8 +35,14 @@ export class JobListResolver implements Resolve<JobStream> {
       return Promise.resolve(jobStream);
     }
 
-    const jobStream = new JobStream(this.jobManagerService,
-                                    URLSearchParamsUtils.unpackURLSearchParams(route.queryParams['q']));
+    let jobsRequest = URLSearchParamsUtils.unpackURLSearchParams(route.queryParams['q']);
+    const projectId = jobsRequest.extensions.projectId || '';
+    const settings = this.settingsService.getSettingsForProject(projectId);
+    if (settings && settings.hideArchived) {
+      jobsRequest.extensions['hideArchived'] = true;
+    }
+
+    const jobStream = new JobStream(this.jobManagerService, jobsRequest);
     return jobStream
         .loadAtLeast(initialBackendPageSize)
         .then(resp => jobStream);
