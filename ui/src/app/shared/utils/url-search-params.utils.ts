@@ -162,7 +162,9 @@ import {TimeFrame} from "../model/TimeFrame";
         if (!queryExtensionsDataTypes.has(field)) {
           throw new Error("Unsupported queryExtension field.")
         }
-        queryFields.set(field, queryExtensionsDataTypes.get(field));
+        if (queryExtensionsDataTypes.get(field) != FieldDataType.Boolean) {
+          queryFields.set(field, queryExtensionsDataTypes.get(field));
+        }
       });
     }
 
