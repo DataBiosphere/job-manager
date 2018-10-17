@@ -46,6 +46,10 @@
   top: 15%;
 }
 
+::ng-deep .mat-menu-panel.settings-menu {
+  min-width: 11em;
+}
+
 .settings-icon-container {
   position: absolute;
   right: 0;
@@ -75,6 +79,27 @@ h2.settings-header {
   margin: 0.5rem 0;
   height: auto;
 }
+
+::ng-deep .settings-menu .mat-slide-toggle {
+  margin: 0rem 0.5rem;
+}
+
+::ng-deep .settings-menu .mat-slide-toggle .mat-slide-toggle-content {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  margin: 0.5rem 0.25rem;
+}
+
+::ng-deep .settings-menu .mat-slide-toggle .mat-slide-toggle-bar {
+  height: 0.5em;
+  width: 1.5rem;
+}
+
+::ng-deep .settings-menu .mat-slide-toggle .mat-slide-toggle-thumb {
+  height: 0.8em;
+  width: 0.8em;
+}
+
 
 .settings-button-container {
   display: flex;

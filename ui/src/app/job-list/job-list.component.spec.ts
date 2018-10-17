@@ -6,16 +6,17 @@ import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
+  MatCheckboxModule,
   MatDialogModule,
   MatListModule,
   MatMenuModule,
+  MatPaginatorModule,
   MatSelectModule,
+  MatSlideToggleModule,
+  MatSnackBarModule,
   MatSortModule,
   MatTableModule,
-  MatPaginatorModule,
-  MatSnackBarModule,
-  MatTooltipModule,
-  MatCheckboxModule
+  MatTooltipModule
 } from '@angular/material';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -65,6 +66,7 @@ describe('JobListComponent', () => {
   let fakeJobService: FakeJobManagerService;
   let capabilities: CapabilitiesResponse;
   let fakeCapabilitiesService: FakeCapabilitiesService;
+  let settingsService: SettingsService;
 
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
@@ -76,7 +78,7 @@ describe('JobListComponent', () => {
       ]
     };
     fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
-
+    settingsService = new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage);
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -97,6 +99,7 @@ describe('JobListComponent', () => {
         MatDialogModule,
         MatDividerModule,
         MatListModule,
+        MatSlideToggleModule,
         MatMenuModule,
         MatPaginatorModule,
         MatProgressSpinnerModule,
@@ -113,7 +116,7 @@ describe('JobListComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: SettingsService, useValue: new SettingsService(new AuthService(null, fakeCapabilitiesService, null), localStorage)},
+        {provide: SettingsService, useValue: settingsService},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         JobListResolver,
         RouteReuse
@@ -327,6 +330,28 @@ describe('JobListComponent', () => {
 
     const de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.fake-projects')).length).toEqual(1);
+  }));
+
+  it('does not display the hide archived setting without the right project setting', async(() => {
+    testComponent.settingsService.setSavedSettingValue('hideArchived', null, testComponent.projectId);
+    fixture.detectChanges();
+    const de: DebugElement = fixture.debugElement;
+
+    de.query(By.css('button.settings-icon')).nativeElement.click();
+    fixture.detectChanges();
+
+    expect(de.queryAll(By.css('.settings-menu .mat-slide-toggle.hide-archived')).length).toEqual(0);
+  }));
+
+  it('displays the hide archived setting when the project setting is set', async(() => {
+    testComponent.settingsService.setSavedSettingValue('hideArchived', true, testComponent.projectId);
+    fixture.detectChanges();
+    const de: DebugElement = fixture.debugElement;
+
+    de.query(By.css('button.settings-icon')).nativeElement.click();
+    fixture.detectChanges();
+
+    expect(de.queryAll(By.css('.settings-menu .mat-slide-toggle.hide-archived')).length).toEqual(1);
   }));
 
   @Component({

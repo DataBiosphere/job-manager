@@ -11,8 +11,9 @@ import {
   MatMenuModule,
   MatOptionModule,
   MatPaginatorModule,
-  MatSnackBarModule,
   MatSelectModule,
+  MatSlideToggleModule,
+  MatSnackBarModule,
   MatSortModule,
   MatTableModule,
   MatTooltipModule
@@ -47,6 +48,7 @@ import {SharedModule} from '../shared/shared.module';
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSelectModule,
+    MatSlideToggleModule,
     MatSnackBarModule,
     MatSortModule,
     MatTableModule,

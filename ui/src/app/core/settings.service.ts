@@ -1,6 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {AuthService} from '../core/auth.service';
 import {STORAGE_REF} from "../shared/common";
+import {CapabilitiesService} from "./capabilities.service";
 
 type Settings = {
   v1: {
@@ -10,11 +11,12 @@ type Settings = {
   }
 };
 
-type ProjectSettings = {
+export type ProjectSettings = {
   // set to '' for non-project-based job manager
   projectId: string,
   displayColumns: string[],
-  pageSize: number
+  pageSize: number,
+  hideArchived: boolean
   // ... other browser-based settings to be saved go here
 }
 
@@ -26,6 +28,7 @@ export class SettingsService {
    * otherwise, empty out the browser settings, set up a clean scaffolding and save that */
   constructor(
     private readonly authService: AuthService,
+    private readonly capabilitiesService: CapabilitiesService,
     @Inject(STORAGE_REF) private readonly localStorage: Storage
   ) {
     const savedSettings = JSON.parse(this.localStorage.getItem('settings'));
@@ -43,37 +46,29 @@ export class SettingsService {
     }
   }
 
-  /** return the display columns settings for a project or a clean scaffolding, if they don't exist */
-  getDisplayColumns(projectId: string): string[] {
-    return this.getSettingsForProject(projectId).displayColumns;
+  getSavedSettingValue(settingKey: string, projectId: string): any {
+    const settings = this.getSettingsForProject(projectId);
+    for (let key in settings) {
+      if (key == settingKey) {
+        return settings[key];
+      }
+    }
+    return null;
   }
 
-  getPageSize(projectId: string): number {
-    return this.getSettingsForProject(projectId).pageSize;
-  }
-
-  /** update the display columns settings for a project */
-  setDisplayColumns(fields: string[], projectId: string): void {
-    this.currentSettings.v1.projects.forEach((p) => {
-      if (p.projectId === projectId) {
-        p.displayColumns = fields;
+  setSavedSettingValue(settingKey: string, value: any, projectId: string): void {
+    let updated: boolean = false;
+    this.currentSettings.v1.projects.forEach(project => {
+      if (project.projectId === projectId) {
+        project[settingKey] = value;
+        updated = true;
         return;
       }
     });
     this.updateLocalStorage();
   }
 
-  setPageSize(pageSize: number, projectId: string): void {
-    this.currentSettings.v1.projects.forEach((p) => {
-      if (p.projectId === projectId) {
-        p.pageSize = pageSize;
-        return;
-      }
-    });
-    this.updateLocalStorage();
-  }
-
-  private getSettingsForProject(projectId: string): ProjectSettings {
+  getSettingsForProject(projectId: string): ProjectSettings {
     let settings = this.currentSettings.v1.projects.find(p => p.projectId === projectId);
     if (!settings) {
       settings = this.createEmptySettingsForProject(projectId);
@@ -86,10 +81,16 @@ export class SettingsService {
   }
 
   private createEmptySettingsForProject(projectId: string): ProjectSettings {
+    const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
+    let hideArchived = null;
+    if (capabilities.queryExtensions && capabilities.queryExtensions.includes('hideArchived')) {
+      hideArchived = true;
+    }
     this.currentSettings.v1.projects.push({
       projectId: projectId,
       displayColumns: null,
-      pageSize: null
+      pageSize: null,
+      hideArchived: hideArchived
     });
     this.updateLocalStorage();
     return this.getSettingsForProject(projectId);
