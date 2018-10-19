@@ -72,7 +72,7 @@ describe('AppComponent', () => {
       fixture.debugElement.query(By.css('jm-initial-error'));
     expect(errorComponent).toBeTruthy();
     expect(errorComponent.nativeElement.textContent).toContain(ErrorResolver.error.title);
-    expect(errorComponent.nativeElement.textContent).toContain("Please try reloading");
+    expect(errorComponent.nativeElement.textContent).toContain("Job Manager is running but encountered a problem");
 
     // Something is setting a timeout() with a non-0 wait-time; couldn't track
     // the source but it doesn't seem to be coming from the Job Manager code

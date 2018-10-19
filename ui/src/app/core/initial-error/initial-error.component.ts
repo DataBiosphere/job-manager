@@ -8,7 +8,7 @@ import {NavigationError, Router} from '@angular/router';
   styleUrls: ['./initial-error.component.css']
 })
 export class InitialErrorComponent {
-  initialLoadErrorHeader: string;
+  errorMessage: string;
   initialLoadFailure = false;
 
   constructor(router: Router, loc: Location) {
@@ -23,7 +23,7 @@ export class InitialErrorComponent {
         this.initialLoadFailure = true;
         const status = e.error.status || 'unknown';
         const title = e.error.title || 'Unknown error';
-        this.initialLoadErrorHeader = `${status}: ${title}`
+        this.errorMessage = `${status}: ${title}`
       }
       if (router.navigated) {
         // In the event that one of our resolvers/activators did another
