@@ -1,6 +1,25 @@
 <div *ngIf="initialLoadFailure">
-  <h1>{{initialLoadErrorHeader}}</h1>
+  <table>
+      <tr>      _       _       __  __                                   </tr>
+      <tr>     | |     | |     |  \/  |                                  </tr>
+      <tr>     | | ___ | |__   | \  / | __ _ _ __   __ _  __ _  ___ _ __ </tr>
+      <tr> _   | |/ _ \| '_ \  | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '__|</tr>
+      <tr>| |__| | (_) | |_) | | |  | | (_| | | | | (_| | (_| |  __/ |   </tr>
+      <tr> \____/ \___/|_.__/  |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_|   </tr>
+      <tr>                                                __/ |          </tr>
+      <tr>                                               |___/           </tr>
+  </table>
   <p>
-    Please try reloading, or navigating to the <a href="/">home page</a>.
+  <p>
+    Job Manager is running but encountered a problem talking to its workflow server.
+  </p>
+  <p>
+    Please check the URL and workflow server configuration, or contact your support organization for assistance.
+  </p>
+  <p>
+    <a href="/">Click here to start over.</a>
+  </p>
+  <p>
+    <i>{{errorMessage}}</i>
   </p>
 </div>
