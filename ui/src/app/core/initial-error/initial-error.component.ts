@@ -8,7 +8,7 @@ import {NavigationError, Router} from '@angular/router';
   styleUrls: ['./initial-error.component.css']
 })
 export class InitialErrorComponent {
-  initialLoadErrorHeader: string;
+  errorMessage: string;
   initialLoadFailure = false;
 
   constructor(router: Router, loc: Location) {
