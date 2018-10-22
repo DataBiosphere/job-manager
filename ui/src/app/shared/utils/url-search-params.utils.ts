@@ -143,7 +143,7 @@ import {TimeFrame} from "../model/TimeFrame";
     let chips: Map<string, string> = new Map();
     urlSearchParams.paramsMap.forEach((values: string[], key: string) => {
       if (values && key) {
-        chips.set(key, values.toString());
+        chips.set(key, decodeURIComponent(values.toString()));
       }
     });
     return chips;
