@@ -247,8 +247,7 @@ def query_jobs(body, **kwargs):
     auth = kwargs.get('auth')
     headers = kwargs.get('auth_headers')
     query = QueryJobsRequest.from_dict(body)
-    if query.labels is not None:
-        query.labels = _format_query_labels(query.labels)
+    query.labels = _format_query_labels(query.labels)
     query_page_size = query.page_size or _DEFAULT_PAGE_SIZE
     offset = 0
     if query.page_token is not None:
@@ -373,7 +372,9 @@ def _get_base_url():
 
 
 def _format_query_labels(orig_query_labels):
+    if orig_query_labels is None:
+        return None
     query_labels = {}
     for key, val in orig_query_labels.items():
-        query_labels[key] = urllib.unquote(val).decode('utf8')
+        query_labels[urllib.unquote(key)] = urllib.unquote(val)
     return query_labels
