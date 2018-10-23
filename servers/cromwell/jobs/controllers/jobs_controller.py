@@ -17,6 +17,7 @@ from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
+import urllib
 
 _DEFAULT_PAGE_SIZE = 64
 
@@ -246,6 +247,7 @@ def query_jobs(body, **kwargs):
     auth = kwargs.get('auth')
     headers = kwargs.get('auth_headers')
     query = QueryJobsRequest.from_dict(body)
+    query.labels = _format_query_labels(query.labels)
     query_page_size = query.page_size or _DEFAULT_PAGE_SIZE
     offset = 0
     if query.page_token is not None:
@@ -367,3 +369,12 @@ def _parse_datetime(date_string):
 
 def _get_base_url():
     return current_app.config['cromwell_url']
+
+
+def _format_query_labels(orig_query_labels):
+    if orig_query_labels is None:
+        return None
+    query_labels = {}
+    for key, val in orig_query_labels.items():
+        query_labels[urllib.unquote(key)] = urllib.unquote(val)
+    return query_labels
