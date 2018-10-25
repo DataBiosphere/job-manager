@@ -1,0 +1,21 @@
+site_name: Data Biosphere Job Manager
+site_url: https://github.com/DataBiosphere/job-manager
+site_description: Data Biosphere Job Manager Documentation
+site_author: Data Biosphere
+
+repo_url: https://github.com/DataBiosphere/job-manager
+
+pages:
+- Welcome: index.md
+- Getting Started:
+  - Quick Start Script: GettingStarted/QuickStart.md
+
+theme: readthedocs
+
+extra_css:
+    - css/extra.css
+extra_javascript:
+    - js/extra.js
+
+# copyright: Copyright &copy; 2017 <a href="https://broadinstitute.org">Broad Institute</a>
+# google_analytics: ['identifierID', 'URL.org']
