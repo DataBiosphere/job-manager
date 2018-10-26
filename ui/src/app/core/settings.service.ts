@@ -1,7 +1,8 @@
 import {Inject, Injectable} from '@angular/core';
 import {AuthService} from '../core/auth.service';
-import {STORAGE_REF} from "../shared/common";
+import {FieldDataType, queryDataTypes, queryExtensionsDataTypes, STORAGE_REF} from "../shared/common";
 import {CapabilitiesService} from "./capabilities.service";
+import {JobStatus} from "../shared/model/JobStatus";
 
 type Settings = {
   v1: {
@@ -51,6 +52,16 @@ export class SettingsService {
     for (let key in settings) {
       if (key == settingKey) {
         return settings[key];
+      }
+    }
+
+    // if there is no project setting key for a requested and configured query extension,
+    // return a default value that can be updated via the UI
+    const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
+    if (capabilities.queryExtensions && capabilities.queryExtensions.includes(settingKey)) {
+      let dataType = queryExtensionsDataTypes.get(settingKey);
+      if (dataType == FieldDataType.Boolean) {
+        return false;
       }
     }
     return null;
