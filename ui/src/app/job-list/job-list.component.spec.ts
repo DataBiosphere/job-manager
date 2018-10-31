@@ -255,7 +255,7 @@ describe('JobListComponent', () => {
     tick();
     fixture.detectChanges();
     tick();
-    expectJobsRendered([jobs[1], jobs[3]]);
+    expectJobsRendered([jobs[1]]);
   }));
 
   it('reloads properly on abort', async(() => {
