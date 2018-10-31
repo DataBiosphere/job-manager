@@ -415,6 +415,7 @@ class TestJobsController(BaseTestCase):
                     'end': response_timestamp,
                     'stderr': std_err,
                     'stdout': std_out,
+                    'callCached': False,
                     'inputs': jobs_controller.update_key_names(inputs),
                     'returnCode': return_code,
                     'attempts': attempts,
@@ -553,6 +554,7 @@ class TestJobsController(BaseTestCase):
                     'start': response_timestamp,
                     'end': response_timestamp,
                     'callRoot': call_root,
+                    'callCached': False,
                     'attempts': attempts,
                     'shardStatuses': [{
                         'count': 2,
