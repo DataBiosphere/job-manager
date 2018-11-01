@@ -2,10 +2,10 @@ import {JobStatus} from "../../model/JobStatus";
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 
 @Component({
-  selector: 'jm-status-selection',
-  templateUrl: './status-selection.component.html',
+  selector: 'jm-enum-selection',
+  templateUrl: './enum-selection.component.html',
 })
-export class StatusSelectionComponent implements OnInit {
+export class EnumSelectionComponent implements OnInit {
   @Input() initialChipValue: string;
   @Output() updateValue: EventEmitter<string> = new EventEmitter();
 

@@ -3,19 +3,19 @@ import {MatCheckboxModule, MatListModule} from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
-import {StatusSelectionComponent} from "./status-selection.component";
+import {EnumSelectionComponent} from "./enum-selection.component";
 import {Component, ViewChild} from "@angular/core";
 
-describe('StatusSelectionComponent', () => {
+describe('EnumSelectionComponent', () => {
 
-  let parentComponent: TestStatusSelectionComponent;
-  let testComponent: StatusSelectionComponent;
-  let fixture: ComponentFixture<TestStatusSelectionComponent>;
+  let parentComponent: TestEnumSelectionComponent;
+  let testComponent: EnumSelectionComponent;
+  let fixture: ComponentFixture<TestEnumSelectionComponent>;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        StatusSelectionComponent,
-        TestStatusSelectionComponent,
+        EnumSelectionComponent,
+        TestEnumSelectionComponent,
       ],
       imports: [
         BrowserAnimationsModule,
@@ -23,15 +23,15 @@ describe('StatusSelectionComponent', () => {
         MatListModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
-          {path: '', component: TestStatusSelectionComponent},
-          {path: 'jobs', component: TestStatusSelectionComponent}
+          {path: '', component: TestEnumSelectionComponent},
+          {path: 'jobs', component: TestEnumSelectionComponent}
         ]),
       ],
     }).compileComponents();
   }));
 
   beforeEach(async(() => {
-    fixture = TestBed.createComponent(TestStatusSelectionComponent);
+    fixture = TestBed.createComponent(TestEnumSelectionComponent);
     parentComponent = fixture.componentInstance;
     testComponent = parentComponent.statusSelectionComponent;
     fixture.detectChanges();
@@ -62,9 +62,9 @@ describe('StatusSelectionComponent', () => {
         [initialChipValue]="initialValue"
         (updateValue)="updateValueCallback($event)"></jm-status-selection>`
   })
-  class TestStatusSelectionComponent {
-    @ViewChild(StatusSelectionComponent)
-    public statusSelectionComponent: StatusSelectionComponent;
+  class TestEnumSelectionComponent {
+    @ViewChild(EnumSelectionComponent)
+    public statusSelectionComponent: EnumSelectionComponent;
     initialValue="Running,Failed";
     updateValueCallback(newValue): void { }
   }

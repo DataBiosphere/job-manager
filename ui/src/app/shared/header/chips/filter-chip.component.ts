@@ -2,7 +2,7 @@ import {
   Component, ElementRef, EventEmitter, Input, OnInit, Output,
   ViewChild
 } from "@angular/core";
-import {FieldDataType} from "../../common";
+import {FieldDataType, queryDataTypes} from "../../common";
 import {URLSearchParamsUtils} from "../../utils/url-search-params.utils";
 import {CapabilitiesService} from "../../../core/capabilities.service";
 import {MatMenuTrigger} from "@angular/material";
@@ -46,8 +46,8 @@ export class FilterChipComponent implements OnInit {
   }
 
   getCurrentChipType(): string {
-    if (this.chipKey && this.options.has(this.chipKey)) {
-      return FieldDataType[this.options.get(this.chipKey)];
+    if (this.chipKey && queryDataTypes.has(this.chipKey)) {
+      return FieldDataType[queryDataTypes.get(this.chipKey)];
     }
     // Default to text for all labels
     return FieldDataType[FieldDataType.Text];

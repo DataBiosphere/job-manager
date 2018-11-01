@@ -19,11 +19,11 @@
            (click)="$event.stopPropagation()"/>
   </mat-form-field>
   <!-- Statuses -->
-  <jm-status-selection
+  <jm-enum-selection
     *ngSwitchCase="'Enum'"
     [initialChipValue]="currentChipValue"
     (updateValue)="setChipValue($event)">
-  </jm-status-selection>
+  </jm-enum-selection>
   <!-- Datepicker input -->
   <jm-datepicker-input #datepickerInput
     *ngSwitchCase="'Date'"

@@ -32,7 +32,7 @@ describe('FilterChipComponent', () => {
       declarations: [
         FilterChipComponent,
         MockDatepickerInputComponent,
-        MockStatusSelectionComponent,
+        MockEnumSelectionComponent,
         TestFilterChipComponent,
       ],
       imports: [
@@ -102,7 +102,7 @@ describe('FilterChipComponent', () => {
     selector: 'jm-status-selection',
     template: ''
   })
-  class MockStatusSelectionComponent {
+  class MockEnumSelectionComponent {
     @Input() initialChipValue: string;
   }
 
