@@ -1,4 +1,3 @@
-import {JobStatus} from "../../model/JobStatus";
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 
 @Component({
@@ -7,20 +6,21 @@ import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 })
 export class EnumSelectionComponent implements OnInit {
   @Input() initialChipValue: string;
+  @Input() chipKey: string;
+  @Input() chipOptions: string[];
   @Output() updateValue: EventEmitter<string> = new EventEmitter();
 
   currentChipValues: string[];
-  jobStatuses: string[] = Object.keys(JobStatus);
 
   ngOnInit(): void {
-    this.currentChipValues = this.trimStatuses(this.initialChipValue.split(','));
+    this.currentChipValues = this.trimOptions(this.initialChipValue.split(','));
   }
 
-  changeStatus(status: string, checked: boolean) {
+  changeOption(optionValue: string, checked: boolean) {
     if (checked) {
-      this.currentChipValues.push(status);
-    } else if (this.isChecked(status)) {
-      this.currentChipValues.splice(this.currentChipValues.indexOf(status), 1);
+      this.currentChipValues.push(optionValue);
+    } else if (this.isChecked(optionValue)) {
+      this.currentChipValues.splice(this.currentChipValues.indexOf(optionValue), 1);
     }
     this.updateValue.emit(this.currentChipValues.join(','));
   }
@@ -29,13 +29,13 @@ export class EnumSelectionComponent implements OnInit {
     return this.currentChipValues.indexOf(status) > -1;
   }
 
-  trimStatuses(statuses: string[]): string[] {
-    let newStatuses: string[] = [];
-    statuses.forEach((status) => {
-      if (status) {
-        newStatuses.push(status);
+  trimOptions(options: string[]): string[] {
+    let newOptions: string[] = [];
+    options.forEach((option) => {
+      if (option) {
+        newOptions.push(option);
       }
     });
-    return newStatuses;
+    return newOptions;
   }
 }

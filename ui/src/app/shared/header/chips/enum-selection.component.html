@@ -1,10 +1,10 @@
 <mat-list>
-  <mat-list-item  *ngFor="let status of jobStatuses">
+  <mat-list-item  *ngFor="let option of chipOptions">
     <mat-checkbox
       (click)="$event.stopPropagation()"
-      [checked]="isChecked(status)"
-      (change)="changeStatus(status, $event.checked)">
-      {{ status }}
+      [checked]="isChecked(option)"
+      (change)="changeOption(option, $event.checked)">
+      {{ option }}
     </mat-checkbox>
   </mat-list-item>
 </mat-list>

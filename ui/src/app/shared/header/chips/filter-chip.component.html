@@ -18,10 +18,12 @@
            (keyup.enter)="setChipValue(currentChipValue)"
            (click)="$event.stopPropagation()"/>
   </mat-form-field>
-  <!-- Statuses -->
+  <!-- Enum input -->
   <jm-enum-selection
     *ngSwitchCase="'Enum'"
     [initialChipValue]="currentChipValue"
+    [chipKey]="chipKey"
+    [chipOptions]="getChipValues()"
     (updateValue)="setChipValue($event)">
   </jm-enum-selection>
   <!-- Datepicker input -->

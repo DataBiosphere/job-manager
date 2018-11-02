@@ -2,11 +2,12 @@ import {
   Component, ElementRef, EventEmitter, Input, OnInit, Output,
   ViewChild
 } from "@angular/core";
-import {FieldDataType, queryDataTypes} from "../../common";
+import {FieldDataType} from "../../common";
 import {URLSearchParamsUtils} from "../../utils/url-search-params.utils";
 import {CapabilitiesService} from "../../../core/capabilities.service";
 import {MatMenuTrigger} from "@angular/material";
 import {DatepickerInputComponent} from "./datepicker-input.component";
+import {JobStatus} from "../../model/JobStatus";
 
 @Component({
   selector: 'jm-filter-chip',
@@ -46,8 +47,8 @@ export class FilterChipComponent implements OnInit {
   }
 
   getCurrentChipType(): string {
-    if (this.chipKey && queryDataTypes.has(this.chipKey)) {
-      return FieldDataType[queryDataTypes.get(this.chipKey)];
+    if (this.chipKey && this.options.has(this.chipKey)) {
+      return FieldDataType[this.options.get(this.chipKey)];
     }
     // Default to text for all labels
     return FieldDataType[FieldDataType.Text];
@@ -55,6 +56,17 @@ export class FilterChipComponent implements OnInit {
 
   getDisplayValue() {
     return this.chipKey + ': ' + this.currentChipValue;
+  }
+
+  getChipValues(): string[] {
+    if (this.chipKey == 'statuses') {
+      return Object.keys(JobStatus);
+    }
+    const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
+    let labelField = capabilities.displayFields.find(f => f.field === 'labels.' + this.chipKey);
+    if (labelField) {
+      return labelField.validFieldValues;
+    }
   }
 
   removeThisChip(): void {

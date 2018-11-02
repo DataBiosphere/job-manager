@@ -7,7 +7,7 @@ import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from "../common
 import {TimeFrame} from "../model/TimeFrame";
 
 /** Utilities for working with URLSearchParams*/
-  export class URLSearchParamsUtils {
+export class URLSearchParamsUtils {
 
   /** Accepts a QueryJobsRequest, and translates it reversibly into a string
    *  that can be passed as a QueryParam. */
@@ -86,13 +86,11 @@ import {TimeFrame} from "../model/TimeFrame";
             break;
           }
           case FieldDataType.Enum: {
-            // Handle enum data types. Currently this is only statuses, if we
-            // add additional ones this has to be updated.
-            let statuses: JobStatus[] = [];
-            for (let status of urlSearchParams.getAll(key)) {
-              statuses.push(JobStatus[status]);
+            let options: string[] = [];
+            for (let option of urlSearchParams.getAll(key)) {
+              options.push(option);
             }
-            value = statuses;
+            value = options;
           }
         }
 
@@ -154,7 +152,14 @@ import {TimeFrame} from "../model/TimeFrame";
     let queryFields = new Map<string, FieldDataType>(queryDataTypes);
 
     if (capabilities.commonLabels) {
-      capabilities.commonLabels.map(label => queryFields.set(label, FieldDataType.Text));
+      capabilities.commonLabels.map(label => {
+        let currentField = capabilities.displayFields.find( f => f.field == 'labels.' + label);
+        if (currentField.validFieldValues) {
+          queryFields.set(label, FieldDataType.Enum);
+        } else {
+          queryFields.set(label, FieldDataType.Text);
+        }
+      });
     }
 
     if (capabilities.queryExtensions) {
@@ -167,7 +172,6 @@ import {TimeFrame} from "../model/TimeFrame";
         }
       });
     }
-
     return queryFields;
   }
 }
