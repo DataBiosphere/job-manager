@@ -99,11 +99,13 @@ describe('FilterChipComponent', () => {
   }
 
   @Component({
-    selector: 'jm-status-selection',
+    selector: 'jm-enum-selection',
     template: ''
   })
   class MockEnumSelectionComponent {
     @Input() initialChipValue: string;
+    @Input() chipKey: string;
+    @Input() chipOptions: string[];
   }
 
   @Component({

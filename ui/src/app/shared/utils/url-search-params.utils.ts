@@ -5,6 +5,7 @@ import {QueryJobsRequest} from "../model/QueryJobsRequest";
 import {JobStatus} from "../model/JobStatus";
 import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from "../common";
 import {TimeFrame} from "../model/TimeFrame";
+import {DisplayField} from "../model/DisplayField";
 
 /** Utilities for working with URLSearchParams*/
 export class URLSearchParamsUtils {
@@ -64,7 +65,7 @@ export class URLSearchParamsUtils {
 
   /** Accepts a string query that was generated via encodeUrlSearchParams and
    *  converts it back into a QueryJobsRequest. */
-  public static unpackURLSearchParams(query: string): QueryJobsRequest {
+  public static unpackURLSearchParams(query: string, capabilities?: CapabilitiesResponse): QueryJobsRequest {
     let urlSearchParams = new URLSearchParams(query);
     let queryRequest = {
       labels: {},
@@ -72,10 +73,23 @@ export class URLSearchParamsUtils {
     };
 
     urlSearchParams.paramsMap.forEach((values: string[], key: string) => {
-      if (queryDataTypes.has(key) || queryExtensionsDataTypes.has(key)) {
-        // If this is a known field, handle the data type explicitly
-        var value: any;
-        let dataType = queryDataTypes.has(key) ? queryDataTypes.get(key) : queryExtensionsDataTypes.get(key);
+      let labelField: DisplayField = null;
+      if (capabilities) {
+        labelField = capabilities.displayFields.find(f => f.field === 'labels.' + key);
+      }
+      if (queryDataTypes.has(key) || queryExtensionsDataTypes.has(key) || labelField) {
+        // If this is label, use the settings to determine type
+        // otherwise, if it's a known field, handle the data type explicitly
+        let value: any;
+        let dataType: FieldDataType;
+        if (labelField) {
+          dataType = labelField.validFieldValues ? FieldDataType.Enum : FieldDataType.Text;
+        } else if (queryDataTypes.has(key)){
+          dataType = queryDataTypes.get(key);
+        } else {
+          dataType = queryExtensionsDataTypes.get(key);
+        }
+
         switch (dataType) {
           case FieldDataType.Text: {
             value = urlSearchParams.get(key);
@@ -96,8 +110,10 @@ export class URLSearchParamsUtils {
 
         if (queryDataTypes.has(key)) {
           queryRequest[key] = value;
-        } else {
+        } else if (queryExtensionsDataTypes.has(key)) {
           queryRequest.extensions[key] = value;
+        } else if (labelField) {
+          queryRequest.labels[key] = value;
         }
       }
       else {

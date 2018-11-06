@@ -31,6 +31,7 @@ import {JobStatus} from '../model/JobStatus';
 import {FieldDataType} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
+import {CapabilitiesResponse} from "../model/CapabilitiesResponse";
 
 @Component({
   selector: 'jm-header',
@@ -60,6 +61,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   private readonly completedStatuses = [JobStatus.Succeeded];
   private readonly failedStatuses = [JobStatus.Failed, JobStatus.Aborted];
   private readonly onHoldStatuses = [JobStatus.OnHold];
+  private readonly capabilities: CapabilitiesResponse;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -68,6 +70,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     private zone: NgZone,
     private cdr: ChangeDetectorRef,
   ) {
+    this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
     route.queryParams.subscribe(params => this.refreshChips(params['q']));
   }
 
@@ -76,8 +79,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
     }
 
-    this.options = URLSearchParamsUtils.getQueryFields(
-      this.capabilitiesService.getCapabilitiesSynchronous());
+    this.options = URLSearchParamsUtils.getQueryFields(this.capabilities);
     this.filterOptions();
   }
 
@@ -201,7 +203,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
   shouldDisplayStatusButtons(): boolean {
     return !URLSearchParamsUtils.unpackURLSearchParams(
-      this.route.snapshot.queryParams['q'])['statuses'];
+      this.route.snapshot.queryParams['q'], this.capabilities)['statuses'];
   }
 
   shouldDisplayStatusCounts(): boolean {

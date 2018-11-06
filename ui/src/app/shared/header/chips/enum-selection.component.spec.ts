@@ -45,9 +45,10 @@ describe('EnumSelectionComponent', () => {
 
   it('should update status list', async( () => {
     spyOn(parentComponent, 'updateValueCallback').and.callThrough();
-    testComponent.changeStatus('Running', false);
-    testComponent.changeStatus('Completed', true);
-    testComponent.changeStatus('Aborted', true);
+
+    testComponent.changeOption('Running', false);
+    testComponent.changeOption('Completed', true);
+    testComponent.changeOption('Aborted', true);
 
     expect(parentComponent.updateValueCallback).toHaveBeenCalledTimes(3);
     expect(parentComponent.updateValueCallback).toHaveBeenCalledWith("Failed");
@@ -56,11 +57,11 @@ describe('EnumSelectionComponent', () => {
   }));
 
   @Component({
-    selector: 'jm-test-status-selection-component',
+    selector: 'jm-test-enum-selection-component',
     template:
-      `<jm-status-selection
+      `<jm-enum-selection
         [initialChipValue]="initialValue"
-        (updateValue)="updateValueCallback($event)"></jm-status-selection>`
+        (updateValue)="updateValueCallback($event)"></jm-enum-selection>`
   })
   class TestEnumSelectionComponent {
     @ViewChild(EnumSelectionComponent)
