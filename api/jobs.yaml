@@ -579,6 +579,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/ShardStatusCount'
+      callCached:
+        type: boolean
+        description: A flag to indicate if task was call-cached.
+        default: false
   FailureMessage:
     description: >
       Failure messages with optional additional information if the failure

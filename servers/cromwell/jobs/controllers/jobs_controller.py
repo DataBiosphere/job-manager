@@ -136,6 +136,12 @@ def format_task(task_name, task_metadata):
     if task_metadata[-1].get('shardIndex') != -1:
         return format_scattered_task(task_name, task_metadata)
     latest_attempt = task_metadata[-1]
+
+    call_cached = False
+    if latest_attempt.get('callCaching'):
+        call_cached = latest_attempt.get('callCaching') and (
+            latest_attempt.get('callCaching').get('hit'))
+
     return TaskMetadata(
         name=remove_workflow_name(task_name),
         execution_id=latest_attempt.get('jobId'),
@@ -151,7 +157,8 @@ def format_task(task_name, task_metadata):
         attempts=latest_attempt.get('attempt'),
         call_root=latest_attempt.get('callRoot'),
         job_id=latest_attempt.get('subWorkflowId'),
-        shard_statuses=None)
+        shard_statuses=None,
+        call_cached=call_cached)
 
 
 def format_failure(task_name, metadata):
@@ -204,7 +211,8 @@ def format_scattered_task(task_name, task_metadata):
         attempts=task_metadata[-1].get('attempt'),
         call_root=remove_shard_path(task_metadata[-1].get('callRoot')),
         job_id=task_metadata[-1].get('subWorkflowId'),
-        shard_statuses=shard_status_counts)
+        shard_statuses=shard_status_counts,
+        call_cached=False)
 
 
 def remove_workflow_name(name):
