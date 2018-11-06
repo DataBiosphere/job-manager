@@ -38,6 +38,9 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
+    if (this.hasCallCachedTask() || this.hasScatteredTask()) {
+      this.displayedColumns.splice(1, 0, "taskInfoIcons");
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -63,12 +66,22 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     return this.job.extensions && !!this.job.extensions.timingUrl;
   }
 
-  isScattered(task: TaskMetadata): boolean {
-    return task.shardStatuses != null;
+  hasCallCachedTask(): boolean {
+    if (this.tasks.find(t => t.callCached === true)) {
+      return true;
+    }
+    return false;
+  }
+
+  hasScatteredTask(): boolean {
+    if (this.tasks.find(t => t.shardStatuses !== null)) {
+      return true;
+    }
+    return false;
   }
 
   getScatteredCountTotal(task: TaskMetadata): number {
-    if (this.isScattered(task)) {
+    if (task.shardStatuses) {
       let count = 0;
       task.shardStatuses.forEach((status) => {
         count += status.count;
@@ -87,7 +100,7 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
 
   getShardCountByStatus(task:TaskMetadata, status:JobStatus): number {
     let result = 0
-    if(this.isScattered(task)) {
+    if(task.shardStatuses) {
       task.shardStatuses.forEach((thisStatus) => {
         if (status == thisStatus.status) {
           result = thisStatus.count;
