@@ -9,23 +9,36 @@
           <mat-cell *matCellDef="let t" class="task-title">
             <a class="title-link" *ngIf="t.jobId" href="{{ '/jobs/' + t.jobId }}">{{ t.name }}</a>
             <p *ngIf="!t.jobId" class="title-nolink">{{ t.name }}</p>
-            <button *ngIf="isScattered(t)" mat-icon-button class="shard-icon" [matMenuTriggerFor]="shardMenu">
+          </mat-cell>
+        </ng-container>
+
+        <!-- Shard Statuses column -->
+        <ng-container matColumnDef="taskInfoIcons">
+          <mat-header-cell *matHeaderCellDef class="slim-cell"></mat-header-cell>
+          <mat-cell *matCellDef="let t" class="slim-cell">
+            <button *ngIf="t.shardStatuses" mat-icon-button class="shard-icon" [matMenuTriggerFor]="shardMenu">
               <clr-tooltip>
                 <clr-icon clrTooltipTrigger shape="layers" size="24"  class="is-solid"></clr-icon>
-                <clr-tooltip-content clrPosition="right"  clrSize="xs" *clrIfOpen>
+                <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
                   <span>task shards</span>
                 </clr-tooltip-content>
               </clr-tooltip>
             </button>
             <mat-menu #shardMenu="matMenu" class="wide-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
               <div class="shards-header">Scattered: {{ getScatteredCountTotal(t) }} shards</div>
-              <div class="shards-container" *ngIf="isScattered(t)">
+              <div class="shards-container" *ngIf="t.shardStatuses">
                 <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
                   <div class="shard-status"><clr-icon [attr.shape]="getStatusIcon(jobStatus)" size="18"></clr-icon></div>
                   <div class="shard-count">{{ getShardCountByStatus(t, jobStatus) }}</div>
                 </div>
               </div>
             </mat-menu>
+            <clr-tooltip *ngIf="t.callCached">
+              <clr-icon clrTooltipTrigger shape="copy" size="24"></clr-icon>
+              <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+                <span>This task was cached</span>
+              </clr-tooltip-content>
+            </clr-tooltip>
           </mat-cell>
         </ng-container>
 
