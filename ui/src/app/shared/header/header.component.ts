@@ -57,8 +57,8 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   filteredOptions: Observable<string[]>;
 
   private readonly activeStatuses = [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
-  private readonly completedStatuses = [JobStatus.Succeeded, JobStatus.Aborted];
-  private readonly failedStatuses = [JobStatus.Failed];
+  private readonly completedStatuses = [JobStatus.Succeeded];
+  private readonly failedStatuses = [JobStatus.Failed, JobStatus.Aborted];
   private readonly onHoldStatuses = [JobStatus.OnHold];
 
   constructor(
