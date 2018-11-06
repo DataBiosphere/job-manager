@@ -71,7 +71,7 @@ jobs:
           name: Install detox and yapf
           # detox fails with newer versions of tox: https://github.com/tox-dev/detox/issues/33
           command: |
-            pip install detox tox==3.4.0 yapf
+            pip install detox tox==3.5.0 yapf
       - run:
           name: Lint python code with yapf
           command: |
