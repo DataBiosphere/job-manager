@@ -170,7 +170,7 @@ export class URLSearchParamsUtils {
     if (capabilities.commonLabels) {
       capabilities.commonLabels.map(label => {
         let currentField = capabilities.displayFields.find( f => f.field == 'labels.' + label);
-        if (currentField.validFieldValues) {
+        if (currentField && currentField.validFieldValues) {
           queryFields.set(label, FieldDataType.Enum);
         } else {
           queryFields.set(label, FieldDataType.Text);
