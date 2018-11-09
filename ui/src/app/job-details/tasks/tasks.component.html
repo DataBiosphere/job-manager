@@ -72,7 +72,7 @@
           <mat-header-cell *matHeaderCellDef> Log files </mat-header-cell>
           <mat-cell *matCellDef="let t" class="column">
             <clr-tooltip *ngIf="getResourceUrl(t.stdout)">
-              <a class="log-item" href="{{ getResourceUrl(t.stdout) }}">
+              <a class="log-item" href="{{ getResourceUrl(t.stdout) }}" target="_blank">
                 <clr-icon clrTooltipTrigger shape="file" size="24"></clr-icon>
                 <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
                   <span>stdout log</span>
@@ -81,7 +81,7 @@
             </clr-tooltip>
             <clr-icon *ngIf="!getResourceUrl(t.stdout)" shape="file" size="24" style="color: #ccc;"></clr-icon>
             <clr-tooltip *ngIf="getResourceUrl(t.stderr)">
-              <a class="log-item" href="{{ getResourceUrl(t.stderr) }}">
+              <a class="log-item" href="{{ getResourceUrl(t.stderr) }}" target="_blank">
                 <clr-icon clrTooltipTrigger shape="file" size="24" class="has-alert log-error" style="color: #000;"></clr-icon>
                 <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
                   <span>stderr log</span>
@@ -90,7 +90,7 @@
             </clr-tooltip>
             <clr-icon *ngIf="!getResourceUrl(t.stderr)" shape="file" size="24" class="has-alert log-error disabled" style="color: #ccc;"></clr-icon>
             <clr-tooltip *ngIf="getTaskDirectory(t)">
-              <a class="log-item" href="{{ getTaskDirectory(t) }}">
+              <a class="log-item" href="{{ getTaskDirectory(t) }}" target="_blank">
                 <clr-icon clrTooltipTrigger shape="folder" size="24"></clr-icon>
                 <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
                   <span>execution directory</span>
