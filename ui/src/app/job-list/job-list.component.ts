@@ -68,7 +68,7 @@ export class JobListComponent implements OnInit {
         this.reloadJobs(this.route.snapshot.queryParams['q'], true);
       }
     });
-    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q'], this.capabilities);
+    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
     this.projectId = req.extensions.projectId || '';
 
     this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
@@ -108,7 +108,7 @@ export class JobListComponent implements OnInit {
 
     this.setLoading(true, lazy);
 
-    let req = URLSearchParamsUtils.unpackURLSearchParams(query, this.capabilities);
+    let req = URLSearchParamsUtils.unpackURLSearchParams(query);
     if (!req.extensions.projectId &&
         this.capabilities.queryExtensions &&
         this.capabilities.queryExtensions.includes('projectId')) {

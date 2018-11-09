@@ -203,7 +203,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
   shouldDisplayStatusButtons(): boolean {
     return !URLSearchParamsUtils.unpackURLSearchParams(
-      this.route.snapshot.queryParams['q'], this.capabilities)['statuses'];
+      this.route.snapshot.queryParams['q'])['statuses'];
   }
 
   shouldDisplayStatusCounts(): boolean {
