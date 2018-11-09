@@ -62,7 +62,7 @@ export class CapabilitiesActivator implements CanActivate {
     if (capabilities.queryExtensions && capabilities.queryExtensions.includes('projectId')) {
       // If we do not already have a project specified in the URL query
       // params, navigate to the projects page.
-      let queryRequest = URLSearchParamsUtils.unpackURLSearchParams(route.queryParams['q'], capabilities);
+      let queryRequest = URLSearchParamsUtils.unpackURLSearchParams(route.queryParams['q']);
       if (!queryRequest.extensions.projectId && !['projects', 'sign_in', 'dashboard'].includes(route.routeConfig.path)) {
         this.router.navigate(['projects']);
         throw CapabilitiesActivator.notActivatedError;
