@@ -3,19 +3,19 @@ import {MatCheckboxModule, MatListModule} from "@angular/material";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
-import {EnumSelectionComponent} from "./enum-selection.component";
+import {StatusSelectionComponent} from "./status-selection.component";
 import {Component, ViewChild} from "@angular/core";
 
-describe('EnumSelectionComponent', () => {
+describe('StatusSelectionComponent', () => {
 
-  let parentComponent: TestEnumSelectionComponent;
-  let testComponent: EnumSelectionComponent;
-  let fixture: ComponentFixture<TestEnumSelectionComponent>;
+  let parentComponent: TestStatusSelectionComponent;
+  let testComponent: StatusSelectionComponent;
+  let fixture: ComponentFixture<TestStatusSelectionComponent>;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        EnumSelectionComponent,
-        TestEnumSelectionComponent,
+        StatusSelectionComponent,
+        TestStatusSelectionComponent,
       ],
       imports: [
         BrowserAnimationsModule,
@@ -23,15 +23,15 @@ describe('EnumSelectionComponent', () => {
         MatListModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
-          {path: '', component: TestEnumSelectionComponent},
-          {path: 'jobs', component: TestEnumSelectionComponent}
+          {path: '', component: TestStatusSelectionComponent},
+          {path: 'jobs', component: TestStatusSelectionComponent}
         ]),
       ],
     }).compileComponents();
   }));
 
   beforeEach(async(() => {
-    fixture = TestBed.createComponent(TestEnumSelectionComponent);
+    fixture = TestBed.createComponent(TestStatusSelectionComponent);
     parentComponent = fixture.componentInstance;
     testComponent = parentComponent.statusSelectionComponent;
     fixture.detectChanges();
@@ -45,10 +45,9 @@ describe('EnumSelectionComponent', () => {
 
   it('should update status list', async( () => {
     spyOn(parentComponent, 'updateValueCallback').and.callThrough();
-
-    testComponent.changeOption('Running', false);
-    testComponent.changeOption('Completed', true);
-    testComponent.changeOption('Aborted', true);
+    testComponent.changeStatus('Running', false);
+    testComponent.changeStatus('Completed', true);
+    testComponent.changeStatus('Aborted', true);
 
     expect(parentComponent.updateValueCallback).toHaveBeenCalledTimes(3);
     expect(parentComponent.updateValueCallback).toHaveBeenCalledWith("Failed");
@@ -57,15 +56,15 @@ describe('EnumSelectionComponent', () => {
   }));
 
   @Component({
-    selector: 'jm-test-enum-selection-component',
+    selector: 'jm-test-status-selection-component',
     template:
-      `<jm-enum-selection
+      `<jm-status-selection
         [initialChipValue]="initialValue"
-        (updateValue)="updateValueCallback($event)"></jm-enum-selection>`
+        (updateValue)="updateValueCallback($event)"></jm-status-selection>`
   })
-  class TestEnumSelectionComponent {
-    @ViewChild(EnumSelectionComponent)
-    public statusSelectionComponent: EnumSelectionComponent;
+  class TestStatusSelectionComponent {
+    @ViewChild(StatusSelectionComponent)
+    public statusSelectionComponent: StatusSelectionComponent;
     initialValue="Running,Failed";
     updateValueCallback(newValue): void { }
   }

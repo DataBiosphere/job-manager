@@ -539,7 +539,7 @@ class TestJobsController(BaseTestCase):
                 'stdout': std_out,
                 'taskName': 'analysis',
                 'timestamp': response_timestamp
-             },{
+            },{
                 'callRoot': call_root,
                 'failure': 'test.analysis shard 1 failed',
                 'stderr': std_err,
@@ -664,11 +664,10 @@ class TestJobsController(BaseTestCase):
                                     datetime_format),
             end=datetime.strptime('2017-10-31T18:04:47.271Z', datetime_format),
             statuses=['Submitted', 'Running', 'Succeeded'],
-            labels=[{
-                'label': 'label-key-1:label-val-1'
-            }, {
-                'label': 'label-key-2:label-val-2'
-            }],
+            labels={
+                'label-key-1': 'label-val-1',
+                'label-key-2': 'label-val-2'
+            },
             page_size=100)
         query_params = [{
             'name': query.name

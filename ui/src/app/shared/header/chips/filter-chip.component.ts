@@ -47,6 +47,9 @@ export class FilterChipComponent implements OnInit {
   }
 
   getCurrentChipType(): string {
+    if (this.chipKey == 'statuses') {
+      return 'Status';
+    }
     if (this.chipKey && this.options.has(this.chipKey)) {
       return FieldDataType[this.options.get(this.chipKey)];
     }
@@ -59,9 +62,6 @@ export class FilterChipComponent implements OnInit {
   }
 
   getChipValues(): string[] {
-    if (this.chipKey == 'statuses') {
-      return Object.keys(JobStatus);
-    }
     const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
     let labelField = capabilities.displayFields.find(f => f.field === 'labels.' + this.chipKey);
     if (labelField) {

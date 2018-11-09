@@ -17,6 +17,7 @@ from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
+import urllib
 
 _DEFAULT_PAGE_SIZE = 64
 
@@ -323,7 +324,8 @@ def cromwell_query_params(query, page, page_size):
         } for s in set(query.statuses)]
         query_params.extend(statuses)
     if query.labels:
-        query_params.extend(query.labels)
+        labels = [{'label': k + ':' + v} for k, v in query.labels.items()]
+        query_params.extend(labels)
 
     query_params.append({'pageSize': str(page_size)})
     query_params.append({'page': str(page)})
@@ -380,13 +382,7 @@ def _get_base_url():
 def _format_query_labels(orig_query_labels):
     if orig_query_labels is None:
         return None
-    query_labels = []
+    query_labels = {}
     for key, val in orig_query_labels.items():
-        if isinstance(val, list):
-            for value_or in val:
-                query_labels.append({
-                    'labelor': str(key) + ':' + str(value_or)
-                })
-        else:
-            query_labels.append({'label': str(key) + ':' + str(val)})
+        query_labels[urllib.unquote(key)] = urllib.unquote(val)
     return query_labels

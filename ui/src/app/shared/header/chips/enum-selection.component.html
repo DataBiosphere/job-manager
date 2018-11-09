@@ -1,10 +1,13 @@
-<mat-list>
+<mat-radio-group>
+  <mat-list>
   <mat-list-item  *ngFor="let option of chipOptions">
-    <mat-checkbox
+    <mat-radio-button
       (click)="$event.stopPropagation()"
+      [value]="option"
       [checked]="isChecked(option)"
-      (change)="changeOption(option, $event.checked)">
+      (change)="changeOption(option)">
       {{ option }}
-    </mat-checkbox>
+    </mat-radio-button>
   </mat-list-item>
 </mat-list>
+</mat-radio-group>

@@ -3,8 +3,14 @@ import {Component, Input, ViewChild} from "@angular/core";
 import {FilterChipComponent} from "./filter-chip.component";
 import {RouterTestingModule} from "@angular/router/testing";
 import {
-  MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatFormFieldModule, MatInputModule, MatListModule,
-  MatMenuModule
+  MatCheckboxModule,
+  MatChipsModule,
+  MatDatepickerModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatListModule,
+  MatMenuModule,
+  MatRadioModule
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -12,6 +18,7 @@ import {CapabilitiesResponse} from "../../model/CapabilitiesResponse";
 import {CapabilitiesService} from "../../../core/capabilities.service";
 import {FakeCapabilitiesService} from "../../../testing/fake-capabilities.service";
 import {By} from "@angular/platform-browser";
+import {EnumSelectionComponent} from "./enum-selection.component";
 
 describe('FilterChipComponent', () => {
 
@@ -31,8 +38,9 @@ describe('FilterChipComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         FilterChipComponent,
+        EnumSelectionComponent,
         MockDatepickerInputComponent,
-        MockEnumSelectionComponent,
+        MockStatusSelectionComponent,
         TestFilterChipComponent,
       ],
       imports: [
@@ -45,6 +53,7 @@ describe('FilterChipComponent', () => {
         MatInputModule,
         MatListModule,
         MatMenuModule,
+        MatRadioModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {path: '', component: TestFilterChipComponent},
@@ -99,13 +108,11 @@ describe('FilterChipComponent', () => {
   }
 
   @Component({
-    selector: 'jm-enum-selection',
+    selector: 'jm-status-selection',
     template: ''
   })
-  class MockEnumSelectionComponent {
+  class MockStatusSelectionComponent {
     @Input() initialChipValue: string;
-    @Input() chipKey: string;
-    @Input() chipOptions: string[];
   }
 
   @Component({

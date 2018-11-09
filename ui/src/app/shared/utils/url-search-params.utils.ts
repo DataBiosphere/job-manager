@@ -100,11 +100,13 @@ export class URLSearchParamsUtils {
             break;
           }
           case FieldDataType.Enum: {
-            let options: string[] = [];
-            for (let option of urlSearchParams.getAll(key)) {
-              options.push(option);
+            // Handle enum data types. Currently this is only statuses, if we
+            // add additional ones this has to be updated.
+            if(key == 'statuses'){
+              value = urlSearchParams.getAll(key);
+            } else {
+              value = urlSearchParams.get(key);
             }
-            value = options;
           }
         }
 
