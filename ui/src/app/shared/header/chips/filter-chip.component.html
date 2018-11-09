@@ -11,7 +11,7 @@
   <mat-form-field *ngSwitchCase="'Text'" class="query-input">
     <!--Free text input-->
     <input matInput #freeTextInput
-           placeholder="Equals"
+           placeholder="{{ chipKey | titlecase }} equals"
            type="search"
            [(ngModel)]="currentChipValue"
            value="{{currentChipValue}}"

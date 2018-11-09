@@ -18,6 +18,7 @@ import {
   MatNativeDateModule,
   MatPaginatorModule,
 } from "@angular/material";
+import {ClrIconModule} from '@clr/angular';
 import {HeaderComponent} from "./header/header.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {FilterChipComponent} from "./header/chips/filter-chip.component";
@@ -26,6 +27,7 @@ import {DatepickerInputComponent} from "./header/chips/datepicker-input.componen
 
 @NgModule({
   imports: [
+    ClrIconModule,
     CommonModule,
     FormsModule,
     MatAutocompleteModule,

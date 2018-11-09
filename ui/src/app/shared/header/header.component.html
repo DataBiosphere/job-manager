@@ -1,5 +1,6 @@
 <div class="content">
   <mat-form-field class="query-form">
+    <span matPrefix><clr-icon shape="filter-2" size="18" style="color: #888"></clr-icon></span>
     <mat-chip-list #chipList>
       <mat-chip
         *ngFor="let chipKey of getChipKeys()"
@@ -13,7 +14,7 @@
           (removeChip)="removeChip(chipKey)">
         </jm-filter-chip>
       </mat-chip>
-      <input matInput
+      <input matInput placeholder="Filter jobs"
              [(ngModel)]="inputValue"
              value="{{inputValue}}"
              [matAutocomplete]="auto"
@@ -31,9 +32,6 @@
         </mat-option>
       </mat-autocomplete>
     </mat-chip-list>
-    <button mat-icon-button matSuffix class="search-button" (click)="search()">
-      <img src="https://www.gstatic.com/images/icons/material/system/1x/search_grey600_24dp.png">
-    </button>
   </mat-form-field>
 
   <div *ngIf="showControls" class="search-table-controls">
