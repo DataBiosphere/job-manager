@@ -340,6 +340,8 @@ def cromwell_query_params(query, page, page_size):
 def format_job(job, now):
     start = _parse_datetime(job.get('start')) or now
     submission = _parse_datetime(job.get('submission'))
+    timing_url = '{cromwell_url}/{id}/timing'.format(
+        cromwell_url=_get_base_url(), id=job.get('id'))
     if submission is None:
         # Submission is required by the common jobs API. Submission may be missing
         # for subworkflows in which case we fallback to the workflow start time
@@ -355,7 +357,8 @@ def format_job(job, now):
         start=start,
         end=end,
         labels=job.get('labels'),
-        extensions=ExtendedFields(parent_job_id=job.get('parentWorkflowId')))
+        extensions=ExtendedFields(
+            parent_job_id=job.get('parentWorkflowId'), timing_url=timing_url))
 
 
 def _parse_datetime(date_string):
