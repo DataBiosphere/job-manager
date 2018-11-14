@@ -7,7 +7,7 @@ import {FieldDataType, queryDataTypes, queryExtensionsDataTypes} from "../common
 import {TimeFrame} from "../model/TimeFrame";
 
 /** Utilities for working with URLSearchParams*/
-  export class URLSearchParamsUtils {
+export class URLSearchParamsUtils {
 
   /** Accepts a QueryJobsRequest, and translates it reversibly into a string
    *  that can be passed as a QueryParam. */
@@ -149,12 +149,19 @@ import {TimeFrame} from "../model/TimeFrame";
     return chips;
   }
 
-  /** Returns the list of queryable non-label fields. */
+  /** Returns the list of queryable fields. */
   public static getQueryFields(capabilities: CapabilitiesResponse): Map<string, FieldDataType>  {
     let queryFields = new Map<string, FieldDataType>(queryDataTypes);
 
     if (capabilities.commonLabels) {
-      capabilities.commonLabels.map(label => queryFields.set(label, FieldDataType.Text));
+      capabilities.commonLabels.forEach(label => {
+        let currentField = capabilities.displayFields.find( f => f.field == 'labels.' + label);
+        if (currentField && currentField.validFieldValues) {
+          queryFields.set(label, FieldDataType.Enum);
+        } else {
+          queryFields.set(label, FieldDataType.Text);
+        }
+      });
     }
 
     if (capabilities.queryExtensions) {
@@ -167,7 +174,6 @@ import {TimeFrame} from "../model/TimeFrame";
         }
       });
     }
-
     return queryFields;
   }
 }

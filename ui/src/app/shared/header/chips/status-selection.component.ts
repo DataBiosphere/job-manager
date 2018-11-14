@@ -29,7 +29,7 @@ export class StatusSelectionComponent implements OnInit {
     return this.currentChipValues.indexOf(status) > -1;
   }
 
-  trimStatuses(statuses: string[]): string[] {
+  private trimStatuses(statuses: string[]): string[] {
     let newStatuses: string[] = [];
     statuses.forEach((status) => {
       if (status) {

@@ -539,7 +539,7 @@ class TestJobsController(BaseTestCase):
                 'stdout': std_out,
                 'taskName': 'analysis',
                 'timestamp': response_timestamp
-             },{
+            },{
                 'callRoot': call_root,
                 'failure': 'test.analysis shard 1 failed',
                 'stderr': std_err,

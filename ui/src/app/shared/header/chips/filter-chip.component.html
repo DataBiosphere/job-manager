@@ -20,7 +20,7 @@
   </mat-form-field>
   <!-- Statuses -->
   <jm-status-selection
-    *ngSwitchCase="'Enum'"
+    *ngSwitchCase="'Status'"
     [initialChipValue]="currentChipValue"
     (updateValue)="setChipValue($event)">
   </jm-status-selection>
@@ -31,4 +31,12 @@
     [initialChipValue]="currentChipValue"
     (updateValue)="setChipValue($event)">
   </jm-datepicker-input>
+  <!-- Enum input -->
+  <jm-enum-selection
+    *ngSwitchCase="'Enum'"
+    [initialChipValue]="currentChipValue"
+    [chipKey]="chipKey"
+    [chipOptions]="getChipValues()"
+    (updateValue)="setChipValue($event)">
+  </jm-enum-selection>
 </mat-menu>
