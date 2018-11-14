@@ -31,6 +31,7 @@ import {JobStatus} from '../model/JobStatus';
 import {FieldDataType} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
+import {CapabilitiesResponse} from "../model/CapabilitiesResponse";
 
 @Component({
   selector: 'jm-header',
@@ -76,8 +77,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
     }
 
-    this.options = URLSearchParamsUtils.getQueryFields(
-      this.capabilitiesService.getCapabilitiesSynchronous());
+    this.options = URLSearchParamsUtils.getQueryFields(this.capabilitiesService.getCapabilitiesSynchronous());
     this.filterOptions();
   }
 
