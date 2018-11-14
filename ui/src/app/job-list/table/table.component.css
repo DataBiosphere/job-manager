@@ -69,9 +69,48 @@
   visibility: visible !important;
 }
 
-.mat-card {
-  box-shadow: none !important;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+.mat-menu-panel.details-menu .mat-list-item a clr-icon {
+  padding-right: 10px;
+}
+
+::ng-deep .mat-menu-panel.details-menu {
+  width: auto;
+  overflow: visible;
+  padding: 12px 24px 24px 24px;
+}
+
+::ng-deep .mat-menu-panel.details-menu .mat-card-subtitle {
+  color: rgba(0, 0, 0, 0.8);
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+::ng-deep .mat-menu-panel.details-menu .mat-card-actions {
+  padding-top: 0;
+}
+
+::ng-deep .mat-menu-panel.details-menu .mat-list .mat-list-item {
+  height: auto;
+  margin: 1rem 0;
+  padding-left: 0;
+}
+
+::ng-deep .mat-menu-panel {
+  max-width: inherit;
+}
+
+::ng-deep .mat-menu-panel.details-menu .mat-card {
+  box-shadow: none;
+  border-bottom: none;
+  padding: 0;
+}
+
+::ng-deep .mat-menu-panel.details-menu mat-card a,
+::ng-deep .mat-menu-panel.details-menu mat-card a clr-icon {
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 1rem;
+  white-space: nowrap;
+  text-decoration: none;
 }
 
 /* Pause, Delete, and Group buttons */

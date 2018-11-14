@@ -133,6 +133,10 @@ export class JobsTableComponent implements OnInit {
     return this.selection.selected.length > 0;
   }
 
+  hasTimingUrl(job: QueryJobsResult): boolean {
+    return job.extensions && !!job.extensions.timingUrl;
+  }
+
   getDropdownArrowUrl(): string {
     return "https://www.gstatic.com/images/icons/material/system/1x/arrow_drop_down_grey700_24dp.png"
   }
