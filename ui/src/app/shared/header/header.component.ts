@@ -61,7 +61,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   private readonly completedStatuses = [JobStatus.Succeeded];
   private readonly failedStatuses = [JobStatus.Failed, JobStatus.Aborted];
   private readonly onHoldStatuses = [JobStatus.OnHold];
-  private readonly capabilities: CapabilitiesResponse;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -70,7 +69,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     private zone: NgZone,
     private cdr: ChangeDetectorRef,
   ) {
-    this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
     route.queryParams.subscribe(params => this.refreshChips(params['q']));
   }
 
@@ -79,7 +77,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
     }
 
-    this.options = URLSearchParamsUtils.getQueryFields(this.capabilities);
+    this.options = URLSearchParamsUtils.getQueryFields(this.capabilitiesService.getCapabilitiesSynchronous());
     this.filterOptions();
   }
 

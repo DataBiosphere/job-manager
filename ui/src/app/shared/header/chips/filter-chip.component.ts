@@ -63,7 +63,7 @@ export class FilterChipComponent implements OnInit {
 
   getChipValues(): string[] {
     const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
-    let labelField = capabilities.displayFields.find(f => f.field === 'labels.' + this.chipKey);
+    const labelField = capabilities.displayFields.find(f => f.field === 'labels.' + this.chipKey);
     if (labelField) {
       return labelField.validFieldValues;
     }

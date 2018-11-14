@@ -149,12 +149,12 @@ export class URLSearchParamsUtils {
     return chips;
   }
 
-  /** Returns the list of queryable non-label fields. */
+  /** Returns the list of queryable fields. */
   public static getQueryFields(capabilities: CapabilitiesResponse): Map<string, FieldDataType>  {
     let queryFields = new Map<string, FieldDataType>(queryDataTypes);
 
     if (capabilities.commonLabels) {
-      capabilities.commonLabels.map(label => {
+      capabilities.commonLabels.forEach(label => {
         let currentField = capabilities.displayFields.find( f => f.field == 'labels.' + label);
         if (currentField && currentField.validFieldValues) {
           queryFields.set(label, FieldDataType.Enum);
