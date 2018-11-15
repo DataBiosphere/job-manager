@@ -19,6 +19,7 @@ import {
   MatPaginatorModule,
   MatRadioModule
 } from "@angular/material";
+import {ClrIconModule} from '@clr/angular';
 import {HeaderComponent} from "./header/header.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {FilterChipComponent} from "./header/chips/filter-chip.component";
@@ -28,6 +29,7 @@ import {StatusSelectionComponent} from "./header/chips/status-selection.componen
 
 @NgModule({
   imports: [
+    ClrIconModule,
     CommonModule,
     FormsModule,
     MatAutocompleteModule,
