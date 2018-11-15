@@ -17,13 +17,15 @@ import {
   MatMenuModule,
   MatNativeDateModule,
   MatPaginatorModule,
+  MatRadioModule
 } from "@angular/material";
 import {ClrIconModule} from '@clr/angular';
 import {HeaderComponent} from "./header/header.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {FilterChipComponent} from "./header/chips/filter-chip.component";
-import {StatusSelectionComponent} from "./header/chips/status-selection.component";
+import {EnumSelectionComponent} from "./header/chips/enum-selection.component";
 import {DatepickerInputComponent} from "./header/chips/datepicker-input.component";
+import {StatusSelectionComponent} from "./header/chips/status-selection.component";
 
 @NgModule({
   imports: [
@@ -43,6 +45,7 @@ import {DatepickerInputComponent} from "./header/chips/datepicker-input.componen
     MatNativeDateModule,
     MatPaginatorModule,
     ReactiveFormsModule,
+    MatRadioModule
   ],
   declarations: [
     DatepickerInputComponent,
@@ -51,7 +54,8 @@ import {DatepickerInputComponent} from "./header/chips/datepicker-input.componen
     FilterChipComponent,
     HeaderComponent,
     ShortDateTimePipe,
-    StatusSelectionComponent,
+    EnumSelectionComponent,
+    StatusSelectionComponent
   ],
   providers: [],
   exports: [

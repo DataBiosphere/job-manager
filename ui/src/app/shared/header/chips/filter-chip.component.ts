@@ -7,6 +7,7 @@ import {URLSearchParamsUtils} from "../../utils/url-search-params.utils";
 import {CapabilitiesService} from "../../../core/capabilities.service";
 import {MatMenuTrigger} from "@angular/material";
 import {DatepickerInputComponent} from "./datepicker-input.component";
+import {JobStatus} from "../../model/JobStatus";
 
 @Component({
   selector: 'jm-filter-chip',
@@ -46,6 +47,9 @@ export class FilterChipComponent implements OnInit {
   }
 
   getCurrentChipType(): string {
+    if (this.chipKey == 'statuses') {
+      return 'Status';
+    }
     if (this.chipKey && this.options.has(this.chipKey)) {
       return FieldDataType[this.options.get(this.chipKey)];
     }
@@ -55,6 +59,14 @@ export class FilterChipComponent implements OnInit {
 
   getDisplayValue() {
     return this.chipKey + ': ' + this.currentChipValue;
+  }
+
+  getChipValues(): string[] {
+    const capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
+    const labelField = capabilities.displayFields.find(f => f.field === 'labels.' + this.chipKey);
+    if (labelField) {
+      return labelField.validFieldValues;
+    }
   }
 
   removeThisChip(): void {
