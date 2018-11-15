@@ -159,14 +159,14 @@ export class JobListComponent implements OnInit {
     this.reloadJobs(this.route.snapshot.queryParams['q']);
   }
 
-  handleFiltersChanged(filter: string) {
-    const [key, value] = filter.split(':');
+  handleFiltersChanged(filter: string[]) {
+    const [key, value] = filter;
     if (this.header.chips.has(key)) {
-      this.header.updateValue('statuses', value);
+      this.header.updateValue(key, value);
       return;
     }
     else {
-      this.header.addChip(filter);
+      this.header.addChip(key + ':' + value);
     }
   }
 

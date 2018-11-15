@@ -40,7 +40,7 @@ export class JobsTableComponent implements OnInit {
   @Input() dataSource: DataSource<QueryJobsResult>;
   @Output() onJobsChanged: EventEmitter<QueryJobsResult[]> = new EventEmitter();
   @Input() displayFields: DisplayField[];
-  @Output() onFiltersChanged: EventEmitter<string> = new EventEmitter();
+  @Output() onFiltersChanged: EventEmitter<string[]> = new EventEmitter();
 
   private mouseoverJob: QueryJobsResult;
 
@@ -119,7 +119,7 @@ export class JobsTableComponent implements OnInit {
 
   filterOnFieldValue(field: string, value: string) {
     if (field && value) {
-      this.onFiltersChanged.emit(field + ':' + value);
+      this.onFiltersChanged.emit([field, value]);
     }
   }
 

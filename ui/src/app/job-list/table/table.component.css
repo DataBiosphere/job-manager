@@ -105,6 +105,11 @@
   padding: 0;
 }
 
+::ng-deep .mat-menu-panel.details-menu mat-card a {
+  display: block;
+  cursor: pointer;
+}
+
 ::ng-deep .mat-menu-panel.details-menu mat-card a,
 ::ng-deep .mat-menu-panel.details-menu mat-card a clr-icon {
   color: rgba(0, 0, 0, 0.8);
