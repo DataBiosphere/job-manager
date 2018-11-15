@@ -38,6 +38,7 @@
     [ngStyle]="{'opacity': tableOpacity}"
     [dataSource]="dataSource"
     (onJobsChanged)="handleJobsChanged()"
+    (onFiltersChanged)="handleFiltersChanged($event)"
     [displayFields]="displayFields">
   </jm-job-list-table>
   <div *ngIf="loading" class="spinner-container">

@@ -41,23 +41,38 @@
       </button>
       <mat-menu #labelMenu="matMenu" class="details-menu">
         <mat-card>
-          <mat-card-title>{{ j.name }}</mat-card-title>
-          <p>{{ j.status }}</p>
-          <p>Submitted: {{ j.submission | jmShortDateTime }}</p>
+          <mat-card-subtitle>{{ j.status }}</mat-card-subtitle>
+          <mat-card-subtitle>Submitted: {{ j.submission | jmShortDateTime }}</mat-card-subtitle>
+          <mat-divider></mat-divider>
+          <mat-card-actions>
+            <mat-list>
+              <mat-list-item>
+                <a [routerLink]="[j.id]" [queryParams]="getQueryParams()">
+                  <clr-icon shape="arrow" dir="right" size="24"></clr-icon>
+                  <span>Job details</span>
+                </a>
+              </mat-list-item>
+              <mat-list-item *ngIf="canAbort(j)">
+                <a (click)="abortJob(j)">
+                  <clr-icon shape="times-circle" size="24"></clr-icon>
+                  <span>Abort job</span>
+                </a>
+              </mat-list-item>
+              <mat-list-item *ngIf="hasTimingUrl(j)">
+                <a href="{{ j.extensions.timingUrl }}" target="_blank">
+                  <clr-icon shape="hourglass" size="24"></clr-icon>
+                  <span>Timing Diagram</span>
+                </a>
+              </mat-list-item>
+              <mat-list-item *ngIf="j.name">
+                <a (click)="filterOnFieldValue('name', j.name)">
+                  <clr-icon shape="filter-2" size="24"></clr-icon>
+                  <span>Filter by <strong>name:{{ j.name }}</strong></span>
+                </a>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-actions>
         </mat-card>
-        <a mat-menu-item [routerLink]="[j.id]" [queryParams]="getQueryParams()">
-          <button mat-icon-button>
-            <img src="https://www.gstatic.com/images/icons/material/system/1x/arrow_forward_grey600_24dp.png">
-          </button>
-          <span>Job details</span>
-        </a>
-
-        <button mat-menu-item *ngIf="canAbort(j)" (click)="abortJob(j)">
-          <button mat-icon-button>
-            <img src="https://www.gstatic.com/images/icons/material/system/1x/cancel_grey600_24dp.png">
-          </button>
-          <span>Abort job</span>
-        </button>
       </mat-menu>
     </mat-cell>
   </ng-container>

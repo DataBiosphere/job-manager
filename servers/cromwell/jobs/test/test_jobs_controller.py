@@ -713,7 +713,8 @@ class TestJobsController(BaseTestCase):
             submission=formatted_time,
             start=formatted_time,
             end=formatted_time,
-            extensions=ExtendedFields())
+            extensions=ExtendedFields(
+                timing_url='https://test-cromwell.org/12345/timing'))
         self.assertEqual(
             jobs_controller.format_job(job, formatted_time), result)
 
@@ -734,7 +735,8 @@ class TestJobsController(BaseTestCase):
             submission=formatted_time,
             start=formatted_time,
             end=formatted_time,
-            extensions=ExtendedFields())
+            extensions=ExtendedFields(
+                timing_url='https://test-cromwell.org/12345/timing'))
         self.assertEqual(
             jobs_controller.format_job(job, formatted_time), result)
 
@@ -748,7 +750,8 @@ class TestJobsController(BaseTestCase):
             status=job.get('status'),
             start=formatted_time,
             submission=formatted_time,
-            extensions=ExtendedFields())
+            extensions=ExtendedFields(
+                timing_url='https://test-cromwell.org/12345/timing'))
         self.assertEqual(
             jobs_controller.format_job(job, formatted_time), result)
 
@@ -768,7 +771,8 @@ class TestJobsController(BaseTestCase):
             submission=formatted_time,
             start=formatted_time,
             end=None,
-            extensions=ExtendedFields())
+            extensions=ExtendedFields(
+                timing_url='https://test-cromwell.org/12345/timing'))
         self.assertEqual(
             jobs_controller.format_job(job, formatted_time), result)
 

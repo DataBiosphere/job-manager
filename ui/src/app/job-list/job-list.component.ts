@@ -159,6 +159,17 @@ export class JobListComponent implements OnInit {
     this.reloadJobs(this.route.snapshot.queryParams['q']);
   }
 
+  handleFiltersChanged(filter: string[]) {
+    const [key, value] = filter;
+    if (this.header.chips.has(key)) {
+      this.header.updateValue(key, value);
+      return;
+    }
+    else {
+      this.header.addChip(key + ':' + value);
+    }
+  }
+
   private setLoading(loading: boolean, lazy: boolean): void {
     if (!lazy) {
       this.loading = loading;
