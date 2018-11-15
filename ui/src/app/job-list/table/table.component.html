@@ -53,7 +53,7 @@
                 </a>
               </mat-list-item>
               <mat-list-item *ngIf="canAbort(j)">
-                <a href="#" (click)="abortJob(j)">
+                <a (click)="abortJob(j)">
                   <clr-icon shape="times-circle" size="24"></clr-icon>
                   <span>Abort job</span>
                 </a>
@@ -65,7 +65,7 @@
                 </a>
               </mat-list-item>
               <mat-list-item *ngIf="j.name">
-                <a [href]="'?q=name%3D' + j.name">
+                <a (click)="filterOnFieldValue('name', j.name)">
                   <clr-icon shape="filter-2" size="24"></clr-icon>
                   <span>Filter by <strong>name:{{ j.name }}</strong></span>
                 </a>

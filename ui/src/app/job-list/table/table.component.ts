@@ -40,6 +40,7 @@ export class JobsTableComponent implements OnInit {
   @Input() dataSource: DataSource<QueryJobsResult>;
   @Output() onJobsChanged: EventEmitter<QueryJobsResult[]> = new EventEmitter();
   @Input() displayFields: DisplayField[];
+  @Output() onFiltersChanged: EventEmitter<string> = new EventEmitter();
 
   private mouseoverJob: QueryJobsResult;
 
@@ -114,6 +115,12 @@ export class JobsTableComponent implements OnInit {
         this.onJobsChanged.emit([job]);
       })
       .catch((error) => this.handleError(error));
+  }
+
+  filterOnFieldValue(field: string, value: string) {
+    if (field && value) {
+      this.onFiltersChanged.emit(field + ':' + value);
+    }
   }
 
   canAbortAnySelected(): boolean {
