@@ -74,8 +74,11 @@ export class FilterChipComponent implements OnInit {
   }
 
   setChipValue(value: string): void {
+    console.log(this.getCurrentChipType());
     if (value) {
-      this.chipMenuTrigger.closeMenu();
+      if (this.getCurrentChipType() != 'Status') {
+        this.chipMenuTrigger.closeMenu();
+      }
       this.currentChipValue = value;
       this.updateValue.emit(this.currentChipValue);
     }
