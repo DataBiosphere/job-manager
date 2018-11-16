@@ -10,8 +10,8 @@ export enum JobStatusIcon {
   Submitted = 'minus',
   Running = 'sync',
   Aborting = 'sync',
-  Failed = 'exclamation-circle',
-  Succeeded = 'check-circle',
+  Failed = 'error-standard',
+  Succeeded = 'success-standard',
   Aborted = 'times-circle',
   OnHold = 'minus-circle'
 }
