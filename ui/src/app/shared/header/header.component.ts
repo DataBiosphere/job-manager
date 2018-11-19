@@ -62,7 +62,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   private readonly completedStatuses = [JobStatus.Succeeded];
   private readonly failedStatuses = [JobStatus.Failed, JobStatus.Aborted];
   private readonly onHoldStatuses = [JobStatus.OnHold];
-  private readonly capabilties: CapabilitiesResponse;
+  private readonly capabilities: CapabilitiesResponse;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -72,7 +72,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     private cdr: ChangeDetectorRef,
   ) {
     route.queryParams.subscribe(params => this.refreshChips(params['q']));
-    this.capabilties = this.capabilitiesService.getCapabilitiesSynchronous();
+    this.capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
   }
 
   ngOnInit(): void {
@@ -80,7 +80,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
     }
 
-    this.options = URLSearchParamsUtils.getQueryFields(this.capabilties);
+    this.options = URLSearchParamsUtils.getQueryFields(this.capabilities);
     this.filterOptions();
   }
 
@@ -167,11 +167,11 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   }
 
   getDisplayForFilter(value: string): string {
-    const displayField = this.capabilties.displayFields.find((f) => f.field == value);
+    const displayField = this.capabilities.displayFields.find((f) => f.field == value);
     if (displayField && displayField.display) {
       return displayField.display;
     }
-    const labelField = this.capabilties.displayFields.find((f) => f.field == 'labels.' + value);
+    const labelField = this.capabilities.displayFields.find((f) => f.field == 'labels.' + value);
     if (labelField && labelField.display) {
       return labelField.display;
     }
@@ -180,7 +180,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   }
 
   navigateWithStatus(statuses: JobStatus[]): void {
-    this.chips.set('statuses', statuses.map((status) => JobStatus[status]).join(','));
+    this.chips.set('status', statuses.map((status) => JobStatus[status]).join(','));
     this.search();
   }
 
@@ -217,7 +217,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
   shouldDisplayStatusButtons(): boolean {
     return !URLSearchParamsUtils.unpackURLSearchParams(
-      this.route.snapshot.queryParams['q'])['statuses'];
+      this.route.snapshot.queryParams['q'])['status'];
   }
 
   shouldDisplayStatusCounts(): boolean {

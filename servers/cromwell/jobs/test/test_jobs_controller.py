@@ -663,7 +663,7 @@ class TestJobsController(BaseTestCase):
             start=datetime.strptime('2017-10-30T18:04:47.271Z',
                                     datetime_format),
             end=datetime.strptime('2017-10-31T18:04:47.271Z', datetime_format),
-            statuses=['Submitted', 'Running', 'Succeeded'],
+            status=['Submitted', 'Running', 'Succeeded'],
             labels={
                 'label-key-1': 'label-val-1',
                 'label-key-2': 'label-val-2'
@@ -691,7 +691,7 @@ class TestJobsController(BaseTestCase):
         }, {
             'includeSubworkflows': 'false'
         }]
-        query_params.extend([{'status': s} for s in query.statuses])
+        query_params.extend([{'status': s} for s in query.status])
         self.assertItemsEqual(
             sorted(query_params),
             sorted(jobs_controller.cromwell_query_params(query, 23, 100)))
