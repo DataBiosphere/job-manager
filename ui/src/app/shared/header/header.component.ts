@@ -31,7 +31,6 @@ import {JobStatus} from '../model/JobStatus';
 import {FieldDataType} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
-import {CapabilitiesResponse} from "../model/CapabilitiesResponse";
 
 @Component({
   selector: 'jm-header',
@@ -56,11 +55,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   inputValue: string = '';
 
   filteredOptions: Observable<string[]>;
-
-  private readonly activeStatuses = [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
-  private readonly completedStatuses = [JobStatus.Succeeded];
-  private readonly failedStatuses = [JobStatus.Failed, JobStatus.Aborted];
-  private readonly onHoldStatuses = [JobStatus.OnHold];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -209,40 +203,13 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     return this.jobs.value.exhaustive;
   }
 
-  showActiveJobs(): void {
-    this.navigateWithStatus(this.activeStatuses.slice())
+  showJobsWithStatus(status: string): void {
+    this.navigateWithStatus([JobStatus[status]]);
   }
 
-  showCompletedJobs(): void {
-    this.navigateWithStatus(this.completedStatuses.slice())
-  }
-
-  showFailedJobs(): void {
-    this.navigateWithStatus(this.failedStatuses.slice());
-  }
-
-  showOnHoldJobs(): void {
-    this.navigateWithStatus(this.onHoldStatuses.slice());
-  }
-
-  getActiveCount(): number {
+  getJobsCountForStatus(status: string): number {
     return this.jobs.value.results.filter(
-      j => this.activeStatuses.includes(j.status)).length;
-  }
-
-  getFailedCount(): number {
-    return this.jobs.value.results.filter(
-      j => this.failedStatuses.includes(j.status)).length;
-  }
-
-  getCompletedCount(): number {
-    return this.jobs.value.results.filter(
-      j => this.completedStatuses.includes(j.status)).length;
-  }
-
-  getOnHoldCount(): number {
-    return this.jobs.value.results.filter(
-      j => this.onHoldStatuses.includes(j.status)).length;
+      j => j.status == JobStatus[status]).length;
   }
 
   private refreshChips(query: string): void {
