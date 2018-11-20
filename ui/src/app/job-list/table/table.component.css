@@ -95,10 +95,6 @@
   padding-left: 0;
 }
 
-::ng-deep .mat-menu-panel {
-  max-width: inherit;
-}
-
 ::ng-deep .mat-menu-panel.details-menu .mat-card {
   box-shadow: none;
   border-bottom: none;
@@ -108,6 +104,10 @@
 ::ng-deep .mat-menu-panel.details-menu mat-card a {
   display: block;
   cursor: pointer;
+  max-width: 210px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 ::ng-deep .mat-menu-panel.details-menu mat-card a,
