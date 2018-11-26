@@ -38,20 +38,9 @@
     <!-- Always include child divs, to support flex box style placement. -->
     <div>
       <ng-container *ngIf="shouldDisplayStatusButtons()">
-        <button mat-raised-button class="running-button status-button" (click)="showJobsWithStatus('Running')">
-          Running <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus('Running') }})</span>
-        </button>
-        <button mat-raised-button class="succeeded-button status-button" (click)="showJobsWithStatus('Succeeded')">
-          Succeeded <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus('Succeeded') }})</span>
-        </button>
-        <button mat-raised-button class="failed-button status-button" (click)="showJobsWithStatus('Failed')">
-          Failed <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus('Failed') }})</span>
-        </button>
-        <button mat-raised-button class="aborted-button status-button" (click)="showJobsWithStatus('Aborted')">
-          Aborted <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus('Aborted') }})</span>
-        </button>
-        <button mat-raised-button class="onhold-button status-button" (click)="showJobsWithStatus('OnHold')">
-          On Hold <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus('OnHold') }})</span>
+        <button class="mat-raised-button status-button {{ status | lowercase }}-button" (click)="showJobsWithStatus(status)" *ngFor="let status of buttonStatuses">
+          <clr-icon [attr.shape]="getStatusIcon(status)" size="18"></clr-icon>
+          {{ status }} <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus(status) }})</span>
         </button>
       </ng-container>
    </div>

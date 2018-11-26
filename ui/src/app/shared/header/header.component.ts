@@ -28,7 +28,7 @@ import {
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
 import {JobStatus} from '../model/JobStatus';
-import {FieldDataType} from '../common';
+import {FieldDataType, JobStatusIcon} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
 
@@ -55,6 +55,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   inputValue: string = '';
 
   filteredOptions: Observable<string[]>;
+  readonly buttonStatuses = ['Running', 'Succeeded', 'Failed', 'Aborted', 'OnHold'];
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -210,6 +211,10 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   getJobsCountForStatus(status: string): number {
     return this.jobs.value.results.filter(
       j => j.status == JobStatus[status]).length;
+  }
+
+  getStatusIcon(status: JobStatus): string {
+    return JobStatusIcon[status];
   }
 
   private refreshChips(query: string): void {
