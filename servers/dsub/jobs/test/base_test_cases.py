@@ -320,16 +320,16 @@ class BaseTestCases:
                 'echo RUNNING && sleep 30', name='running')
             self.wait_status(self.api_job_id(running), ApiStatus.RUNNING)
             self.assert_query_matches(
-                QueryJobsRequest(statuses=[ApiStatus.SUCCEEDED]), [succeeded])
+                QueryJobsRequest(status=[ApiStatus.SUCCEEDED]), [succeeded])
             self.assert_query_matches(
-                QueryJobsRequest(statuses=[ApiStatus.RUNNING]), [running])
+                QueryJobsRequest(status=[ApiStatus.RUNNING]), [running])
             self.assert_query_matches(
                 QueryJobsRequest(
-                    statuses=[ApiStatus.RUNNING, ApiStatus.SUCCEEDED]),
+                    status=[ApiStatus.RUNNING, ApiStatus.SUCCEEDED]),
                 [succeeded, running])
             self.assert_query_matches(
                 QueryJobsRequest(
-                    statuses=[ApiStatus.SUCCEEDED, ApiStatus.RUNNING]),
+                    status=[ApiStatus.SUCCEEDED, ApiStatus.RUNNING]),
                 [succeeded, running])
 
         def test_query_jobs_by_label_job_id(self):

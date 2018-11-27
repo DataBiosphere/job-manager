@@ -5,21 +5,21 @@ import {QueryJobsRequest} from "../model/QueryJobsRequest";
 
 const queryRequest: QueryJobsRequest = {
   name: 'job-name',
-  statuses: [JobStatus.Running, JobStatus.Aborted],
+  status: [JobStatus.Running, JobStatus.Aborted],
   labels: {'key': 'value'},
   extensions: {
     projectId: 'project-id'
   }
 };
-const queryRequestString: string = 'statuses=Running&statuses=Aborted&name=job-name&projectId=project-id&key=value';
+const queryRequestString: string = 'status=Running&status=Aborted&name=job-name&projectId=project-id&key=value';
 
 const queryMap:  Map<String, String[]> = new Map()
   .set('name', ['job-name'])
-  .set('statuses', ['Running', 'Aborted'])
+  .set('status', ['Running', 'Aborted'])
   .set('key', ['value'])
   .set('projectId', ['project-id']);
 
-const queryMapString: string = 'name=job-name&statuses=Running&statuses=Aborted&key=value&projectId=project-id';
+const queryMapString: string = 'name=job-name&status=Running&status=Aborted&key=value&projectId=project-id';
 
 describe('URLSearchParamsUtils', () => {
   beforeEach(async(() => {
@@ -45,7 +45,7 @@ describe('URLSearchParamsUtils', () => {
     let actualRequest: QueryJobsRequest = URLSearchParamsUtils.unpackURLSearchParams(queryRequestString);
     expect(actualRequest.extensions.projectId).toBe(queryRequest.extensions.projectId);
     expect(actualRequest.name).toBe(queryRequest.name);
-    expect(actualRequest.statuses.toString()).toBe(queryRequest.statuses.toString());
+    expect(actualRequest.status.toString()).toBe(queryRequest.status.toString());
     expect(actualRequest.labels['key']).toBe(queryRequest.labels['key']);
   });
 

@@ -77,7 +77,7 @@ export class GroupedSummaryComponent implements OnInit {
 
   getStatusUrlParams(entry: Map<string, string>, status: JobStatus) {
     let map = this.getCommonUrlParamsMap(entry);
-    map.set('statuses', [status.toString()]);
+    map.set('status', [status.toString()]);
     return {q: URLSearchParamsUtils.encodeURLSearchParamsFromMap(map)};
   }
 

@@ -46,7 +46,7 @@ export class TotalSummaryComponent implements OnInit, OnChanges {
 
   getUrlParams(status: JobStatus) {
     const query = URLSearchParamsUtils.unpackURLSearchParams(this.activatedRoute.snapshot.queryParams['q']);
-    query.statuses = [status];
+    query.status = [status];
 
     const startTime = URLSearchParamsUtils.getStartTimeByTimeFrame(this.timeFrame);
     if (startTime) {

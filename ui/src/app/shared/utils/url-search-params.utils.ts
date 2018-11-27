@@ -14,8 +14,8 @@ export class URLSearchParamsUtils {
   public static encodeURLSearchParams(request: QueryJobsRequest): string {
     let urlSearchParams = new URLSearchParams();
 
-    for (let s in request.statuses) {
-      urlSearchParams.append('statuses', JobStatus[request.statuses[s]]);
+    for (let s in request.status) {
+      urlSearchParams.append('status', JobStatus[request.status[s]]);
     }
     if (request.name) {
       urlSearchParams.set('name', request.name);

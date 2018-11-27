@@ -55,7 +55,7 @@ def generate_jobs(provider, query, create_time_max=None, offset_id=None):
         job = _query_jobs_result(j, proj_id)
         # Filter pending vs. running jobs since dstat does not have
         # a corresponding status (both RUNNING)
-        if query.statuses and job.status not in query.statuses:
+        if query.status and job.status not in query.status:
             continue
         if query.start and (not job.start or job.start < query.start):
             continue

@@ -31,7 +31,7 @@ export enum FieldDataType {
  *  pageSize and pageToken). */
 export const queryDataTypes: Map<string, FieldDataType> = new Map([
   ['name', FieldDataType.Text],
-  ['statuses', FieldDataType.Enum],
+  ['status', FieldDataType.Enum],
   ['start', FieldDataType.Date],
   ['end', FieldDataType.Date],
   ['submission', FieldDataType.Date]

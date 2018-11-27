@@ -362,7 +362,7 @@ definitions:
         format: date-time
         description: >
           Returns only jobs with an equal or later submission datetime.
-      statuses:
+      status:
         type: array
         items:
           $ref: '#/definitions/JobStatus'
