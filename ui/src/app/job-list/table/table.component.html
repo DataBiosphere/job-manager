@@ -65,10 +65,15 @@
                 </a>
               </mat-list-item>
               <mat-list-item *ngIf="j.name">
-                <a (click)="filterOnFieldValue('name', j.name)">
-                  <clr-icon shape="filter-2" size="24"></clr-icon>
-                  <span>Filter by <strong>name:{{ j.name }}</strong></span>
-                </a>
+                  <clr-tooltip>
+                    <a (click)="filterOnFieldValue('name', j.name)" clrTooltipTrigger>
+                      <clr-icon shape="filter-2" size="24"></clr-icon>
+                      <span class="job-title-filter">Filter by name:{{ j.name }}</span>
+                      <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
+                        <span>Filter by name:{{ j.name }}</span>
+                      </clr-tooltip-content>
+                    </a>
+                  </clr-tooltip>
               </mat-list-item>
             </mat-list>
           </mat-card-actions>
