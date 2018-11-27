@@ -219,13 +219,13 @@ describe('DashboardComponent', () => {
     tick();
     const testJobListComponent = de.query(By.css('jm-test-job-list-component')).componentInstance;
     const queryJobRequest = URLSearchParamsUtils.unpackURLSearchParams(testJobListComponent.activatedRoute.snapshot.queryParams['q']);
-    expect(queryJobRequest.statuses).toContain(status);
+    expect(queryJobRequest.status).toContain(status);
     expect(queryJobRequest.extensions['projectId']).toEqual(TEST_PROJECT);
   }));
 
   it('should have status and label as url params when groupedSummaryComponent links are clicked', fakeAsync(() => {
     const groupedSummaryAnchor = de.query(By.css('jm-grouped-summary tr td.count a')).nativeElement;
-    const status: JobStatus= JobStatus.Succeeded;
+    const status: JobStatus = JobStatus.Succeeded;
     const labelKey = TEST_AGGREGATION_RESPONSE.aggregations[0].key;
     const labelValue = TEST_AGGREGATION_RESPONSE.aggregations[0].entries[0].label;
 
@@ -235,7 +235,7 @@ describe('DashboardComponent', () => {
     const testJobListComponent = de.query(By.css('jm-test-job-list-component')).componentInstance;
     const queryJobRequest = URLSearchParamsUtils.unpackURLSearchParams(testJobListComponent.activatedRoute.snapshot.queryParams['q']);
     // this test is based on the hard-coded aggregation response
-    expect(queryJobRequest.statuses).toContain(status);
+    expect(queryJobRequest.status).toContain(status);
     expect(queryJobRequest.labels[labelKey]).toEqual(labelValue);
     expect(queryJobRequest.extensions['projectId']).toEqual(TEST_PROJECT);
   }));

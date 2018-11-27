@@ -94,7 +94,7 @@ describe('HeaderComponent', () => {
     testComponent.chips = new Map()
       .set('projectId', 'Project ID')
       .set('name', 'Job Name')
-      .set('statuses', 'Running');
+      .set('status', 'Running');
     fixture.detectChanges();
   }));
 
@@ -118,7 +118,7 @@ describe('HeaderComponent', () => {
   }));
 
   it('should not show status buttons', async(() => {
-    testComponent.chips.set('statuses', 'list,of,statuses');
+    testComponent.chips.set('status', 'list,of,status');
     testComponent.search();
     fixture.detectChanges();
     fixture.whenStable().then(() => {
@@ -128,7 +128,7 @@ describe('HeaderComponent', () => {
   }));
 
   it('should show status buttons', async(() => {
-    testComponent.chips.delete('statuses');
+    testComponent.chips.delete('status');
     testComponent.search();
     fixture.detectChanges();
     fixture.whenStable().then(() => {
@@ -138,7 +138,7 @@ describe('HeaderComponent', () => {
   }));
 
   it('should show status counts', async(() => {
-    testComponent.chips.delete('statuses');
+    testComponent.chips.delete('status');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
       totalSize: undefined,
@@ -155,7 +155,7 @@ describe('HeaderComponent', () => {
   }));
 
   it('should show hide status counts on non-exhaustive', async(() => {
-    testComponent.chips.delete('statuses');
+    testComponent.chips.delete('status');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
       totalSize: undefined,
@@ -209,7 +209,7 @@ describe('HeaderComponent', () => {
   }));
 
   it('should maintain chip ordering', fakeAsync(() => {
-    testComponent.chips.delete('statuses');
+    testComponent.chips.delete('status');
     testComponent.search();
     fixture.detectChanges();
     tick();
@@ -219,7 +219,7 @@ describe('HeaderComponent', () => {
     tick();
     fixture.detectChanges();
     const lastFilter = de.queryAll(By.css('jm-filter-chip'))[2].componentInstance;
-    expect(lastFilter.chipKey).toEqual('statuses');
+    expect(lastFilter.chipKey).toEqual('status');
   }));
 
   @Component({

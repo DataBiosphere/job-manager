@@ -18,8 +18,8 @@ def api_to_dsub(query):
 
     dstat_params['statuses'] = {
         job_statuses.api_to_dsub(s)
-        for s in query.statuses
-    } if query.statuses else {'*'}
+        for s in query.status
+    } if query.status else {'*'}
 
     if query.name:
         dstat_params['job_names'] = {query.name}

@@ -18,7 +18,7 @@
            (keyup.enter)="setChipValue(currentChipValue)"
            (click)="$event.stopPropagation()"/>
   </mat-form-field>
-  <!-- Statuses -->
+  <!-- Status -->
   <jm-status-selection
     *ngSwitchCase="'Status'"
     [initialChipValue]="currentChipValue"

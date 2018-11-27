@@ -18,6 +18,7 @@ import {FormControl} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
+import {TitleCasePipe} from '@angular/common';
 import {
   MatAutocompleteTrigger,
   MatPaginator,
@@ -31,6 +32,7 @@ import {JobStatus} from '../model/JobStatus';
 import {FieldDataType, JobStatusIcon} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
+import {CapabilitiesResponse} from "../model/CapabilitiesResponse";
 
 @Component({
   selector: 'jm-header',
@@ -56,6 +58,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
   filteredOptions: Observable<string[]>;
   readonly buttonStatuses = ['Running', 'Succeeded', 'Failed', 'Aborted', 'OnHold'];
+  private readonly capabilities: CapabilitiesResponse;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -65,6 +68,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     private cdr: ChangeDetectorRef,
   ) {
     route.queryParams.subscribe(params => this.refreshChips(params['q']));
+    this.capabilities = this.capabilitiesService.getCapabilitiesSynchronous();
   }
 
   ngOnInit(): void {
@@ -72,7 +76,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
       this.chips = URLSearchParamsUtils.getChips(this.route.snapshot.queryParams['q']);
     }
 
-    this.options = URLSearchParamsUtils.getQueryFields(this.capabilitiesService.getCapabilitiesSynchronous());
+    this.options = URLSearchParamsUtils.getQueryFields(this.capabilities);
     this.filterOptions();
   }
 
@@ -158,8 +162,21 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     return Array.from(this.chips.keys());
   }
 
+  getDisplayForFilter(value: string): string {
+    const displayField = this.capabilities.displayFields.find((f) => f.field == value);
+    if (displayField && displayField.display) {
+      return displayField.display;
+    }
+    const labelField = this.capabilities.displayFields.find((f) => f.field == 'labels.' + value);
+    if (labelField && labelField.display) {
+      return labelField.display;
+    }
+    const titleCasePipe: TitleCasePipe = new TitleCasePipe();
+    return titleCasePipe.transform(value);
+  }
+
   navigateWithStatus(statuses: JobStatus[]): void {
-    this.chips.set('statuses', statuses.map((status) => JobStatus[status]).join(','));
+    this.chips.set('status', statuses.map((status) => JobStatus[status]).join(','));
     this.search();
   }
 
@@ -196,7 +213,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
 
   shouldDisplayStatusButtons(): boolean {
     return !URLSearchParamsUtils.unpackURLSearchParams(
-      this.route.snapshot.queryParams['q'])['statuses'];
+      this.route.snapshot.queryParams['q'])['status'];
   }
 
   shouldDisplayStatusCounts(): boolean {
