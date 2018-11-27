@@ -47,7 +47,7 @@ export class FilterChipComponent implements OnInit {
   }
 
   getCurrentChipType(): string {
-    if (this.chipKey == 'statuses') {
+    if (this.chipKey == 'status') {
       return 'Status';
     }
     if (this.chipKey && this.options.has(this.chipKey)) {

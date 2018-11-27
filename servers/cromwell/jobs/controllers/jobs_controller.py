@@ -318,10 +318,10 @@ def cromwell_query_params(query, page, page_size):
         query_params.append({'submission': submission})
     if query.name:
         query_params.append({'name': query.name})
-    if query.statuses:
+    if query.status:
         statuses = [{
             'status': job_statuses.api_workflow_status_to_cromwell(s)
-        } for s in set(query.statuses)]
+        } for s in set(query.status)]
         query_params.extend(statuses)
     if query.labels:
         labels = [{'label': k + ':' + v} for k, v in query.labels.items()]

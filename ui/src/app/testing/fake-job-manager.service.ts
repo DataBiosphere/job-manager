@@ -58,11 +58,11 @@ export class FakeJobManagerService extends JobManagerService {
   }
 
   queryJobs(req: QueryJobsRequest): Promise<QueryJobsResponse> {
-    const statuses: Set<JobStatus> = new Set(req.statuses);
+    const statuses: Set<JobStatus> = new Set(req.status);
     return Promise.resolve({
       results: this.jobs
         .filter(j => {
-          if (req.statuses) {
+          if (req.status) {
             return statuses.has(j.status);
           }
           return true;
