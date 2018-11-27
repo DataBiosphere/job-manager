@@ -61,5 +61,33 @@
                      [pageSizeOptions]="[10, 20, 50, 100]">
       </mat-paginator>
     </div>
+    <span class="settings-icon-container">
+      <button mat-icon-button class="shard-icon" [matMenuTriggerFor]="settingsMenu" class="settings-icon">
+        <clr-tooltip>
+          <clr-icon clrTooltipTrigger shape="cog" size="18"  class="is-solid"></clr-icon>
+          <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+            <span>view settings</span>
+          </clr-tooltip-content>
+        </clr-tooltip>
+      </button>
+    <mat-menu #settingsMenu="matMenu" class="wide-menu settings-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
+      <h2 class="settings-header">Displayed columns</h2>
+      <mat-list>
+        <mat-list-item *ngFor="let df of displayFields">
+          <mat-checkbox [checked]="df.primary"
+                        (change)="toggleDisplayColumn(df)"
+                        (click)="$event.stopPropagation()">{{ df.display }}</mat-checkbox>
+        </mat-list-item>
+      </mat-list>
+      <div *ngIf="getSavedSetting('hideArchived') != null">
+        <mat-divider></mat-divider>
+        <mat-slide-toggle #hideArchivedToggle class="hide-archived" [checked]="getSavedSetting('hideArchived')" (click)="$event.stopPropagation()">Hide archived jobs</mat-slide-toggle>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="settings-button-container">
+        <button class="apply-link" (click)="saveSettings()">Done</button>
+      </div>
+    </mat-menu>
+    </span>
   </div>
 </div>

@@ -4,12 +4,12 @@ import {
   AfterViewChecked,
   AfterViewInit,
   ChangeDetectorRef,
-  Component,
+  Component, EventEmitter,
   Injectable,
   Input,
   NgZone,
   OnDestroy,
-  OnInit, QueryList,
+  OnInit, Output, QueryList,
   ViewChild,
   ViewChildren
 } from '@angular/core';
@@ -33,6 +33,8 @@ import {FieldDataType} from '../common';
 import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
 import {CapabilitiesResponse} from "../model/CapabilitiesResponse";
+import {DisplayField} from "../model/DisplayField";
+import {SettingsService} from "../../core/settings.service";
 
 @Component({
   selector: 'jm-header',
@@ -43,7 +45,9 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   @Input() jobs: BehaviorSubject<JobListView>;
   @Input() pageSize: number;
   @Input() showControls: boolean = true;
+  @Output() onDisplayFieldsChanged: EventEmitter<DisplayField[]> = new EventEmitter();
   @ViewChildren(FilterChipComponent) chipElements: QueryList<FilterChipComponent>;
+  @ViewChild('hideArchivedToggle') hideArchivedToggle: HTMLInputElement;
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public pageSubject: Subject<PageEvent> = new Subject<PageEvent>();
@@ -57,17 +61,20 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   inputValue: string = '';
 
   filteredOptions: Observable<string[]>;
+  displayFields: DisplayField[] = [];
 
   private readonly activeStatuses = [JobStatus.Submitted, JobStatus.Running, JobStatus.Aborting];
   private readonly completedStatuses = [JobStatus.Succeeded];
   private readonly failedStatuses = [JobStatus.Failed, JobStatus.Aborted];
   private readonly onHoldStatuses = [JobStatus.OnHold];
   private readonly capabilities: CapabilitiesResponse;
+  projectId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly capabilitiesService: CapabilitiesService,
+    private readonly settingsService: SettingsService,
     private zone: NgZone,
     private cdr: ChangeDetectorRef,
   ) {
@@ -259,6 +266,23 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   getOnHoldCount(): number {
     return this.jobs.value.results.filter(
       j => this.onHoldStatuses.includes(j.status)).length;
+  }
+
+  toggleDisplayColumn(field: DisplayField) {
+    const newValue = !field.primary;
+    this.displayFields.forEach((df) => {
+      if (df.field == field.field) {
+        df.primary = newValue;
+      }
+    })
+  }
+
+  getSavedSetting(settingName: string) {
+    return this.settingsService.getSavedSettingValue(settingName, this.projectId);
+  }
+
+  saveSettings() {
+    this.onDisplayFieldsChanged.emit(this.displayFields);
   }
 
   private refreshChips(query: string): void {

@@ -49,3 +49,74 @@
 .chipShell {
   padding: 0 !important;
 }
+
+::ng-deep .mat-menu-panel.settings-menu {
+  min-width: 11em;
+}
+
+.settings-icon-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+}
+
+h2.settings-header {
+  padding: 0.5rem 1rem 0 1rem;
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1rem;
+}
+
+::ng-deep .settings-menu .mat-list .mat-list-item {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  margin: 0.5rem 0;
+  height: auto;
+}
+
+::ng-deep .settings-menu .mat-slide-toggle {
+  margin: 0rem 0.5rem;
+}
+
+::ng-deep .settings-menu .mat-slide-toggle .mat-slide-toggle-content {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  margin: 0.5rem 0.25rem;
+}
+
+::ng-deep .settings-menu .mat-slide-toggle .mat-slide-toggle-bar {
+  height: 0.5em;
+  width: 1.5rem;
+}
+
+::ng-deep .settings-menu .mat-slide-toggle .mat-slide-toggle-thumb {
+  height: 0.8em;
+  width: 0.8em;
+}
+
+.settings-button-container {
+}
+
+button.apply-link {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 12px;
+  border: none;
+  display: block;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button.apply-link:hover {
+  text-decoration: underline;
+}
+
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0 0.5rem;
+  line-height: 1.5rem;
+  font-size: 0.65rem;
+  color: #fff;
+  display: block;
+  margin: -0.6rem 0.5rem 0 0;
+}
