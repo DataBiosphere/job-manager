@@ -79,6 +79,12 @@
   padding: 12px 24px 24px 24px;
 }
 
+::ng-deep .mat-menu-panel.field-menu {
+  width: auto;
+  overflow: visible;
+  padding: 0px 15px;
+}
+
 ::ng-deep .mat-menu-panel.details-menu .mat-card-subtitle {
   color: rgba(0, 0, 0, 0.8);
   margin-bottom: 0.75rem;
@@ -101,7 +107,7 @@
   padding: 0;
 }
 
-::ng-deep .mat-menu-panel.details-menu mat-card a {
+::ng-deep a.inline-filter {
   display: block;
   cursor: pointer;
   max-width: 210px;
@@ -189,16 +195,22 @@ button.apply-link:hover {
 }
 
 ::ng-deep .mat-select-content,
-::ng-deep div.mat-menu-content mat-form-field input {
+::ng-deep div.mat-menu-content mat-form-field input,
+::ng-deep .mat-menu-content.filter-menu {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 0.85rem;
 }
 
 clr-tooltip-content {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: rgba(0, 0, 0, 0.65);
   padding: 0.25rem;
   font-size: 0.65rem;
   color: #fff;
   display: block;
   margin: -0.6rem 0.5rem 0 0;
+}
+
+.mat-menu-content.filter-menu clr-tooltip-content {
+  margin: 0.25rem 0 0 5rem;
 }

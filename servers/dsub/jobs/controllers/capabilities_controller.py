@@ -15,6 +15,7 @@ def get_capabilities():
     """
     capabilities = CapabilitiesResponse(
         display_fields=[
+            DisplayField(field='name', display='Name', filterable=True),
             DisplayField(field='status', display='Status'),
             DisplayField(field='submission', display='Submitted'),
             DisplayField(field='labels.job-id', display='Job ID'),

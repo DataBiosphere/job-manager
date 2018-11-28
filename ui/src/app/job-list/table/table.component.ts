@@ -29,6 +29,7 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {BulkLabelField} from '../../shared/model/BulkLabelField';
 import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
 import {UpdateJobLabelsResponse} from "../../shared/model/UpdateJobLabelsResponse";
+import {FieldType} from "../../shared/model/FieldType";
 
 @Component({
   selector: 'jm-job-list-table',
@@ -101,6 +102,10 @@ export class JobsTableComponent implements OnInit {
     return df.editable;
   }
 
+  canFilterBy(fieldName: string): boolean {
+    return this.displayFields.filter( df => (fieldName == df.field) && df.filterable).length > 0;
+  }
+
   setFieldValue(job: QueryJobsResult, displayField: string, value: string) {
     let fieldItems = {};
     fieldItems[displayField] = value;
@@ -152,6 +157,10 @@ export class JobsTableComponent implements OnInit {
     return df.field == "status";
   }
 
+  isFirstColumn(df: DisplayField): boolean {
+    return df.field == this.displayedColumns[1];
+  }
+
   getFieldValue(job: QueryJobsResult, df: DisplayField): any {
     // Handle nested fields, separated by '.', i.e. extensions.userId
     let fields = df.field.split(".");
@@ -172,7 +181,10 @@ export class JobsTableComponent implements OnInit {
   }
 
   getFieldType(df: DisplayField): string {
-    return df.fieldType.toString();
+    if (df.fieldType) {
+      return df.fieldType.toString();
+    }
+    return FieldType['text'].toString();
   }
 
   getFieldOptions(df: DisplayField): string[] {
@@ -309,7 +321,7 @@ export class JobsTableComponent implements OnInit {
 
   // set up fields to display as columns and bulk update-able labels for job list table
   public setUpFieldsAndColumns() {
-    this.displayedColumns = ["Checkbox", "Name", "Details"];
+    this.displayedColumns = ["Checkbox"];
     this.bulkLabelFields = [];
     for (let displayField of this.displayFields) {
       if (displayField.primary) {
@@ -319,6 +331,7 @@ export class JobsTableComponent implements OnInit {
         this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
       }
     }
+    this.displayedColumns.splice(2, 0, "Details");
   }
 
   private prepareUpdateJobLabelsRequest (fieldValues: {}): UpdateJobLabelsRequest {

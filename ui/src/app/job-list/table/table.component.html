@@ -18,18 +18,6 @@
     </mat-cell>
   </ng-container>
 
-  <!-- Job name column -->
-  <ng-container matColumnDef="Name">
-    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-    <mat-cell *matCellDef="let j">
-      <a class="job-details-button mat-body-1"
-         [routerLink]="[j.id]"
-         [queryParams]="getQueryParams()">
-         {{ j.name }}
-       </a>
-     </mat-cell>
-   </ng-container>
-
   <!-- Job details dropdown column -->
   <ng-container matColumnDef="Details">
     <mat-header-cell class="details-drop-down-cell" *matHeaderCellDef></mat-header-cell>
@@ -64,17 +52,17 @@
                   <span>Timing Diagram</span>
                 </a>
               </mat-list-item>
-              <mat-list-item *ngIf="j.name">
-                  <clr-tooltip>
-                    <a (click)="filterOnFieldValue('name', j.name)" clrTooltipTrigger>
-                      <clr-icon shape="filter-2" size="24"></clr-icon>
-                      <span class="job-title-filter">Filter by name:{{ j.name }}</span>
-                      <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
-                        <span>Filter by name:{{ j.name }}</span>
-                      </clr-tooltip-content>
-                    </a>
-                  </clr-tooltip>
-              </mat-list-item>
+              <mat-list-item *ngIf="j[displayedColumns[1]] && canFilterBy(displayedColumns[1])">
+                <clr-tooltip>
+                  <a (click)="filterOnFieldValue(displayedColumns[1], j[displayedColumns[1]])" clrTooltipTrigger class="inline-filter">
+                    <clr-icon shape="filter-2" size="24"></clr-icon>
+                    <span>Filter by {{ displayedColumns[1] }}:{{ j[displayedColumns[1]] }}</span>
+                    <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
+                      <span>Filter by {{ displayedColumns[1] }}:{{ j[displayedColumns[1]] }}</span>
+                    </clr-tooltip-content>
+                  </a>
+                </clr-tooltip>
+            </mat-list-item>
             </mat-list>
           </mat-card-actions>
         </mat-card>
@@ -82,12 +70,12 @@
     </mat-cell>
   </ng-container>
 
-  <!-- Implementation-specific additional columns -->
+  <!-- Implementation-specific columns -->
   <ng-container *ngFor="let df of displayFields">
     <ng-container matColumnDef="{{ df.field }}">
       <mat-header-cell *matHeaderCellDef>{{ df.display }}</mat-header-cell>
       <mat-cell class="additional-column" *matCellDef="let j">
-        <div class="display-field" *ngIf=canEdit(df)>
+        <div class="display-field" *ngIf="canEdit(df) || (canFilterBy(df.field) && (getFieldValue(j, df) != ''))">
           <div [ngSwitch]="getFieldType(df)">
             <div *ngSwitchCase="'text'">
               <div class="edit-field">
@@ -96,16 +84,29 @@
                   <img src="{{ getDropdownArrowUrl() }}">
                 </button>
               </div>
-              <mat-menu #menu="matMenu" class="wide-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
-                <mat-form-field>
-                  <input matInput
-                         #labelField
-                         value="{{ getFieldValue(j, df) }}"
-                         [maxLength]="labelCharLimit"
-                         (click)="$event.stopPropagation()">
-                  <mat-hint align="end">{{ labelField.value?.length || 0 }}/{{ labelCharLimit }}</mat-hint>
-                </mat-form-field>
-                <button class="apply-link" (click)="setFieldValue(j, df.field, labelField.value)">Apply</button>
+              <mat-menu #menu="matMenu" class="wide-menu field-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
+                <div *ngIf="canEdit(df)">
+                  <mat-form-field>
+                    <input matInput
+                           #labelField
+                           value="{{ getFieldValue(j, df) }}"
+                           [maxLength]="labelCharLimit"
+                           (click)="$event.stopPropagation()">
+                    <mat-hint align="end">{{ labelField.value?.length || 0 }}/{{ labelCharLimit }}</mat-hint>
+                  </mat-form-field>
+                  <button class="apply-link" (click)="setFieldValue(j, df.field, labelField.value)">Apply</button>
+                </div>
+                <div *ngIf="canFilterBy(df.field)" class="mat-menu-content filter-menu">
+                  <clr-tooltip>
+                    <a (click)="filterOnFieldValue(df.display, getFieldValue(j, df))" clrTooltipTrigger class="inline-filter">
+                      <clr-icon shape="filter-2" size="24"></clr-icon>
+                      <span>Filter by {{ df.display }}:{{ getFieldValue(j, df) }}</span>
+                      <clr-tooltip-content clrPosition="bottom-left" clrSize="xs" *clrIfOpen>
+                        Filter by {{ df.display }}:{{ getFieldValue(j, df) }}
+                      </clr-tooltip-content>
+                    </a>
+                  </clr-tooltip>
+                </div>
               </mat-menu>
             </div>
             <mat-form-field *ngSwitchCase="'list'">
@@ -123,7 +124,12 @@
             </mat-form-field>
           </div>
         </div>
-        <div class="display-field" *ngIf="!isStatusField(df) && !canEdit(df)">{{ getFieldValue(j, df) }}</div>
+        <div class="display-field" *ngIf="isFirstColumn(df)">
+          <a *ngIf="isFirstColumn(df)" class="field-value job-details-button mat-body-1"
+             [routerLink]="[j.id]"
+             [queryParams]="getQueryParams()">{{ getFieldValue(j, df) }}</a>
+        </div>
+        <div class="display-field" *ngIf="!isStatusField(df) && !canEdit(df) && !isFirstColumn(df) && !canFilterBy(df.field)">{{ getFieldValue(j, df) }}</div>
         <clr-tooltip *ngIf=isStatusField(df)>
           <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(getFieldValue(j, df))" size="24"></clr-icon>
           <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
