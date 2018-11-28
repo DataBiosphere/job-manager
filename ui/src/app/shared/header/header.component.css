@@ -41,9 +41,8 @@
 
 .search-table-controls {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   min-width: 60rem;
+  flex-direction: row;
 }
 
 .chipShell {
@@ -54,13 +53,16 @@
   min-width: 11em;
 }
 
+.table-paginator-container {
+  margin-left: auto;
+}
+
 .settings-icon-container {
-  display: flex;
-  justify-content: flex-end;
-  padding: 5px;
+  padding-top: 10px;
 }
 
 h2.settings-header {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   padding: 0.5rem 1rem 0 1rem;
   margin: 0;
   font-size: 0.8rem;
@@ -95,6 +97,7 @@ h2.settings-header {
 }
 
 .settings-button-container {
+  padding: 5px;
 }
 
 button.apply-link {

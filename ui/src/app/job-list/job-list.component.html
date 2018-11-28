@@ -2,7 +2,8 @@
   class="header"
   [jobs]="jobs"
   [pageSize]="pageSize"
-  [showControls]="true"></jm-header>
+  [showControls]="true"
+  (onDisplayFieldsChanged)="handleDisplayFieldsChanged($event)"></jm-header>
 <mat-divider class="divider"></mat-divider>
 <div class="table-container">
   <jm-job-list-table
@@ -11,7 +12,6 @@
     [dataSource]="dataSource"
     (onJobsChanged)="handleJobsChanged()"
     (onFiltersChanged)="handleFiltersChanged($event)"
-    (onDisplayFieldsChanged)="handleDisplayFieldsChanged($event)"
     [displayFields]="displayFields">
   </jm-job-list-table>
   <div *ngIf="loading" class="spinner-container">
