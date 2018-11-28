@@ -182,6 +182,9 @@ definitions:
           type: string
   DisplayField:
     description: Description of a display field
+    required:
+      - field
+      - display
     properties:
       field:
         type: string
@@ -207,6 +210,8 @@ definitions:
           primary field values.
         type: boolean
         default: true
+      displayOrder:
+        type: integer
   CapabilitiesResponse:
     description: Specification of the backend's capabilities
     properties:

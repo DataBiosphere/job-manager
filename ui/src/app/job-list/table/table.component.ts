@@ -308,17 +308,24 @@ export class JobsTableComponent implements OnInit {
   }
 
   // set up fields to display as columns and bulk update-able labels for job list table
+  // add in "Details" column after the first non-checkbox column for job details menu
   public setUpFieldsAndColumns() {
-    this.displayedColumns = ["Checkbox", "Name", "Details"];
+    this.displayedColumns = ["Checkbox"];
     this.bulkLabelFields = [];
     for (let displayField of this.displayFields) {
       if (displayField.primary) {
-        this.displayedColumns.push(displayField.field);
+        if (displayField.displayOrder) {
+          this.displayedColumns.splice(displayField.displayOrder, 0, displayField.field);
+        }
+        else {
+          this.displayedColumns.push(displayField.field);
+        }
       }
       if (displayField.bulkEditable) {
         this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
       }
     }
+    this.displayedColumns.splice(2, 0, "Details");
   }
 
   private prepareUpdateJobLabelsRequest (fieldValues: {}): UpdateJobLabelsRequest {
