@@ -9,11 +9,11 @@ export const STORAGE_REF = 'storage-ref';
 export enum JobStatusIcon {
   Submitted = 'minus',
   Running = 'sync',
-  Aborting = 'exclamation-triangle',
-  Failed = 'times',
-  Succeeded = 'check',
-  Aborted = 'exclamation-triangle',
-  OnHold = 'pause'
+  Aborting = 'sync',
+  Failed = 'error-standard',
+  Succeeded = 'success-standard',
+  Aborted = 'times-circle',
+  OnHold = 'minus-circle'
 }
 
 // TODO(bryancrampton): We may want to move this to be part of

@@ -92,7 +92,7 @@ describe('TaskDetailsComponent', () => {
     expect(de.query(By.css('.title-link')).nativeElement.href)
       .toContain('/jobs/' + task.jobId);
     expect(de.query(By.css('.mat-column-status clr-icon')).attributes['shape'])
-      .toContain('times');
+      .toContain('error');
     expect(de.queryAll(By.css('.mat-column-startTime'))[1].nativeElement.textContent)
       .toContain('1:00 PM');
     expect(de.queryAll(By.css('.mat-column-duration'))[1].nativeElement.textContent)
