@@ -24,11 +24,18 @@
                 </clr-tooltip-content>
               </clr-tooltip>
             </button>
-            <mat-menu #shardMenu="matMenu" class="wide-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+            <mat-menu #shardMenu="matMenu" class="wide-menu shards-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
               <div class="shards-header">Scattered: {{ getScatteredCountTotal(t) }} shards</div>
               <div class="shards-container" *ngIf="t.shardStatuses">
                 <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
-                  <div class="shard-status"><clr-icon [attr.shape]="getStatusIcon(jobStatus)" size="18"></clr-icon></div>
+                  <div class="shard-status">
+                    <clr-tooltip>
+                      <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(jobStatus)" size="18"></clr-icon>
+                      <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+                        <span>{{ jobStatus }}</span>
+                      </clr-tooltip-content>
+                    </clr-tooltip>
+                  </div>
                   <div class="shard-count">{{ getShardCountByStatus(t, jobStatus) }}</div>
                 </div>
               </div>
