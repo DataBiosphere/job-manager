@@ -74,6 +74,14 @@ clr-tooltip-content {
   height: auto;
 }
 
+::ng-deep .shards-menu.mat-menu-panel {
+  overflow: visible;
+}
+
+::ng-deep .shards-menu.mat-menu-panel clr-tooltip-content {
+  margin-right: 0.25rem;
+}
+
 clr-icon {
   margin-right: 1rem;
 }
