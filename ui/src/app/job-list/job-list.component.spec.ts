@@ -72,6 +72,7 @@ describe('JobListComponent', () => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
     capabilities = {
       displayFields: [
+        {field: 'name', display: 'Name', primary: true},
         {field: 'status', display: 'Status', primary: true},
         {field: 'submission', display: 'Submitted', primary: true},
         {field: 'extensions.userId', display: 'User ID', primary: true}

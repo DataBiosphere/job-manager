@@ -96,7 +96,7 @@
                   </mat-form-field>
                   <button class="apply-link" (click)="setFieldValue(j, df.field, labelField.value)">Apply</button>
                 </div>
-                <div *ngIf="canFilterBy(df.field)" class="mat-menu-content filter-menu">
+                <div *ngIf="!canEdit(df) && canFilterBy(df.field)" class="mat-menu-content filter-menu">
                   <clr-tooltip>
                     <a (click)="filterOnFieldValue(df.display, getFieldValue(j, df))" clrTooltipTrigger class="inline-filter">
                       <clr-icon shape="filter-2" size="24"></clr-icon>
