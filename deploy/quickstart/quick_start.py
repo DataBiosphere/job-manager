@@ -53,7 +53,7 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
     os.chdir(install_dir)
     start_script_file = '{0}/jmui_start.sh'.format(bin_dir)
     start_script_contents = [
-        'if docker ps | grep job-manager', 'then',
+        '#!/usr/bin/env bash', 'if docker ps | grep job-manager', 'then',
         'echo \'Stopping current instance(s)\'',
         'docker stop $(docker ps | grep \'job-manager\' | awk \'{ print $1 }\')',
         'fi', 'export CROMWELL_URL=\'{0}\''.format(cromwell_url),
