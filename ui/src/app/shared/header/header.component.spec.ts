@@ -139,7 +139,7 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
     fixture.whenStable().then(() => {
       fixture.detectChanges();
-      expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(4);
+      expect(fixture.debugElement.queryAll(By.css('.status-button')).length).toEqual(5);
     });
   }));
 
@@ -156,7 +156,7 @@ describe('HeaderComponent', () => {
     fixture.whenStable().then(() => {
       fixture.detectChanges();
       expect(fixture.debugElement.query(
-        By.css('.active-button')).nativeElement.textContent).toContain('(2)');
+        By.css('.running-button')).nativeElement.textContent).toContain('(2)');
     });
   }));
 
@@ -173,7 +173,7 @@ describe('HeaderComponent', () => {
     fixture.whenStable().then(() => {
       fixture.detectChanges();
       expect(fixture.debugElement.query(
-        By.css('.active-button')).nativeElement.textContent).not.toContain('(2)');
+        By.css('.running-button')).nativeElement.textContent).not.toContain('(2)');
     });
   }));
 
@@ -221,7 +221,7 @@ describe('HeaderComponent', () => {
     tick();
     const de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('jm-filter-chip')).length).toEqual(2);
-    de.query(By.css('.completed-button')).nativeElement.click();
+    de.query(By.css('.succeeded-button')).nativeElement.click();
     tick();
     fixture.detectChanges();
     const lastFilter = de.queryAll(By.css('jm-filter-chip'))[2].componentInstance;

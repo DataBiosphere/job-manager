@@ -38,17 +38,9 @@
     <!-- Always include child divs, to support flex box style placement. -->
     <div class="status-filter-buttons">
       <ng-container *ngIf="shouldDisplayStatusButtons()">
-        <button mat-raised-button class="status-button active-button" (click)="showActiveJobs()">
-          Active <span *ngIf="shouldDisplayStatusCounts()">({{ getActiveCount() }})</span>
-        </button>
-        <button mat-raised-button class="status-button failed-button" (click)="showFailedJobs()">
-          Failed <span *ngIf="shouldDisplayStatusCounts()">({{ getFailedCount() }})</span>
-        </button>
-        <button mat-raised-button class="status-button completed-button" (click)="showCompletedJobs()">
-          Completed <span *ngIf="shouldDisplayStatusCounts()">({{ getCompletedCount() }})</span>
-        </button>
-        <button mat-raised-button class="status-button onhold-button" (click)="showOnHoldJobs()">
-          On Hold <span *ngIf="shouldDisplayStatusCounts()">({{ getOnHoldCount() }})</span>
+        <button class="mat-raised-button status-button {{ status | lowercase }}-button" (click)="showJobsWithStatus(status)" *ngFor="let status of buttonStatuses">
+          <clr-icon [attr.shape]="getStatusIcon(status)" size="18"></clr-icon>
+          {{ status }} <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus(status) }})</span>
         </button>
       </ng-container>
    </div>
