@@ -12,27 +12,29 @@ import {
   MatListModule,
   MatMenuModule,
   MatNativeDateModule,
-  MatPaginatorModule,
+  MatPaginatorModule, MatSlideToggleModule,
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {ClrIconModule} from '@clr/angular';
+import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {CapabilitiesService} from "../../core/capabilities.service"
+import {SettingsService} from "../../core/settings.service"
 import {FakeCapabilitiesService} from "../../testing/fake-capabilities.service"
 import {JobListView} from "../job-stream";
 import {HeaderComponent} from "./header.component";
 import {CapabilitiesResponse} from '../model/CapabilitiesResponse';
 import {QueryJobsResult} from '../model/QueryJobsResult';
 import {JobStatus} from "../model/JobStatus";
+import {AuthService} from "../../core/auth.service";
 
 
 describe('HeaderComponent', () => {
   const baseJob = {
     status: JobStatus.Running,
-    submission: new Date('2015-04-20T20:00:00'),
+    submission: new Date('2015-04-20T20:00:00')
   };
   const testJob1: QueryJobsResult = { ...baseJob, id: 'JOB1' };
   const testJob2: QueryJobsResult = { ...baseJob, id: 'JOB2' };
@@ -56,6 +58,7 @@ describe('HeaderComponent', () => {
     ],
     queryExtensions: ['projectId']
   };
+  let fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
 
   beforeEach(async(() => {
 
@@ -64,6 +67,7 @@ describe('HeaderComponent', () => {
       imports: [
         BrowserAnimationsModule,
         ClrIconModule,
+        ClrTooltipModule,
         FormsModule,
         MatAutocompleteModule,
         MatButtonModule,
@@ -76,6 +80,7 @@ describe('HeaderComponent', () => {
         MatMenuModule,
         MatNativeDateModule,
         MatPaginatorModule,
+        MatSlideToggleModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
           {path: '', component: TestHeaderComponent},
@@ -83,7 +88,8 @@ describe('HeaderComponent', () => {
         ]),
       ],
       providers: [
-        {provide: CapabilitiesService, useValue: new FakeCapabilitiesService(capabilities)}
+        {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
+        {provide: SettingsService, useValue: new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage)}
       ]
     }).compileComponents();
   }));

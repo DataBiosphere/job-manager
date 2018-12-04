@@ -40,8 +40,8 @@ import {FieldType} from "../../shared/model/FieldType";
 export class JobsTableComponent implements OnInit {
   @Input() dataSource: DataSource<QueryJobsResult>;
   @Output() onJobsChanged: EventEmitter<QueryJobsResult[]> = new EventEmitter();
-  @Input() displayFields: DisplayField[];
   @Output() onFiltersChanged: EventEmitter<string[]> = new EventEmitter();
+  @Input() displayFields: DisplayField[];
 
   private mouseoverJob: QueryJobsResult;
 
