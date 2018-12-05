@@ -53,6 +53,7 @@ export class JobsTableComponent implements OnInit {
   public readonly labelCharLimit = 255;
 
   displayedColumns: string[];
+  firstColumnName: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -99,6 +100,10 @@ export class JobsTableComponent implements OnInit {
 
   canEdit(df: DisplayField): boolean {
     return df.editable;
+  }
+
+  canFilterBy(fieldName: string): boolean {
+    return this.displayFields.filter( df => (fieldName == df.field) && df.filterable).length > 0;
   }
 
   setFieldValue(job: QueryJobsResult, displayField: string, value: string) {
@@ -152,6 +157,14 @@ export class JobsTableComponent implements OnInit {
     return df.field == "status";
   }
 
+  isFirstColumn(df: DisplayField): boolean {
+    return df.field == this.firstColumnName;
+  }
+
+  isSimpleField(df: DisplayField): boolean {
+    return !this.isStatusField(df) && !this.canEdit(df) && !this.isFirstColumn(df) && !this.canFilterBy(df.field);
+  }
+
   getFieldValue(job: QueryJobsResult, df: DisplayField): any {
     // Handle nested fields, separated by '.', i.e. extensions.userId
     let fields = df.field.split(".");
@@ -172,7 +185,10 @@ export class JobsTableComponent implements OnInit {
   }
 
   getFieldType(df: DisplayField): string {
-    return df.fieldType.toString();
+    if (df.fieldType) {
+      return df.fieldType.toString();
+    }
+    return 'Text';
   }
 
   getFieldOptions(df: DisplayField): string[] {
@@ -309,7 +325,7 @@ export class JobsTableComponent implements OnInit {
 
   // set up fields to display as columns and bulk update-able labels for job list table
   public setUpFieldsAndColumns() {
-    this.displayedColumns = ["Checkbox", "Name", "Details"];
+    this.displayedColumns = ["Checkbox"];
     this.bulkLabelFields = [];
     for (let displayField of this.displayFields) {
       if (displayField.primary) {
@@ -319,6 +335,8 @@ export class JobsTableComponent implements OnInit {
         this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
       }
     }
+    this.displayedColumns.splice(2, 0, "Details");
+    this.firstColumnName = this.displayedColumns[1];
   }
 
   private prepareUpdateJobLabelsRequest (fieldValues: {}): UpdateJobLabelsRequest {
