@@ -17,7 +17,7 @@ def get_capabilities():
     # Default capabilities configuration
     capabilities = CapabilitiesResponse(
         display_fields=[
-            DisplayField(field='name', display='Name'),
+            DisplayField(field='name', display='Name', filterable=True),
             DisplayField(field='status', display='Status'),
             DisplayField(field='submission', display='Submitted'),
             DisplayField(

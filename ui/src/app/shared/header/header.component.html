@@ -36,30 +36,51 @@
 
   <div *ngIf="showControls" class="search-table-controls">
     <!-- Always include child divs, to support flex box style placement. -->
-    <div>
+    <div class="status-filter-buttons">
       <ng-container *ngIf="shouldDisplayStatusButtons()">
-        <button mat-raised-button class="status-button active-button" (click)="showActiveJobs()">
-          Active <span *ngIf="shouldDisplayStatusCounts()">({{ getActiveCount() }})</span>
-        </button>
-        <button mat-raised-button class="status-button failed-button" (click)="showFailedJobs()">
-          Failed <span *ngIf="shouldDisplayStatusCounts()">({{ getFailedCount() }})</span>
-        </button>
-        <button mat-raised-button class="status-button completed-button" (click)="showCompletedJobs()">
-          Completed <span *ngIf="shouldDisplayStatusCounts()">({{ getCompletedCount() }})</span>
-        </button>
-        <button mat-raised-button class="status-button onhold-button" (click)="showOnHoldJobs()">
-          On Hold <span *ngIf="shouldDisplayStatusCounts()">({{ getOnHoldCount() }})</span>
+        <button class="mat-raised-button status-button {{ status | lowercase }}-button" (click)="showJobsWithStatus(status)" *ngFor="let status of buttonStatuses">
+          <clr-icon [attr.shape]="getStatusIcon(status)" size="18"></clr-icon>
+          {{ status }} <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus(status) }})</span>
         </button>
       </ng-container>
    </div>
 
-    <div>
+    <div class="table-paginator-container">
       <mat-paginator #paginator
                      [length]="jobs.value.results.length"
                      [pageIndex]="0"
                      [pageSize]="pageSize"
                      [pageSizeOptions]="[10, 20, 50, 100]">
       </mat-paginator>
+    </div>
+
+    <div class="settings-icon-container">
+      <button mat-icon-button class="shard-icon" [matMenuTriggerFor]="settingsMenu" class="settings-icon">
+        <clr-tooltip>
+          <clr-icon clrTooltipTrigger shape="cog" size="18"  class="is-solid"></clr-icon>
+          <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+            <span>view settings</span>
+          </clr-tooltip-content>
+        </clr-tooltip>
+      </button>
+      <mat-menu #settingsMenu="matMenu" class="wide-menu settings-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
+        <h2 class="settings-header">Displayed columns</h2>
+        <mat-list>
+          <mat-list-item *ngFor="let df of displayFields">
+            <mat-checkbox [checked]="df.primary"
+                          (change)="toggleDisplayColumn(df)"
+                          (click)="$event.stopPropagation()">{{ df.display }}</mat-checkbox>
+          </mat-list-item>
+        </mat-list>
+        <div *ngIf="getSavedSetting('hideArchived') != null">
+          <mat-divider></mat-divider>
+          <mat-slide-toggle #hideArchivedToggle class="hide-archived" [checked]="getSavedSetting('hideArchived')" (click)="$event.stopPropagation()">Hide archived jobs</mat-slide-toggle>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="settings-button-container">
+          <button class="apply-link" (click)="saveSettings()">Done</button>
+        </div>
+      </mat-menu>
     </div>
   </div>
 </div>

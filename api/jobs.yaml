@@ -210,6 +210,12 @@ definitions:
           primary field values.
         type: boolean
         default: true
+      filterable:
+        description: >
+          Whether the user should be able to quickly filter by
+          this field in a name:value way.
+        type: boolean
+        default: false
       displayOrder:
         type: integer
   CapabilitiesResponse:

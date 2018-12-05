@@ -72,6 +72,7 @@ describe('JobListComponent', () => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
     capabilities = {
       displayFields: [
+        {field: 'name', display: 'Name', primary: true},
         {field: 'status', display: 'Status', primary: true},
         {field: 'submission', display: 'Submitted', primary: true},
         {field: 'extensions.userId', display: 'User ID', primary: true}
@@ -184,7 +185,7 @@ describe('JobListComponent', () => {
 
     // We don't finish loading until we complete a query that matches the
     // the ActiveRoute; so trigger a real navigate to clear the loading state.
-    de.query(By.css('.active-button')).nativeElement.click();
+    de.query(By.css('.running-button')).nativeElement.click();
     tick();
     fixture.detectChanges();
     expect(de.queryAll(By.css('.spinner-container')).length).toEqual(0);
@@ -251,7 +252,7 @@ describe('JobListComponent', () => {
     fixture.detectChanges();
 
     let de: DebugElement = fixture.debugElement;
-    de.query(By.css('.completed-button')).nativeElement.click();
+    de.query(By.css('.succeeded-button')).nativeElement.click();
     tick();
     fixture.detectChanges();
     tick();
@@ -265,7 +266,7 @@ describe('JobListComponent', () => {
 
     // Filter by active to filter out jobs after they've been aborted.
     let de: DebugElement = fixture.debugElement;
-    de.query(By.css('.active-button')).nativeElement.click();
+    de.query(By.css('.running-button')).nativeElement.click();
     fixture.detectChanges();
 
     // We select the first page (3 jobs) and abort. Jobs 3 and 4 are unaffected.
