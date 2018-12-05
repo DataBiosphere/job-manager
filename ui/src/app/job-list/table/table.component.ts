@@ -29,7 +29,6 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {BulkLabelField} from '../../shared/model/BulkLabelField';
 import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
 import {UpdateJobLabelsResponse} from "../../shared/model/UpdateJobLabelsResponse";
-import {FieldType} from "../../shared/model/FieldType";
 
 @Component({
   selector: 'jm-job-list-table',
@@ -54,6 +53,7 @@ export class JobsTableComponent implements OnInit {
   public readonly labelCharLimit = 255;
 
   displayedColumns: string[];
+  firstColumnName: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -158,7 +158,11 @@ export class JobsTableComponent implements OnInit {
   }
 
   isFirstColumn(df: DisplayField): boolean {
-    return df.field == this.displayedColumns[1];
+    return df.field == this.firstColumnName;
+  }
+
+  isSimpleField(df: DisplayField): boolean {
+    return !this.isStatusField(df) && !this.canEdit(df) && !this.isFirstColumn(df) && !this.canFilterBy(df.field);
   }
 
   getFieldValue(job: QueryJobsResult, df: DisplayField): any {
@@ -184,7 +188,7 @@ export class JobsTableComponent implements OnInit {
     if (df.fieldType) {
       return df.fieldType.toString();
     }
-    return FieldType['text'].toString();
+    return 'Text';
   }
 
   getFieldOptions(df: DisplayField): string[] {
@@ -332,6 +336,7 @@ export class JobsTableComponent implements OnInit {
       }
     }
     this.displayedColumns.splice(2, 0, "Details");
+    this.firstColumnName = this.displayedColumns[1];
   }
 
   private prepareUpdateJobLabelsRequest (fieldValues: {}): UpdateJobLabelsRequest {
