@@ -59,6 +59,10 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 {
   "displayFields": [
     {
+      "field": "id",
+      "display": "Workflow ID"
+    },
+    {
       "field": "name",
       "display": "Name",
       "filterable": true
@@ -70,10 +74,6 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     {
       "field": "submission",
       "display": "Submitted"
-    },
-    {
-      "field": "labels.cromwell-workflow-id",
-      "display": "Workflow ID"
     },
     {
       "field": "labels.label",
@@ -101,8 +101,8 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     }
   ],
   "commonLabels": [
-    "cromwell-workflow-id",
-    "workflow-name",
+    "id",
+    "name",
     "label",
     "comment",
     "flag"
@@ -113,6 +113,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 }
 ```
   - For the `displayFields`, which represent the columns that will be available in the job list view:
+    - The order that the fields are listed in will be the order in which they appear
     - Both `editable`, `bulkEditable` and `filterable` will be treated as `false` unless explicitly set to `true`
         - If the field is `editable`, then `fieldType` is required.
         - If the field is `editable`, then `filterable` will be ignored.
@@ -122,6 +123,10 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 ```json
 {
   "displayFields": [
+    {
+      "field": "id",
+      "display": "Workflow ID"
+    },
     {
       "field": "name",
       "display": "Name",
@@ -134,10 +139,6 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     {
       "field": "submission",
       "display": "Submitted"
-    },
-    {
-      "field": "labels.cromwell-workflow-id",
-      "display": "Workflow ID"
     },
     {
       "field": "labels.label",
@@ -165,8 +166,8 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     }
   ],
   "commonLabels": [
-    "cromwell-workflow-id",
-    "workflow-name",
+    "id",
+    "name",
     "label",
     "comment",
     "flag"

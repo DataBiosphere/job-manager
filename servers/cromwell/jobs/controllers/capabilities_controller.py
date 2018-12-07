@@ -40,6 +40,6 @@ def get_capabilities():
                 editable=True,
                 field_type='text')
         ],
-        common_labels=['cromwell-workflow-id', 'label', 'flag'],
+        common_labels=['id', 'name', 'label', 'flag'],
         query_extensions=['hideArchived'])
     return capabilities
