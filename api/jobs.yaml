@@ -216,8 +216,6 @@ definitions:
           this field in a name:value way.
         type: boolean
         default: false
-      displayOrder:
-        type: integer
   CapabilitiesResponse:
     description: Specification of the backend's capabilities
     properties:

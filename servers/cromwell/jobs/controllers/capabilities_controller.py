@@ -17,10 +17,10 @@ def get_capabilities():
     # Default capabilities configuration
     capabilities = CapabilitiesResponse(
         display_fields=[
+            DisplayField(field='id', display='Workflow ID'),
             DisplayField(field='name', display='Name', filterable=True),
             DisplayField(field='status', display='Status'),
             DisplayField(field='submission', display='Submitted'),
-            DisplayField(field='id', display='Workflow ID', display_order=1),
             DisplayField(
                 field='labels.label',
                 display='Label',

@@ -342,12 +342,7 @@ export class JobsTableComponent implements OnInit {
     this.bulkLabelFields = [];
     for (let displayField of this.displayFields) {
       if (displayField.primary) {
-        if (displayField.displayOrder) {
-          this.displayedColumns.splice(displayField.displayOrder, 0, displayField.field);
-        }
-        else {
-          this.displayedColumns.push(displayField.field);
-        }
+        this.displayedColumns.push(displayField.field);
       }
       if (displayField.bulkEditable) {
         this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
