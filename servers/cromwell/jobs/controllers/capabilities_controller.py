@@ -20,8 +20,7 @@ def get_capabilities():
             DisplayField(field='name', display='Name', filterable=True),
             DisplayField(field='status', display='Status'),
             DisplayField(field='submission', display='Submitted'),
-            DisplayField(
-                field='labels.cromwell-workflow-id', display='Workflow ID'),
+            DisplayField(field='id', display='Workflow ID', display_order=1),
             DisplayField(
                 field='labels.label',
                 display='Label',
