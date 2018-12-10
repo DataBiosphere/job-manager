@@ -17,11 +17,10 @@ def get_capabilities():
     # Default capabilities configuration
     capabilities = CapabilitiesResponse(
         display_fields=[
+            DisplayField(field='id', display='Workflow ID'),
             DisplayField(field='name', display='Name', filterable=True),
             DisplayField(field='status', display='Status'),
             DisplayField(field='submission', display='Submitted'),
-            DisplayField(
-                field='labels.cromwell-workflow-id', display='Workflow ID'),
             DisplayField(
                 field='labels.label',
                 display='Label',
@@ -41,6 +40,6 @@ def get_capabilities():
                 editable=True,
                 field_type='text')
         ],
-        common_labels=['cromwell-workflow-id', 'label', 'flag'],
+        common_labels=['id', 'name', 'label', 'flag'],
         query_extensions=['hideArchived'])
     return capabilities

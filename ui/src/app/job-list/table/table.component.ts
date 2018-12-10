@@ -53,7 +53,7 @@ export class JobsTableComponent implements OnInit {
   public readonly labelCharLimit = 255;
 
   displayedColumns: string[];
-  firstColumnName: string;
+  firstColumn: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -122,7 +122,8 @@ export class JobsTableComponent implements OnInit {
       .catch((error) => this.handleError(error));
   }
 
-  filterOnFieldValue(field: string, value: string) {
+  filterOnColumnValue(column: string, value: string) {
+    const field = this.getFilterFromField(column);
     if (field && value) {
       this.onFiltersChanged.emit([field, value]);
     }
@@ -158,11 +159,15 @@ export class JobsTableComponent implements OnInit {
   }
 
   isFirstColumn(df: DisplayField): boolean {
-    return df.field == this.firstColumnName;
+    return df.field == this.firstColumn;
   }
 
   isSimpleField(df: DisplayField): boolean {
     return !this.isStatusField(df) && !this.canEdit(df) && !this.isFirstColumn(df) && !this.canFilterBy(df.field);
+  }
+
+  shouldShowMenu(job: QueryJobsResult, df: DisplayField): boolean {
+    return !this.isFirstColumn(df) && (this.canEdit(df) || (this.canFilterBy(df.field) && this.getFieldValue(job, df)));
   }
 
   getFieldValue(job: QueryJobsResult, df: DisplayField): any {
@@ -185,14 +190,21 @@ export class JobsTableComponent implements OnInit {
   }
 
   getFieldType(df: DisplayField): string {
-    if (df.fieldType) {
+    if (df && df.fieldType) {
       return df.fieldType.toString();
     }
-    return 'Text';
+    return 'text';
   }
 
   getFieldOptions(df: DisplayField): string[] {
     return df.validFieldValues;
+  }
+
+  getFilterFromField(field: string): string {
+    const filter = this.displayFields.filter( df => (field == df.field) && df.filterable).pop();
+    if (filter) {
+      return filter.field.split('.').pop();
+    }
   }
 
   getQueryParams(): Params {
@@ -324,6 +336,7 @@ export class JobsTableComponent implements OnInit {
   }
 
   // set up fields to display as columns and bulk update-able labels for job list table
+  // add in "Details" column after the first non-checkbox column for job details menu
   public setUpFieldsAndColumns() {
     this.displayedColumns = ["Checkbox"];
     this.bulkLabelFields = [];
@@ -336,7 +349,7 @@ export class JobsTableComponent implements OnInit {
       }
     }
     this.displayedColumns.splice(2, 0, "Details");
-    this.firstColumnName = this.displayedColumns[1];
+    this.firstColumn = this.displayedColumns[1];
   }
 
   private prepareUpdateJobLabelsRequest (fieldValues: {}): UpdateJobLabelsRequest {

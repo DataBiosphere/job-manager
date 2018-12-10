@@ -17,6 +17,9 @@ export class URLSearchParamsUtils {
     for (let s in request.status) {
       urlSearchParams.append('status', JobStatus[request.status[s]]);
     }
+    if (request.id) {
+      urlSearchParams.set('id', request.id);
+    }
     if (request.name) {
       urlSearchParams.set('name', request.name);
     }

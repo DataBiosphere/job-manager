@@ -30,6 +30,7 @@ export enum FieldDataType {
  *  over. These should encompass all fields on QueryJobsRequest (besides
  *  pageSize and pageToken). */
 export const queryDataTypes: Map<string, FieldDataType> = new Map([
+  ['id', FieldDataType.Text],
   ['name', FieldDataType.Text],
   ['status', FieldDataType.Enum],
   ['start', FieldDataType.Date],

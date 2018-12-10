@@ -316,6 +316,8 @@ def cromwell_query_params(query, page, page_size):
         submission = datetime.strftime(query.submission,
                                        '%Y-%m-%dT%H:%M:%S.%fZ')
         query_params.append({'submission': submission})
+    if query.id:
+        query_params.append({'id': query.id})
     if query.name:
         query_params.append({'name': query.name})
     if query.status:
