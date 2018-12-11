@@ -12,7 +12,7 @@ export class JobFailuresTableComponent implements OnInit {
   @Input() failures: FailureMessage[];
   @Input() showHeaders: boolean;
   @Input() numToShow: number;
-  displayedColumns: string[] = ['name', 'message', 'links'];
+  @Input() displayedColumns: string[];
   dataSource: FailureMessage[] | null;
 
   constructor() {}

@@ -1,5 +1,0 @@
-<mat-expansion-panel class="content" [expanded]="expandPanel" (opened)="expandPanel = true">
-  <mat-expansion-panel-header>Errors</mat-expansion-panel-header>
-  <jm-failures-table [failures]="failures" [numToShow]="numOfErrorsToShow" [showHeaders]="false"></jm-failures-table>
-  <p *ngIf="numOfErrorsToShow < failures.length" class="tab-link"><button (click)="showAllErrors()"> See all {{ failures.length }} errors</button></p>
-</mat-expansion-panel>

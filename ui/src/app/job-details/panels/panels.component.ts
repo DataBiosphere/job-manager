@@ -28,6 +28,8 @@ export class JobPanelsComponent implements OnInit {
   numFailedTasks: number = 0;
   numRunningTasks: number = 0;
   numTasks: number = 0;
+  changeToFailuresTab: boolean;
+  public readonly numOfErrorsToShow = 4;
 
   ngOnInit() {
     if (this.job.extensions) {
@@ -72,5 +74,9 @@ export class JobPanelsComponent implements OnInit {
 
   handleClose(): void {
     this.close.emit();
+  }
+
+  showAllErrors(): void {
+    this.changeToFailuresTab = true;
   }
 }

@@ -15,6 +15,14 @@
   <ng-container matColumnDef="links">
     <mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !hasLinks() || !showHeaders}"> Log Files </mat-header-cell>
     <mat-cell *matCellDef="let f" [ngClass]="{'hidden': !hasLinks()}">
+      <clr-tooltip *ngIf="!displayedColumns.includes('message')">
+        <a class="log-item" href="{{ getResourceUrl(f.stdout) }}">
+          <clr-icon clrTooltipTrigger shape="exclamation-triangle" size="24"></clr-icon>
+          <clr-tooltip-content clrPosition="top-right" clrSize="xs" class="message" *clrIfOpen>
+            <span>{{ f.failure }}</span>
+          </clr-tooltip-content>
+        </a>
+      </clr-tooltip>
       <clr-tooltip *ngIf="getResourceUrl(f.stdout)">
         <a class="log-item" href="{{ getResourceUrl(f.stdout) }}">
           <clr-icon clrTooltipTrigger shape="file" size="24"></clr-icon>
