@@ -46,11 +46,12 @@ clr-tooltip-content {
 }
 
 clr-tooltip-content.message {
-  max-width: 15rem;
-  line-height: 1rem;
+  max-width: 20rem;
+  font-size: 0.8rem;
+  line-height: 1.25rem;
   background-color: rgba(0, 0, 0, 0.85);
   z-index: 100;
-  margin-top: 0;
+  margin-top: -1rem;
 }
 
 .log-item {
