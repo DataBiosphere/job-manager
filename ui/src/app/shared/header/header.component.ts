@@ -208,6 +208,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
         this.chips.delete(key);
       }
     });
+    this.search();
   }
 
   // TODO: Cut the dependency on string parsing to represent lists here
