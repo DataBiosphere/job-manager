@@ -198,6 +198,18 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
     this.search();
   }
 
+  hasChipsToClear(): boolean {
+    return this.getChipKeys().filter(key => key != 'projectId').length > 0;
+  }
+
+  removeAllChips(): void {
+    this.chips.forEach((value: string, key: string) => {
+      if (key != 'projectId') {
+        this.chips.delete(key);
+      }
+    });
+  }
+
   // TODO: Cut the dependency on string parsing to represent lists here
   search(): void {
     let paramMap: Map<string, string[]> = new Map();
