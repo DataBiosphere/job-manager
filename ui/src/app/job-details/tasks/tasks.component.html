@@ -7,7 +7,7 @@
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
           <mat-cell *matCellDef="let t" class="task-title">
-            <a class="title-link" *ngIf="t.jobId" href="{{ '/jobs/' + t.jobId }}">{{ t.name }}</a>
+            <a class="title-link" *ngIf="t.jobId" href="{{ '/jobs/' + t.jobId + '?' + getQueryParams()}}">{{ t.name }}</a>
             <p *ngIf="!t.jobId" class="title-nolink">{{ t.name }}</p>
           </mat-cell>
         </ng-container>

@@ -14,6 +14,7 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusIcon} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
+import {ActivatedRoute, Params} from "@angular/router";
 
 @Component({
   selector: 'jm-tasks',
@@ -21,6 +22,9 @@ import {TaskMetadata} from '../../shared/model/TaskMetadata';
   styleUrls: ['./tasks.component.css'],
 })
 export class TaskDetailsComponent implements OnInit, OnChanges {
+  constructor(
+    private readonly route: ActivatedRoute) { }
+
   @Input() tasks: TaskMetadata[] = [];
   @Input() job: JobMetadataResponse;
   @Input() selectedTab: number;
@@ -109,6 +113,10 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
       });
     }
     return result;
+  }
+
+  getQueryParams(): Params {
+    return this.route.snapshot.queryParams['q'];
   }
 }
 

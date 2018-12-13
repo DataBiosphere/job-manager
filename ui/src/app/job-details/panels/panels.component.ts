@@ -5,7 +5,7 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-
+import {ActivatedRoute} from '@angular/router';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 
@@ -15,6 +15,9 @@ import {JobStatus} from '../../shared/model/JobStatus';
   styleUrls: ['./panels.component.css'],
 })
 export class JobPanelsComponent implements OnInit {
+  constructor(
+    private readonly route: ActivatedRoute) { }
+
   // Whitelist of extended fields to display in the UI, in order.
   private static readonly extensionsWhiteList: string[] = [
     'userId', 'lastUpdate', 'parentJobId', 'statusDetail'
@@ -22,6 +25,7 @@ export class JobPanelsComponent implements OnInit {
 
   @Input() job: JobMetadataResponse;
   @Output() close: EventEmitter<any> = new EventEmitter();
+  @Output() navUp: EventEmitter<any> = new EventEmitter();
   labels: Array<string> = [];
   displayedExtensions: Array<string> = [];
   numSucceededTasks: number = 0;
@@ -36,7 +40,7 @@ export class JobPanelsComponent implements OnInit {
         for (let task of this.job.extensions.tasks) {
           if (JobStatus[task.executionStatus] == JobStatus.Succeeded) {
             this.numSucceededTasks++;
-          } else if (JobStatus[task.executionStatus] == JobStatus.Failed) {
+          } else if ( JobStatus[task.executionStatus] == JobStatus.Failed) {
             this.numFailedTasks++;
           } else if ([JobStatus.Submitted, JobStatus.Running].includes(JobStatus[task.executionStatus])) {
             this.numRunningTasks++;
@@ -68,6 +72,10 @@ export class JobPanelsComponent implements OnInit {
       }
     }
     return extensions;
+  }
+
+  getQueryParams(): string {
+    return this.route.snapshot.queryParams['q'];
   }
 
   handleClose(): void {

@@ -128,7 +128,10 @@ def get_job(id, **kwargs):
         outputs=update_key_names(job.get('outputs', {})),
         labels=job.get('labels'),
         failures=failures,
-        extensions=ExtendedFields(tasks=sorted_tasks, timing_url=timing_url))
+        extensions=ExtendedFields(
+            tasks=sorted_tasks,
+            timing_url=timing_url,
+            parent_job_id=job.get('parentWorkflowId')))
 
 
 def format_task(task_name, task_metadata):
