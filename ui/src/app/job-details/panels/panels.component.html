@@ -43,7 +43,7 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card class="card">
+<mat-card class="card" *ngIf="job.failures">
   <mat-card-title>Errors ({{ job.failures.length }} total)</mat-card-title>
   <jm-failures-table [failures]="job.failures" [numToShow]="numOfErrorsToShow" [showHeaders]="false" [displayedColumns]="['name','links']"></jm-failures-table>
 </mat-card>

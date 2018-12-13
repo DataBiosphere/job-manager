@@ -18,7 +18,9 @@ export class JobFailuresTableComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.dataSource = this.failures.slice(0, this.numToShow);
+    if (this.failures) {
+      this.dataSource = this.failures.slice(0, this.numToShow);
+    }
   }
 
   getResourceUrl(url: string): string {
