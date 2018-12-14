@@ -40,6 +40,14 @@ export class JobDetailsComponent implements OnInit {
     });
   }
 
+  handleNavUp(): void {
+    this.router.navigate(['/jobs/' + this.job.extensions.parentJobId], {
+      queryParams: {
+        'q': this.route.snapshot.queryParams['q']
+      }
+    });
+  }
+
   hasResources(): boolean {
     return (this.job.inputs && Object.keys(this.job.inputs).length !== 0)
       || (this.job.outputs && Object.keys(this.job.outputs).length !== 0)

@@ -9,9 +9,8 @@
       </clr-tooltip-content>
     </clr-tooltip>
   </button>
-  <a href="{{ '/jobs/' + job.extensions.parentJobId  + '?' + getQueryParams()}}" class="icon">
   <button mat-icon-button class="close"
-          *ngIf="job.extensions.parentJobId">
+          *ngIf="job.extensions.parentJobId" (click)="handleNavUp()">
     <clr-tooltip>
       <clr-icon clrTooltipTrigger shape="arrow" size="36"></clr-icon>
       <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
@@ -19,7 +18,6 @@
       </clr-tooltip-content>
     </clr-tooltip>
   </button>
-  </a>
   <p class="job-id">ID: <b>{{ job.id }}</b></p>
   <span class="label" *ngFor="let l of labels">
     <span *ngIf="job.labels[l] != ''">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>

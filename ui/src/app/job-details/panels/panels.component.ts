@@ -58,6 +58,7 @@ export class JobPanelsComponent implements OnInit {
     if (this.job.labels) {
       this.labels = Object.keys(this.job.labels).sort();
     }
+
   }
 
   whiteListedExtensions(): string[] {
@@ -74,11 +75,11 @@ export class JobPanelsComponent implements OnInit {
     return extensions;
   }
 
-  getQueryParams(): string {
-    return this.route.snapshot.queryParams['q'];
-  }
-
   handleClose(): void {
     this.close.emit();
+  }
+
+  handleNavUp(): void {
+    this.navUp.emit();
   }
 }

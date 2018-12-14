@@ -14,7 +14,7 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusIcon} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
-import {ActivatedRoute, Params} from "@angular/router";
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'jm-tasks',
@@ -113,10 +113,6 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
       });
     }
     return result;
-  }
-
-  getQueryParams(): Params {
-    return this.route.snapshot.queryParams['q'];
   }
 }
 
