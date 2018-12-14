@@ -33,6 +33,9 @@
       </mat-autocomplete>
     </mat-chip-list>
   </mat-form-field>
+  <button mat-button *ngIf="hasChipsToClear()" matSuffix mat-icon-button aria-label="Clear" (click)="removeAllChips()" class="clear-query">
+    <clr-icon shape="close" size="18"></clr-icon>
+  </button>
 
   <div *ngIf="showControls" class="search-table-controls">
     <!-- Always include child divs, to support flex box style placement. -->

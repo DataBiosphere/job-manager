@@ -123,3 +123,11 @@ clr-tooltip-content {
   display: block;
   margin: -0.6rem 0.5rem 0 0;
 }
+
+button.clear-query {
+  top: 0px;
+  left: -50px;
+  padding: 0px;
+  height: 40px;
+  width: 40px;
+}
