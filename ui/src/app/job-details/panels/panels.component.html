@@ -10,7 +10,7 @@
     </clr-tooltip>
   </button>
   <button mat-icon-button class="close"
-          *ngIf="job.extensions.parentJobId" (click)="handleNavUp()">
+          *ngIf="hasParent()" (click)="handleNavUp()">
     <clr-tooltip>
       <clr-icon clrTooltipTrigger shape="arrow" size="36"></clr-icon>
       <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
@@ -19,9 +19,11 @@
     </clr-tooltip>
   </button>
   <p class="job-id">ID: <b>{{ job.id }}</b></p>
-  <span class="label" *ngFor="let l of labels">
-    <span *ngIf="job.labels[l] != ''">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
-  </span>
+  <div *ngIf="job.labels">
+    <span class="label" *ngFor="let l of labels">
+      <span *ngIf="job.labels[l] != ''">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
+    </span>
+  </div>
 </div>
 
 <mat-card class="card">

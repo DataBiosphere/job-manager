@@ -5,7 +5,6 @@ import {
   OnInit,
   Output
 } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 
@@ -15,25 +14,50 @@ import {JobStatus} from '../../shared/model/JobStatus';
   styleUrls: ['./panels.component.css'],
 })
 export class JobPanelsComponent implements OnInit {
-  constructor(
-    private readonly route: ActivatedRoute) { }
 
   // Whitelist of extended fields to display in the UI, in order.
   private static readonly extensionsWhiteList: string[] = [
-    'userId', 'lastUpdate', 'parentJobId', 'statusDetail'
+    'userId', 'lastUpdate', 'statusDetail'
   ];
 
   @Input() job: JobMetadataResponse;
   @Output() close: EventEmitter<any> = new EventEmitter();
   @Output() navUp: EventEmitter<any> = new EventEmitter();
-  labels: Array<string> = [];
-  displayedExtensions: Array<string> = [];
-  numSucceededTasks: number = 0;
-  numFailedTasks: number = 0;
-  numRunningTasks: number = 0;
-  numTasks: number = 0;
+  labels: Array<string>;
+  displayedExtensions: Array<string>;
+  numSucceededTasks: number;
+  numFailedTasks: number;
+  numRunningTasks: number;
+  numTasks: number;
 
   ngOnInit() {
+    this.setUpExtensions();
+    if (this.job.labels) {
+      this.labels = Object.keys(this.job.labels).sort();
+    }
+  }
+
+  whiteListedExtensions(): string[] {
+    if (!this.job.extensions) {
+      return [];
+    }
+
+    let extensions: string[] = [];
+    for (let extension of JobPanelsComponent.extensionsWhiteList) {
+      if (this.job.extensions[extension]) {
+        extensions.push(extension);
+      }
+    }
+    return extensions;
+  }
+
+  setUpExtensions(): void {
+    this.displayedExtensions = [];
+    this.numSucceededTasks = 0;
+    this.numFailedTasks = 0;
+    this.numRunningTasks = 0;
+    this.numTasks = 0;
+
     if (this.job.extensions) {
       if (this.job.extensions.tasks) {
         this.numTasks = this.job.extensions.tasks.length;
@@ -55,24 +79,6 @@ export class JobPanelsComponent implements OnInit {
       }
     }
 
-    if (this.job.labels) {
-      this.labels = Object.keys(this.job.labels).sort();
-    }
-
-  }
-
-  whiteListedExtensions(): string[] {
-    if (!this.job.extensions) {
-      return [];
-    }
-
-    let extensions: string[] = [];
-    for (let extension of JobPanelsComponent.extensionsWhiteList) {
-      if (this.job.extensions[extension]) {
-        extensions.push(extension);
-      }
-    }
-    return extensions;
   }
 
   handleClose(): void {
@@ -81,5 +87,9 @@ export class JobPanelsComponent implements OnInit {
 
   handleNavUp(): void {
     this.navUp.emit();
+  }
+
+  hasParent(): boolean {
+    return this.job.extensions && !!this.job.extensions.parentJobId;
   }
 }
