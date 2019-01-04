@@ -80,6 +80,18 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     return false;
   }
 
+  hasFailures(): boolean {
+    return this.job.failures && (this.job.failures.length > 1)
+  }
+
+  hasInputs(): boolean {
+    return this.job.inputs && (Object.keys(this.job.inputs).length > 1)
+  }
+
+  hasOutputs(): boolean {
+    return this.job.outputs && (Object.keys(this.job.outputs).length > 1)
+  }
+
   getScatteredCountTotal(task: TaskMetadata): number {
     if (task.shardStatuses) {
       let count = 0;
