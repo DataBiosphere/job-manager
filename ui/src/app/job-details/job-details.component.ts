@@ -5,6 +5,7 @@ import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {TaskMetadata} from '../shared/model/TaskMetadata';
 import {TaskDetailsComponent} from "./tasks/tasks.component";
 import {JobFailuresComponent} from "./failures/failures.component";
+import {JobPanelsComponent} from "./panels/panels.component";
 
 @Component({
   selector: 'jm-job-details',
@@ -14,6 +15,7 @@ import {JobFailuresComponent} from "./failures/failures.component";
 export class JobDetailsComponent implements OnInit {
   @ViewChild(TaskDetailsComponent) taskTabs;
   @ViewChild(JobFailuresComponent) failurePanel;
+  @ViewChild(JobPanelsComponent) jobPanels;
   public job: JobMetadataResponse;
 
   constructor(
@@ -38,6 +40,46 @@ export class JobDetailsComponent implements OnInit {
         'q': this.route.snapshot.queryParams['q']
       }
     });
+  }
+
+  handleNavUp(): void {
+    if (this.job.extensions.parentJobId) {
+      this.router.navigate(['/jobs/' + this.job.extensions.parentJobId], {
+        queryParams: {
+          'q': this.route.snapshot.queryParams['q']
+        },
+        replaceUrl: true,
+        skipLocationChange: false
+      })
+      .then(result => {
+        this.handleNav();
+      });
+    }
+  }
+
+  handleNavDown(id: string): void {
+    this.router.navigate(['/jobs/' + id], {
+      queryParams: {
+        'q': this.route.snapshot.queryParams['q']
+      },
+      replaceUrl: true,
+      skipLocationChange: false
+    })
+    .then(result => {
+      this.handleNav();
+    });
+  }
+
+  private handleNav() {
+    this.job = this.route.snapshot.data['job'];
+    this.jobPanels.job = this.job;
+    this.jobPanels.setUpExtensions();
+    if (this.taskTabs.failuresTable) {
+      this.taskTabs.failuresTable.dataSource = this.job.failures;
+    }
+    if (this.failurePanel) {
+      this.failurePanel.failuresTable.dataSource = this.job.failures.slice(0, this.failurePanel.failuresTable.numToShow);
+    }
   }
 
   hasResources(): boolean {

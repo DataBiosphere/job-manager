@@ -1,5 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {FailureMessage} from "../../shared/model/FailureMessage";
+import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 
 @Component({
   selector: 'jm-failures',
@@ -8,6 +9,8 @@ import {FailureMessage} from "../../shared/model/FailureMessage";
 })
 export class JobFailuresComponent implements OnInit {
   @Input() failures: FailureMessage[];
+  @ViewChild(JobFailuresTableComponent) failuresTable: JobFailuresTableComponent;
+
   changeToFailuresTab: boolean;
   public readonly numOfErrorsToShow = 2;
   expandPanel: boolean;

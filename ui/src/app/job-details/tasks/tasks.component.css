@@ -22,6 +22,11 @@
   color: black;
 }
 
+a.title-link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 ::ng-deep .mat-expansion-panel-header.title {
   display: inline;
   padding-top: 1rem;
