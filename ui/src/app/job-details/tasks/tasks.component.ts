@@ -1,10 +1,13 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {
   Component,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
-  SimpleChanges
+  Output,
+  SimpleChanges,
+  ViewChild
 } from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
 import {Observable} from 'rxjs/Observable';
@@ -14,6 +17,7 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusIcon} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
+import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 
 @Component({
   selector: 'jm-tasks',
@@ -21,9 +25,12 @@ import {TaskMetadata} from '../../shared/model/TaskMetadata';
   styleUrls: ['./tasks.component.css'],
 })
 export class TaskDetailsComponent implements OnInit, OnChanges {
+
   @Input() tasks: TaskMetadata[] = [];
   @Input() job: JobMetadataResponse;
   @Input() selectedTab: number;
+  @Output() navDown: EventEmitter<string> = new EventEmitter();
+  @ViewChild(JobFailuresTableComponent) failuresTable: JobFailuresTableComponent;
 
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
@@ -80,6 +87,17 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
     return false;
   }
 
+  hasFailures(): boolean {
+    return this.job.failures && (this.job.failures.length > 0);
+  }
+
+  hasTasks(): boolean {
+    if (this.job.extensions) {
+      let tasks: TaskMetadata[] = this.job.extensions.tasks || [];
+      return tasks.length > 0;
+    }
+  }
+
   getScatteredCountTotal(task: TaskMetadata): number {
     if (task.shardStatuses) {
       let count = 0;
@@ -109,6 +127,12 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
       });
     }
     return result;
+  }
+
+  navigateDown(id: string): void {
+    if (id) {
+      this.navDown.emit(id);
+    }
   }
 }
 

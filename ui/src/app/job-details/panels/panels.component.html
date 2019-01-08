@@ -1,13 +1,29 @@
 <div class="content">
   <p class="header">{{ job.name }}</p>
-  <button mat-button class="close"
-      (click)="handleClose()">
-    &#x00D7;
+  <button mat-icon-button class="close"
+          (click)="handleClose()">
+    <clr-tooltip>
+      <clr-icon clrTooltipTrigger shape="times" size="36"></clr-icon>
+      <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+        <span>go back to list view</span>
+      </clr-tooltip-content>
+    </clr-tooltip>
+  </button>
+  <button mat-icon-button class="close"
+          *ngIf="hasParent()" (click)="handleNavUp()">
+    <clr-tooltip>
+      <clr-icon clrTooltipTrigger shape="arrow" size="36"></clr-icon>
+      <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+        <span>go back to parent job</span>
+      </clr-tooltip-content>
+    </clr-tooltip>
   </button>
   <p class="job-id">ID: <b>{{ job.id }}</b></p>
-  <span class="label" *ngFor="let l of labels">
-    <span *ngIf="job.labels[l] != ''">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
-  </span>
+  <div *ngIf="job.labels">
+    <span class="label" *ngFor="let l of labels">
+      <span *ngIf="job.labels[l] != ''">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
+    </span>
+  </div>
 </div>
 
 <mat-card class="card">
@@ -43,7 +59,7 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card class="card" *ngIf="job.failures">
+<mat-card class="card" *ngIf="hasFailures()">
   <mat-card-title>Errors ({{ job.failures.length }} total)</mat-card-title>
   <jm-failures-table [failures]="job.failures" [numToShow]="numOfErrorsToShow" [showHeaders]="false" [displayedColumns]="['name','links']"></jm-failures-table>
 </mat-card>

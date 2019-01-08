@@ -20,9 +20,8 @@ p {
 }
 
 .close {
-  color: gray;
   float: right;
-  font-size: 2.5rem;
+  margin-left: 1rem;
 }
 
 .job-id {
@@ -62,4 +61,19 @@ p {
   padding-right: 1rem;
   white-space: nowrap;
   display: inline-block;
+}
+
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+  line-height: 0.65rem;
+  color: #fff;
+  display: block;
+  margin: -0.6rem 0.5rem 0 0;
+  height: auto;
+}
+
+a.icon {
+  color: #000;
 }

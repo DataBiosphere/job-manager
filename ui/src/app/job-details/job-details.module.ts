@@ -12,8 +12,8 @@ import {
   MatTabsModule,
   MatTooltipModule,
 } from '@angular/material';
+import {RouterModule} from '@angular/router';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
-
 import {JobDetailsComponent} from './job-details.component';
 import {JobPanelsComponent} from './panels/panels.component';
 import {JobResourcesComponent} from './resources/resources.component';
@@ -39,6 +39,7 @@ import {JobFailuresTableComponent} from './common/failures-table/failures-table.
     MatTableModule,
     MatTabsModule,
     MatTooltipModule,
+    RouterModule,
     SharedModule,
   ],
   declarations: [
