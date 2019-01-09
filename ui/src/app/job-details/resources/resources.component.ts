@@ -7,7 +7,6 @@ import {
 import {
   MatExpansionPanel,
   MatSnackBar,
-  MatSnackBarConfig,
   MatTabChangeEvent
 } from '@angular/material'
 
