@@ -1,4 +1,4 @@
-<mat-table #table [dataSource]="dataSource">
+<mat-table [dataSource]="dataSource" [ngClass]="context">
   <!-- Task name column -->
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !hasTaskNames() || !showHeaders}"> Task Name </mat-header-cell>

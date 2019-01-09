@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {FailureMessage} from "../../../shared/model/FailureMessage";
 import {ResourceUtils} from "../../../shared/utils/resource-utils";
 import {TaskMetadata} from "../../../shared/model/TaskMetadata";
@@ -6,14 +6,17 @@ import {TaskMetadata} from "../../../shared/model/TaskMetadata";
 @Component({
   selector: 'jm-failures-table',
   templateUrl: './failures-table.component.html',
-  styleUrls: ['./failures-table.component.css']
+  styleUrls: ['./failures-table.component.css'],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class JobFailuresTableComponent implements OnInit {
   @Input() failures: FailureMessage[];
   @Input() showHeaders: boolean;
   @Input() numToShow: number;
   @Input() displayedColumns: string[];
-  dataSource: FailureMessage[] | null;
+  @Input() context: string[];
+
+  dataSource: FailureMessage[];
 
   constructor() {}
 
