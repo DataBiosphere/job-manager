@@ -21,7 +21,7 @@ import {JobDetailsComponent} from "./job-details.component"
 import {JobPanelsComponent} from './panels/panels.component';
 import {JobResourcesComponent} from './resources/resources.component';
 import {JobResourcesTableComponent} from './resources/resources-table/resources-table.component';
-import {TaskDetailsComponent} from './tasks/tasks.component';
+import {JobTabsComponent} from "./tabs/tabs.component";
 import {JobManagerService} from '../core/job-manager.service';
 import {JobDetailsResolver} from './job-details-resolver.service';
 import {FakeJobManagerService} from '../testing/fake-job-manager.service';
@@ -64,7 +64,7 @@ describe('JobDetailsComponent', () => {
         JobPanelsComponent,
         JobResourcesComponent,
         JobResourcesTableComponent,
-        TaskDetailsComponent,
+        JobTabsComponent,
       ],
       imports: [
         ClrIconModule,

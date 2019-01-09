@@ -13,16 +13,16 @@ import {
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {JobFailuresComponent} from "../failures/failures.component";
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {SharedModule} from '../../shared/shared.module';
-import {TaskDetailsComponent} from './tasks.component';
+import {JobTabsComponent} from './tabs.component';
 import {TaskMetadata} from "../../shared/model/TaskMetadata";
+import {JobResourcesTableComponent} from "../resources/resources-table/resources-table.component";
 
 
-describe('TaskDetailsComponent', () => {
+describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;
   let fixture: ComponentFixture<TestTasksComponent>;
 
@@ -52,9 +52,9 @@ describe('TaskDetailsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        TaskDetailsComponent,
-        JobFailuresComponent,
+        JobTabsComponent,
         JobFailuresTableComponent,
+        JobResourcesTableComponent,
         TestTasksComponent
       ],
       imports: [
@@ -107,11 +107,11 @@ describe('TaskDetailsComponent', () => {
 
   @Component({
     selector: 'jm-test-tasks-component',
-    template: `<jm-tasks [tasks]="job.extensions.tasks" [job]="job"></jm-tasks>`
+    template: `<jm-tabs [tasks]="job.extensions.tasks" [job]="job"></jm-tabs>`
   })
   class TestTasksComponent {
     public job = job;
-    @ViewChild(TaskDetailsComponent)
-    public taskDetailsComponent: TaskDetailsComponent;
+    @ViewChild(JobTabsComponent)
+    public jobTabsComponent: JobTabsComponent;
   }
 });

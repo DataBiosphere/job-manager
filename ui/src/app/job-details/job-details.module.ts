@@ -19,7 +19,7 @@ import {JobPanelsComponent} from './panels/panels.component';
 import {JobResourcesComponent} from './resources/resources.component';
 import {JobResourcesTableComponent} from './resources/resources-table/resources-table.component';
 import {SharedModule} from '../shared/shared.module';
-import {TaskDetailsComponent} from './tasks/tasks.component';
+import {JobTabsComponent} from "./tabs/tabs.component";
 import {GcsService} from '../core/gcs.service';
 import {JobFailuresComponent} from './failures/failures.component';
 import {JobFailuresTableComponent} from './common/failures-table/failures-table.component';
@@ -48,7 +48,7 @@ import {JobFailuresTableComponent} from './common/failures-table/failures-table.
     JobPanelsComponent,
     JobResourcesComponent,
     JobResourcesTableComponent,
-    TaskDetailsComponent,
+    JobTabsComponent,
     JobFailuresComponent,
     JobFailuresTableComponent,
   ],

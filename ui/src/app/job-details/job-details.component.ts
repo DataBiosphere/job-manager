@@ -3,7 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {TaskMetadata} from '../shared/model/TaskMetadata';
-import {TaskDetailsComponent} from "./tasks/tasks.component";
+import {JobTabsComponent} from "./tabs/tabs.component";
 import {JobFailuresComponent} from "./failures/failures.component";
 import {JobPanelsComponent} from "./panels/panels.component";
 
@@ -13,7 +13,7 @@ import {JobPanelsComponent} from "./panels/panels.component";
   styleUrls: ['./job-details.component.css'],
 })
 export class JobDetailsComponent implements OnInit {
-  @ViewChild(TaskDetailsComponent) taskTabs;
+  @ViewChild(JobTabsComponent) taskTabs;
   @ViewChild(JobFailuresComponent) failurePanel;
   @ViewChild(JobPanelsComponent) jobPanels;
   public job: JobMetadataResponse;
