@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {FailureMessage} from "../../../shared/model/FailureMessage";
 import {ResourceUtils} from "../../../shared/utils/resource-utils";
 import {TaskMetadata} from "../../../shared/model/TaskMetadata";
@@ -6,8 +6,7 @@ import {TaskMetadata} from "../../../shared/model/TaskMetadata";
 @Component({
   selector: 'jm-failures-table',
   templateUrl: './failures-table.component.html',
-  styleUrls: ['./failures-table.component.css'],
-  encapsulation: ViewEncapsulation.Emulated
+  styleUrls: ['./failures-table.component.css']
 })
 export class JobFailuresTableComponent implements OnInit {
   @Input() failures: FailureMessage[];
@@ -38,17 +37,6 @@ export class JobFailuresTableComponent implements OnInit {
     let status = false;
     this.dataSource.forEach((failure) => {
       if (failure.taskName) {
-        status = true;
-        return;
-      }
-    });
-    return status;
-  }
-
-  hasLinks(): boolean {
-    let status = false;
-    this.dataSource.forEach((failure) => {
-      if (failure.stderr || failure.stdout || failure.callRoot) {
         status = true;
         return;
       }

@@ -1,3 +1,50 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+.mat-header-row,
+.mat-row {
+  display: table-row;
+  min-height: auto;
+}
+
+.mat-header-row {
+}
+
+td,
+th {
+  padding: 5px 15px 5px 0px;
+  text-align: left;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  height: 1rem;
+}
+
+th {
+  color: #999;
+  font-weight: normal;
+  padding-top: 1rem;
+}
+
+th.failure-task,
+td.failure-task {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th.failure-message,
+td.failure-message {
+}
+
+th.failure-links,
+td.failure-links {
+  min-width: 79px;
+  padding-right: 0px;
+}
+
 clr-tooltip-content {
   background-color: rgba(0, 0, 0, 0.65);
   padding: 0.25rem 0.5rem;
@@ -7,6 +54,7 @@ clr-tooltip-content {
   display: block;
   margin: -0.6rem 0.5rem 0 1rem;
   height: auto;
+  z-index: 100;
 }
 
 clr-tooltip-content.message {
@@ -24,75 +72,29 @@ clr-tooltip-content.message {
   text-decoration: none;
 }
 
-clr-icon {
-  margin-right: 0.6rem;
+.failure-links clr-icon:last-child {
+  margin-right: 0;
 }
 
-mat-header-row, mat-row {
-  padding-right: 0px;
-  padding-left: 0px;
-}
-
-mat-header-row {
-  line-height: 3rem;
-  align-items: flex-end;
-}
-
-mat-row {
-  align-items: flex-start;
-}
-
-mat-cell,
-mat-header-cell {
-  padding: 5px 8px;
-}
-
-mat-cell {
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
-
-mat-cell.mat-column-name {
-  flex-grow: 2;
-}
-
-mat-cell.mat-column-message {
-  flex-grow: 6;
-}
-
-mat-cell.mat-column-links {
-  flex-grow: 1;
-  min-width: 7.5rem;
-}
-
-mat-cell.mat-cell:first-child {
-  width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.5rem;
-}
-
-mat-table.card clr-icon {
-  margin-right: 0.2rem;
-}
-
-mat-table.card mat-header-row {
+:host-context(mat-card.card) .mat-header-row {
   display: none;
 }
 
-mat-table.card mat-row {
-  min-height: auto;
+:host-context(mat-card.card) td,
+:host-context(mat-card.card) th {
+  padding: 5px 10px 5px 0px;
 }
 
-mat-table.card .mat-column-name {
-  flex-grow: 5;
-}
-
-mat-table.card .mat-column-links {
-  min-width: 10em;
-}
-
-mat-table.card mat-row:last-child {
+:host-context(mat-card.card) .mat-row:last-child td {
   border-bottom: none;
+}
+
+:host-context(mat-card.card) .failure-task {
+  width: 174px;
+  max-width: 174px;
+}
+
+:host-context(mat-card.card) td.failure-links {
+  min-width: 107px;
+  padding-right: 0px;
 }

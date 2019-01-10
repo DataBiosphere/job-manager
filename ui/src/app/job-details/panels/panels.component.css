@@ -35,8 +35,7 @@ p {
 
 .card {
   float: left;
-  width: 25%;
-  min-width: 15rem;
+  width: 18rem;
   height: 10rem;
   margin: 1rem;
 }

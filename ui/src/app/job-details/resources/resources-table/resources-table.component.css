@@ -1,0 +1,28 @@
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+mat-table {
+  width: 100%;
+}
+
+.mat-header-row,
+.mat-row {
+  display: table-row;
+  padding: 0;
+}
+
+th {
+  color: #999;
+  font-weight: normal;
+}
+
+td,
+th {
+  padding: 5px 15px 5px 0px;
+  text-align: left;
+  line-height: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  height: 1rem;
+  width: 50%;
+}
