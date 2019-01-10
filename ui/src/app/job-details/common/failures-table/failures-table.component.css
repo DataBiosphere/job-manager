@@ -8,9 +8,6 @@
   min-height: auto;
 }
 
-.mat-header-row {
-}
-
 td,
 th {
   padding: 5px 15px 5px 0px;
@@ -33,10 +30,6 @@ td.failure-task {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-th.failure-message,
-td.failure-message {
 }
 
 th.failure-links,
