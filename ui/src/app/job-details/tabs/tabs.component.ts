@@ -88,15 +88,15 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   hasFailures(): boolean {
-    return this.job.failures && (this.job.failures.length > 0)
+    return this.job.failures && (this.job.failures.length !== 0);
   }
 
   hasInputs(): boolean {
-    return this.job.inputs && (Object.keys(this.job.inputs).length > 0)
+    return this.job.inputs && (Object.keys(this.job.inputs).length !== 0);
   }
 
   hasOutputs(): boolean {
-    return this.job.outputs && (Object.keys(this.job.outputs).length > 0)
+    return this.job.outputs && (Object.keys(this.job.outputs).length !== 0);
   }
 
   hasTasks(): boolean {
