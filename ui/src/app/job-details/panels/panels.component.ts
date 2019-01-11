@@ -56,7 +56,7 @@ export class JobPanelsComponent implements OnInit {
     return extensions;
   }
 
-  setUpExtensions(): void {
+  private setUpExtensions(): void {
     this.displayedExtensions = [];
     this.numSucceededTasks = 0;
     this.numFailedTasks = 0;
