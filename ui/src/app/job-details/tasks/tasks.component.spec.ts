@@ -13,7 +13,6 @@ import {
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {JobFailuresComponent} from "../failures/failures.component";
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
@@ -53,7 +52,6 @@ describe('TaskDetailsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         TaskDetailsComponent,
-        JobFailuresComponent,
         JobFailuresTableComponent,
         TestTasksComponent
       ],

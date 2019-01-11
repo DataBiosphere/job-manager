@@ -35,10 +35,13 @@ p {
 
 .card {
   float: left;
-  width: 25%;
-  min-width: 15rem;
+  width: 18rem;
   height: 10rem;
   margin: 1rem;
+}
+
+.card .mat-card-title {
+  margin-bottom: 10px;
 }
 
 .card .mat-card-content {

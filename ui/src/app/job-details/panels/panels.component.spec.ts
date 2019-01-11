@@ -15,6 +15,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobPanelsComponent} from './panels.component';
+import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 
 describe('JobPanelsComponent', () => {
 
@@ -45,6 +46,7 @@ describe('JobPanelsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        JobFailuresTableComponent,
         JobPanelsComponent,
         TestPanelsComponent
       ],

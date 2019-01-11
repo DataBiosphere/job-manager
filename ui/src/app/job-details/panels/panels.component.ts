@@ -3,11 +3,13 @@ import {
   EventEmitter,
   Input,
   OnInit,
-  Output
+  Output,
+  ViewChild,
 } from '@angular/core';
 
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
+import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 
 @Component({
   selector: 'jm-panels',
@@ -24,13 +26,14 @@ export class JobPanelsComponent implements OnInit {
   @Input() job: JobMetadataResponse;
   @Output() close: EventEmitter<any> = new EventEmitter();
   @Output() navUp: EventEmitter<any> = new EventEmitter();
-
-  labels: Array<string>;
-  displayedExtensions: Array<string>;
-  numSucceededTasks: number;
-  numFailedTasks: number;
-  numRunningTasks: number;
-  numTasks: number;
+  @ViewChild(JobFailuresTableComponent) jobFailures;
+  labels: Array<string> = [];
+  displayedExtensions: Array<string> = [];
+  numSucceededTasks: number = 0;
+  numFailedTasks: number = 0;
+  numRunningTasks: number = 0;
+  numTasks: number = 0;
+  public readonly numOfErrorsToShow = 4;
 
   ngOnInit() {
     this.setUpExtensions();
@@ -53,7 +56,7 @@ export class JobPanelsComponent implements OnInit {
     return extensions;
   }
 
-  setUpExtensions(): void {
+  private setUpExtensions(): void {
     this.displayedExtensions = [];
     this.numSucceededTasks = 0;
     this.numFailedTasks = 0;
@@ -93,5 +96,9 @@ export class JobPanelsComponent implements OnInit {
 
   hasParent(): boolean {
     return this.job.extensions && !!this.job.extensions.parentJobId;
+  }
+
+  hasFailures(): boolean {
+    return this.job.failures && (this.job.failures.length > 0);
   }
 }

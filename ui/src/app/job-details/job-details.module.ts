@@ -21,7 +21,6 @@ import {JobResourcesTableComponent} from './resources/resources-table/resources-
 import {SharedModule} from '../shared/shared.module';
 import {TaskDetailsComponent} from './tasks/tasks.component';
 import {GcsService} from '../core/gcs.service';
-import {JobFailuresComponent} from './failures/failures.component';
 import {JobFailuresTableComponent} from './common/failures-table/failures-table.component';
 
 
@@ -49,7 +48,6 @@ import {JobFailuresTableComponent} from './common/failures-table/failures-table.
     JobResourcesComponent,
     JobResourcesTableComponent,
     TaskDetailsComponent,
-    JobFailuresComponent,
     JobFailuresTableComponent,
   ],
   providers: [

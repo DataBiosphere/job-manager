@@ -1,37 +1,41 @@
-.mat-header-row, .mat-row {
-  padding-right: 0px;
-  padding-left: 0px;
+* {
+  font-family: 'Roboto', sans-serif;
 }
 
-.mat-header-row {
-  line-height: 3rem;
-  align-items: flex-end;
-}
-
+.mat-header-row,
 .mat-row {
-  align-items: flex-start;
+  display: table-row;
+  min-height: auto;
 }
 
-.mat-row .mat-cell,
-.mat-header-row .mat-header-cell {
-  padding: 5px 8px;
-}
-
-.mat-cell {
+td,
+th {
+  padding: 5px 15px 5px 0px;
+  text-align: left;
   font-size: 0.75rem;
   line-height: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  height: 1rem;
 }
 
-.mat-column-name, .failure-task-name {
-  flex-grow: 2;
+th {
+  color: #999;
+  font-weight: normal;
+  padding-top: 1rem;
 }
 
-.mat-column-message, .failure-message {
-  flex-grow: 6;
+th.failure-task,
+td.failure-task {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-mat-column-links, .failure-links {
-  flex-grow: 1;
+th.failure-links,
+td.failure-links {
+  min-width: 79px;
+  padding-right: 0px;
 }
 
 clr-tooltip-content {
@@ -41,8 +45,18 @@ clr-tooltip-content {
   line-height: 0.65rem;
   color: #fff;
   display: block;
-  margin: -0.6rem 0.5rem 0 0;
+  margin: -0.6rem 0.5rem 0 1rem;
   height: auto;
+  z-index: 100;
+}
+
+clr-tooltip-content.message {
+  max-width: 20rem;
+  font-size: 0.8rem;
+  line-height: 1.25rem;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 100;
+  margin-top: -1rem;
 }
 
 .log-item {
@@ -51,10 +65,29 @@ clr-tooltip-content {
   text-decoration: none;
 }
 
-clr-icon {
-  margin-right: 0.6rem;
+.failure-links clr-icon:last-child {
+  margin-right: 0;
 }
 
-.hidden {
+:host-context(mat-card.card) .mat-header-row {
   display: none;
+}
+
+:host-context(mat-card.card) td,
+:host-context(mat-card.card) th {
+  padding: 5px 10px 5px 0px;
+}
+
+:host-context(mat-card.card) .mat-row:last-child td {
+  border-bottom: none;
+}
+
+:host-context(mat-card.card) .failure-task {
+  width: 174px;
+  max-width: 174px;
+}
+
+:host-context(mat-card.card) td.failure-links {
+  min-width: 107px;
+  padding-right: 0px;
 }
