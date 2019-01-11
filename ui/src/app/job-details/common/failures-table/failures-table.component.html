@@ -1,20 +1,29 @@
-<mat-table #table [dataSource]="dataSource">
+<!-- changed from <mat-header-cell> and <mat-cell> to <th mat-header-cell> and <td mat-cell> because of display bug -->
+<mat-table [dataSource]="dataSource">
   <!-- Task name column -->
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !hasTaskNames() || !showHeaders}"> Task Name </mat-header-cell>
-    <mat-cell *matCellDef="let f" [ngClass]="{'hidden': !hasTaskNames()}">{{ f.taskName }}</mat-cell>
+    <th mat-header-cell *matHeaderCellDef class="failure-task"> Task Name </th>
+    <td mat-cell *matCellDef="let f" class="failure-task">{{ f.taskName }}</td>
   </ng-container>
 
   <!-- Failure message column -->
   <ng-container matColumnDef="message">
-    <mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !showHeaders}"> Failure Message </mat-header-cell>
-    <mat-cell *matCellDef="let f" class="failure-message">{{ f.failure }}</mat-cell>
+    <th mat-header-cell *matHeaderCellDef class="failure-message"> Failure Message </th>
+    <td mat-cell *matCellDef="let f" class="failure-message">{{ f.failure }}</td>
   </ng-container>
 
   <!-- Outside links column -->
   <ng-container matColumnDef="links">
-    <mat-header-cell *matHeaderCellDef [ngClass]="{'hidden': !hasLinks() || !showHeaders}"> Log Files </mat-header-cell>
-    <mat-cell *matCellDef="let f" [ngClass]="{'hidden': !hasLinks()}">
+    <th mat-header-cell *matHeaderCellDef class="failure-links"> Log Files </th>
+    <td mat-cell *matCellDef="let f" class="failure-links">
+      <clr-tooltip *ngIf="!displayedColumns.includes('message')">
+        <a class="log-item" href="{{ getResourceUrl(f.stdout) }}">
+          <clr-icon clrTooltipTrigger shape="exclamation-triangle" size="24"></clr-icon>
+          <clr-tooltip-content clrPosition="bottom-right" clrSize="xs" class="message" *clrIfOpen>
+            <span>{{ f.failure }}</span>
+          </clr-tooltip-content>
+        </a>
+      </clr-tooltip>
       <clr-tooltip *ngIf="getResourceUrl(f.stdout)">
         <a class="log-item" href="{{ getResourceUrl(f.stdout) }}">
           <clr-icon clrTooltipTrigger shape="file" size="24"></clr-icon>
@@ -32,7 +41,7 @@
           </clr-tooltip-content>
         </a>
       </clr-tooltip>
-      <clr-icon *ngIf="!getResourceUrl(f.stderr)" shape="file" size="24" class="has-alert log-error disabled" style="color: #ccc;"></clr-icon>
+      <clr-icon *ngIf="!getResourceUrl(f.stderr)" shape="file" size="24" class="has-alert log-error" style="color: #ccc;"></clr-icon>
       <clr-tooltip *ngIf="getTaskDirectory(f)">
         <a class="log-item" href="{{ getTaskDirectory(f) }}">
           <clr-icon clrTooltipTrigger shape="folder" size="24"></clr-icon>
@@ -42,7 +51,7 @@
         </a>
       </clr-tooltip>
       <clr-icon *ngIf="!getTaskDirectory(f)" shape="folder" size="24" style="color: #ccc;"></clr-icon>
-    </mat-cell>
+    </td>
   </ng-container>
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let f; columns: displayedColumns;"></mat-row>

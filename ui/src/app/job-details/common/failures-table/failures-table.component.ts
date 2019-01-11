@@ -12,8 +12,10 @@ export class JobFailuresTableComponent implements OnInit {
   @Input() failures: FailureMessage[];
   @Input() showHeaders: boolean;
   @Input() numToShow: number;
-  displayedColumns: string[] = ['name', 'message', 'links'];
-  dataSource: FailureMessage[] | null;
+  @Input() displayedColumns: string[];
+  @Input() context: string[];
+
+  dataSource: FailureMessage[];
 
   constructor() {}
 
@@ -35,17 +37,6 @@ export class JobFailuresTableComponent implements OnInit {
     let status = false;
     this.dataSource.forEach((failure) => {
       if (failure.taskName) {
-        status = true;
-        return;
-      }
-    });
-    return status;
-  }
-
-  hasLinks(): boolean {
-    let status = false;
-    this.dataSource.forEach((failure) => {
-      if (failure.stderr || failure.stdout || failure.callRoot) {
         status = true;
         return;
       }

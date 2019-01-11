@@ -99,6 +99,13 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return this.job.outputs && (Object.keys(this.job.outputs).length > 0)
   }
 
+  hasTasks(): boolean {
+    if (this.job.extensions) {
+      let tasks: TaskMetadata[] = this.job.extensions.tasks || [];
+      return tasks.length > 0;
+    }
+  }
+
   getScatteredCountTotal(task: TaskMetadata): number {
     if (task.shardStatuses) {
       let count = 0;

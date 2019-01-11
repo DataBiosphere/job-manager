@@ -4,7 +4,6 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {TaskMetadata} from '../shared/model/TaskMetadata';
 import {JobTabsComponent} from "./tabs/tabs.component";
-import {JobFailuresComponent} from "./failures/failures.component";
 import {JobPanelsComponent} from "./panels/panels.component";
 
 @Component({
@@ -14,7 +13,6 @@ import {JobPanelsComponent} from "./panels/panels.component";
 })
 export class JobDetailsComponent implements OnInit {
   @ViewChild(JobTabsComponent) taskTabs;
-  @ViewChild(JobFailuresComponent) failurePanel;
   @ViewChild(JobPanelsComponent) jobPanels;
   public job: JobMetadataResponse;
 
@@ -27,7 +25,10 @@ export class JobDetailsComponent implements OnInit {
     this.job = this.route.snapshot.data['job'];
   }
 
-  hasTasks(): boolean {
+  hasTabs(): boolean {
+    if (this.job.inputs || this.job.outputs) {
+      return true;
+    }
     if (this.job.extensions) {
       let tasks: TaskMetadata[] = this.job.extensions.tasks || [];
       return tasks.length > 0;
@@ -77,22 +78,12 @@ export class JobDetailsComponent implements OnInit {
     if (this.taskTabs.failuresTable) {
       this.taskTabs.failuresTable.dataSource = this.job.failures;
     }
-    if (this.failurePanel) {
-      this.failurePanel.failuresTable.dataSource = this.job.failures.slice(0, this.failurePanel.failuresTable.numToShow);
+    if (this.jobPanels.jobFailures) {
+      this.jobPanels.jobFailures.dataSource = this.job.failures.slice(0, this.jobPanels.numOfErrorsToShow);
     }
   }
 
   hasResources(): boolean {
     return (this.job.extensions && (this.job.extensions.sourceFile || this.job.extensions.logs));
-  }
-
-  hasFailures(): boolean {
-    return this.job.failures && this.job.failures.length !== 0;
-  }
-
-  changeSelectedTabToFailurePanel(): void {
-    if(this.failurePanel && this.failurePanel.changeToFailuresTab) {
-      this.taskTabs.selectedTab = 1;
-    }
   }
 }

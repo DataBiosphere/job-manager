@@ -1,6 +1,6 @@
 <mat-expansion-panel class="content" expanded="true" [disabled]="true">
   <mat-tab-group [(selectedIndex)]="selectedTab">
-    <mat-tab label="Task List">
+    <mat-tab *ngIf="hasTasks()" label="List View">
       <mat-table #table [dataSource]="dataSource">
         <!-- Task name column -->
         <ng-container matColumnDef="name">
@@ -113,7 +113,12 @@
     </mat-tab>
     <!-- Task failures tab -->
     <mat-tab *ngIf="hasFailures()" label="Errors">
-      <jm-failures-table [failures]="job.failures" [numToShow]="job.failures.length" [showHeaders]="true"></jm-failures-table>
+      <jm-failures-table [failures]="job.failures"
+                         [numToShow]="job.failures.length"
+                         [showHeaders]="true"
+                         [displayedColumns]="['name','message','links']"
+                         [context]="'tab'">
+      </jm-failures-table>
     </mat-tab>
     <!-- Task inputs tab -->
     <mat-tab *ngIf="hasInputs()" label="Inputs">
