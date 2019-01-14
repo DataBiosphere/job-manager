@@ -16,15 +16,6 @@ describe('ShortDateTimeFormat', () => {
     }).compileComponents();
   }));
 
-  it('should transform current time without day', inject([DatePipe],
-    (datePipe) => {
-      let pipe = new ShortDateTimePipe('en-US');
-      let testDate: Date = new Date();
-
-      expect(pipe.transform(testDate))
-        .toBe(datePipe.transform(testDate, 'shortTime'));
-  }));
-
   it('should transform previous time with day', () => {
     let pipe = new ShortDateTimePipe('en-US');
     let testDate: Date = new Date("1994-03-29T22:36:25");
