@@ -397,7 +397,10 @@ def _format_query_labels(orig_query_labels):
 
 def _get_scattered_task_status(metadata):
     # get all shard statuses
-    statuses = {shard.get('executionStatus') for shard in metadata}
+    statuses = {
+        task_statuses.cromwell_execution_to_api(shard.get('executionStatus'))
+        for shard in metadata
+    }
     # return status by ranked applicability
     for status in [
             'Failed', 'Aborted', 'Aborting', 'Running', 'Submitted',
