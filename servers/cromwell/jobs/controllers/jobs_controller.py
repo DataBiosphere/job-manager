@@ -403,7 +403,7 @@ def _get_scattered_task_status(metadata):
     }
     # return status by ranked applicability
     for status in [
-            'Failed', 'Aborted', 'Aborting', 'Running', 'Submitted',
+            'Failed', 'Aborting', 'Aborted', 'Running', 'Submitted',
             'Succeeded'
     ]:
         if status in statuses:
