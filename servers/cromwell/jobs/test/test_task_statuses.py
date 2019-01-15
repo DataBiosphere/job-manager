@@ -5,6 +5,9 @@ from __future__ import absolute_import
 from . import BaseTestCase
 
 from jobs.controllers.utils import task_statuses
+from jobs.controllers import jobs_controller
+
+import itertools
 
 
 class TestTaskStatuses(BaseTestCase):
@@ -27,3 +30,83 @@ class TestTaskStatuses(BaseTestCase):
     def test_unrecognized_task_status_causes_exception(self):
         with self.assertRaises(ValueError):
             task_statuses.cromwell_execution_to_api('Not a valid task status')
+
+    def test_scattered_task_status(self):
+        def failed_scattered_task():
+            return [{
+                'executionStatus': 'Failed',
+            }, {
+                'executionStatus': 'Aborting',
+            }, {
+                'executionStatus': 'Aborted',
+            }, {
+                'executionStatus': 'Running',
+            }, {
+                'executionStatus': 'Starting',
+            }, {
+                'executionStatus': 'Done',
+            }]
+
+        for response in itertools.permutations(failed_scattered_task(), 6):
+            self.assertEqual(
+                jobs_controller._get_scattered_task_status(response), 'Failed')
+
+        def aborting_scattered_task():
+            return [{
+                'executionStatus': 'Aborting',
+            }, {
+                'executionStatus': 'Aborted',
+            }, {
+                'executionStatus': 'Running',
+            }, {
+                'executionStatus': 'Starting',
+            }, {
+                'executionStatus': 'Done',
+            }]
+
+        for response in itertools.permutations(aborting_scattered_task(), 5):
+            self.assertEqual(
+                jobs_controller._get_scattered_task_status(response),
+                'Aborting')
+
+        def aborted_scattered_task():
+            return [{
+                'executionStatus': 'Aborted',
+            }, {
+                'executionStatus': 'Running',
+            }, {
+                'executionStatus': 'Starting',
+            }, {
+                'executionStatus': 'Done',
+            }]
+
+        for response in itertools.permutations(aborted_scattered_task(), 4):
+            self.assertEqual(
+                jobs_controller._get_scattered_task_status(response),
+                'Aborted')
+
+        def running_scattered_task():
+            return [{
+                'executionStatus': 'Running',
+            }, {
+                'executionStatus': 'Starting',
+            }, {
+                'executionStatus': 'Done',
+            }]
+
+        for response in itertools.permutations(running_scattered_task(), 3):
+            self.assertEqual(
+                jobs_controller._get_scattered_task_status(response),
+                'Running')
+
+        def submitted_scattered_task():
+            return [{
+                'executionStatus': 'Starting',
+            }, {
+                'executionStatus': 'Done',
+            }]
+
+        for response in itertools.permutations(submitted_scattered_task(), 2):
+            self.assertEqual(
+                jobs_controller._get_scattered_task_status(response),
+                'Submitted')

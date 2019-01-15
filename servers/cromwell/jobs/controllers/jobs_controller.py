@@ -207,8 +207,7 @@ def format_scattered_task(task_name, task_metadata):
     # grab attempts, path and subWorkflowId from last call
     return TaskMetadata(
         name=remove_workflow_name(task_name),
-        execution_status=task_statuses.cromwell_execution_to_api(
-            task_metadata[-1].get('executionStatus')),
+        execution_status=_get_scattered_task_status(task_metadata),
         start=minStart,
         end=maxEnd,
         attempts=task_metadata[-1].get('attempt'),
@@ -394,3 +393,18 @@ def _format_query_labels(orig_query_labels):
     for key, val in orig_query_labels.items():
         query_labels[urllib.unquote(key)] = urllib.unquote(val)
     return query_labels
+
+
+def _get_scattered_task_status(metadata):
+    # get all shard statuses
+    statuses = {
+        task_statuses.cromwell_execution_to_api(shard.get('executionStatus'))
+        for shard in metadata
+    }
+    # return status by ranked applicability
+    for status in [
+            'Failed', 'Aborting', 'Aborted', 'Running', 'Submitted',
+            'Succeeded'
+    ]:
+        if status in statuses:
+            return status
