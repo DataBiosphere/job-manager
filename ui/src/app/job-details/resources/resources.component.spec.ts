@@ -136,18 +136,18 @@ describe('JobResourcesComponent', () => {
     expect(tabGroup.componentInstance._tabs.length).toBe(0);
   }));
 
-  it('should show inputs, outputs, source file tabs', async(() => {
+  it('should show source file tab', async(() => {
     testComponent.job = inputOutputSourceFileJob;
     fixture.detectChanges();
     let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
-    expect(tabGroup.componentInstance._tabs.length).toBe(3);
+    expect(tabGroup.componentInstance._tabs.length).toBe(1);
   }));
 
-  it('should show inputs, outputs, source file and event details tabs', async(() => {
+  it('should show source file and event details tabs', async(() => {
     testComponent.job = eventDetailsJob;
     fixture.detectChanges();
     let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
-    expect(tabGroup.componentInstance._tabs.length).toBe(4);
+    expect(tabGroup.componentInstance._tabs.length).toBe(2);
   }));
 
   it('should switch content when tabs switch', fakeAsync(() => {
@@ -156,16 +156,6 @@ describe('JobResourcesComponent', () => {
     let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
 
     tabGroup.componentInstance.selectedIndex = 1;
-    tick();
-    fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentTabId).toBe("inputs");
-
-    tabGroup.componentInstance.selectedIndex = 2;
-    tick();
-    fixture.detectChanges();
-    expect(testComponent.jobResourcesComponent.currentTabId).toBe("outputs");
-
-    tabGroup.componentInstance.selectedIndex = 3;
     tick();
     fixture.detectChanges();
     expect(testComponent.jobResourcesComponent.currentTabId).toBe("source-file");

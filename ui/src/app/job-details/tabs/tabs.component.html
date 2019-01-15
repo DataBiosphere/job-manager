@@ -1,5 +1,4 @@
 <mat-expansion-panel class="content" expanded="true" [disabled]="true">
-  <mat-expansion-panel-header class="title">Tasks</mat-expansion-panel-header>
   <mat-tab-group [(selectedIndex)]="selectedTab">
     <mat-tab *ngIf="hasTasks()" label="List View">
       <mat-table #table [dataSource]="dataSource">
@@ -120,6 +119,14 @@
                          [displayedColumns]="['name','message','links']"
                          [context]="'tab'">
       </jm-failures-table>
+    </mat-tab>
+    <!-- Task inputs tab -->
+    <mat-tab *ngIf="hasInputs()" label="Inputs">
+      <jm-resources-table [entries]="job.inputs"></jm-resources-table>
+    </mat-tab>
+    <!-- Task outputs tab -->
+    <mat-tab *ngIf="hasOutputs()" label="Outputs">
+      <jm-resources-table [entries]="job.outputs"></jm-resources-table>
     </mat-tab>
     <!-- Disable the graph view tab so the indicator doesn't switch on click -->
     <mat-tab *ngIf="hasTimingUrl()" label="Graph View" [disabled]=true>

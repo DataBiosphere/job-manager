@@ -32,8 +32,6 @@ export class JobResourcesComponent implements OnInit {
 
   tabIds: Array<string> = [];
   tabTitles: Map<string, string> = new Map([
-    ['inputs', 'Inputs'],
-    ['outputs', 'Outputs'],
     ['source-file', 'Source File'],
     ['events', 'Events']
   ]);
@@ -44,15 +42,6 @@ export class JobResourcesComponent implements OnInit {
     private readonly viewContainer: ViewContainerRef) {}
 
   ngOnInit() {
-    if (this.job.inputs && Object.keys(this.job.inputs).length > 0) {
-      this.inputs = Object.keys(this.job.inputs).sort();
-      this.tabIds.push('inputs');
-    }
-    if (this.job.outputs && Object.keys(this.job.outputs).length > 0) {
-      this.outputs = Object.keys(this.job.outputs).sort();
-      this.tabIds.push('outputs');
-    }
-
     if (this.job.extensions) {
       if (this.job.extensions.sourceFile) {
         this.sourceFile = this.job.extensions.sourceFile;
