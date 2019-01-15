@@ -2,6 +2,10 @@
   font-family: 'Roboto', sans-serif;
 }
 
+mat-table {
+  width: 100%;
+}
+
 .mat-header-row,
 .mat-row {
   display: table-row;
@@ -16,6 +20,7 @@ th {
   line-height: 1rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   height: 1rem;
+  display: table-cell;
 }
 
 th {
@@ -26,10 +31,16 @@ th {
 
 th.failure-task,
 td.failure-task {
+  min-width: 150px;
   max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+th.failure-message,
+td.failure-message {
+  width: 100%;
 }
 
 th.failure-links,

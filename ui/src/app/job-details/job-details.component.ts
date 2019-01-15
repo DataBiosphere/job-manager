@@ -3,7 +3,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {TaskMetadata} from '../shared/model/TaskMetadata';
-import {TaskDetailsComponent} from "./tasks/tasks.component";
+import {JobTabsComponent} from "./tabs/tabs.component";
 import {JobPanelsComponent} from "./panels/panels.component";
 
 @Component({
@@ -12,7 +12,7 @@ import {JobPanelsComponent} from "./panels/panels.component";
   styleUrls: ['./job-details.component.css'],
 })
 export class JobDetailsComponent implements OnInit {
-  @ViewChild(TaskDetailsComponent) taskTabs;
+  @ViewChild(JobTabsComponent) taskTabs;
   @ViewChild(JobPanelsComponent) jobPanels;
   public job: JobMetadataResponse;
 
@@ -84,9 +84,6 @@ export class JobDetailsComponent implements OnInit {
   }
 
   hasResources(): boolean {
-    return (this.job.inputs && Object.keys(this.job.inputs).length !== 0)
-      || (this.job.outputs && Object.keys(this.job.outputs).length !== 0)
-      || (this.job.extensions
-        && (this.job.extensions.sourceFile || this.job.extensions.logs));
+    return (this.job.extensions && (this.job.extensions.sourceFile || this.job.extensions.logs));
   }
 }

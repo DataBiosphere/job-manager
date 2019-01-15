@@ -10,8 +10,6 @@
 
     <mat-divider></mat-divider>
 
-    <jm-resources-table *ngIf="currentTabId == 'inputs'" [entries]="job.inputs"></jm-resources-table>
-    <jm-resources-table *ngIf="currentTabId == 'outputs'" [entries]="job.outputs"></jm-resources-table>
     <div *ngIf="currentTabId == 'source-file'" class="inline-text">
       {{ job.extensions.sourceFile }}
     </div>

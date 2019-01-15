@@ -20,11 +20,11 @@ import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 
 @Component({
-  selector: 'jm-tasks',
-  templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.css'],
+  selector: 'jm-tabs',
+  templateUrl: './tabs.component.html',
+  styleUrls: ['./tabs.component.css'],
 })
-export class TaskDetailsComponent implements OnInit, OnChanges {
+export class JobTabsComponent implements OnInit, OnChanges {
 
   @Input() tasks: TaskMetadata[] = [];
   @Input() job: JobMetadataResponse;
@@ -88,7 +88,15 @@ export class TaskDetailsComponent implements OnInit, OnChanges {
   }
 
   hasFailures(): boolean {
-    return this.job.failures && (this.job.failures.length > 0);
+    return this.job.failures && (this.job.failures.length !== 0);
+  }
+
+  hasInputs(): boolean {
+    return this.job.inputs && (Object.keys(this.job.inputs).length !== 0);
+  }
+
+  hasOutputs(): boolean {
+    return this.job.outputs && (Object.keys(this.job.outputs).length !== 0);
   }
 
   hasTasks(): boolean {

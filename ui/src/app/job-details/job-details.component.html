@@ -1,8 +1,8 @@
 <jm-panels [job]="job" (close)="handleClose()" (navUp)="handleNavUp()"></jm-panels>
 <jm-resources *ngIf="hasResources()" [job]="job"></jm-resources>
 <!-- Only show the tasks table if there is at least 1 task. -->
-<jm-tasks *ngIf="hasTabs()"
+<jm-tabs *ngIf="hasTabs()"
           [tasks]="job.extensions.tasks"
           [job]="job"
           (navDown)="handleNavDown($event)">
-</jm-tasks>
+</jm-tabs>
