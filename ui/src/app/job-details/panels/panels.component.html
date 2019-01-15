@@ -27,7 +27,9 @@
 </div>
 
 <mat-card class="card">
-  <mat-card-title>Status</mat-card-title>
+  <mat-card-title>Status: <span class="job-status">{{ job.status }}</span>
+    <clr-icon [attr.shape]="getStatusIcon(job.status)" size="20"></clr-icon>
+  </mat-card-title>
   <mat-card-content>
     <p><b>
       <ng-container *ngIf="numTasks > 0">

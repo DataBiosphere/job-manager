@@ -76,3 +76,12 @@ clr-tooltip-content {
 a.icon {
   color: #000;
 }
+
+mat-card-title .job-status {
+  color: #000;
+}
+
+mat-card-title clr-icon {
+  margin-top: -3px;
+  color: #000;
+}
