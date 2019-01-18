@@ -1,5 +1,19 @@
 # Job Manager Change Log
 
+## v0.5.2 Release Notes
+
+### Add a button to clear the query builder chips
+
+This will not clear the `projectId` chip.
+
+### Clarified Job Details
+
+The job status is now clearly displayed in text and icon on the `Status` card; scattered task status will more accurately represented.
+
+### Re-organized Job Details
+
+The job `Inputs` and `Outputs` have been moved from the `Resources` panel to the tabbed panel.  The `Errors` panel has been converted to a card and displays the first four errors more succinctly.  Added an icon to allow navigation from child job to the parent job.
+
 ## v0.5.1 Release Notes
 
 ### Made the `name` and `id` columns in the job list more configurable
