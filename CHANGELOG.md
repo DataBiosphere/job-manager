@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v0.5.3 Release Notes
+
+### Fixed bug where total results were not being updated in the job list paginator
+
 ## v0.5.2 Release Notes
 
 ### Add a button to clear the query builder chips
