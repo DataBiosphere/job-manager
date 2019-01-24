@@ -36,7 +36,7 @@ http {
 
         # This is used for health check
         location /health/ {
-            proxy_pass http://127.0.0.1:8190/api/health/;
+            proxy_pass http://127.0.0.1:8190/api/v1/health;
         }
 
         location /version {
