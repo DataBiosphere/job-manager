@@ -151,7 +151,7 @@ def health(**kwargs):
     """
 
     status_url = _get_base_url().split("/api/")[0] + "/engine/v1/status"
-    logger.warning("Using {} to query Cromwell status".format(status_url))
+    logger.debug("Using {} to query Cromwell status".format(status_url))
 
     try:
         response = requests.get(
@@ -161,9 +161,8 @@ def health(**kwargs):
 
         if response.status_code != 200:
             logger.warning(
-                "Got a non-200 status response from Cromwell status: {}".
-                format(response.status_code))
-            logger.warning("Cromwell status details: {}".format(response.text))
+                "Got a non-200 status response from Cromwell status: {} ({})".
+                format(response.status_code, response.text))
             raise ServiceUnavailable(HealthResponse(available=False))
         else:
             logger.info("Health check got a positive response from Cromwell!")
