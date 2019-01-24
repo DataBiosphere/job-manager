@@ -1,6 +1,6 @@
 import requests
 from flask import current_app
-from werkzeug.exceptions import BadRequest, NotFound, InternalServerError
+from werkzeug.exceptions import BadRequest, NotFound, InternalServerError, ServiceUnavailable
 from datetime import datetime
 
 from jm_utils import page_tokens
@@ -15,12 +15,16 @@ from jobs.models.failure_message import FailureMessage
 from jobs.models.shard_status_count import ShardStatusCount
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
+from jobs.models.health_response import HealthResponse
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
 import urllib
+import logging
 
 _DEFAULT_PAGE_SIZE = 64
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
 @requires_auth
 def abort_job(id, **kwargs):
@@ -132,6 +136,40 @@ def get_job(id, **kwargs):
             tasks=sorted_tasks,
             timing_url=timing_url,
             parent_job_id=job.get('parentWorkflowId')))
+
+
+@requires_auth
+def health(**kwargs):
+    """
+    Query for the health of the backend.
+
+    Args:
+
+    Returns:
+        HealthResponse: Health of the service and its link to its backend.
+    """
+
+    status_url = _get_base_url().split("/api/")[0] + "/engine/v1/status"
+    logger.warning("Using {} to query Cromwell status".format(status_url))
+
+    try:
+        response = requests.get(
+            status_url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
+
+        if response.status_code != 200:
+            logger.warning("WOOOOP!")
+            logger.warning(
+                "Got a non-200 status response from Cromwell status: {}".format(
+                    response.status_code))
+            logger.warning(
+                "Cromwell status details: {}".format(response.text))
+            raise ServiceUnavailable(HealthResponse(available=False))
+        else:
+            logger.info("Health check got a positive response from Cromwell!")
+            return HealthResponse(available=True)
+    except Exception:
+        logger.warning("Failed to connect to Cromwell whatsoever")
+        raise ServiceUnavailable(HealthResponse(available=False))
 
 
 def format_task(task_name, task_metadata):
