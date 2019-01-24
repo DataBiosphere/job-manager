@@ -10,6 +10,7 @@ import {
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
+import {JobStatusIcon} from "../../shared/common";
 
 @Component({
   selector: 'jm-panels',
@@ -100,5 +101,9 @@ export class JobPanelsComponent implements OnInit {
 
   hasFailures(): boolean {
     return this.job.failures && (this.job.failures.length > 0);
+  }
+
+  getStatusIcon(status: JobStatus): string {
+    return JobStatusIcon[status];
   }
 }
