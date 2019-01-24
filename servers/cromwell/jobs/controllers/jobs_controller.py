@@ -26,6 +26,7 @@ _DEFAULT_PAGE_SIZE = 64
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
+
 @requires_auth
 def abort_job(id, **kwargs):
     """
@@ -154,15 +155,15 @@ def health(**kwargs):
 
     try:
         response = requests.get(
-            status_url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
+            status_url,
+            auth=kwargs.get('auth'),
+            headers=kwargs.get('auth_headers'))
 
         if response.status_code != 200:
-            logger.warning("WOOOOP!")
             logger.warning(
-                "Got a non-200 status response from Cromwell status: {}".format(
-                    response.status_code))
-            logger.warning(
-                "Cromwell status details: {}".format(response.text))
+                "Got a non-200 status response from Cromwell status: {}".
+                format(response.status_code))
+            logger.warning("Cromwell status details: {}".format(response.text))
             raise ServiceUnavailable(HealthResponse(available=False))
         else:
             logger.info("Health check got a positive response from Cromwell!")
