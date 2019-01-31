@@ -131,3 +131,18 @@ button.clear-query {
   height: 40px;
   width: 40px;
 }
+
+.sign-out-container clr-icon {
+  margin-top: -5px;
+}
+
+.sign-out-container button.mat-raised-button {
+  position: absolute;
+  right: 10px;
+  margin-top: -40px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 0.8rem;
+  width: 100px;
+  line-height: 0.8rem;
+  border-radius: 0;
+}

@@ -128,6 +128,7 @@ describe('DashboardComponent', () => {
   let de: DebugElement;
   let fakeCapabilitiesService: FakeCapabilitiesService;
   let settingsService: SettingsService;
+  let authService: AuthService;
 
   const TEST_PROJECT = 'test-project';
 
@@ -141,7 +142,8 @@ describe('DashboardComponent', () => {
       ]
     };
     fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
-    settingsService = new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage);
+    authService = new AuthService(null, fakeCapabilitiesService, null);
+    settingsService = new SettingsService(authService, fakeCapabilitiesService, localStorage);
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -170,6 +172,7 @@ describe('DashboardComponent', () => {
         {provide: JobManagerService, useValue: fakeJobService},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         {provide: SettingsService, useValue: settingsService},
+        {provide: AuthService, useValue: authService},
         DashboardResolver,
         RouteReuse
       ],

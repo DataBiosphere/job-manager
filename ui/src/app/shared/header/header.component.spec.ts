@@ -58,9 +58,10 @@ describe('HeaderComponent', () => {
     ],
     queryExtensions: ['projectId']
   };
-  let fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
 
   beforeEach(async(() => {
+    const fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
+    const authService = new AuthService(null, fakeCapabilitiesService, null);
 
     TestBed.configureTestingModule({
       declarations: [HeaderComponent, TestHeaderComponent, MockFilterChipComponent],
@@ -89,7 +90,8 @@ describe('HeaderComponent', () => {
       ],
       providers: [
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
-        {provide: SettingsService, useValue: new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage)}
+        {provide: SettingsService, useValue: new SettingsService(authService, fakeCapabilitiesService, localStorage)},
+        {provide: AuthService, useValue: authService}
       ]
     }).compileComponents();
   }));
