@@ -1,5 +1,17 @@
 # Job Manager Change Log
 
+## v0.5.4 Release Notes
+
+### Added Sign out button to Job List.
+
+Button will log user out via Google Auth (`gapi.auth2`).
+
+## v0.5.3 Release Notes
+
+### Health check endpoint for APIs
+
+Cromwell API will now return 503 if it cannot reach the Cromwell service.
+
 ## v0.5.2 Release Notes
 
 ### Add a button to clear the query builder chips

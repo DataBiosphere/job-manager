@@ -67,6 +67,7 @@ describe('JobListComponent', () => {
   let capabilities: CapabilitiesResponse;
   let fakeCapabilitiesService: FakeCapabilitiesService;
   let settingsService: SettingsService;
+  let authService: AuthService;
 
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
@@ -79,7 +80,8 @@ describe('JobListComponent', () => {
       ]
     };
     fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
-    settingsService = new SettingsService(new AuthService(null, fakeCapabilitiesService, null), fakeCapabilitiesService, localStorage);
+    authService = new AuthService(null, fakeCapabilitiesService, null);
+    settingsService = new SettingsService(authService, fakeCapabilitiesService, localStorage);
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -119,6 +121,7 @@ describe('JobListComponent', () => {
         {provide: JobManagerService, useValue: fakeJobService},
         {provide: SettingsService, useValue: settingsService},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
+        {provide: AuthService, useValue: authService},
         JobListResolver,
         RouteReuse
       ],
