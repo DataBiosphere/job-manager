@@ -85,7 +85,7 @@
         </div>
       </mat-menu>
     </div>
-    <div class="sign-out-container">
+    <div class="sign-out-container" *ngIf="isSignedIn()">
       <button mat-icon-button (click)="signOut()" class="mat-raised-button">
         Sign out
         <clr-tooltip>
