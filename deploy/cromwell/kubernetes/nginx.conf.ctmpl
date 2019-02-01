@@ -35,13 +35,8 @@ http {
         }
 
         # This is used for health check
-        location /health {
-            auth_basic off;
-            return 200 "healthy!\n";
-            # because default content-type is application/octet-stream,
-            # browser will by default try to save the file
-            # below line allows you to see it in the web page
-            add_header Content-Type text/plain;
+        location /health/ {
+            proxy_pass http://127.0.0.1:8190/api/v1/health;
         }
 
         location /version {

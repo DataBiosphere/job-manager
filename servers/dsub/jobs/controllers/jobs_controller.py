@@ -11,6 +11,7 @@ from jm_utils import page_tokens
 from jobs.common import execute_redirect_stdout
 from jobs.controllers.utils import extensions, failures, job_ids, job_statuses, labels, providers, query_parameters, jobs_generator
 from jobs.models.query_jobs_response import QueryJobsResponse
+from jobs.models.health_response import HealthResponse
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.job_metadata_response import JobMetadataResponse
 
@@ -160,6 +161,18 @@ def query_jobs(body):
         return QueryJobsResponse(results=jobs, next_page_token=token)
     except StopIteration:
         return QueryJobsResponse(results=jobs)
+
+
+def health():
+    """
+    Query for the health of the backend.
+
+    Args:
+
+    Returns:
+        HealthResponse: Health of the service and its link to its backend.
+    """
+    return HealthResponse(available=True)
 
 
 def _handle_http_error(error, proj_id):
