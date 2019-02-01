@@ -139,7 +139,6 @@ def get_job(id, **kwargs):
             parent_job_id=job.get('parentWorkflowId')))
 
 
-@requires_auth
 def health(**kwargs):
     """
     Query for the health of the backend.
