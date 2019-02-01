@@ -79,4 +79,9 @@ export class AuthService {
         .catch(error => reject(error))
     });
   }
+
+  public signOut(): Promise<any> {
+    const auth2 = gapi.auth2.getAuthInstance();
+    return auth2.signOut();
+  }
 }

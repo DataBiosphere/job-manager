@@ -167,6 +167,20 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Aggregation
+  '/health':
+    get:
+      operationId: Health
+      summary: A health check for the backend and its ability to connect to its underlying backend service
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/HealthResponse'
+        '503':
+          $ref: '#/responses/ServiceUnavailable'
+      tags:
+        - Jobs
 
 definitions:
   AuthenticationCapability:
@@ -645,6 +659,13 @@ definitions:
         $ref: '#/definitions/JobStatus'
       count:
         type: integer
+  HealthResponse:
+    description: response from the health endpoint
+    properties:
+      available:
+        description: Whether or not this service is available
+        type: boolean
+
 responses:
   BadRequest:
     description: 'Bad request'
@@ -656,6 +677,8 @@ responses:
     description: 'Job already in terminal status'
   Unauthorized:
     description: 'Unauthorized'
+  ServiceUnavailable:
+    description: 'The service or one of its requirements is unavailable'
 securityDefinitions:
   google_id_token:
     type: oauth2
