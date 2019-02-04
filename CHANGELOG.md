@@ -4,6 +4,8 @@
 
 ### Fixed bug where total results were not being updated in the job list paginator
 
+### Changed `health` endpoint to not need authentication
+
 ## v0.5.4 Release Notes
 
 ### Added Sign out button to Job List.
