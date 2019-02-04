@@ -94,7 +94,7 @@ describe('JobTabsComponent', () => {
     expect(de.query(By.css('.mat-column-status clr-icon')).attributes['shape'])
       .toContain('error');
     expect(de.queryAll(By.css('.mat-column-startTime'))[1].nativeElement.textContent)
-      .toContain('1:00 PM');
+      .toContain('Nov 14, 2017');
     expect(de.queryAll(By.css('.mat-column-duration'))[1].nativeElement.textContent)
       .toEqual('0h 15m');
     expect(de.queryAll(By.css('.mat-column-attempts'))[1].nativeElement.textContent)

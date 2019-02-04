@@ -2,6 +2,7 @@ import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 
 import {ShortDateTimePipe} from "./pipes/short-date-time.pipe";
+import {FullDateTimePipe} from "./pipes/full-date-time.pipe";
 import {ErrorMessageFormatterPipe} from "./pipes/error-message-formatter.pipe";
 import {DurationPipe} from "./pipes/duration.pipe";
 import {
@@ -57,12 +58,14 @@ import {StatusSelectionComponent} from "./header/chips/status-selection.componen
     FilterChipComponent,
     HeaderComponent,
     ShortDateTimePipe,
+    FullDateTimePipe,
     EnumSelectionComponent,
     StatusSelectionComponent
   ],
   providers: [],
   exports: [
     ShortDateTimePipe,
+    FullDateTimePipe,
     ErrorMessageFormatterPipe,
     DurationPipe,
     HeaderComponent

@@ -73,7 +73,8 @@ following values:
     },
     {
       "field": "submission",
-      "display": "Submitted"
+      "display": "Submitted",
+      "fieldType": "date"
     },
     {
       "field": "labels.cromwell-workflow-id",
@@ -123,7 +124,8 @@ the full version default config can be translated into the following JSON format
     },
     {
       "field": "submission",
-      "display": "Submitted"
+      "display": "Submitted",
+      "fieldType": "date"
     },
     {
       "field": "labels.job-id",

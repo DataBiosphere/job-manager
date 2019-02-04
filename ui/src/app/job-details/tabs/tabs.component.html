@@ -64,7 +64,14 @@
         <!-- Task detail columns -->
         <ng-container matColumnDef="startTime">
           <mat-header-cell *matHeaderCellDef> Start Time </mat-header-cell>
-          <mat-cell *matCellDef="let t" class="column">{{ t.start | jmShortDateTime }}</mat-cell>
+          <mat-cell *matCellDef="let t" class="column">
+            <clr-tooltip>
+              <span clrTooltipTrigger>{{ t.start | jmShortDateTime }}</span>
+              <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+                <span>{{ t.start | jmFullDateTime }}</span>
+              </clr-tooltip-content>
+            </clr-tooltip>
+          </mat-cell>
         </ng-container>
         <ng-container matColumnDef="duration">
           <mat-header-cell *matHeaderCellDef> Duration </mat-header-cell>

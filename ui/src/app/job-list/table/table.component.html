@@ -129,6 +129,14 @@
              [routerLink]="[j.id]"
              [queryParams]="getQueryParams()">{{ getFieldValue(j, df) }}</a>
         </div>
+        <div class="display-field" *ngIf="getFieldType(df) == 'date'">
+          <clr-tooltip>
+            <div clrTooltipTrigger>{{ getFieldValue(j, df) | jmShortDateTime }}</div>
+            <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
+              <span>{{ getFieldValue(j, df) | jmFullDateTime }}</span>
+            </clr-tooltip-content>
+          </clr-tooltip>
+        </div>
         <div class="display-field" *ngIf="isSimpleField(df)">{{ getFieldValue(j, df) }}</div>
         <clr-tooltip *ngIf=isStatusField(df)>
           <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(getFieldValue(j, df))" size="24"></clr-icon>

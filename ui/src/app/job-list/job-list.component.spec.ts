@@ -37,6 +37,7 @@ import 'rxjs/add/observable/of';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {JobStatus} from '../shared/model/JobStatus';
+import {FullDateTimePipe} from "../shared/pipes/full-date-time.pipe";
 import {RouteReuse} from '../route-reuse.service';
 import {SettingsService} from "../core/settings.service";
 import {AuthService} from "../core/auth.service";
@@ -86,6 +87,7 @@ describe('JobListComponent', () => {
       declarations: [
         AppComponent,
         FakeProjectsComponent,
+        FullDateTimePipe,
         JobsBulkEditComponent,
         JobListComponent,
         TestJobListComponent,

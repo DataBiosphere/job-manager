@@ -37,13 +37,31 @@
       </ng-container>
     </b></p>
     <p id="submitted" *ngIf="job.submission">
-      Submitted: {{ job.submission | jmShortDateTime }}
+      Submitted:
+      <clr-tooltip>
+        <span clrTooltipTrigger> {{ job.submission | jmShortDateTime }}</span>
+        <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
+          <span>{{ job.submission | jmFullDateTime }}</span>
+        </clr-tooltip-content>
+      </clr-tooltip>
     </p>
     <p id="started" *ngIf="job.start">
-      Started: {{ job.start | jmShortDateTime }}
+      Started:
+      <clr-tooltip>
+        <span clrTooltipTrigger> {{ job.start | jmShortDateTime }}</span>
+        <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
+          <span>{{ job.start | jmFullDateTime }}</span>
+        </clr-tooltip-content>
+      </clr-tooltip>
     </p>
     <p id="ended" *ngIf="job.end">
-      Ended: {{ job.end | jmShortDateTime }}
+      Ended:
+      <clr-tooltip>
+      <span clrTooltipTrigger> {{ job.end | jmShortDateTime }}</span>
+      <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
+        <span>{{ job.end | jmFullDateTime }}</span>
+      </clr-tooltip-content>
+    </clr-tooltip>
       ({{ job.start | jmDuration: job.end }})
     </p>
   </mat-card-content>

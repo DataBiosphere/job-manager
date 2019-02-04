@@ -1,5 +1,11 @@
 # Job Manager Change Log
 
+## v0.5.5 Release Notes
+
+### Updated display of dates/times in Job List and Details
+
+Dates/times for the current day, the current year and all others are displayed uniquely. Full date and time (including seconds) are displayed in tooltip on mouseover.
+
 ## v0.5.4 Release Notes
 
 ### Added Sign out button to Job List.
