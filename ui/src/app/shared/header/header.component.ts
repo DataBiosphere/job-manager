@@ -312,11 +312,7 @@ export class JobsPaginatorIntl extends MatPaginatorIntl {
               public changes: Subject<void>) {
     super();
     backendJobs.subscribe((jobList: JobListView) => {
-      // Ensure that the paginator component is redrawn once we transition to an
-      // exhaustive list of jobs.
-      if (jobList.exhaustive) {
         changes.next();
-      }
     });
   }
 
