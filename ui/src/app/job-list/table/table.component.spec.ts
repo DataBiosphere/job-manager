@@ -26,7 +26,6 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
-import {FullDateTimePipe} from "../../shared/pipes/full-date-time.pipe";
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {JobManagerService} from '../../core/job-manager.service';
 import {JobsBulkEditComponent} from "./bulk-edit/bulk-edit.component";
@@ -124,7 +123,6 @@ describe('JobsTableComponent', () => {
     fakeJobService = new FakeJobManagerService(jobs)
     TestBed.configureTestingModule({
       declarations: [
-        FullDateTimePipe,
         JobsBulkEditComponent,
         JobsTableComponent,
         TestTableComponent
