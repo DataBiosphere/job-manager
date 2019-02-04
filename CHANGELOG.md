@@ -6,6 +6,8 @@
 
 Dates/times for the current day, the current year and all others are displayed uniquely. Full date and time (including seconds) are displayed in tooltip on mouseover.
 
+### Fixed bug where total results were not being updated in the job list paginator
+
 ## v0.5.4 Release Notes
 
 ### Added Sign out button to Job List.
