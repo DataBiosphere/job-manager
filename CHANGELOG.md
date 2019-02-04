@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v0.5.5 Release Notes
+
+### Fixed bug where total results were not being updated in the job list paginator
+
 ## v0.5.4 Release Notes
 
 ### Added Sign out button to Job List.

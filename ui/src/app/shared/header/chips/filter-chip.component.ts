@@ -7,7 +7,6 @@ import {URLSearchParamsUtils} from "../../utils/url-search-params.utils";
 import {CapabilitiesService} from "../../../core/capabilities.service";
 import {MatMenuTrigger} from "@angular/material";
 import {DatepickerInputComponent} from "./datepicker-input.component";
-import {JobStatus} from "../../model/JobStatus";
 
 @Component({
   selector: 'jm-filter-chip',
