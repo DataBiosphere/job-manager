@@ -23,6 +23,7 @@ import {JobTabsComponent} from "./tabs/tabs.component";
 import {GcsService} from '../core/gcs.service';
 import {JobFailuresTableComponent} from './common/failures-table/failures-table.component';
 import {JobTimingDiagramComponent} from "./tabs/timing-diagram/timing-diagram.component";
+import {Ng2GoogleChartsModule} from 'ng2-google-charts';
 
 
 @NgModule({
@@ -42,6 +43,7 @@ import {JobTimingDiagramComponent} from "./tabs/timing-diagram/timing-diagram.co
     MatTooltipModule,
     RouterModule,
     SharedModule,
+    Ng2GoogleChartsModule
   ],
   declarations: [
     JobDetailsComponent,
