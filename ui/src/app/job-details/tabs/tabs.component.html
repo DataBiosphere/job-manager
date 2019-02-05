@@ -129,12 +129,8 @@
       <jm-resources-table [entries]="job.outputs"></jm-resources-table>
     </mat-tab>
     <!-- Disable the graph view tab so the indicator doesn't switch on click -->
-    <mat-tab *ngIf="hasTimingUrl()" label="Graph View" [disabled]=true>
-      <ng-template mat-tab-label>
-        <a style="all: unset" href="{{ job.extensions.timingUrl }}" target="_blank">
-          <div class="title-link">Graph view</div>
-        </a>
-      </ng-template>
+    <mat-tab *ngIf="hasTimingUrl() && hasTasks()" label="Graph View">
+      <jm-timing-diagram [metadata]="job.extensions.tasks"></jm-timing-diagram>
     </mat-tab>
   </mat-tab-group>
 </mat-expansion-panel>
