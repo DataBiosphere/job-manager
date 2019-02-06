@@ -18,6 +18,7 @@ import {JobStatusIcon} from '../../shared/common';
 import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
+import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
 
 @Component({
   selector: 'jm-tabs',
@@ -31,6 +32,8 @@ export class JobTabsComponent implements OnInit, OnChanges {
   @Input() selectedTab: number;
   @Output() navDown: EventEmitter<string> = new EventEmitter();
   @ViewChild(JobFailuresTableComponent) failuresTable: JobFailuresTableComponent;
+  @ViewChild(JobTimingDiagramComponent) timingDiagram: JobTimingDiagramComponent;
+
 
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;

@@ -81,6 +81,9 @@ export class JobDetailsComponent implements OnInit {
     if (this.jobPanels.jobFailures) {
       this.jobPanels.jobFailures.dataSource = this.job.failures.slice(0, this.jobPanels.numOfErrorsToShow);
     }
+    if (this.job.extensions.tasks) {
+      this.taskTabs.timingDiagram.buildTimelineData(this.job.extensions.tasks);
+    }
   }
 
   hasResources(): boolean {

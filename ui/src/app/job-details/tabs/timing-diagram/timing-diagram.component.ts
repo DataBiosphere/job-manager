@@ -9,15 +9,28 @@ import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces
 })
 export class JobTimingDiagramComponent implements OnInit {
   @Input() metadata: TaskMetadata[] = [];
-  timelineChart: GoogleChartInterface = {
-    chartType: 'Timeline',
-    dataTable: []
-  };
+  timelineChart: GoogleChartInterface;
 
   ngOnInit(): void {
-    this.timelineChart.dataTable.push(['Name', 'From', 'To']);
-    this.metadata.forEach((task) => {
-      this.timelineChart.dataTable.push([task.name, task.start, task.end]);
+    this.buildTimelineData(this.metadata);
+  }
+
+  buildTimelineData(metadata: TaskMetadata[]): void {
+    this.timelineChart = {
+      chartType: 'Timeline',
+      dataTable: []
+    };
+    this.timelineChart.dataTable.push(['Num', 'Name', 'Start', 'End']);
+    let counter = 1;
+
+    metadata.forEach((task) => {
+      this.timelineChart.dataTable.push([counter.toString(), task.name, task.start, task.end]);
+      counter++;
     })
+    this.timelineChart.options = {
+      title: 'Tasks',
+      width: 800,
+      height: counter * 50
+    };
   }
 }
