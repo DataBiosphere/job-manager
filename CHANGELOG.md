@@ -1,10 +1,12 @@
 # Job Manager Change Log
 
-## v0.5.5 Release Notes
+## v0.5.6 Release Notes
 
 ### Updated display of dates/times in Job List and Details
 
 Dates/times for the current day, the current year and all others are displayed uniquely. Full date and time (including seconds) are displayed in tooltip on mouseover.
+
+## v0.5.5 Release Notes
 
 ### Fixed bug where total results were not being updated in the job list paginator
 
