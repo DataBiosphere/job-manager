@@ -1,5 +1,11 @@
 # Job Manager Change Log
 
+## v0.5.6 Release Notes
+
+### Embedded timing diagram within UI
+
+Timing diagram is now rendered in the UI using the job metadata and displayed as one of the tabs in the Job Details page.
+
 ## v0.5.5 Release Notes
 
 ### Fixed bug where total results were not being updated in the job list paginator
