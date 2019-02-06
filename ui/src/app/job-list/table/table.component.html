@@ -130,12 +130,7 @@
              [queryParams]="getQueryParams()">{{ getFieldValue(j, df) }}</a>
         </div>
         <div class="display-field" *ngIf="getFieldType(df) == 'date'">
-          <clr-tooltip>
-            <div clrTooltipTrigger>{{ getFieldValue(j, df) | jmShortDateTime }}</div>
-            <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
-              <span>{{ getFieldValue(j, df) | jmFullDateTime }}</span>
-            </clr-tooltip-content>
-          </clr-tooltip>
+          <jm-datetime [datetime]="getFieldValue(j, df)"></jm-datetime>
         </div>
         <div class="display-field" *ngIf="isSimpleField(df)">{{ getFieldValue(j, df) }}</div>
         <clr-tooltip *ngIf=isStatusField(df)>

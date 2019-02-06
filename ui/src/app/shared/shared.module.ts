@@ -28,6 +28,7 @@ import {FilterChipComponent} from "./header/chips/filter-chip.component";
 import {EnumSelectionComponent} from "./header/chips/enum-selection.component";
 import {DatepickerInputComponent} from "./header/chips/datepicker-input.component";
 import {StatusSelectionComponent} from "./header/chips/status-selection.component";
+import {DatetimeComponent} from "./datetime/datetime.component";
 
 @NgModule({
   imports: [
@@ -59,11 +60,13 @@ import {StatusSelectionComponent} from "./header/chips/status-selection.componen
     HeaderComponent,
     ShortDateTimePipe,
     FullDateTimePipe,
+    DatetimeComponent,
     EnumSelectionComponent,
     StatusSelectionComponent
   ],
   providers: [],
   exports: [
+    DatetimeComponent,
     ShortDateTimePipe,
     FullDateTimePipe,
     ErrorMessageFormatterPipe,

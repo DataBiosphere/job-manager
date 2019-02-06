@@ -65,12 +65,7 @@
         <ng-container matColumnDef="startTime">
           <mat-header-cell *matHeaderCellDef> Start Time </mat-header-cell>
           <mat-cell *matCellDef="let t" class="column">
-            <clr-tooltip>
-              <span clrTooltipTrigger>{{ t.start | jmShortDateTime }}</span>
-              <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
-                <span>{{ t.start | jmFullDateTime }}</span>
-              </clr-tooltip-content>
-            </clr-tooltip>
+            <jm-datetime [datetime]="t.start"></jm-datetime>
           </mat-cell>
         </ng-container>
         <ng-container matColumnDef="duration">
