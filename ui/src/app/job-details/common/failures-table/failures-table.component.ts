@@ -24,7 +24,7 @@ export class JobFailuresTableComponent implements OnInit {
   }
 
   getResourceUrl(url: string): string {
-    return ResourceUtils.getResourceURL(url);
+    return ResourceUtils.getDirectoryBrowserURL(url);
   }
 
   getTaskDirectory(task: TaskMetadata): string {
