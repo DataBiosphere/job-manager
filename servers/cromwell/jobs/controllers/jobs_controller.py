@@ -2,6 +2,8 @@ import requests
 from flask import current_app
 from werkzeug.exceptions import BadRequest, NotFound, InternalServerError, ServiceUnavailable
 from datetime import datetime
+from dateutil.tz import *
+import dateutil.parser
 
 from jm_utils import page_tokens
 from jobs.controllers.utils.auth import requires_auth
@@ -19,12 +21,8 @@ from jobs.models.health_response import HealthResponse
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
 import urllib
-import logging
 
 _DEFAULT_PAGE_SIZE = 64
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
 
 @requires_auth
@@ -403,19 +401,12 @@ def format_job(job, now):
 
 
 def _parse_datetime(date_string):
-    # Handles issue where some dates in cromwell do not contain milliseconds
-    # https://github.com/broadinstitute/cromwell/issues/2743
     if not date_string:
         return None
     try:
-        formatted_date = datetime.strptime(date_string,
-                                           '%Y-%m-%dT%H:%M:%S.%fZ')
+        formatted_date = dateutil.parser.parse(date_string).astimezone(tzutc())
     except ValueError:
-        try:
-            formatted_date = datetime.strptime(date_string,
-                                               '%Y-%m-%dT%H:%M:%SZ')
-        except ValueError:
-            return None
+        return None
     return formatted_date
 
 

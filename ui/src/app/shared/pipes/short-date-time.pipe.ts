@@ -9,20 +9,32 @@ export class ShortDateTimePipe extends DatePipe implements PipeTransform {
   isToday(date: Date): boolean {
     if (date) {
       let today: Date = new Date();
-      return date.getUTCDate() == today.getUTCDate() &&
-        date.getUTCMonth() == today.getUTCMonth() &&
-        date.getUTCFullYear() == today.getUTCFullYear();
+
+      return date.getDate() == today.getDate() &&
+        date.getMonth() == today.getMonth() &&
+        date.getFullYear() == today.getFullYear();
+    }
+  }
+
+  isThisYear(date: Date): boolean {
+    if (date) {
+      let today: Date = new Date();
+
+      return date.getFullYear() == today.getFullYear();
     }
   }
 
   transform(date: Date): string {
     if (date) {
       if (this.isToday(date)) {
-        return super.transform(date, 'shortTime');
+        return 'Today, ' + super.transform(date, 'shortTime');
+      } else if (this.isThisYear(date)) {
+        return super.transform(date, 'MMM dd') +
+          ', ' +
+          super.transform(date, 'shortTime');
+      } else {
+        return super.transform(date, 'MMM dd, yyyy');
       }
-      return super.transform(date, 'MMM dd') +
-        ' · ' +
-        super.transform(date, 'shortTime');
     }
   }
 }

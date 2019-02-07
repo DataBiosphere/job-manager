@@ -5,6 +5,8 @@ from __future__ import absolute_import
 import requests_mock
 from flask import json
 from datetime import datetime
+from dateutil.tz import *
+import dateutil.parser
 from . import BaseTestCase
 
 from jobs.models.extended_fields import ExtendedFields
@@ -81,7 +83,7 @@ class TestJobsController(BaseTestCase):
         workflow_name = 'test'
         status = 'Succeeded'
         timestamp = '2017-11-08T05:06:41.424Z'
-        response_timestamp = '2017-11-08T05:06:41.424000Z'
+        response_timestamp = '2017-11-08T05:06:41.424000+00:00'
         inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
         outputs = {
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
@@ -155,7 +157,7 @@ class TestJobsController(BaseTestCase):
         workflow_name = 'test'
         status = 'Succeeded'
         timestamp = '2017-11-08T05:06:41.424Z'
-        response_timestamp = '2017-11-08T05:06:41.424000Z'
+        response_timestamp = '2017-11-08T05:06:41.424000+00:00'
         inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
         outputs = {
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
@@ -344,7 +346,7 @@ class TestJobsController(BaseTestCase):
         workflow_name = 'test'
         status = 'Succeeded'
         timestamp = '2017-11-08T05:06:41.424Z'
-        response_timestamp = '2017-11-08T05:06:41.424000Z'
+        response_timestamp = '2017-11-08T05:06:41.424000+00:00'
         inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
         outputs = {
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
@@ -438,7 +440,7 @@ class TestJobsController(BaseTestCase):
         workflow_name = 'test'
         status = 'Failed'
         timestamp = '2017-11-08T05:06:41.424Z'
-        response_timestamp = '2017-11-08T05:06:41.424000Z'
+        response_timestamp = '2017-11-08T05:06:41.424000+00:00'
         inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
         outputs = {
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
@@ -705,7 +707,7 @@ class TestJobsController(BaseTestCase):
             'start': time,
             'end': time
         }
-        formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%S.%fZ')
+        formatted_time = dateutil.parser.parse(time).astimezone(tzutc())
         result = QueryJobsResult(
             id=job.get('id'),
             name=job.get('name'),
@@ -727,7 +729,7 @@ class TestJobsController(BaseTestCase):
             'start': time,
             'end': time
         }
-        formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
+        formatted_time = dateutil.parser.parse(time).astimezone(tzutc())
         result = QueryJobsResult(
             id=job.get('id'),
             name=job.get('name'),
@@ -743,7 +745,7 @@ class TestJobsController(BaseTestCase):
     def test_format_job_with_no_start_date(self):
         time = '2017-10-27T18:04:47Z'
         job = {'id': '12345', 'name': 'TestJob', 'status': 'Failed'}
-        formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
+        formatted_time = dateutil.parser.parse(time).astimezone(tzutc())
         result = QueryJobsResult(
             id=job.get('id'),
             name=job.get('name'),
@@ -763,7 +765,7 @@ class TestJobsController(BaseTestCase):
             'status': 'Failed',
             'start': time
         }
-        formatted_time = datetime.strptime(time, '%Y-%m-%dT%H:%M:%SZ')
+        formatted_time = dateutil.parser.parse(time).astimezone(tzutc())
         result = QueryJobsResult(
             id=job.get('id'),
             name=job.get('name'),

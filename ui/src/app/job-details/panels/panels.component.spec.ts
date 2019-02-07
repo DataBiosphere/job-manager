@@ -93,7 +93,7 @@ describe('JobPanelsComponent', () => {
     expect(detailFields[0].nativeElement.textContent).toContain(completeJob.extensions['userId']);
     expect(detailFields[1].nativeElement.textContent).toContain(completeJob.extensions['statusDetail']);
     expect(de.query(By.css('#ended')).nativeElement.textContent)
-      .toContain("10:00 PM");
+      .toContain("Mar 29, 1994");
   }));
 
   @Component({

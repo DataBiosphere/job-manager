@@ -62,7 +62,7 @@ import {SharedModule} from '../shared/shared.module';
   declarations: [
     JobListComponent,
     JobsBulkEditComponent,
-    JobsTableComponent,
+    JobsTableComponent
   ],
   exports: []
 })

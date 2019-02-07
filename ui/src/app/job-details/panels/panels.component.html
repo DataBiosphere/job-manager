@@ -37,13 +37,16 @@
       </ng-container>
     </b></p>
     <p id="submitted" *ngIf="job.submission">
-      Submitted: {{ job.submission | jmShortDateTime }}
+      Submitted:
+      <jm-datetime [datetime]="job.submission"></jm-datetime>
     </p>
     <p id="started" *ngIf="job.start">
-      Started: {{ job.start | jmShortDateTime }}
+      Started:
+      <jm-datetime [datetime]="job.start"></jm-datetime>
     </p>
     <p id="ended" *ngIf="job.end">
-      Ended: {{ job.end | jmShortDateTime }}
+      Ended:
+      <jm-datetime [datetime]="job.end"></jm-datetime>
       ({{ job.start | jmDuration: job.end }})
     </p>
   </mat-card-content>
