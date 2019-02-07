@@ -1,27 +1,27 @@
 import {TestBed, async} from '@angular/core/testing';
 
-import {ShortDateTimePipe} from './short-date-time.pipe';
 import {DatePipe} from '@angular/common';
+import {FullDateTimePipe} from "./full-date-time.pipe";
 
-describe('ShortDateTimeFormat', () => {
+describe('FullDateTimeFormat', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        ShortDateTimePipe
+        FullDateTimePipe
       ],
       providers: [
         DatePipe,
-        ShortDateTimePipe
+        FullDateTimePipe
       ]
     }).compileComponents();
   }));
 
-  it('should transform previous time with date', () => {
-    let pipe = new ShortDateTimePipe('en-US');
+  it('should transform full time properly', () => {
+    let pipe = new FullDateTimePipe('en-US');
     let testDate: Date = new Date("1994-03-29T22:36:25");
 
     expect(pipe.transform(testDate))
-      .toBe('Mar 29, 1994');
+      .toBe('Mar 29, 1994 10:36:25 PM');
   });
 
 });

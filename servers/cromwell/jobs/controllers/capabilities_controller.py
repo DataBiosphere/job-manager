@@ -20,7 +20,8 @@ def get_capabilities():
             DisplayField(field='id', display='Workflow ID'),
             DisplayField(field='name', display='Name', filterable=True),
             DisplayField(field='status', display='Status'),
-            DisplayField(field='submission', display='Submitted'),
+            DisplayField(
+                field='submission', display='Submitted', field_type='date'),
             DisplayField(
                 field='labels.label',
                 display='Label',

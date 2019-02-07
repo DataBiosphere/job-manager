@@ -1,12 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Injectable,
-  Input,
-  OnInit,
-  Output,
-  ViewContainerRef
-} from '@angular/core';
+import {Component, EventEmitter, Injectable, Input, OnInit, Output, ViewContainerRef} from '@angular/core';
 import {DataSource, SelectionModel} from '@angular/cdk/collections';
 import {MatDialog, MatSnackBar} from '@angular/material';
 import 'rxjs/add/operator/startWith';
@@ -29,6 +21,7 @@ import {ActivatedRoute, Params} from '@angular/router';
 import {BulkLabelField} from '../../shared/model/BulkLabelField';
 import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
 import {UpdateJobLabelsResponse} from "../../shared/model/UpdateJobLabelsResponse";
+import {FieldType} from "../../shared/model/FieldType";
 
 @Component({
   selector: 'jm-job-list-table',
@@ -162,8 +155,12 @@ export class JobsTableComponent implements OnInit {
     return df.field == this.firstColumn;
   }
 
+  isDateField(df: DisplayField): boolean {
+    return df.fieldType == FieldType.Date;
+  }
+
   isSimpleField(df: DisplayField): boolean {
-    return !this.isStatusField(df) && !this.canEdit(df) && !this.isFirstColumn(df) && !this.canFilterBy(df.field);
+    return !this.isDateField(df) && !this.isStatusField(df) && !this.canEdit(df) && !this.isFirstColumn(df) && !this.canFilterBy(df.field);
   }
 
   shouldShowMenu(job: QueryJobsResult, df: DisplayField): boolean {
@@ -179,6 +176,10 @@ export class JobsTableComponent implements OnInit {
       if (!value) {
         return "";
       }
+    }
+
+    if (this.isDateField(df)) {
+      return value;
     }
 
     if (value instanceof Date) {

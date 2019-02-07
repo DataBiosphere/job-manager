@@ -64,7 +64,9 @@
         <!-- Task detail columns -->
         <ng-container matColumnDef="startTime">
           <mat-header-cell *matHeaderCellDef> Start Time </mat-header-cell>
-          <mat-cell *matCellDef="let t" class="column">{{ t.start | jmShortDateTime }}</mat-cell>
+          <mat-cell *matCellDef="let t" class="column">
+            <jm-datetime [datetime]="t.start"></jm-datetime>
+          </mat-cell>
         </ng-container>
         <ng-container matColumnDef="duration">
           <mat-header-cell *matHeaderCellDef> Duration </mat-header-cell>

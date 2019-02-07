@@ -73,7 +73,8 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     },
     {
       "field": "submission",
-      "display": "Submitted"
+      "display": "Submitted",
+      "fieldType": "date"
     },
     {
       "field": "labels.label",
@@ -138,7 +139,8 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     },
     {
       "field": "submission",
-      "display": "Submitted"
+      "display": "Submitted",
+      "fieldType": "date"
     },
     {
       "field": "labels.label",
