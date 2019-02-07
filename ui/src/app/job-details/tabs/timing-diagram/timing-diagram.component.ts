@@ -24,8 +24,14 @@ export class JobTimingDiagramComponent implements OnInit {
     let counter = 1;
 
     metadata.forEach((task) => {
-      this.timelineChart.dataTable.push([counter.toString(), task.name, task.start, task.end]);
-      counter++;
+      if (task.name && task.start) {
+        if (task.end) {
+          this.timelineChart.dataTable.push([counter.toString(), task.name, task.start, task.end]);
+        } else {
+          this.timelineChart.dataTable.push([counter.toString(), task.name, task.start, new Date()]);
+        }
+        counter++;
+      }
     })
     this.timelineChart.options = {
       title: 'Tasks',
