@@ -46,12 +46,6 @@
                   <span>Abort job</span>
                 </a>
               </mat-list-item>
-              <mat-list-item *ngIf="hasTimingUrl(j)">
-                <a href="{{ j.extensions.timingUrl }}" target="_blank">
-                  <clr-icon shape="hourglass" size="24"></clr-icon>
-                  <span>Timing Diagram</span>
-                </a>
-              </mat-list-item>
               <mat-list-item *ngIf="j[firstColumn] && canFilterBy(firstColumn)">
                 <clr-tooltip>
                   <a (click)="filterOnColumnValue(firstColumn, j[firstColumn])" clrTooltipTrigger class="inline-filter">

@@ -89,8 +89,6 @@ def get_job(id, **kwargs):
     """
     url = '{cromwell_url}/{id}/metadata'.format(
         cromwell_url=_get_base_url(), id=id)
-    timing_url = '{cromwell_url}/{id}/timing'.format(
-        cromwell_url=_get_base_url(), id=id)
     response = requests.get(
         url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
     job = response.json()
@@ -132,9 +130,7 @@ def get_job(id, **kwargs):
         labels=job.get('labels'),
         failures=failures,
         extensions=ExtendedFields(
-            tasks=sorted_tasks,
-            timing_url=timing_url,
-            parent_job_id=job.get('parentWorkflowId')))
+            tasks=sorted_tasks, parent_job_id=job.get('parentWorkflowId')))
 
 
 def health(**kwargs):
@@ -379,8 +375,6 @@ def cromwell_query_params(query, page, page_size):
 def format_job(job, now):
     start = _parse_datetime(job.get('start')) or now
     submission = _parse_datetime(job.get('submission'))
-    timing_url = '{cromwell_url}/{id}/timing'.format(
-        cromwell_url=_get_base_url(), id=job.get('id'))
     if submission is None:
         # Submission is required by the common jobs API. Submission may be missing
         # for subworkflows in which case we fallback to the workflow start time
@@ -396,8 +390,7 @@ def format_job(job, now):
         start=start,
         end=end,
         labels=job.get('labels'),
-        extensions=ExtendedFields(
-            parent_job_id=job.get('parentWorkflowId'), timing_url=timing_url))
+        extensions=ExtendedFields(parent_job_id=job.get('parentWorkflowId')))
 
 
 def _parse_datetime(date_string):

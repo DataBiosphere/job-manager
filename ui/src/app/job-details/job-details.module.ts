@@ -22,6 +22,8 @@ import {SharedModule} from '../shared/shared.module';
 import {JobTabsComponent} from "./tabs/tabs.component";
 import {GcsService} from '../core/gcs.service';
 import {JobFailuresTableComponent} from './common/failures-table/failures-table.component';
+import {JobTimingDiagramComponent} from "./tabs/timing-diagram/timing-diagram.component";
+import {Ng2GoogleChartsModule} from 'ng2-google-charts';
 
 
 @NgModule({
@@ -41,6 +43,7 @@ import {JobFailuresTableComponent} from './common/failures-table/failures-table.
     MatTooltipModule,
     RouterModule,
     SharedModule,
+    Ng2GoogleChartsModule
   ],
   declarations: [
     JobDetailsComponent,
@@ -49,6 +52,7 @@ import {JobFailuresTableComponent} from './common/failures-table/failures-table.
     JobResourcesTableComponent,
     JobTabsComponent,
     JobFailuresTableComponent,
+    JobTimingDiagramComponent
   ],
   providers: [
     GcsService

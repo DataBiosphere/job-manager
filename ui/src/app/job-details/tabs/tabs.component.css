@@ -27,6 +27,10 @@ a.title-link {
   cursor: pointer;
 }
 
+::ng-deep .mat-tab-body-active .mat-tab-body-content {
+  overflow: hidden;
+}
+
 ::ng-deep .mat-expansion-panel-header.title {
   display: inline;
   padding-top: 1rem;

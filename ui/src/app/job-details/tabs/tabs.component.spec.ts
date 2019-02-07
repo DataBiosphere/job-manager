@@ -11,6 +11,7 @@ import {
   MatTooltipModule,
 } from '@angular/material';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
+import {Ng2GoogleChartsModule} from 'ng2-google-charts';
 
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
@@ -20,7 +21,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {JobTabsComponent} from './tabs.component';
 import {TaskMetadata} from "../../shared/model/TaskMetadata";
 import {JobResourcesTableComponent} from "../resources/resources-table/resources-table.component";
-
+import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
 
 describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;
@@ -55,6 +56,7 @@ describe('JobTabsComponent', () => {
         JobTabsComponent,
         JobFailuresTableComponent,
         JobResourcesTableComponent,
+        JobTimingDiagramComponent,
         TestTasksComponent
       ],
       imports: [
@@ -68,6 +70,7 @@ describe('JobTabsComponent', () => {
         MatTableModule,
         MatTabsModule,
         MatTooltipModule,
+        Ng2GoogleChartsModule,
         SharedModule
       ]
     }).compileComponents();
