@@ -29,6 +29,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
 
+@requires_auth
 def abort_job(id, **kwargs):
     """
     Abort a job by ID
