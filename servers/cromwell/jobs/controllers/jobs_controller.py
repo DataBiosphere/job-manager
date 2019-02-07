@@ -21,8 +21,12 @@ from jobs.models.health_response import HealthResponse
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
 import urllib
+import logging
 
 _DEFAULT_PAGE_SIZE = 64
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
 
 @requires_auth
