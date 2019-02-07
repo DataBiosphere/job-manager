@@ -531,10 +531,6 @@ definitions:
       parentJobId:
         type: string
         description: The parent job ID for the job.
-      # TODO: Remove once the diagram is rendered natively.
-      timingUrl:
-        type: string
-        description: URL for tasks timing diagram.
       tasks:
         type: array
         items:

@@ -72,10 +72,6 @@ export class JobTabsComponent implements OnInit, OnChanges {
     }
   }
 
-  hasTimingUrl(): boolean {
-    return this.job.extensions && !!this.job.extensions.timingUrl;
-  }
-
   hasCallCachedTask(): boolean {
     if (this.tasks.find(t => t.callCached === true)) {
       return true;
