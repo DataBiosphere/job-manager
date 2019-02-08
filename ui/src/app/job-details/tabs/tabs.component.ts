@@ -63,7 +63,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   getResourceUrl(url: string): string {
-    return ResourceUtils.getResourceURL(url);
+    return ResourceUtils.getDirectoryBrowserURL(url);
   }
 
   getTaskDirectory(task: TaskMetadata): string {
