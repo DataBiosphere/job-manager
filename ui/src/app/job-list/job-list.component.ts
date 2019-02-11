@@ -124,7 +124,9 @@ export class JobListComponent implements OnInit {
 
     this.streamSubscription.unsubscribe();
     const nextStream = new JobStream(this.jobManagerService, req);
-    nextStream.loadAtLeast(initialBackendPageSize)
+    const pageSize = this.settingsService.getSavedSettingValue('pageSize', this.projectId);
+    const numToLoad = initialBackendPageSize > pageSize ? initialBackendPageSize : pageSize * 2;
+    nextStream.loadAtLeast(numToLoad)
       .then(() => {
         if (query !== this.route.snapshot.queryParams['q']) {
           // We initiated another query since the original request; ignore

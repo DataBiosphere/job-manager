@@ -3,12 +3,11 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {JobManagerService} from '../core/job-manager.service';
 import {QueryJobsResponse, QueryJobsResult} from './model/models';
 import {QueryJobsRequest} from "./model/QueryJobsRequest";
+import {initialBackendPageSize} from "./common";
 
 // An observable stream of the client's materialized jobs, where each update
 // contains all jobs that have been loaded so far.
 export class JobStream extends BehaviorSubject<JobListView> {
-  private static readonly minBackendPageSize = 100;
-
   // A backend query promise which represents the pending or most recent backend
   // response. All requests synchronize through this promise to avoid duplicate
   // data loading.
@@ -36,7 +35,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
         return prevResp;
       }
       let pageSize = Math.max(
-        JobStream.minBackendPageSize, atLeast - this.value.results.length);
+        initialBackendPageSize, atLeast - this.value.results.length);
       return this.queryJobs(pageSize, prevResp.nextPageToken).then(resp => {
         this.next({
           results: this.value.results.concat(resp.results),
