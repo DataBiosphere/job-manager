@@ -27,6 +27,11 @@ a.title-link {
   cursor: pointer;
 }
 
+.mat-expansion-panel.has-tasks {
+  min-width: 1520px;
+  overflow: hidden;
+}
+
 ::ng-deep .mat-tab-body-active .mat-tab-body-content {
   overflow: hidden;
 }

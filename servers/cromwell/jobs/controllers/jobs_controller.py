@@ -18,6 +18,7 @@ from jobs.models.shard_status_count import ShardStatusCount
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.models.health_response import HealthResponse
+from jobs.models.execution_event import ExecutionEvent
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
 import urllib
@@ -180,6 +181,13 @@ def format_task(task_name, task_metadata):
         call_cached = latest_attempt.get('callCaching') and (
             latest_attempt.get('callCaching').get('hit'))
 
+    execution_events = [
+        ExecutionEvent(
+            name=event.get('description'),
+            start=_parse_datetime(event.get('startTime')),
+            end=_parse_datetime(event.get('endTime')))
+        for event in latest_attempt.get('executionEvents')
+    ]
     return TaskMetadata(
         name=remove_workflow_name(task_name),
         execution_id=latest_attempt.get('jobId'),
@@ -196,7 +204,8 @@ def format_task(task_name, task_metadata):
         call_root=latest_attempt.get('callRoot'),
         job_id=latest_attempt.get('subWorkflowId'),
         shard_statuses=None,
-        call_cached=call_cached)
+        call_cached=call_cached,
+        execution_events=execution_events)
 
 
 def format_failure(task_name, metadata):

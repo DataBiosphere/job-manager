@@ -20,23 +20,33 @@ export class JobTimingDiagramComponent implements OnInit {
       chartType: 'Timeline',
       dataTable: []
     };
-    this.timelineChart.dataTable.push(['Num', 'Name', 'Start', 'End']);
+    this.timelineChart.dataTable.push(['Task', 'Event', 'Start', 'End']);
     let counter = 1;
 
     metadata.forEach((task) => {
       if (task.name && task.start) {
-        if (task.end) {
-          this.timelineChart.dataTable.push([counter.toString(), task.name, task.start, task.end]);
+        if (task.executionEvents) {
+          task.executionEvents.forEach((event) => {
+            this.timelineChart.dataTable.push(this.formatRow(task.name, event.name, event));
+          });
         } else {
-          this.timelineChart.dataTable.push([counter.toString(), task.name, task.start, new Date()]);
+          this.timelineChart.dataTable.push(this.formatRow(task.name, task.name, task));
         }
         counter++;
       }
-    })
+    });
+
     this.timelineChart.options = {
-      title: 'Tasks',
-      width: 800,
-      height: counter * 50
+      width: 1470,
+      height: (counter * 42) + 50,
+      showRowLabels: false
     };
+  }
+
+  private formatRow(task, section, data) {
+    if (data.end) {
+      return [ task, section, new Date(data.start), new Date(data.end)];
+    }
+    return [task, section, new Date(data.start), new Date()];
   }
 }
