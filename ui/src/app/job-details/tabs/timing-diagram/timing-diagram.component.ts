@@ -21,7 +21,10 @@ export class JobTimingDiagramComponent implements OnInit {
       dataTable: []
     };
     this.timelineChart.dataTable.push([
-      'Task', {'type': 'string', 'role': 'tooltip'}, 'Start', 'End'
+      {'type': 'string', 'purpose': 'Row label', 'id': 'Task'},
+      {'type': 'string', 'role': 'tooltip', 'id': 'Section'},
+      {'type': 'date', 'purpose': 'Start', 'id': 'Start'},
+      {'type': 'date', 'purpose': 'End', 'id': 'End'}
     ]);
     let counter = 1;
 
@@ -39,15 +42,19 @@ export class JobTimingDiagramComponent implements OnInit {
     });
 
     this.timelineChart.options = {
+      timeline: {
+        showRowLabels: false,
+        colorByRowLabel: false
+      },
       width: 1470,
       height: (counter * 42) + 50,
-      showRowLabels: false
+      avoidOverlappingGridLines: false
     };
   }
 
   private formatRow(task, section, data) {
     if (data.end) {
-      return [ task, section, new Date(data.start), new Date(data.end)];
+      return [task, section, new Date(data.start), new Date(data.end)];
     }
     return [task, section, new Date(data.start), new Date()];
   }
