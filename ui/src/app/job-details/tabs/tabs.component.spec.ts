@@ -13,15 +13,17 @@ import {
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {Ng2GoogleChartsModule} from 'ng2-google-charts';
 
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {JobFailuresTableComponent} from '../common/failures-table/failures-table.component';
+import {AuthService} from '../../core/auth.service';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {SharedModule} from '../../shared/shared.module';
 import {JobTabsComponent} from './tabs.component';
-import {TaskMetadata} from "../../shared/model/TaskMetadata";
-import {JobResourcesTableComponent} from "../resources/resources-table/resources-table.component";
-import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
+import {FakeCapabilitiesService} from '../../testing/fake-capabilities.service';
+import {TaskMetadata} from '../../shared/model/TaskMetadata';
+import {JobResourcesTableComponent} from '../resources/resources-table/resources-table.component';
+import {JobTimingDiagramComponent} from './timing-diagram/timing-diagram.component';
 
 describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;
@@ -31,8 +33,8 @@ describe('JobTabsComponent', () => {
     name: 'task1',
     executionId: '',
     executionStatus: 'Failed',
-    start: new Date("2017-11-14T13:00:00"),
-    end: new Date("2017-11-14T13:15:00"),
+    start: new Date('2017-11-14T13:00:00'),
+    end: new Date('2017-11-14T13:15:00'),
     attempts: 1,
     failures: [],
     returnCode: 0,
@@ -72,6 +74,9 @@ describe('JobTabsComponent', () => {
         MatTooltipModule,
         Ng2GoogleChartsModule,
         SharedModule
+      ],
+      providers: [
+        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null)}
       ]
     }).compileComponents();
   }));
