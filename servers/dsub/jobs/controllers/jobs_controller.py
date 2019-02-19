@@ -47,11 +47,10 @@ def abort_job(id):
 
     # TODO(https://github.com/googlegenomics/dsub/issues/92): Remove this
     # hacky re-routing of stdout once dsub removes it from the python API
-    deleted = execute_redirect_stdout(lambda:
-        ddel.ddel_tasks(
-            provider=provider,
-            job_ids={job_id},
-            task_ids={task_id} if task_id else None))
+    deleted = execute_redirect_stdout(lambda: ddel.ddel_tasks(
+        provider=provider,
+        job_ids={job_id},
+        task_ids={task_id} if task_id else None))
     if len(deleted) != 1:
         raise InternalServerError('Failed to abort dsub job')
 

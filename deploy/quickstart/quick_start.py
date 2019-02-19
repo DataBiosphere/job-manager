@@ -191,8 +191,9 @@ def make_or_replace_or_reuse_directory(path_to_make, exit_if_invalid):
                     valid = False
                     time_to_exit = True
             else:
-                print('Invalid input: got {0} but expected one of (1/2)'.
-                      format(provided))
+                print(
+                    'Invalid input: got {0} but expected one of (1/2)'.format(
+                        provided))
                 valid = False
                 time_to_exit = False
         else:
