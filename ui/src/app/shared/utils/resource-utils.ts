@@ -9,7 +9,7 @@ export class ResourceUtils {
   }
 
   /** Get link to a file's enclosing directory from its gcs url */
-  public static getResourceBrowserURL(url: string): string {
+  public static getResourceBrowserURL(url: string, user?: string): string {
     const parts = ResourceUtils.validateGcsURLGetParts(url);
     // This excludes the object from the link to show the enclosing directory.
     // This is valid with wildcard glob (bucket/path/*) and directories
@@ -18,30 +18,45 @@ export class ResourceUtils {
       return undefined;
     }
 
-    var browserUrl = ResourceUtils.browserPrefix + parts.slice(2,-1).join('/');
+    let browserUrl = ResourceUtils.browserPrefix + parts.slice(2,-1).join('/');
+    const params = new URLSearchParams();
     if (url.indexOf('*') == -1) {
-      browserUrl += '?prefix=' + ResourceUtils.getResourceFileName(url);
+      params.set('prefix', ResourceUtils.getResourceFileName(url));
+    }
+    if (user) {
+      params.set('authuser', user);
+    }
+    if (params.toString()) {
+      browserUrl += '?' + params.toString();
     }
     return browserUrl;
   }
 
   /** Get link to a directory from its gcs url */
-  public static getDirectoryBrowserURL(url: string): string {
+  public static getDirectoryBrowserURL(url: string, user?: string): string {
     const parts = ResourceUtils.validateGcsURLGetParts(url);
     if (!parts) {
       return undefined;
     }
-    var browserUrl = ResourceUtils.browserPrefix + parts.slice(2,-1).join('/');
+    var browserUrl = ResourceUtils.browserPrefix + parts.slice(2, -1).join('/');
     browserUrl += '/' + ResourceUtils.getResourceFileName(url) + '/';
+    if (user) {
+      browserUrl += '?authuser=' + user;
+    }
     return browserUrl;
   }
 
   /** Get link to a file/folder from its gcs url */
-  public static getResourceURL(url: string): string {
+  public static getResourceURL(url: string, user?: string): string {
     const parts = ResourceUtils.validateGcsURLGetParts(url);
-    return parts
-      ? ResourceUtils.storagePrefix + parts.slice(2).join('/')
-      : undefined;
+    if (!parts) {
+      return undefined;
+    }
+    let browserUrl = ResourceUtils.storagePrefix + parts.slice(2).join('/');
+    if (user) {
+      browserUrl += '?authuser=' + user;
+    }
+    return browserUrl;
   }
 
   /** Parse file name from gs link */

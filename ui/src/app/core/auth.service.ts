@@ -13,6 +13,7 @@ export class AuthService {
   public authenticated = new BehaviorSubject<boolean>(false);
   public authToken: string;
   public userId: string;
+  public userEmail: string;
 
   private initAuth(scopes: string[]): Promise<void> {
     const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
@@ -27,10 +28,12 @@ export class AuthService {
     if (user && user.isSignedIn()) {
       this.authToken = user.getAuthResponse().access_token;
       this.userId = user.getId();
+      this.userEmail = user.getBasicProfile().getEmail();
       this.authenticated.next(true);
     } else {
       this.authToken = undefined;
       this.userId = undefined;
+      this.userEmail = undefined;
       this.authenticated.next(false);
     }
   }

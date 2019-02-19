@@ -181,9 +181,7 @@ class BaseTestCases:
 
             if task_count > 1:
                 task_descriptors = [
-                    job_model.TaskDescriptor({
-                        'task-id': i + 1
-                    }, {
+                    job_model.TaskDescriptor({'task-id': i + 1}, {
                         'envs': env_data,
                         'inputs': input_data,
                         'outputs': output_data,
@@ -195,9 +193,7 @@ class BaseTestCases:
                 } for i in xrange(task_count)]
             else:
                 task_descriptors = [
-                    job_model.TaskDescriptor({
-                        'task-id': None
-                    }, {
+                    job_model.TaskDescriptor({'task-id': None}, {
                         'labels': set(),
                         'envs': set(),
                         'inputs': set(),
@@ -205,16 +201,15 @@ class BaseTestCases:
                     }, job_model.Resources())
                 ]
 
-            return execute_redirect_stdout(lambda:
-                dsub.run(
-                    self.provider,
-                    resources,
-                    job_params,
-                    task_descriptors,
-                    name=name,
-                    command=command,
-                    wait=wait,
-                    disable_warning=True))
+            return execute_redirect_stdout(lambda: dsub.run(
+                self.provider,
+                resources,
+                job_params,
+                task_descriptors,
+                name=name,
+                command=command,
+                wait=wait,
+                disable_warning=True))
 
         def must_abort_job(self, job_id):
             resp = self.client.open(
@@ -255,9 +250,7 @@ class BaseTestCases:
         def test_abort_non_existent_job_fails(self):
             resp = self.client.open(
                 '/jobs/{}/abort'.format(
-                    self.api_job_id({
-                        'job-id': 'not-a-job'
-                    })),
+                    self.api_job_id({'job-id': 'not-a-job'})),
                 method='POST')
             self.assert_status(resp, 404)
 
@@ -295,9 +288,7 @@ class BaseTestCases:
 
         def test_get_non_existent_job_fails(self):
             resp = self.client.open(
-                '/jobs/{}'.format(self.api_job_id({
-                    'job-id': 'not-a-job'
-                })),
+                '/jobs/{}'.format(self.api_job_id({'job-id': 'not-a-job'})),
                 method='GET')
             self.assert_status(resp, 404)
 
