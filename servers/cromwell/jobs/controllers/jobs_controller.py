@@ -181,13 +181,16 @@ def format_task(task_name, task_metadata):
         call_cached = latest_attempt.get('callCaching') and (
             latest_attempt.get('callCaching').get('hit'))
 
-    execution_events = [
-        ExecutionEvent(
-            name=event.get('description'),
-            start=_parse_datetime(event.get('startTime')),
-            end=_parse_datetime(event.get('endTime')))
-        for event in latest_attempt.get('executionEvents')
-    ]
+    execution_events = None
+    if latest_attempt.get('executionEvents'):
+        execution_events = [
+            ExecutionEvent(
+                name=event.get('description'),
+                start=_parse_datetime(event.get('startTime')),
+                end=_parse_datetime(event.get('endTime')))
+            for event in latest_attempt.get('executionEvents')
+        ]
+
     return TaskMetadata(
         name=remove_workflow_name(task_name),
         execution_id=latest_attempt.get('jobId'),
