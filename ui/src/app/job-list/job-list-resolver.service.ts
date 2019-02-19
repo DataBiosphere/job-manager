@@ -43,9 +43,8 @@ export class JobListResolver implements Resolve<JobStream> {
     }
 
     const jobStream = new JobStream(this.jobManagerService, jobsRequest);
-    const numToLoad = settings.pageSize < initialBackendPageSize ? initialBackendPageSize : settings.pageSize * 2;
     return jobStream
-        .loadAtLeast(numToLoad)
+        .loadAtLeast(initialBackendPageSize)
         .then(resp => jobStream);
   }
 }
