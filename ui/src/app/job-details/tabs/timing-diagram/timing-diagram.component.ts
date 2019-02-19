@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {TaskMetadata} from "../../../shared/model/TaskMetadata";
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
+import {Tooltip} from "@clr/angular";
 
 @Component({
   selector: 'jm-timing-diagram',
@@ -21,8 +22,8 @@ export class JobTimingDiagramComponent implements OnInit {
       dataTable: []
     };
     this.timelineChart.dataTable.push([
-      {'type': 'string', 'purpose': 'Row label', 'id': 'Task'},
-      {'type': 'string', 'role': 'tooltip', 'id': 'Section'},
+      {'type': 'string', 'id': 'Task'},
+      {'type': 'string', 'id': 'Section'},
       {'type': 'date', 'purpose': 'Start', 'id': 'Start'},
       {'type': 'date', 'purpose': 'End', 'id': 'End'}
     ]);
@@ -44,10 +45,10 @@ export class JobTimingDiagramComponent implements OnInit {
     this.timelineChart.options = {
       timeline: {
         showRowLabels: false,
-        colorByRowLabel: false
+        showBarLabels: false
       },
       width: 1470,
-      height: (counter * 42) + 50,
+      height: (counter * 42) + 100,
       avoidOverlappingGridLines: false
     };
   }
