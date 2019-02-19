@@ -12,6 +12,7 @@ import {
 import {DataSource} from '@angular/cdk/collections';
 import {Observable} from 'rxjs/Observable';
 
+import {AuthService} from '../../core/auth.service';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusIcon} from '../../shared/common';
@@ -46,6 +47,8 @@ export class JobTabsComponent implements OnInit, OnChanges {
     'files',
   ];
 
+  constructor(private authService: AuthService) {};
+
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
     if (this.hasCallCachedTask() || this.hasScatteredTask()) {
@@ -63,7 +66,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   getResourceUrl(url: string): string {
-    return ResourceUtils.getDirectoryBrowserURL(url);
+    return ResourceUtils.getDirectoryBrowserURL(url, this.authService.userEmail);
   }
 
   getTaskDirectory(task: TaskMetadata): string {
