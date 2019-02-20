@@ -20,7 +20,7 @@ export class AuthService {
     const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
 
     if (!clientId) {
-      this.snackBar.open('authorization is required by the capabilities config, but client ID is not set in the environment config');
+      this.snackBar.open('authorization is required by the capabilities config, but \'clientId\' is not available');
     }
     return gapi.auth2.init({
       client_id: clientId,
