@@ -3,6 +3,7 @@ import {Injectable, NgZone} from '@angular/core';
 
 import {CapabilitiesService} from './capabilities.service';
 import {ConfigLoaderService} from "../../environments/config-loader.service";
+import {MatSnackBar} from "@angular/material";
 
 declare const gapi: any;
 
@@ -17,6 +18,10 @@ export class AuthService {
 
   private initAuth(scopes: string[]): Promise<void> {
     const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
+
+    if (!clientId) {
+      this.snackBar.open('authorization is required by the capabilities config, but client ID is not set in the environment config');
+    }
     return gapi.auth2.init({
       client_id: clientId,
       cookiepolicy: 'single_host_origin',
@@ -39,7 +44,8 @@ export class AuthService {
   }
 
   constructor(private zone: NgZone, capabilitiesService: CapabilitiesService,
-              private configLoader: ConfigLoaderService) {
+              private configLoader: ConfigLoaderService,
+              private snackBar: MatSnackBar) {
     capabilitiesService.getCapabilities().then(capabilities => {
       if (!capabilities.authentication || !capabilities.authentication.isRequired) {
         return;
