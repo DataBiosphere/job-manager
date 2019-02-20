@@ -8,6 +8,8 @@ import {initialBackendPageSize} from "./common";
 // An observable stream of the client's materialized jobs, where each update
 // contains all jobs that have been loaded so far.
 export class JobStream extends BehaviorSubject<JobListView> {
+  private static readonly minBackendPageSize = initialBackendPageSize;
+
   // A backend query promise which represents the pending or most recent backend
   // response. All requests synchronize through this promise to avoid duplicate
   // data loading.
@@ -35,7 +37,7 @@ export class JobStream extends BehaviorSubject<JobListView> {
         return prevResp;
       }
       let pageSize = Math.max(
-        initialBackendPageSize, atLeast - this.value.results.length);
+        JobStream.minBackendPageSize, atLeast - this.value.results.length);
       return this.queryJobs(pageSize, prevResp.nextPageToken).then(resp => {
         this.next({
           results: this.value.results.concat(resp.results),
