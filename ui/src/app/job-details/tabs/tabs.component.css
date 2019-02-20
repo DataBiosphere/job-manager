@@ -28,7 +28,6 @@ a.title-link {
 }
 
 .mat-expansion-panel.has-tasks {
-  min-width: 1520px;
   overflow: hidden;
 }
 

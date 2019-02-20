@@ -1,7 +1,6 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {TaskMetadata} from "../../../shared/model/TaskMetadata";
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
-import {Tooltip} from "@clr/angular";
 
 @Component({
   selector: 'jm-timing-diagram',
@@ -10,6 +9,7 @@ import {Tooltip} from "@clr/angular";
 })
 export class JobTimingDiagramComponent implements OnInit {
   @Input() metadata: TaskMetadata[] = [];
+  @Input('tabWidth') tabWidth;
   timelineChart: GoogleChartInterface;
 
   ngOnInit(): void {
@@ -47,7 +47,7 @@ export class JobTimingDiagramComponent implements OnInit {
         showRowLabels: false,
         showBarLabels: false
       },
-      width: 1470,
+      width: this.tabWidth - 65,
       height: (counter * 42) + 100,
       avoidOverlappingGridLines: false
     };

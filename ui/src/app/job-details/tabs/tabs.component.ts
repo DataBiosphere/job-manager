@@ -34,7 +34,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
   @Output() navDown: EventEmitter<string> = new EventEmitter();
   @ViewChild(JobFailuresTableComponent) failuresTable: JobFailuresTableComponent;
   @ViewChild(JobTimingDiagramComponent) timingDiagram: JobTimingDiagramComponent;
-
+  @ViewChild('tabsPanel') tabsPanel;
 
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
@@ -46,6 +46,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
     'attempts',
     'files',
   ];
+  tabWidth: number = 1024;
 
   constructor(private authService: AuthService) {};
 
@@ -53,6 +54,9 @@ export class JobTabsComponent implements OnInit, OnChanges {
     this.dataSource = new TasksDataSource(this.database);
     if (this.hasCallCachedTask() || this.hasScatteredTask()) {
       this.displayedColumns.splice(1, 0, "taskInfoIcons");
+    }
+    if (this.tabsPanel) {
+      this.tabWidth = this.tabsPanel._viewContainerRef.element.nativeElement.clientWidth;
     }
   }
 
