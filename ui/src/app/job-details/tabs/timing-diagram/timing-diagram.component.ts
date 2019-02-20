@@ -27,7 +27,7 @@ export class JobTimingDiagramComponent implements OnInit {
       {'type': 'date', 'purpose': 'Start', 'id': 'Start'},
       {'type': 'date', 'purpose': 'End', 'id': 'End'}
     ]);
-    let counter = 1;
+    let chartRows = 1;
 
     metadata.forEach((task) => {
       if (task.name && task.start) {
@@ -38,7 +38,7 @@ export class JobTimingDiagramComponent implements OnInit {
         } else {
           this.timelineChart.dataTable.push(this.formatRow(task.name, task.name, task));
         }
-        counter++;
+        chartRows++;
       }
     });
 
@@ -48,7 +48,7 @@ export class JobTimingDiagramComponent implements OnInit {
         showBarLabels: false
       },
       width: this.tabWidth - 65,
-      height: (counter * 42) + 100,
+      height: (chartRows * 42) + 100,
       avoidOverlappingGridLines: false
     };
   }
