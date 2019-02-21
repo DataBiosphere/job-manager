@@ -6,6 +6,8 @@
 
 Timing diagram now includes events within each task/subworkflow and the rendered width is no longer hard-coded.
 
+### Increased minimum number of jobs loaded in the UI to better handle page size being set to 100.
+
 ### Added better error handling to authentication
 
 ## v0.5.6 Release Notes

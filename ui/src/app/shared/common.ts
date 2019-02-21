@@ -60,5 +60,5 @@ export const defaultTimeFrame = TimeFrame.DAYS7;
 
 
 /** The page size to initially request from the backend. The maximum number of
- *  jobs on a page is 100, so request 100 initially. */
-export const initialBackendPageSize = 100;
+ *  jobs on a page is 100, so request 200 initially. */
+export const initialBackendPageSize = 200;
