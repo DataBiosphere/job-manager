@@ -12,7 +12,7 @@ import {
   MatMenuModule,
   MatPaginatorModule,
   MatSelectModule,
-  MatSlideToggleModule,
+  MatSlideToggleModule, MatSnackBar,
   MatSnackBarModule,
   MatSortModule,
   MatTableModule,
@@ -68,6 +68,7 @@ describe('JobListComponent', () => {
   let fakeCapabilitiesService: FakeCapabilitiesService;
   let settingsService: SettingsService;
   let authService: AuthService;
+  let snackBar: MatSnackBar;
 
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
@@ -80,7 +81,7 @@ describe('JobListComponent', () => {
       ]
     };
     fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
-    authService = new AuthService(null, fakeCapabilitiesService, null);
+    authService = new AuthService(null, fakeCapabilitiesService, null, snackBar);
     settingsService = new SettingsService(authService, fakeCapabilitiesService, localStorage);
     TestBed.configureTestingModule({
       declarations: [
