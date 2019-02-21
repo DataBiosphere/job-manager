@@ -1,9 +1,9 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Injectable, NgZone} from '@angular/core';
+import {MatSnackBar} from "@angular/material";
 
 import {CapabilitiesService} from './capabilities.service';
 import {ConfigLoaderService} from "../../environments/config-loader.service";
-import {MatSnackBar} from "@angular/material";
 
 declare const gapi: any;
 
@@ -16,16 +16,15 @@ export class AuthService {
   public userId: string;
   public userEmail: string;
 
-  private initAuth(scopes: string[]): Promise<void> {
+  private initAuth(scopes: string[]): Promise<any> {
     const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
 
-    if (!clientId) {
-      this.snackBar.open('authorization is required by the capabilities config, but \'clientId\' is not available');
-    }
-    return gapi.auth2.init({
-      client_id: clientId,
-      cookiepolicy: 'single_host_origin',
-      scope: scopes.join(" ")
+    return new Promise<void>( (resolve, reject) => {
+      gapi.auth2.init({
+        client_id: clientId,
+        cookiepolicy: 'single_host_origin',
+        scope: scopes.join(" ")
+      }).catch(error => reject(error));
     });
   }
 
@@ -52,7 +51,9 @@ export class AuthService {
       }
       this.initAuthPromise = new Promise<void>( (resolve, reject) => {
         gapi.load('client:auth2', {
-          callback: () => this.initAuth(capabilities.authentication.scopes).then(() => resolve()),
+          callback: () => this.initAuth(capabilities.authentication.scopes)
+            .then(() => resolve())
+            .catch((message) => { this.handleError(message)}),
           onerror: () => reject(),
         });
       });
@@ -68,7 +69,7 @@ export class AuthService {
           // detection to work.
           this.zone.run(() => this.updateUser(user));
         });
-      })
+      });
     });
   }
 
@@ -92,5 +93,9 @@ export class AuthService {
   public signOut(): Promise<any> {
     const auth2 = gapi.auth2.getAuthInstance();
     return auth2.signOut();
+  }
+
+  private handleError(error): void {
+      this.snackBar.open('An error occurred: ' + error);
   }
 }
