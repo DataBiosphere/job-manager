@@ -23,8 +23,9 @@ export class AuthService {
       gapi.auth2.init({
         client_id: clientId,
         cookiepolicy: 'single_host_origin',
-        scope: scopes.join(" ")
-      }).catch(error => reject(error));
+        scope: scopes.join(" "),
+      }).then(() => resolve())
+        .catch((error) => reject(error))
     });
   }
 
