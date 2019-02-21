@@ -607,6 +607,10 @@ definitions:
         type: boolean
         description: A flag to indicate if task was call-cached.
         default: false
+      executionEvents:
+        type: array
+        items:
+          $ref: '#/definitions/ExecutionEvent'
   FailureMessage:
     description: >
       Failure messages with optional additional information if the failure
@@ -656,6 +660,21 @@ definitions:
         $ref: '#/definitions/JobStatus'
       count:
         type: integer
+  ExecutionEvent:
+    description:
+    properties:
+      name:
+        type: string
+        description: Name of event
+      start:
+        type: string
+        format: date-time
+        description: Start datetime of the event in ISO8601 format
+      end:
+        type: string
+        format: date-time
+        description: End datetime of the event in ISO8601 format
+
   HealthResponse:
     description: response from the health endpoint
     properties:
