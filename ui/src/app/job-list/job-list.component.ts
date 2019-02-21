@@ -11,7 +11,7 @@ import {JobManagerService} from '../core/job-manager.service';
 import {SettingsService} from '../core/settings.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {JobListView, JobStream} from '../shared/job-stream';
-import {HeaderComponent} from '../shared/header/header.component';
+import {FilterHeaderComponent} from '../shared/filter-header/filter-header.component';
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 import {initialBackendPageSize} from "../shared/common";
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
@@ -28,7 +28,7 @@ import {JobsTableComponent} from "./table/table.component";
 export class JobListComponent implements OnInit {
   @Input() pageSize: number = 50;
 
-  @ViewChild(HeaderComponent) header: HeaderComponent;
+  @ViewChild(FilterHeaderComponent) header: FilterHeaderComponent;
   @ViewChild(JobsTableComponent) jobTable: JobsTableComponent;
   dataSource: DataSource<QueryJobsResult>;
 

@@ -22,12 +22,12 @@ import {
   MatSlideToggleModule
 } from "@angular/material";
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
-import {HeaderComponent} from "./header/header.component";
+import {FilterHeaderComponent} from "./filter-header/filter-header.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {FilterChipComponent} from "./header/chips/filter-chip.component";
-import {EnumSelectionComponent} from "./header/chips/enum-selection.component";
-import {DatepickerInputComponent} from "./header/chips/datepicker-input.component";
-import {StatusSelectionComponent} from "./header/chips/status-selection.component";
+import {FilterChipComponent} from "./filter-header/chips/filter-chip.component";
+import {EnumSelectionComponent} from "./filter-header/chips/enum-selection.component";
+import {DatepickerInputComponent} from "./filter-header/chips/datepicker-input.component";
+import {StatusSelectionComponent} from "./filter-header/chips/status-selection.component";
 import {DatetimeComponent} from "./datetime/datetime.component";
 
 @NgModule({
@@ -57,7 +57,7 @@ import {DatetimeComponent} from "./datetime/datetime.component";
     DurationPipe,
     ErrorMessageFormatterPipe,
     FilterChipComponent,
-    HeaderComponent,
+    FilterHeaderComponent,
     ShortDateTimePipe,
     FullDateTimePipe,
     DatetimeComponent,
@@ -71,7 +71,7 @@ import {DatetimeComponent} from "./datetime/datetime.component";
     FullDateTimePipe,
     ErrorMessageFormatterPipe,
     DurationPipe,
-    HeaderComponent
+    FilterHeaderComponent
   ],
 })
 export class SharedModule {}
