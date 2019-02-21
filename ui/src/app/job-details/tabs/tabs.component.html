@@ -1,7 +1,7 @@
-<mat-expansion-panel class="content" expanded="true" [disabled]="true">
+<mat-expansion-panel class="content" expanded="true" [disabled]="true" [ngClass]="{'has-tasks' : hasTasks()}" #tabsPanel>
   <mat-tab-group [(selectedIndex)]="selectedTab">
     <mat-tab *ngIf="hasTasks()" label="List View">
-      <mat-table #table [dataSource]="dataSource">
+      <mat-table [dataSource]="dataSource">
         <!-- Task name column -->
         <ng-container matColumnDef="name">
           <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
@@ -132,7 +132,7 @@
     </mat-tab>
     <!-- Task timing diagram tab -->
     <mat-tab *ngIf="hasTasks()" label="Timing Diagram">
-      <jm-timing-diagram [metadata]="job.extensions.tasks"></jm-timing-diagram>
+      <jm-timing-diagram [metadata]="job.extensions.tasks" [tabWidth]="tabWidth"></jm-timing-diagram>
     </mat-tab>
   </mat-tab-group>
 </mat-expansion-panel>

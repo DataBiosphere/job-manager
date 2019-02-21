@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {TaskMetadata} from "../../../shared/model/TaskMetadata";
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
 
@@ -9,6 +9,7 @@ import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces
 })
 export class JobTimingDiagramComponent implements OnInit {
   @Input() metadata: TaskMetadata[] = [];
+  @Input('tabWidth') tabWidth;
   timelineChart: GoogleChartInterface;
 
   ngOnInit(): void {
@@ -20,23 +21,42 @@ export class JobTimingDiagramComponent implements OnInit {
       chartType: 'Timeline',
       dataTable: []
     };
-    this.timelineChart.dataTable.push(['Num', 'Name', 'Start', 'End']);
-    let counter = 1;
+    this.timelineChart.dataTable.push([
+      {'type': 'string', 'id': 'Task'},
+      {'type': 'string', 'id': 'Section'},
+      {'type': 'date', 'purpose': 'Start', 'id': 'Start'},
+      {'type': 'date', 'purpose': 'End', 'id': 'End'}
+    ]);
+    let chartRows = 1;
 
     metadata.forEach((task) => {
       if (task.name && task.start) {
-        if (task.end) {
-          this.timelineChart.dataTable.push([counter.toString(), task.name, task.start, task.end]);
+        if (task.executionEvents) {
+          task.executionEvents.forEach((event) => {
+            this.timelineChart.dataTable.push(this.formatRow(task.name, event.name, event));
+          });
         } else {
-          this.timelineChart.dataTable.push([counter.toString(), task.name, task.start, new Date()]);
+          this.timelineChart.dataTable.push(this.formatRow(task.name, task.name, task));
         }
-        counter++;
+        chartRows++;
       }
-    })
+    });
+
     this.timelineChart.options = {
-      title: 'Tasks',
-      width: 800,
-      height: counter * 50
+      timeline: {
+        showRowLabels: false,
+        showBarLabels: false
+      },
+      width: this.tabWidth - 65,
+      height: (chartRows * 42) + 100,
+      avoidOverlappingGridLines: false
     };
+  }
+
+  private formatRow(task, section, data) {
+    if (data.end) {
+      return [task, section, new Date(data.start), new Date(data.end)];
+    }
+    return [task, section, new Date(data.start), new Date()];
   }
 }
