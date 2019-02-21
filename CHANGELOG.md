@@ -1,5 +1,13 @@
 # Job Manager Change Log
 
+## v0.5.7 Release Notes
+
+### Added events to timing diagram
+
+Timing diagram now includes events within each task/subworkflow and the rendered width is no longer hard-coded.
+
+### Added better error handling to authentication
+
 ## v0.5.6 Release Notes
 
 ### Embedded timing diagram within UI
