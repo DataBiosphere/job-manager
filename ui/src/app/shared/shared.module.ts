@@ -22,12 +22,12 @@ import {
   MatSlideToggleModule
 } from "@angular/material";
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
-import {HeaderComponent} from "./header/header.component";
+import {HeaderComponent} from "../job-list/header/header.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {FilterChipComponent} from "./header/chips/filter-chip.component";
-import {EnumSelectionComponent} from "./header/chips/enum-selection.component";
-import {DatepickerInputComponent} from "./header/chips/datepicker-input.component";
-import {StatusSelectionComponent} from "./header/chips/status-selection.component";
+import {FilterChipComponent} from "../job-list/header/chips/filter-chip.component";
+import {EnumSelectionComponent} from "../job-list/header/chips/enum-selection.component";
+import {DatepickerInputComponent} from "../job-list/header/chips/datepicker-input.component";
+import {StatusSelectionComponent} from "../job-list/header/chips/status-selection.component";
 import {DatetimeComponent} from "./datetime/datetime.component";
 
 @NgModule({

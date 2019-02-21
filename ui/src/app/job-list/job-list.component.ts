@@ -11,7 +11,7 @@ import {JobManagerService} from '../core/job-manager.service';
 import {SettingsService} from '../core/settings.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {JobListView, JobStream} from '../shared/job-stream';
-import {HeaderComponent} from '../shared/header/header.component';
+import {HeaderComponent} from './header/header.component';
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 import {initialBackendPageSize} from "../shared/common";
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';

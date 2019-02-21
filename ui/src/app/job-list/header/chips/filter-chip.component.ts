@@ -2,8 +2,8 @@ import {
   Component, ElementRef, EventEmitter, Input, OnInit, Output,
   ViewChild
 } from "@angular/core";
-import {FieldDataType} from "../../common";
-import {URLSearchParamsUtils} from "../../utils/url-search-params.utils";
+import {FieldDataType} from "../../../shared/common";
+import {URLSearchParamsUtils} from "../../../shared/utils/url-search-params.utils";
 import {CapabilitiesService} from "../../../core/capabilities.service";
 import {MatMenuTrigger} from "@angular/material";
 import {DatepickerInputComponent} from "./datepicker-input.component";
