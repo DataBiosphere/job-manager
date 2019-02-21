@@ -1,0 +1,19 @@
+::ng-deep * {
+  font-family: 'Montserrat', sans-serif;
+  color: #333F52;
+  font-weight: 400;
+}
+
+::ng-deep .mat-button,
+::ng-deep .mat-raised-button {
+  border: 1px solid #9B9B9B;
+  border-radius: 3px;
+  background-color: #FAFAFA;
+  font-family: 'Montserrat', sans-serif;
+  color: #333F52;
+  font-weight: 400;
+}
+
+::ng-deep a {
+  font-weight: 500;
+}

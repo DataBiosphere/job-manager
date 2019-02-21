@@ -62,7 +62,6 @@
 }
 
 h2.settings-header {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   padding: 0.5rem 1rem 0 1rem;
   margin: 0;
   font-size: 0.8rem;
@@ -101,7 +100,6 @@ h2.settings-header {
 }
 
 button.apply-link {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 12px;
   border: none;
   display: block;
@@ -140,7 +138,6 @@ button.clear-query {
   position: absolute;
   right: 10px;
   margin-top: -40px;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 0.8rem;
   width: 100px;
   line-height: 0.8rem;

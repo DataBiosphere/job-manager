@@ -130,7 +130,6 @@
   bottom: 0;
   background-color: white;
   width: 100%;
-  font-family: 'Roboto', sans-serif;
   font-weight: bold;
   font-size: .65rem;
   padding: .65rem;
@@ -161,7 +160,6 @@
 }
 
 button.apply-link {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 12px;
   border: none;
   display: block;
@@ -197,12 +195,10 @@ button.apply-link:hover {
 ::ng-deep .mat-select-content,
 ::ng-deep div.mat-menu-content mat-form-field input,
 ::ng-deep .mat-menu-content.filter-menu {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 0.85rem;
 }
 
 clr-tooltip-content {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: rgba(0, 0, 0, 0.65);
   padding: 0.25rem;
   font-size: 0.65rem;
