@@ -3,11 +3,12 @@ import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {JobManagerService} from '../core/job-manager.service';
 import {QueryJobsResponse, QueryJobsResult} from './model/models';
 import {QueryJobsRequest} from "./model/QueryJobsRequest";
+import {initialBackendPageSize} from "./common";
 
 // An observable stream of the client's materialized jobs, where each update
 // contains all jobs that have been loaded so far.
 export class JobStream extends BehaviorSubject<JobListView> {
-  private static readonly minBackendPageSize = 100;
+  private static readonly minBackendPageSize = initialBackendPageSize;
 
   // A backend query promise which represents the pending or most recent backend
   // response. All requests synchronize through this promise to avoid duplicate
