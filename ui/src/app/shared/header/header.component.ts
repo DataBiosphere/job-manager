@@ -28,13 +28,13 @@ import {
 
 import {AuthService} from '../../core/auth.service';
 import {CapabilitiesService} from '../../core/capabilities.service';
-import {URLSearchParamsUtils} from '../../shared/utils/url-search-params.utils';
-import {JobStatus} from '../../shared/model/JobStatus';
-import {FieldDataType, JobStatusIcon} from '../../shared/common';
-import {JobListView} from '../../shared/job-stream';
+import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
+import {JobStatus} from '../model/JobStatus';
+import {FieldDataType, JobStatusIcon} from '../common';
+import {JobListView} from '../job-stream';
 import {FilterChipComponent} from "./chips/filter-chip.component";
-import {CapabilitiesResponse} from "../../shared/model/CapabilitiesResponse";
-import {DisplayField} from "../../shared/model/DisplayField";
+import {CapabilitiesResponse} from "../model/CapabilitiesResponse";
+import {DisplayField} from "../model/DisplayField";
 import {SettingsService} from "../../core/settings.service";
 
 @Component({

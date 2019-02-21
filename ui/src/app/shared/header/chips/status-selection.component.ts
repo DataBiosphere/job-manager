@@ -1,4 +1,4 @@
-import {JobStatus} from "../../../shared/model/JobStatus";
+import {JobStatus} from "../../model/JobStatus";
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 
 @Component({
