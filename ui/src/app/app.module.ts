@@ -3,6 +3,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {NgModule} from '@angular/core';
+import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {Ng2GoogleChartsModule} from 'ng2-google-charts';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -19,6 +20,8 @@ import {DashboardModule} from "./dashboard/dashboard.module";
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
+    ClrIconModule,
+    ClrTooltipModule,
     CoreModule,
     FormsModule,
     HttpModule,

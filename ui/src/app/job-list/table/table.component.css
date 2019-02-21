@@ -200,7 +200,7 @@ button.apply-link:hover {
 
 clr-tooltip-content {
   background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   font-size: 0.65rem;
   color: #fff;
   display: block;
@@ -208,5 +208,6 @@ clr-tooltip-content {
 }
 
 .mat-menu-content.filter-menu clr-tooltip-content {
+  padding: 0.25rem 0.5rem;
   margin: 0.25rem 0 0 5rem;
 }

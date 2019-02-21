@@ -274,19 +274,6 @@ export class FilterHeaderComponent implements OnInit, AfterViewInit, AfterViewCh
     this.onDisplayFieldsChanged.emit(this.displayFields);
   }
 
-  isSignedIn(): boolean {
-    return !!this.authService.userId;
-  }
-
-  signOut(): void {
-    this.authService.signOut().then(() => {
-      this.router.navigate(
-        ['/sign_in']
-      );
-    });
-  }
-
-
   private refreshChips(query: string): void {
     this.zone.run(() => this.chips = URLSearchParamsUtils.getChips(query));
   }

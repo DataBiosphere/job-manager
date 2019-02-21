@@ -10,9 +10,15 @@
   line-height: 1.5rem;
 }
 
+::ng-deep .mat-form-field-underline {
+  background-color: rgba(0, 0, 0, 0);
+}
+
 ::ng-deep .query-form .mat-input-flex.mat-form-field-flex {
   margin-top: 0.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  background-color: #EBEDEF;
+  color: red;
 }
 
 ::ng-deep .query-form .mat-input-infix {
@@ -112,34 +118,10 @@ button.apply-link:hover {
   text-decoration: underline;
 }
 
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0 0.5rem;
-  line-height: 1.5rem;
-  font-size: 0.65rem;
-  color: #fff;
-  display: block;
-  margin: -0.6rem 0.5rem 0 0;
-}
-
 button.clear-query {
   top: 0px;
   left: -50px;
   padding: 0px;
   height: 40px;
   width: 40px;
-}
-
-.sign-out-container clr-icon {
-  margin-top: -5px;
-}
-
-.sign-out-container button.mat-raised-button {
-  position: absolute;
-  right: 10px;
-  margin-top: -40px;
-  font-size: 0.8rem;
-  width: 100px;
-  line-height: 0.8rem;
-  border-radius: 0;
 }

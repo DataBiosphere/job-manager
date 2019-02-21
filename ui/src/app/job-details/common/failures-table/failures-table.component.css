@@ -45,27 +45,6 @@ td.failure-links {
   padding-right: 0px;
 }
 
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem 0.5rem;
-  font-size: 0.65rem;
-  line-height: 0.65rem;
-  color: #fff;
-  display: block;
-  margin: -0.6rem 0.5rem 0 1rem;
-  height: auto;
-  z-index: 100;
-}
-
-clr-tooltip-content.message {
-  max-width: 20rem;
-  font-size: 0.8rem;
-  line-height: 1.25rem;
-  background-color: rgba(0, 0, 0, 0.85);
-  z-index: 100;
-  margin-top: -1rem;
-}
-
 .log-item {
   color: black;
   cursor: pointer;

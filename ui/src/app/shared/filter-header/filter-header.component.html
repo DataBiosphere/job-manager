@@ -1,6 +1,6 @@
 <div class="content">
   <mat-form-field class="query-form">
-    <span matPrefix><clr-icon shape="filter-2" size="18" style="color: #888"></clr-icon></span>
+    <span matPrefix><clr-icon shape="filter-2" size="24" style="color: #5C912E"></clr-icon></span>
     <mat-chip-list #chipList>
       <mat-chip
         *ngFor="let chipKey of getChipKeys()"
@@ -34,7 +34,7 @@
     </mat-chip-list>
   </mat-form-field>
   <button mat-button *ngIf="hasChipsToClear()" matSuffix mat-icon-button aria-label="Clear" (click)="removeAllChips()" class="clear-query">
-    <clr-icon shape="close" size="18"></clr-icon>
+    <clr-icon shape="close" size="24" style="color: #5C912E"></clr-icon>
   </button>
 
   <div *ngIf="showControls" class="search-table-controls">
@@ -84,17 +84,6 @@
           <button class="apply-link" (click)="saveSettings()">Done</button>
         </div>
       </mat-menu>
-    </div>
-    <div class="sign-out-container" *ngIf="isSignedIn()">
-      <button mat-icon-button (click)="signOut()" class="mat-raised-button">
-        Sign out
-        <clr-tooltip>
-          <clr-icon clrTooltipTrigger shape="logout" size="18"></clr-icon>
-          <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
-            <span>sign out</span>
-          </clr-tooltip-content>
-        </clr-tooltip>
-      </button>
     </div>
   </div>
 </div>

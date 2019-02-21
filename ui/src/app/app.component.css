@@ -1,19 +1,39 @@
-::ng-deep * {
-  font-family: 'Montserrat', sans-serif;
-  color: #333F52;
-  font-weight: 400;
+.header-container {
+  height: 66px;
+  background: #74AE43 url('assets/images/header-left-hexs.svg') top right no-repeat;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
 }
 
-::ng-deep .mat-button,
-::ng-deep .mat-raised-button {
-  border: 1px solid #9B9B9B;
+h1 {
+  background: transparent url('assets/images/terra-logo.svg') top left no-repeat;
+  padding: 22px 70px;
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 22px;
+  height: 22px;
+  margin: 0;
+}
+
+.sign-out-container clr-icon {
+  margin-top: -2px;
+  fill: #fff;
+}
+
+.sign-out-container button.mat-raised-button {
+  position: absolute;
+  right: 15px;
+  margin-top: -47px;
+  font-size: 14px;
+  line-height: 30px;
+  height: 30px;
+  width: 122px;
+  border: 1px solid rgba(0,0,0,0.2);
+  background-color: #B0D239;
   border-radius: 3px;
-  background-color: #FAFAFA;
-  font-family: 'Montserrat', sans-serif;
-  color: #333F52;
-  font-weight: 400;
-}
-
-::ng-deep a {
-  font-weight: 500;
+  color: #fff;
+  text-transform: uppercase;
+  box-shadow: none;
 }
