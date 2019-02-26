@@ -6,6 +6,7 @@ import {
   MatButtonModule,
   MatCardModule,
   MatSelectModule,
+  MatSnackBar,
   MatSortModule,
   MatTableModule
 } from '@angular/material';
@@ -129,7 +130,7 @@ describe('DashboardComponent', () => {
   let fakeCapabilitiesService: FakeCapabilitiesService;
   let settingsService: SettingsService;
   let authService: AuthService;
-
+  let snackBar: MatSnackBar;
   const TEST_PROJECT = 'test-project';
 
   beforeEach(async(() => {
@@ -142,7 +143,7 @@ describe('DashboardComponent', () => {
       ]
     };
     fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
-    authService = new AuthService(null, fakeCapabilitiesService, null);
+    authService = new AuthService(null, fakeCapabilitiesService, null, snackBar);
     settingsService = new SettingsService(authService, fakeCapabilitiesService, localStorage);
     TestBed.configureTestingModule({
       declarations: [
