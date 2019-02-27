@@ -27,14 +27,21 @@
 body,
 .mat-body,
 .mat-body-1,
+.mat-checkbox,
 .mat-typography,
 .mat-table,
 .mat-paginator,
 .mat-paginator-page-size,
-.mat-select-trigger {
-  font-family: 'Montserrat', sans-serif;
+.mat-select-trigger,
+.mat-snack-bar-container {
   color: #333F52;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 400;
+}
+
+.mat-snack-bar-container {
+  font-weight: 500;
+  color: #fff;
 }
 
 .mat-button,
@@ -57,6 +64,7 @@ body,
 
 a {
   font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
 }
 
 clr-tooltip-content {
@@ -72,4 +80,9 @@ clr-tooltip-content.message {
   line-height: 1.5rem;
   font-size: 0.65rem;
   color: #fff;
+}
+
+.mat-checkbox .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-checkbox .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: #74AE43;
 }
