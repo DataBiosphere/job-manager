@@ -28,18 +28,21 @@ body,
 .mat-body,
 .mat-body-1,
 .mat-checkbox,
-.mat-typography,
-.mat-table,
+.mat-form-field,
 .mat-paginator,
 .mat-paginator-page-size,
 .mat-select-trigger,
-.mat-snack-bar-container {
+.mat-snack-bar-container,
+.mat-table,
+.mat-typography {
   color: #333F52;
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
 }
 
-.mat-snack-bar-container {
+.mat-snack-bar-container,
+.chip.mat-chip,
+.mat-raised-button.status-button {
   font-weight: 500;
   color: #fff;
 }

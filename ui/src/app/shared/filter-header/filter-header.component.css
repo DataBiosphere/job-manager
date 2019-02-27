@@ -7,8 +7,8 @@
 .query-form {
   width: 60%;
   min-width: 60rem;
-  padding-top: 0.5rem;
-  line-height: 1.5rem;
+  padding-top: 0.25rem;
+  line-height: 1.75rem;
 }
 
 ::ng-deep .mat-form-field-underline {
@@ -20,6 +20,10 @@
   border-radius: 5px;
   background-color: #EBEDEF;
   color: red;
+}
+
+.query-form .mat-form-field-wrapper {
+  padding-bottom: 0;
 }
 
 ::ng-deep .query-form .mat-input-infix {
@@ -34,16 +38,33 @@
 
 .query-form clr-icon {
   vertical-align: top;
-  padding: 0 0.5rem;
+  padding: 0;
 }
 
-.search-button {
+.query-form clr-icon[shape='filter-2'] {
+  padding: 0 1rem 0 0.5rem;
+}
+
+search-button {
   margin-right: 3rem;
 }
 
-.status-button {
+.mat-raised-button.status-button {
   min-width: 7rem;
   margin-right: .5rem;
+  box-shadow: none;
+  background-color: #74AE43;
+  height: 30px;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 3px;
+  text-transform: uppercase;
+  margin-right: 12px;
+  line-height: 2.4em;
+  font-size: 0.8em;
+}
+
+.mat-raised-button.status-button clr-icon {
+  margin-right: 4px;
 }
 
 .search-table-controls {
