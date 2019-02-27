@@ -10,16 +10,7 @@
       <tr>                                               |___/           </tr>
   </table>
   <p>
-  <p>
-    Job Manager is running but encountered a problem talking to its workflow server.
-  </p>
-  <p>
-    Please check the URL and workflow server configuration, or contact your support organization for assistance.
-  </p>
-  <p>
-    <a href="/">Click here to start over.</a>
-  </p>
-  <p>
-    <i>{{errorMessage}}</i>
-  </p>
+  <p>Job Manager is running but encountered a problem getting data from its workflow server.</p>
+  <p><a href="{{ newUrl }}">{{ linkText }}</a></p>
+  <p><i>{{errorMessage}}</i></p>
 </div>
