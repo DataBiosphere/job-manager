@@ -458,7 +458,7 @@ def _get_response_massage(response):
 
 def is_jsonable(x):
     try:
-        json.dumps(x)
+        x.json()
         return True
     except:
         return False
