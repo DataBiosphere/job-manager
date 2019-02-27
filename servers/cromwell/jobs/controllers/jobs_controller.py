@@ -71,11 +71,11 @@ def update_job_labels(id, body, **kwargs):
         headers=kwargs.get('auth_headers'))
 
     if response.status_code == InternalServerError.code:
-        raise InternalServerError(_get_response_massage(response))
+        raise InternalServerError(_get_response_message(response))
     elif response.status_code == BadRequest.code:
-        raise BadRequest(_get_response_massage(response))
+        raise BadRequest(_get_response_message(response))
     elif response.status_code == NotFound.code:
-        raise NotFound(_get_response_massage(response))
+        raise NotFound(_get_response_message(response))
     response.raise_for_status()
 
     # Follow API spec
@@ -319,11 +319,11 @@ def query_jobs(body, **kwargs):
         headers=headers)
 
     if response.status_code == BadRequest.code:
-        raise BadRequest(_get_response_massage(response))
+        raise BadRequest(_get_response_message(response))
     elif response.status_code == Unauthorized.code:
-        raise Unauthorized(_get_response_massage(response))
+        raise Unauthorized(_get_response_message(response))
     elif response.status_code == InternalServerError.code:
-        raise InternalServerError(_get_response_massage(response))
+        raise InternalServerError(_get_response_message(response))
     response.raise_for_status()
 
     total_results = int(response.json()['totalResultsCount'])
@@ -450,7 +450,7 @@ def _get_scattered_task_status(metadata):
             return status
 
 
-def _get_response_massage(response):
+def _get_response_message(response):
     if is_jsonable(response) and response.json().get('message'):
         return response.json().get('message')
     return str(response)
