@@ -5,7 +5,7 @@ import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
   MatButtonModule,
   MatExpansionModule,
-  MatMenuModule,
+  MatMenuModule, MatSnackBar,
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
@@ -51,6 +51,7 @@ describe('JobTabsComponent', () => {
     submission: new Date('2015-04-20T20:00:00'),
     extensions: { tasks: [task] }
   }
+  let snackBar: MatSnackBar;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -76,7 +77,7 @@ describe('JobTabsComponent', () => {
         SharedModule
       ],
       providers: [
-        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null)}
+        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, snackBar)}
       ]
     }).compileComponents();
   }));

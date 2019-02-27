@@ -12,7 +12,7 @@ import {
   MatListModule,
   MatMenuModule,
   MatNativeDateModule,
-  MatPaginatorModule, MatSlideToggleModule,
+  MatPaginatorModule, MatSlideToggleModule, MatSnackBar,
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
@@ -49,6 +49,7 @@ describe('FilterHeaderComponent', () => {
 
   let testComponent: FilterHeaderComponent;
   let fixture: ComponentFixture<TestHeaderComponent>;
+  let snackBar: MatSnackBar;
   let capabilities: CapabilitiesResponse = {
     displayFields: [
       {field: 'status', display: 'Status'},
@@ -61,7 +62,7 @@ describe('FilterHeaderComponent', () => {
 
   beforeEach(async(() => {
     const fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
-    const authService = new AuthService(null, fakeCapabilitiesService, null);
+    const authService = new AuthService(null, fakeCapabilitiesService, null, snackBar);
 
     TestBed.configureTestingModule({
       declarations: [FilterHeaderComponent, TestHeaderComponent, MockFilterChipComponent],
