@@ -1,9 +1,12 @@
 import requests
 from flask import current_app
-from werkzeug.exceptions import BadRequest, NotFound, InternalServerError, ServiceUnavailable
+from werkzeug.exceptions import Unauthorized, BadRequest, NotFound, InternalServerError, ServiceUnavailable
 from datetime import datetime
 from dateutil.tz import *
 import dateutil.parser
+import json
+import logging
+import urllib
 
 from jm_utils import page_tokens
 from jobs.controllers.utils.auth import requires_auth
@@ -21,8 +24,6 @@ from jobs.models.health_response import HealthResponse
 from jobs.models.execution_event import ExecutionEvent
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
-import urllib
-import logging
 
 _DEFAULT_PAGE_SIZE = 64
 
@@ -70,11 +71,11 @@ def update_job_labels(id, body, **kwargs):
         headers=kwargs.get('auth_headers'))
 
     if response.status_code == InternalServerError.code:
-        raise InternalServerError(response.json().get('message'))
+        raise InternalServerError(_get_response_message(response))
     elif response.status_code == BadRequest.code:
-        raise BadRequest(response.json().get('message'))
+        raise BadRequest(_get_response_message(response))
     elif response.status_code == NotFound.code:
-        raise NotFound(response.json().get('message'))
+        raise NotFound(_get_response_message(response))
     response.raise_for_status()
 
     # Follow API spec
@@ -318,9 +319,11 @@ def query_jobs(body, **kwargs):
         headers=headers)
 
     if response.status_code == BadRequest.code:
-        raise BadRequest(response.json().get('message'))
+        raise BadRequest(_get_response_message(response))
+    elif response.status_code == Unauthorized.code:
+        raise Unauthorized(_get_response_message(response))
     elif response.status_code == InternalServerError.code:
-        raise InternalServerError(response.json().get('message'))
+        raise InternalServerError(_get_response_message(response))
     response.raise_for_status()
 
     total_results = int(response.json()['totalResultsCount'])
@@ -445,3 +448,17 @@ def _get_scattered_task_status(metadata):
     ]:
         if status in statuses:
             return status
+
+
+def _get_response_message(response):
+    if is_jsonable(response) and response.json().get('message'):
+        return response.json().get('message')
+    return str(response)
+
+
+def is_jsonable(x):
+    try:
+        x.json()
+        return True
+    except:
+        return False
