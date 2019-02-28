@@ -11,8 +11,11 @@
   line-height: 1.75rem;
 }
 
-::ng-deep .mat-form-field-underline {
-  background-color: rgba(0, 0, 0, 0);
+::ng-deep .mat-form-field-underline,
+::ng-deep .mat-input-subscript-wrapper,
+::ng-deep .mat-form-field-subscript-wrapper {
+  color: #EBEDEF;
+  display: none;
 }
 
 ::ng-deep .query-form .mat-input-flex.mat-form-field-flex {
@@ -22,8 +25,8 @@
   color: red;
 }
 
-.query-form .mat-form-field-wrapper {
-  padding-bottom: 0;
+::ng-deep .query-form .mat-form-field-wrapper {
+  padding-bottom: 0px;
 }
 
 ::ng-deep .query-form .mat-input-infix {
@@ -51,13 +54,13 @@ search-button {
 
 .mat-raised-button.status-button {
   min-width: 7rem;
-  margin-right: .5rem;
   box-shadow: none;
   background-color: #74AE43;
   height: 30px;
   border: 1px solid rgba(0,0,0,0.2);
   border-radius: 3px;
   text-transform: uppercase;
+  margin-top: 10px;
   margin-right: 12px;
   line-height: 2.4em;
   font-size: 0.8em;
@@ -73,6 +76,10 @@ search-button {
   flex-direction: row;
 }
 
+.search-table-controls > div {
+  height: 52px;
+}
+
 .chipShell {
   padding: 0 !important;
 }
@@ -85,8 +92,8 @@ search-button {
   margin-left: auto;
 }
 
-.settings-icon-container {
-  padding-top: 10px;
+::ng-deep .mat-paginator-page-size {
+  margin-top: -10px;
 }
 
 h2.settings-header {
@@ -123,8 +130,8 @@ h2.settings-header {
   width: 0.8em;
 }
 
-.settings-button-container {
-  padding: 5px;
+.settings-icon-container {
+  padding-top: 5px;
 }
 
 button.apply-link {
@@ -146,4 +153,22 @@ button.clear-query {
   padding: 0px;
   height: 40px;
   width: 40px;
+}
+
+::ng-deep .search-table-controls .mat-paginator-navigation-previous.mat-icon-button,
+::ng-deep .search-table-controls .mat-paginator-navigation-next.mat-icon-button {
+  border-radius: 5px;
+  border: 1px solid #5C912E;
+  padding: 0px;
+  width: 28px;
+  height: 28px;
+  margin-left: 8px;
+}
+
+::ng-deep .search-table-controls .mat-button-wrapper .mat-paginator-increment,
+::ng-deep .search-table-controls .mat-button-wrapper .mat-paginator-decrement {
+  width: 4px;
+  height: 4px;
+  color: #5C912E;
+  margin: 0 0 0 10px;
 }
