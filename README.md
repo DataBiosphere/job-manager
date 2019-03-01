@@ -1,8 +1,8 @@
 # Job Manager
 
-[![CircleCI](https://circleci.com/gh/DataBiosphere/job-manager/tree/master.svg?style=svg)](https://circleci.com/gh/DataBiosphere/job-manager/tree/master)
-![Github](https://img.shields.io/badge/SUPPORTED%20BACKENDS-cromwell%20%7C%20dsub-blue.svg?&style=flat-square)
-![GitHub release](https://img.shields.io/github/release/DataBiosphere/job-manager.svg?label=Latest%20Release&style=flat&colorB=green)
+![CircleCI branch](https://img.shields.io/circleci/project/github/DataBiosphere/job-manager/master.svg?label=Tests%20on%20Circle%20CI&style=flat-square)
+![Github](https://img.shields.io/badge/Supported%20Backends-cromwell%20%7C%20dsub-blue.svg?&style=flat-square)
+![GitHub release](https://img.shields.io/github/release/DataBiosphere/job-manager.svg?label=Latest%20Release&style=flat-square&colorB=green)
 
 _This product is in Alpha and not yet ready for production use. We welcome all feedback!_
 
