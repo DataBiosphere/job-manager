@@ -7,9 +7,14 @@
 The UI is making unauthenticated requests to the shim layer, but the shim is
 rejecting them as unauthorized.
 
-In the UI, Job Manager cannot proceed.
+In the UI, Job Manager prompts you to log in but cannot proceed past this page:
+
+---
 
 ![401: Unauthorized](401_Unauthorized.png)
+
+---
+
 
 In the javascript console you see messages like: `ERROR Error: Uncaught (in promise): Object: {"status":401,"title":"Unauthorized","message":"User not authorized to access this resource."}`
 
@@ -30,7 +35,8 @@ Or, perhaps you've set the environment variable `USE_CAAS=True` manually.
 
 #### Resolution
 
-Add an `authentication` section to the end of the Cromwell shim's `capabilities.conf`:
+Add an `authentication` section to the end of the Cromwell shim's `capabilities.conf`. When the UI
+reads this, it then knows how to direct users to the oauth login.
 
 ```json
 {
