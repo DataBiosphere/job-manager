@@ -312,9 +312,11 @@ def query_jobs(body, **kwargs):
         offset = page_tokens.decode_offset(query.page_token)
     page = page_from_offset(offset, query_page_size)
 
+    has_auth = headers is not None
+
     response = requests.post(
         _get_base_url() + '/query',
-        json=cromwell_query_params(query, page, query_page_size),
+        json=cromwell_query_params(query, page, query_page_size, has_auth),
         auth=auth,
         headers=headers)
 
@@ -356,7 +358,7 @@ def page_from_offset(offset, page_size):
     return 1 + (offset / page_size)
 
 
-def cromwell_query_params(query, page, page_size):
+def cromwell_query_params(query, page, page_size, has_auth):
     query_params = []
     if query.start:
         start = datetime.strftime(query.start, '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -385,7 +387,13 @@ def cromwell_query_params(query, page, page_size):
     query_params.append({'page': str(page)})
     query_params.append({'additionalQueryResultFields': 'parentWorkflowId'})
     query_params.append({'additionalQueryResultFields': 'labels'})
-    query_params.append({'includeSubworkflows': 'false'})
+
+    # If the query request is passing along an auth header, that means the API
+    # is sending requests to a CromIAM, not a Cromwell.  CromIAM can't retrieve
+    # subworkflows, so it's not necessary to the query (and slows things down
+    # significantly)
+    if not has_auth:
+        query_params.append({'includeSubworkflows': 'false'})
     if query.extensions and query.extensions.hide_archived:
         query_params.append({'excludeLabelAnd': 'flag:archive'})
     return query_params

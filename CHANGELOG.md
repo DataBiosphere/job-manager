@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v0.5.9 Release Notes
+
+### Modified query to backend when it's going to a CromIAM instead of a Cromwell
+
 ## v0.5.8 Release Notes
 
 ### Added events to timing diagram

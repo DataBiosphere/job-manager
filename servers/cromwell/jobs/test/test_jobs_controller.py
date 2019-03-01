@@ -643,7 +643,7 @@ class TestJobsController(BaseTestCase):
     def test_empty_cromwell_query_params(self):
         query = QueryJobsRequest()
         self.assertEqual(
-            sorted(jobs_controller.cromwell_query_params(query, 1, 64)),
+            sorted(jobs_controller.cromwell_query_params(query, 1, 64, False)),
             sorted([{
                 'page': '1'
             }, {
@@ -694,7 +694,8 @@ class TestJobsController(BaseTestCase):
         query_params.extend([{'status': s} for s in query.status])
         self.assertItemsEqual(
             sorted(query_params),
-            sorted(jobs_controller.cromwell_query_params(query, 23, 100)))
+            sorted(
+                jobs_controller.cromwell_query_params(query, 23, 100, False)))
 
     def test_format_job(self):
         time = '2017-10-27T18:04:47.271Z'
