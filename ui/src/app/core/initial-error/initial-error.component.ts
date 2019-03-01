@@ -9,6 +9,8 @@ import {NavigationError, Router} from '@angular/router';
 })
 export class InitialErrorComponent {
   errorMessage: string;
+  newUrl: string;
+  linkText: string;
   initialLoadFailure = false;
 
   constructor(router: Router, loc: Location) {
@@ -23,7 +25,15 @@ export class InitialErrorComponent {
         this.initialLoadFailure = true;
         const status = e.error.status || 'unknown';
         const title = e.error.title || 'Unknown error';
-        this.errorMessage = `${status}: ${title}`
+        this.errorMessage = `${status}: ${title}`;
+
+        if (status == '401') {
+          this.newUrl = '/sign_in';
+          this.linkText = 'Click here to log in.'
+        } else {
+          this.newUrl = '/';
+          this.linkText = 'Click here to start over.';
+        }
       }
       if (router.navigated) {
         // In the event that one of our resolvers/activators did another

@@ -1,6 +1,6 @@
 # Job Manager Change Log
 
-## v0.5.7 Release Notes
+## v0.5.8 Release Notes
 
 ### Added events to timing diagram
 
@@ -10,7 +10,14 @@ Timing diagram now includes events within each task/subworkflow and the rendered
 
 ### Added better error handling to authentication
 
-Capture the error in cases where the UI is trying to use OAuth but the Cromwell it's pointing at doesn't require authentication.
+- Capture the error in cases where the UI is trying to use OAuth but the Cromwell it's pointing at doesn't require authentication.
+- Capture the error case where the user is unauthorized to run queries and prompt to log in again in case it's because of a stale or revoked access token.
+
+## v0.5.7 Release Notes
+
+### Modified the links to logs/directories in GCP
+
+Updated links for Cromwell stdout and stderr log files to now reference an appropriate page in the google console.
 
 ## v0.5.6 Release Notes
 
