@@ -17,7 +17,7 @@ Timing diagram now includes events within each task/subworkflow and the rendered
 
 ### Modified the links to logs/directories in GCP
 
-At some point, the links to `storage.cloud.google.com` stopped working, so they've been replaced with links to the Google console (`console.cloud.google.com`).
+Updated links for Cromwell stdout and stderr log files to now reference an appropriate page in the google console.
 
 ## v0.5.6 Release Notes
 
