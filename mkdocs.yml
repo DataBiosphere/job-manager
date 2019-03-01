@@ -9,6 +9,8 @@ pages:
 - Welcome: index.md
 - Getting Started:
   - Quick Start Script: GettingStarted/QuickStart.md
+- Debugging Deployments:
+  - Debugging Cromwell/CromIAM: Debugging/CromIAMDeployments.md
 
 theme: readthedocs
 
