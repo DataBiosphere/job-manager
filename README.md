@@ -101,7 +101,7 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
 
 - Link your preferred backend docker compose file as `docker-compose.yml`:
 
-  - Cromwell (local): `ln -sf cromwell-local-compose.yml docker-compose.yml`
+  - Cromwell (local): `ln -sf cromwell-instance-compose.yml docker-compose.yml`
   - Cromwell (CaaS): `ln -sf cromwell-caas-compose.yml docker-compose.yml`
 - Follow [servers/cromwell](servers/cromwell/README.md#Development) for Cromwell server setup then return here to continue.
 
