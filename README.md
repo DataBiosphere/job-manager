@@ -1,8 +1,12 @@
 # Job Manager
 
-![CircleCI branch](https://img.shields.io/circleci/project/github/DataBiosphere/job-manager/master.svg?label=Tests%20on%20Circle%20CI&style=flat-square)
+[![CircleCI branch](https://img.shields.io/circleci/project/github/DataBiosphere/job-manager/master.svg?label=Tests%20on%20Circle%20CI&style=flat-square)](https://circleci.com/gh/DataBiosphere/job-manager/tree/master)
 ![Github](https://img.shields.io/badge/Supported%20Backends-cromwell%20%7C%20dsub-blue.svg?&style=flat-square)
+![GitHub](https://img.shields.io/github/license/DataBiosphere/job-manager.svg?color=orange&style=flat-square)
 ![GitHub release](https://img.shields.io/github/release/DataBiosphere/job-manager.svg?label=Latest%20Release&style=flat-square&colorB=green)
+[![Github](https://img.shields.io/badge/Docker%20Image-UI-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-ui)
+[![Github](https://img.shields.io/badge/Docker%20Image-dsub%20shim%20API-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-api-dsub)
+[![Github](https://img.shields.io/badge/Docker%20Image-cromwell%20shim%20API-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-api-cromwell)
 
 _This product is in Alpha and not yet ready for production use. We welcome all feedback!_
 
