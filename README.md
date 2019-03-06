@@ -1,6 +1,12 @@
 # Job Manager
 
-[![CircleCI](https://circleci.com/gh/DataBiosphere/job-manager/tree/master.svg?style=svg)](https://circleci.com/gh/DataBiosphere/job-manager/tree/master)
+[![CircleCI branch](https://img.shields.io/circleci/project/github/DataBiosphere/job-manager/master.svg?label=Tests%20on%20Circle%20CI&style=flat-square)](https://circleci.com/gh/DataBiosphere/job-manager/tree/master)
+![Github](https://img.shields.io/badge/Supported%20Backends-cromwell%20%7C%20dsub-blue.svg?&style=flat-square)
+![GitHub](https://img.shields.io/github/license/DataBiosphere/job-manager.svg?color=orange&style=flat-square)
+[![GitHub release](https://img.shields.io/github/release/DataBiosphere/job-manager.svg?label=Latest%20Release&style=flat-square&colorB=green)](https://github.com/DataBiosphere/job-manager/releases)
+[![Github](https://img.shields.io/badge/Docker%20Image-UI-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-ui)
+[![Github](https://img.shields.io/badge/Docker%20Image-dsub%20shim%20API-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-api-dsub)
+[![Github](https://img.shields.io/badge/Docker%20Image-cromwell%20shim%20API-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-api-cromwell)
 
 _This product is in Alpha and not yet ready for production use. We welcome all feedback!_
 
@@ -101,7 +107,7 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
 
 - Link your preferred backend docker compose file as `docker-compose.yml`:
 
-  - Cromwell (local): `ln -sf cromwell-local-compose.yml docker-compose.yml`
+  - Cromwell (local): `ln -sf cromwell-instance-compose.yml docker-compose.yml`
   - Cromwell (CaaS): `ln -sf cromwell-caas-compose.yml docker-compose.yml`
 - Follow [servers/cromwell](servers/cromwell/README.md#Development) for Cromwell server setup then return here to continue.
 
