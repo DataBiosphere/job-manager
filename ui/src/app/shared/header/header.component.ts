@@ -281,7 +281,7 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   signOut(): void {
     this.authService.signOut().then(() => {
       this.router.navigate(
-        ['/sign_in']
+        ['/jobs']
       );
     });
   }
