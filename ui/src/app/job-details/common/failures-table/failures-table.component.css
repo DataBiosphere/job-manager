@@ -1,5 +1,20 @@
 mat-table {
+  margin-top: 20px;
+  display: table;
+  width: 99%;
+  border-radius: 5px;
+  border: 1px solid #CCCFD4;
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+:host-context(mat-card.card) mat-table {
+  border: none;
+  box-shadow: none;
+  border-radius: unset;
   width: 100%;
+  margin-top: 0;
 }
 
 .mat-header-row,
@@ -10,7 +25,6 @@ mat-table {
 
 td,
 th {
-  padding: 5px 15px 5px 0px;
   text-align: left;
   font-size: 0.75rem;
   line-height: 1rem;
@@ -20,9 +34,14 @@ th {
 }
 
 th {
-  color: #999;
-  font-weight: normal;
-  padding-top: 1rem;
+  background-color: #F1F4F7;
+  color: #333F52;
+  font-weight: 600;
+  padding: 8px 16px;
+}
+
+td {
+  padding: 16px;
 }
 
 th.failure-task,
@@ -42,7 +61,6 @@ td.failure-message {
 th.failure-links,
 td.failure-links {
   min-width: 79px;
-  padding-right: 0px;
 }
 
 .log-item {

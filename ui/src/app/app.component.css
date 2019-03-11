@@ -3,12 +3,12 @@
   background: #74AE43 url('assets/images/header-left-hexs.svg') top right no-repeat;
   width: 100%;
   position: fixed;
-  z-index: 1;
+  z-index: 999;
 }
 
 h1 {
   background: transparent url('assets/images/header-left-hexs.svg') top left no-repeat;
-  padding: 22px 70px;
+  padding: 22px;
   color: #FFFFFF;
   font-size: 18px;
   font-weight: 600;
