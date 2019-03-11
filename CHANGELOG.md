@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v0.5.10 Release Notes
+
+### Force reload of /jobs after sign-out to clear out the previous user's list.
+
 ## v0.5.9 Release Notes
 
 ### Modified query to backend when it's going to a CromIAM instead of a Cromwell
