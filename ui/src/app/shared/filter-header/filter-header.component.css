@@ -22,7 +22,6 @@
   margin-top: 0.5rem;
   border-radius: 5px;
   background-color: #EBEDEF;
-  color: red;
 }
 
 ::ng-deep .query-form .mat-form-field-wrapper {
@@ -170,6 +169,10 @@ button.clear-query {
   height: 28px;
   margin-left: 8px;
 }
+::ng-deep .search-table-controls .mat-paginator-navigation-previous.mat-icon-button:disabled,
+::ng-deep .search-table-controls .mat-paginator-navigation-next.mat-icon-button:disabled {
+  border-color: #c0c2c4;
+}
 
 ::ng-deep .search-table-controls .mat-button-wrapper .mat-paginator-increment,
 ::ng-deep .search-table-controls .mat-button-wrapper .mat-paginator-decrement {
@@ -177,4 +180,14 @@ button.clear-query {
   height: 4px;
   color: #5C912E;
   margin: 0 0 0 10px;
+}
+
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+  color: #fff;
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1rem;
 }

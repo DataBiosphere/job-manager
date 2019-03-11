@@ -88,7 +88,9 @@
                            (click)="$event.stopPropagation()">
                     <mat-hint align="end">{{ labelField.value?.length || 0 }}/{{ labelCharLimit }}</mat-hint>
                   </mat-form-field>
-                  <button class="apply-link" (click)="setFieldValue(j, df.field, labelField.value)">Apply</button>
+                  <div class="button-container">
+                    <button class="apply-link" (click)="setFieldValue(j, df.field, labelField.value)">Apply</button>
+                  </div>
                 </div>
                 <div *ngIf="!canEdit(df) && canFilterBy(df.field)" class="mat-menu-content filter-menu">
                   <clr-tooltip>

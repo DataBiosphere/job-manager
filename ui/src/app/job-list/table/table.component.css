@@ -159,13 +159,18 @@
   width: 100%;
 }
 
+div.button-container {
+  text-align: right;
+}
+
 button.apply-link {
   font-size: 12px;
   border: none;
-  display: block;
+  display: inline;
   text-transform: uppercase;
   font-weight: bold;
   cursor: pointer;
+  color: #74AE43;
 }
 
 button.apply-link:hover {
@@ -196,6 +201,18 @@ button.apply-link:hover {
 ::ng-deep div.mat-menu-content mat-form-field input,
 ::ng-deep .mat-menu-content.filter-menu {
   font-size: 0.85rem;
+}
+
+::ng-deep div.mat-menu-content mat-form-field input {
+  background-color: #EBEDEF;
+  margin: 0;
+  border-radius: 5px;
+  padding: 0.5rem 0;
+  line-height: 1rem;
+}
+
+::ng-deep mat-form-field.mat-form-field-type-mat-select .mat-form-field-infix.mat-input-infix {
+  padding-top: 0;
 }
 
 clr-tooltip-content {
