@@ -21,9 +21,7 @@ export class AppComponent {
 
   signOut(): void {
     this.authService.signOut().then(() => {
-      this.router.navigate(
-        ['/sign_in']
-      );
+      window.location.reload();
     });
   }
 }
