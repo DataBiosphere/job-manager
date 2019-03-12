@@ -3,7 +3,7 @@
   <button mat-icon-button class="close"
           (click)="handleClose()">
     <clr-tooltip>
-      <clr-icon clrTooltipTrigger shape="times" size="36"></clr-icon>
+      <clr-icon clrTooltipTrigger shape="times" size="36" style="color:#74AE43"></clr-icon>
       <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
         <span>go back to list view</span>
       </clr-tooltip-content>
@@ -12,7 +12,7 @@
   <button mat-icon-button class="close"
           *ngIf="hasParent()" (click)="handleNavUp()">
     <clr-tooltip>
-      <clr-icon clrTooltipTrigger shape="arrow" size="36"></clr-icon>
+      <clr-icon clrTooltipTrigger shape="arrow" size="36" style="color:#74AE43"></clr-icon>
       <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
         <span>go back to parent job</span>
       </clr-tooltip-content>
@@ -66,10 +66,12 @@
 
 <mat-card class="card" *ngIf="hasFailures()">
   <mat-card-title>Errors ({{ job.failures.length }} total)</mat-card-title>
-  <jm-failures-table [failures]="job.failures"
-                     [numToShow]="numOfErrorsToShow"
-                     [showHeaders]="false"
-                     [displayedColumns]="['name','links']"
-                     [context]="'card'">
-  </jm-failures-table>
+  <mat-card-content>
+    <jm-failures-table [failures]="job.failures"
+                       [numToShow]="numOfErrorsToShow"
+                       [showHeaders]="false"
+                       [displayedColumns]="['name','links']"
+                       [context]="'card'">
+    </jm-failures-table>
+  </mat-card-content>
 </mat-card>

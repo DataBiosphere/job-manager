@@ -1,10 +1,9 @@
-<jm-header
+<jm-filter-header
   class="header"
   [jobs]="jobs"
   [pageSize]="pageSize"
   [showControls]="true"
-  (onDisplayFieldsChanged)="handleDisplayFieldsChanged($event)"></jm-header>
-<mat-divider class="divider"></mat-divider>
+  (onDisplayFieldsChanged)="handleDisplayFieldsChanged($event)"></jm-filter-header>
 <div class="table-container">
   <jm-job-list-table
     class="job-list-table"

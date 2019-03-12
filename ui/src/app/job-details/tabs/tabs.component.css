@@ -1,10 +1,11 @@
-* {
-  font-family: 'Roboto', sans-serif;
-}
-
 .content {
   margin: 1rem;
   clear: left;
+}
+
+mat-expansion-panel {
+  border-radius: 5px;
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
 }
 
 .header {
@@ -44,12 +45,28 @@ a.title-link {
 }
 
 ::ng-deep .mat-tab-labels  {
-  justify-content: flex-end;
+  justify-content: flex-start;
+}
+
+::ng-deep .mat-tab-label {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+
+::ng-deep .mat-tab-label.mat-tab-label-active {
+  font-weight: 600;
+  color: #333F52;
 }
 
 .mat-table {
+  margin-top: 20px;
   display: table;
-  width: 100%;
+  width: 99%;
+  border-radius: 5px;
+  border: 1px solid #CCCFD4;
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mat-header-row, .mat-row {
@@ -60,10 +77,25 @@ a.title-link {
 
 .mat-header-cell, .mat-cell {
   display: table-cell;
-  height: 48px;
   vertical-align: middle;
-  padding: 0 8px;
+  padding: 8px 8px 8px 16px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.mat-cell {
+  height: auto;
+  font-size: 0.75rem;
+}
+
+.mat-header-row {
+  background-color: #F1F4F7;
+  min-height: 48px;
+}
+
+.mat-header-cell {
+  color: #333F52;
+  font-size: 0.7rem;
+  font-weight: 600;
 }
 
 .mat-header-cell.slim-cell, .mat-cell.slim-cell {
@@ -141,4 +173,8 @@ button.shard-icon {
 
 .shard-status clr-icon {
   margin: 0 auto;
+}
+
+::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {
+  background-color: #74AE43;
 }

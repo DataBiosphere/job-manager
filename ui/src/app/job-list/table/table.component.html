@@ -36,20 +36,20 @@
             <mat-list>
               <mat-list-item>
                 <a [routerLink]="[j.id]" [queryParams]="getQueryParams()">
-                  <clr-icon shape="arrow" dir="right" size="24"></clr-icon>
+                  <clr-icon shape="arrow" dir="right" size="18"></clr-icon>
                   <span>Job details</span>
                 </a>
               </mat-list-item>
               <mat-list-item *ngIf="canAbort(j)">
-                <a (click)="abortJob(j)">
-                  <clr-icon shape="times-circle" size="24"></clr-icon>
+                <a (click)="abortJob(j)" class="inline-filter">
+                  <clr-icon shape="times-circle" size="18"></clr-icon>
                   <span>Abort job</span>
                 </a>
               </mat-list-item>
               <mat-list-item *ngIf="j[firstColumn] && canFilterBy(firstColumn)">
                 <clr-tooltip>
                   <a (click)="filterOnColumnValue(firstColumn, j[firstColumn])" clrTooltipTrigger class="inline-filter">
-                    <clr-icon shape="filter-2" size="24"></clr-icon>
+                    <clr-icon shape="filter-2" size="18"></clr-icon>
                     <span>Filter by {{ getFilterFromField(firstColumn) }}:{{ j[firstColumn] }} {{ firstColumn }}</span>
                     <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
                       <span>Filter by {{ getFilterFromField(firstColumn) }}:{{ j[firstColumn] }}</span>
@@ -88,12 +88,14 @@
                            (click)="$event.stopPropagation()">
                     <mat-hint align="end">{{ labelField.value?.length || 0 }}/{{ labelCharLimit }}</mat-hint>
                   </mat-form-field>
-                  <button class="apply-link" (click)="setFieldValue(j, df.field, labelField.value)">Apply</button>
+                  <div class="button-container">
+                    <button class="apply-link" (click)="setFieldValue(j, df.field, labelField.value)">Apply</button>
+                  </div>
                 </div>
                 <div *ngIf="!canEdit(df) && canFilterBy(df.field)" class="mat-menu-content filter-menu">
                   <clr-tooltip>
                     <a (click)="filterOnColumnValue(df.field, getFieldValue(j, df))" clrTooltipTrigger class="inline-filter">
-                      <clr-icon shape="filter-2" size="24"></clr-icon>
+                      <clr-icon shape="filter-2" size="18"></clr-icon>
                       <span>Filter by {{ getFilterFromField(df.field) }}:{{ getFieldValue(j, df) }}</span>
                       <clr-tooltip-content clrPosition="bottom-left" clrSize="xs" *clrIfOpen>
                         Filter by {{ getFilterFromField(df.field) }}:{{ getFieldValue(j, df) }}

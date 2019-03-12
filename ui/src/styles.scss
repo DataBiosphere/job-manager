@@ -18,3 +18,103 @@
 .mat-tab-header {
   border-bottom: none;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body,
+.mat-body,
+.mat-body-1,
+.mat-card,
+.mat-card-subtitle,
+.mat-checkbox,
+.mat-form-field,
+.mat-paginator,
+.mat-paginator-page-size,
+.mat-paginator-page-size .mat-select-trigger,
+.mat-option,
+.mat-select,
+.mat-select-trigger,
+.mat-slide-toggle-content,
+.mat-snack-bar-container,
+.mat-table,
+.mat-typography {
+  color: #333F52;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+}
+
+.mat-snack-bar-container,
+.chip.mat-chip,
+.mat-raised-button.status-button {
+  font-weight: 500;
+  color: #fff;
+}
+
+.mat-button,
+.mat-raised-button {
+  border: 1px solid #9B9B9B;
+  border-radius: 3px;
+  background-color: #FAFAFA;
+  font-family: 'Montserrat', sans-serif;
+  color: #333F52;
+  font-weight: 400;
+}
+
+.mat-raised-button {
+  box-shadow: none;
+}
+
+.mat-icon-button {
+  background-color: transparent;
+}
+
+a {
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+}
+
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0.25rem 0.5rem;
+  display: block;
+  color: #fff;
+  z-index: 888;
+}
+
+clr-tooltip-content.message {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  line-height: 1.5rem;
+  font-size: 0.65rem;
+  color: #fff;
+}
+
+.mat-checkbox .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
+.mat-checkbox .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: #74AE43;
+}
+
+clr-icon[shape='minus'] {
+  color: #333F52;
+}
+
+clr-icon[shape='sync'],
+clr-icon[shape='success-standard']{
+  color: #5C912E;
+}
+
+clr-icon[shape='error-standard'],
+clr-icon[shape='times-circle'] {
+  color: #DB3214;
+}
+
+clr-icon[shape='minus-circle'] {
+  color: #F7981C;
+}
+
+.mat-raised-button clr-icon {
+  color: inherit;
+}

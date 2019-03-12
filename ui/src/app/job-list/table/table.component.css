@@ -1,8 +1,13 @@
 /* Job Manager table */
 
+
 .mat-table {
+  margin: 0 15px;
+  width: 95%;
   display: table;
-  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #CCCFD4;
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
 }
 
 .mat-header-row, .mat-row {
@@ -11,15 +16,31 @@
   border: none;
 }
 
-::ng-deep .mat-header-cell, ::ng-deep .mat-cell {
+.mat-header-cell, .mat-cell {
   display: table-cell;
-  height: 48px;
   vertical-align: middle;
-  padding: 0 10px;
+  padding: 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  max-width: 40rem;
+}
+
+.mat-cell {
+  height: auto;
+  font-size: 0.75rem;
+}
+
+.mat-header-cell {
+  font-size: 0.7rem;
   white-space: nowrap;
-  margin: 0 50px 0 0;
+}
+
+.mat-header-row {
+  background-color: #F1F4F7;
+  min-height: 48px;
+}
+
+.mat-header-cell {
+  color: #333F52;
+  font-weight: 600;
 }
 
 .display-field {
@@ -51,6 +72,7 @@
   float: left;
   cursor: pointer;
   color: black;
+  font-size: 0.75rem;
 }
 
 /* Job details dropdown */
@@ -88,7 +110,8 @@
 ::ng-deep .mat-menu-panel.details-menu .mat-card-subtitle {
   color: rgba(0, 0, 0, 0.8);
   margin-bottom: 0.75rem;
-  font-size: 1rem;
+  font-size: 0.75rem;
+  color: #000;
 }
 
 ::ng-deep .mat-menu-panel.details-menu .mat-card-actions {
@@ -97,7 +120,7 @@
 
 ::ng-deep .mat-menu-panel.details-menu .mat-list .mat-list-item {
   height: auto;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
   padding-left: 0;
 }
 
@@ -119,9 +142,10 @@
 ::ng-deep .mat-menu-panel.details-menu mat-card a,
 ::ng-deep .mat-menu-panel.details-menu mat-card a clr-icon {
   color: rgba(0, 0, 0, 0.8);
-  font-size: 1rem;
+  font-size: 0.75rem;
   white-space: nowrap;
   text-decoration: none;
+  color: #000;
 }
 
 /* Pause, Delete, and Group buttons */
@@ -130,7 +154,6 @@
   bottom: 0;
   background-color: white;
   width: 100%;
-  font-family: 'Roboto', sans-serif;
   font-weight: bold;
   font-size: .65rem;
   padding: .65rem;
@@ -160,14 +183,18 @@
   width: 100%;
 }
 
+div.button-container {
+  text-align: right;
+}
+
 button.apply-link {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 12px;
   border: none;
-  display: block;
+  display: inline;
   text-transform: uppercase;
   font-weight: bold;
   cursor: pointer;
+  color: #74AE43;
 }
 
 button.apply-link:hover {
@@ -197,14 +224,24 @@ button.apply-link:hover {
 ::ng-deep .mat-select-content,
 ::ng-deep div.mat-menu-content mat-form-field input,
 ::ng-deep .mat-menu-content.filter-menu {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
+}
+
+::ng-deep div.mat-menu-content mat-form-field input {
+  background-color: #EBEDEF;
+  margin: 0;
+  border-radius: 5px;
+  padding: 0.5rem 0;
+  line-height: 1rem;
+}
+
+::ng-deep mat-form-field.mat-form-field-type-mat-select .mat-form-field-infix.mat-input-infix {
+  padding-top: 0;
 }
 
 clr-tooltip-content {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   font-size: 0.65rem;
   color: #fff;
   display: block;
@@ -212,5 +249,6 @@ clr-tooltip-content {
 }
 
 .mat-menu-content.filter-menu clr-tooltip-content {
+  padding: 0.25rem 0.5rem;
   margin: 0.25rem 0 0 5rem;
 }

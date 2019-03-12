@@ -1,13 +1,15 @@
-* {
-  font-family: "Gotham HTF", sans-serif;
-}
-
-div {
-  margin: 1rem;
+.header {
+  position: fixed;
+  top: 66px;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  background-color: #fff;
+  padding-bottom: 10px;
 }
 
 .aggregation-container {
-  padding: 1rem;
+  padding: 145px 1rem 1rem 1rem;
 }
 
 .group-container {
@@ -18,11 +20,9 @@ div {
 
 .title {
   font-size: x-large;
-  margin: 1rem;
+  margin: 0 1rem 1rem 1rem;
 }
 
 mat-select {
   width: 150px;
 }
-
-

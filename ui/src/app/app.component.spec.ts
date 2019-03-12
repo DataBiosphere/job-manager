@@ -10,6 +10,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {Injectable} from '@angular/core';
 import {Location} from '@angular/common';
 import {async, flush, TestBed, fakeAsync, tick} from '@angular/core/testing';
+import {ClrIconModule} from '@clr/angular';
 
 import {AppComponent} from './app.component';
 import {CoreModule} from './core/core.module';
@@ -18,15 +19,23 @@ import {JobDetailsComponent} from './job-details/job-details.component';
 import {JobDetailsResolver} from './job-details/job-details-resolver.service';
 import {JobListModule} from './job-list/job-list.module';
 import {JobDetailsModule} from './job-details/job-details.module';
+import {AuthService} from "./core/auth.service";
+import {MatSnackBar} from "@angular/material";
+import {FakeCapabilitiesService} from "./testing/fake-capabilities.service";
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
+    let snackBar: MatSnackBar;
+    let fakeCapabilitiesService = new FakeCapabilitiesService({});
+    let authService = new AuthService(null, fakeCapabilitiesService, null, snackBar);
+
     TestBed.configureTestingModule({
       declarations: [
         AppComponent
       ],
       imports: [
         BrowserAnimationsModule,
+        ClrIconModule,
         CoreModule,
         JobListModule,
         JobDetailsModule,
@@ -42,7 +51,8 @@ describe('AppComponent', () => {
         ])
       ],
       providers: [
-        ErrorResolver
+        ErrorResolver,
+        {provide: AuthService, useValue: authService}
       ]
     }).compileComponents();
   }));
