@@ -1,6 +1,6 @@
 import requests
 from flask import current_app
-from werkzeug.exceptions import Unauthorized, BadRequest, NotFound, InternalServerError, ServiceUnavailable
+from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound, ServiceUnavailable, Unauthorized
 from datetime import datetime
 from dateutil.tz import *
 import dateutil.parser
@@ -45,8 +45,8 @@ def abort_job(id, **kwargs):
         cromwell_url=_get_base_url(), id=id)
     response = requests.post(
         url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
-    if response.status_code == NotFound.code:
-        raise NotFound(response.json()['message'])
+    if response.status_code != 200:
+        handle_error(response)
 
 
 @requires_auth
@@ -70,13 +70,8 @@ def update_job_labels(id, body, **kwargs):
         auth=kwargs.get('auth'),
         headers=kwargs.get('auth_headers'))
 
-    if response.status_code == InternalServerError.code:
-        raise InternalServerError(_get_response_message(response))
-    elif response.status_code == BadRequest.code:
-        raise BadRequest(_get_response_message(response))
-    elif response.status_code == NotFound.code:
-        raise NotFound(_get_response_message(response))
-    response.raise_for_status()
+    if response.status_code != 200:
+        handle_error(response)
 
     # Follow API spec
     result = response.json()
@@ -97,13 +92,11 @@ def get_job(id, **kwargs):
         cromwell_url=_get_base_url(), id=id)
     response = requests.get(
         url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
+
+    if response.status_code != 200:
+        handle_error(response)
+
     job = response.json()
-    if response.status_code == BadRequest.code:
-        raise BadRequest(job.get('message'))
-    elif response.status_code == NotFound.code:
-        raise NotFound(job.get('message'))
-    elif response.status_code == InternalServerError.code:
-        raise InternalServerError(job.get('message'))
 
     failures = [
         format_failure(name, m)
@@ -320,13 +313,8 @@ def query_jobs(body, **kwargs):
         auth=auth,
         headers=headers)
 
-    if response.status_code == BadRequest.code:
-        raise BadRequest(_get_response_message(response))
-    elif response.status_code == Unauthorized.code:
-        raise Unauthorized(_get_response_message(response))
-    elif response.status_code == InternalServerError.code:
-        raise InternalServerError(_get_response_message(response))
-    response.raise_for_status()
+    if response.status_code != 200:
+        handle_error(response)
 
     total_results = int(response.json()['totalResultsCount'])
     last_page = get_last_page(total_results, query_page_size)
@@ -418,6 +406,23 @@ def format_job(job, now):
         end=end,
         labels=job.get('labels'),
         extensions=ExtendedFields(parent_job_id=job.get('parentWorkflowId')))
+
+
+def handle_error(response):
+    if response.status_code == BadRequest.code:
+        raise BadRequest(_get_response_message(response))
+    elif response.status_code == Forbidden.code:
+        raise Forbidden(_get_response_message(response))
+    elif response.status_code == InternalServerError.code:
+        raise InternalServerError(_get_response_message(response))
+    elif response.status_code == NotFound.code:
+        raise NotFound(_get_response_message(response))
+    elif response.status_code == ServiceUnavailable.code:
+        raise ServiceUnavailable(_get_response_message(response))
+    elif response.status_code == Unauthorized.code:
+        raise Unauthorized(_get_response_message(response))
+
+    response.raise_for_status()
 
 
 def _parse_datetime(date_string):
