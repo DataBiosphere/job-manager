@@ -1,28 +1,7 @@
-* {
-  font-family: 'Roboto', sans-serif;
-}
-
-.header {
-  background: white;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 9rem;
-  z-index: 1;
-}
-
-.divider {
-  position: fixed;
-  width: 100%;
-  top: 9rem;
-  z-index: 1;
-}
-
 .table-container {
   position: relative;
   width: 100%;
-  top: 9rem;
+  top: 200px;
   bottom: 0;
 }
 
@@ -33,6 +12,13 @@
   top: 0;
   left: 0;
   height: 100%;
+  width: 100%;
+}
+
+.header {
+  position: fixed;
+  top: 66px;
+  z-index: 100;
   width: 100%;
 }
 

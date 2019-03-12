@@ -1,0 +1,13 @@
+.query-input {
+  width: 18rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.chip.mat-chip {
+  background-color: #74AE43;
+}
+
+.mat-chip:not(.mat-basic-chip) .mat-chip-remove {
+  opacity: 1;
+}

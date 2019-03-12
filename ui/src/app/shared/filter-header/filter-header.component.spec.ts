@@ -24,14 +24,14 @@ import {CapabilitiesService} from "../../core/capabilities.service"
 import {SettingsService} from "../../core/settings.service"
 import {FakeCapabilitiesService} from "../../testing/fake-capabilities.service"
 import {JobListView} from "../job-stream";
-import {HeaderComponent} from "./header.component";
+import {FilterHeaderComponent} from "./filter-header.component";
 import {CapabilitiesResponse} from '../model/CapabilitiesResponse';
 import {QueryJobsResult} from '../model/QueryJobsResult';
 import {JobStatus} from "../model/JobStatus";
 import {AuthService} from "../../core/auth.service";
 
 
-describe('HeaderComponent', () => {
+describe('FilterHeaderComponent', () => {
   const baseJob = {
     status: JobStatus.Running,
     submission: new Date('2015-04-20T20:00:00')
@@ -47,7 +47,7 @@ describe('HeaderComponent', () => {
     stale: false
   };
 
-  let testComponent: HeaderComponent;
+  let testComponent: FilterHeaderComponent;
   let fixture: ComponentFixture<TestHeaderComponent>;
   let snackBar: MatSnackBar;
   let capabilities: CapabilitiesResponse = {
@@ -65,7 +65,7 @@ describe('HeaderComponent', () => {
     const authService = new AuthService(null, fakeCapabilitiesService, null, snackBar);
 
     TestBed.configureTestingModule({
-      declarations: [HeaderComponent, TestHeaderComponent, MockFilterChipComponent],
+      declarations: [FilterHeaderComponent, TestHeaderComponent, MockFilterChipComponent],
       imports: [
         BrowserAnimationsModule,
         ClrIconModule,
@@ -234,12 +234,12 @@ describe('HeaderComponent', () => {
   @Component({
     selector: 'jm-test-table-component',
     template:
-      `<jm-header [jobs]="jobs" [pageSize]="2"></jm-header>`
+      `<jm-filter-header [jobs]="jobs" [pageSize]="2"></jm-filter-header>`
   })
   class TestHeaderComponent {
     public jobs = new BehaviorSubject<JobListView>(initJobs);
-    @ViewChild(HeaderComponent)
-    public headerComponent: HeaderComponent;
+    @ViewChild(FilterHeaderComponent)
+    public headerComponent: FilterHeaderComponent;
   }
 
   @Component({

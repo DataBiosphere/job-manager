@@ -38,11 +38,11 @@ import {DisplayField} from "../model/DisplayField";
 import {SettingsService} from "../../core/settings.service";
 
 @Component({
-  selector: 'jm-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'],
+  selector: 'jm-filter-header',
+  templateUrl: './filter-header.component.html',
+  styleUrls: ['./filter-header.component.css'],
 })
-export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
+export class FilterHeaderComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @Input() jobs: BehaviorSubject<JobListView>;
   @Input() pageSize: number;
   @Input() showControls: boolean = true;
@@ -273,17 +273,6 @@ export class HeaderComponent implements OnInit, AfterViewInit, AfterViewChecked,
   saveSettings() {
     this.onDisplayFieldsChanged.emit(this.displayFields);
   }
-
-  isSignedIn(): boolean {
-    return !!this.authService.userId;
-  }
-
-  signOut(): void {
-    this.authService.signOut().then(() => {
-      window.location.reload();
-    });
-  }
-
 
   private refreshChips(query: string): void {
     this.zone.run(() => this.chips = URLSearchParamsUtils.getChips(query));
