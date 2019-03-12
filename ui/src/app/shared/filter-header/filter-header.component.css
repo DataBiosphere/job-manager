@@ -61,17 +61,19 @@ search-button {
   text-transform: uppercase;
   margin-top: 10px;
   margin-right: 12px;
-  line-height: 2.4em;
-  font-size: 0.8em;
+  line-height: 28px;
+  font-size: 14px;
+  padding: 0 12px 0 8px;
 }
 
 .mat-raised-button.status-button clr-icon {
-  margin-right: 4px;
+  margin-right: 3px;
+  margin-top: -3px;
 }
 
 .search-table-controls {
   display: flex;
-  min-width: 60rem;
+  min-width: 80rem;
   flex-direction: row;
 }
 
@@ -92,7 +94,7 @@ search-button {
 }
 
 ::ng-deep .mat-paginator-page-size {
-  margin-top: -10px;
+  margin-top: 3px;
 }
 
 h2.settings-header {

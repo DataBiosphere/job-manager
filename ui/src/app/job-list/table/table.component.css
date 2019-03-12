@@ -30,6 +30,7 @@
 
 .mat-header-cell {
   font-size: 0.7rem;
+  white-space: nowrap;
 }
 
 .mat-header-row {

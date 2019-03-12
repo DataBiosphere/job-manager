@@ -1,4 +1,17 @@
-table {
+.error-message {
+  position: relative;
+  top: 70px;
+  bottom: 0;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+table.monospace {
   font-family: monospace;
-  white-space: pre
+  white-space: pre;
+}
+
+p {
+  font-size: 0.8rem;
+  margin: 1rem 0;
 }
