@@ -1,6 +1,6 @@
 import requests
 from flask import current_app
-from werkzeug.exceptions import BadGateway, BadRequest, Forbidden, InternalServerError, NotFound, ServiceUnavailable, Unauthorized
+from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound, ServiceUnavailable, Unauthorized
 from datetime import datetime
 from dateutil.tz import *
 import dateutil.parser
@@ -409,9 +409,7 @@ def format_job(job, now):
 
 
 def handle_error(response):
-    if response.status_code == BadGateway.code:
-        raise BadGateway(_get_response_message(response))
-    elif response.status_code == BadRequest.code:
+    if response.status_code == BadRequest.code:
         raise BadRequest(_get_response_message(response))
     elif response.status_code == Forbidden.code:
         raise Forbidden(_get_response_message(response))
