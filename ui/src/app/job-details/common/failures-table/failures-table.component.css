@@ -80,6 +80,7 @@ td.failure-links {
 :host-context(mat-card.card) td,
 :host-context(mat-card.card) th {
   padding: 5px 10px 5px 0px;
+  line-height: 0.7rem;
 }
 
 :host-context(mat-card.card) .mat-row:last-child td {
@@ -89,6 +90,7 @@ td.failure-links {
 :host-context(mat-card.card) .failure-task {
   width: 174px;
   max-width: 174px;
+  font-size: 0.7rem;
 }
 
 :host-context(mat-card.card) td.failure-links {
