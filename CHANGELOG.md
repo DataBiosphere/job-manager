@@ -1,5 +1,11 @@
 # Job Manager Change Log
 
+## v0.6.1 Release Notes
+
+### Fixed bug where job IDs that started with a number could not be queried for.
+
+### Fixed display bug with error card on job details page.
+
 ## v0.6.0 Release Notes
 
 ### Applied new look-and-feel
