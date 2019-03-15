@@ -35,50 +35,29 @@ class TestTaskStatuses(BaseTestCase):
             # 'Failed', 'Aborting', 'Aborted', 'Running', 'Submitted',
             # 'Succeeded'
 
-
     def test_scattered_task_status(self):
         def failed_scattered_task():
-            return [ShardStatusCount(
-                status='Failed',
-                count=1
-            ), ShardStatusCount(
-                status='Aborting',
-                count=1
-            ), ShardStatusCount(
-                status='Aborted',
-                count=1
-            ), ShardStatusCount(
-                status='Running',
-                count=1
-            ), ShardStatusCount(
-                status='Submitted',
-                count=1
-            ), ShardStatusCount(
-                status='Succeeded',
-                count=1
-            )]
+            return [
+                ShardStatusCount(status='Failed', count=1),
+                ShardStatusCount(status='Aborting', count=1),
+                ShardStatusCount(status='Aborted', count=1),
+                ShardStatusCount(status='Running', count=1),
+                ShardStatusCount(status='Submitted', count=1),
+                ShardStatusCount(status='Succeeded', count=1)
+            ]
 
         for response in itertools.permutations(failed_scattered_task(), 6):
             self.assertEqual(
                 jobs_controller._get_scattered_task_status(response), 'Failed')
 
         def aborting_scattered_task():
-            return [ShardStatusCount(
-                status='Aborting',
-                count=1
-            ), ShardStatusCount(
-                status='Aborted',
-                count=1
-            ), ShardStatusCount(
-                status='Running',
-                count=1
-            ), ShardStatusCount(
-                status='Submitted',
-                count=1
-            ), ShardStatusCount(
-                status='Succeeded',
-                count=1
-            )]
+            return [
+                ShardStatusCount(status='Aborting', count=1),
+                ShardStatusCount(status='Aborted', count=1),
+                ShardStatusCount(status='Running', count=1),
+                ShardStatusCount(status='Submitted', count=1),
+                ShardStatusCount(status='Succeeded', count=1)
+            ]
 
         for response in itertools.permutations(aborting_scattered_task(), 5):
             self.assertEqual(
@@ -86,19 +65,12 @@ class TestTaskStatuses(BaseTestCase):
                 'Aborting')
 
         def aborted_scattered_task():
-            return [ShardStatusCount(
-                status='Aborted',
-                count=1
-            ), ShardStatusCount(
-                status='Running',
-                count=1
-            ), ShardStatusCount(
-                status='Submitted',
-                count=1
-            ), ShardStatusCount(
-                status='Succeeded',
-                count=1
-            )]
+            return [
+                ShardStatusCount(status='Aborted', count=1),
+                ShardStatusCount(status='Running', count=1),
+                ShardStatusCount(status='Submitted', count=1),
+                ShardStatusCount(status='Succeeded', count=1)
+            ]
 
         for response in itertools.permutations(aborted_scattered_task(), 4):
             self.assertEqual(
@@ -106,16 +78,11 @@ class TestTaskStatuses(BaseTestCase):
                 'Aborted')
 
         def running_scattered_task():
-            return [ShardStatusCount(
-                status='Running',
-                count=1
-            ), ShardStatusCount(
-                status='Submitted',
-                count=1
-            ), ShardStatusCount(
-                status='Succeeded',
-                count=1
-            )]
+            return [
+                ShardStatusCount(status='Running', count=1),
+                ShardStatusCount(status='Submitted', count=1),
+                ShardStatusCount(status='Succeeded', count=1)
+            ]
 
         for response in itertools.permutations(running_scattered_task(), 3):
             self.assertEqual(
@@ -123,13 +90,10 @@ class TestTaskStatuses(BaseTestCase):
                 'Running')
 
         def submitted_scattered_task():
-            return [ShardStatusCount(
-                status='Submitted',
-                count=1
-            ), ShardStatusCount(
-                status='Succeeded',
-                count=1
-            )]
+            return [
+                ShardStatusCount(status='Submitted', count=1),
+                ShardStatusCount(status='Succeeded', count=1)
+            ]
 
         for response in itertools.permutations(submitted_scattered_task(), 2):
             self.assertEqual(
