@@ -167,8 +167,6 @@ def health(**kwargs):
 def format_task(task_name, task_metadata):
     # check to see if task is scattered
     if task_metadata[-1].get('shardIndex') != -1:
-        logger.warning('scattered task response {}'.format(
-            format_scattered_task(task_name, task_metadata)))
         return format_scattered_task(task_name, task_metadata)
     latest_attempt = task_metadata[-1]
 

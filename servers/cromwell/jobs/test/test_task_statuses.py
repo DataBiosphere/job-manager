@@ -32,9 +32,6 @@ class TestTaskStatuses(BaseTestCase):
         with self.assertRaises(ValueError):
             task_statuses.cromwell_execution_to_api('Not a valid task status')
 
-            # 'Failed', 'Aborting', 'Aborted', 'Running', 'Submitted',
-            # 'Succeeded'
-
     def test_scattered_task_status(self):
         def failed_scattered_task():
             return [
