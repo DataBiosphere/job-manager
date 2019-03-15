@@ -32,7 +32,7 @@ p {
 .card {
   float: left;
   width: 18rem;
-  height: 10rem;
+  height: 11rem;
   margin: 1rem 1rem 3rem 1rem;
   border-radius: 5px;
   box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
@@ -52,7 +52,7 @@ p {
 }
 
 .card .mat-card-content {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   line-height: 1rem;
 }
 
