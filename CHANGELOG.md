@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v0.6.2 Release Notes
+
+### Fixed bug where scattered tasks' status, duration, timing diagram and number of attempts were inaccurate.
+
 ## v0.6.1 Release Notes
 
 ### Fixed bug where job IDs that started with a number could not be queried for.

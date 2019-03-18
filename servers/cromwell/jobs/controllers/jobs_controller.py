@@ -232,12 +232,13 @@ def format_scattered_task(task_name, task_metadata):
             else:
                 temp_status_collection[
                     status] = temp_status_collection[status] + 1
-        if minStart > _parse_datetime(shard.get('start')):
-            minStart = _parse_datetime(shard.get('start'))
-        if shard.get('executionStatus') not in ['Failed', 'Done']:
-            maxEnd = None
-        if maxEnd is not None and maxEnd < _parse_datetime(shard.get('end')):
-            maxEnd = _parse_datetime(shard.get('end'))
+            if minStart > _parse_datetime(shard.get('start')):
+                minStart = _parse_datetime(shard.get('start'))
+            if shard.get('executionStatus') not in ['Failed', 'Done']:
+                maxEnd = None
+            if maxEnd is not None and maxEnd < _parse_datetime(
+                    shard.get('end')):
+                maxEnd = _parse_datetime(shard.get('end'))
         current_shard = shard.get('shardIndex')
 
     shard_status_counts = [
@@ -248,10 +249,10 @@ def format_scattered_task(task_name, task_metadata):
     # grab attempts, path and subWorkflowId from last call
     return TaskMetadata(
         name=remove_workflow_name(task_name),
-        execution_status=_get_scattered_task_status(task_metadata),
+        execution_status=_get_scattered_task_status(shard_status_counts),
         start=minStart,
         end=maxEnd,
-        attempts=task_metadata[-1].get('attempt'),
+        attempts=task_metadata[-1].get('shardIndex') + 1,
         call_root=remove_shard_path(task_metadata[-1].get('callRoot')),
         job_id=task_metadata[-1].get('subWorkflowId'),
         shard_statuses=shard_status_counts,
@@ -448,11 +449,12 @@ def _format_query_labels(orig_query_labels):
     return query_labels
 
 
-def _get_scattered_task_status(metadata):
+def _get_scattered_task_status(shard_status_counts):
     # get all shard statuses
     statuses = {
-        task_statuses.cromwell_execution_to_api(shard.get('executionStatus'))
-        for shard in metadata
+        shard_status_count.status
+        for shard_status_count in shard_status_counts
+        if hasattr(shard_status_count, 'status')
     }
     # return status by ranked applicability
     for status in [

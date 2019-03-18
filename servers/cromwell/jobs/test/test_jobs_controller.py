@@ -450,7 +450,7 @@ class TestJobsController(BaseTestCase):
         call_root = '/cromwell/cromwell-executions/id/call-analysis'
         std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
         std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
-        attempts = 1
+        attempts = 2
         return_code = 0
 
         def _request_callback(request, context):
