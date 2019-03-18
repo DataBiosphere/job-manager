@@ -37,7 +37,7 @@
     <clr-icon shape="close" size="24" style="color: #5C912E"></clr-icon>
   </button>
   <mat-form-field class="submitted-select" *ngIf="showTimeFrame">
-    <mat-label>Submitted: all</mat-label>
+    <mat-label>Submitted: all time</mat-label>
     <mat-select (selectionChange)="onTimeFrameChange($event.value)">
       <mat-option *ngFor="let timeFrame of timeFrames" [value]="timeFrame">
         {{timeFrame}}
