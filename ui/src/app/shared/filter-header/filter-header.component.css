@@ -193,3 +193,20 @@ clr-tooltip-content {
   font-family: 'Montserrat', sans-serif;
   line-height: 1rem;
 }
+
+mat-form-field.submitted-select {
+  margin-left: 15px;
+  font-size: 0.75rem;
+}
+
+::ng-deep mat-form-field.submitted-select .mat-input-underline.mat-form-field-underline {
+  display: block;
+}
+
+::ng-deep mat-form-field.mat-form-field-type-mat-select.submitted-select .mat-form-field-infix.mat-input-infix {
+  padding: 5px;
+}
+
+::ng-deep mat-form-field.submitted-select .mat-select-arrow-wrapper .mat-select-arrow {
+  color: rgba(0, 0, 0, 0.54);
+}

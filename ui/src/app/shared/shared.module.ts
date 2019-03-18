@@ -19,6 +19,7 @@ import {
   MatNativeDateModule,
   MatPaginatorModule,
   MatRadioModule,
+  MatSelectModule,
   MatSlideToggleModule
 } from "@angular/material";
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
@@ -48,9 +49,10 @@ import {DatetimeComponent} from "./datetime/datetime.component";
     MatMenuModule,
     MatNativeDateModule,
     MatPaginatorModule,
-    ReactiveFormsModule,
     MatRadioModule,
-    MatSlideToggleModule
+    MatSelectModule,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
   ],
   declarations: [
     DatepickerInputComponent,

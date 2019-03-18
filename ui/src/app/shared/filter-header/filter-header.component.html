@@ -36,6 +36,14 @@
   <button mat-button *ngIf="hasChipsToClear()" matSuffix mat-icon-button aria-label="Clear" (click)="removeAllChips()" class="clear-query">
     <clr-icon shape="close" size="24" style="color: #5C912E"></clr-icon>
   </button>
+  <mat-form-field class="submitted-select" *ngIf="showTimeFrame">
+    <mat-label>Submitted: all</mat-label>
+    <mat-select (selectionChange)="onTimeFrameChange($event.value)">
+      <mat-option *ngFor="let timeFrame of timeFrames" [value]="timeFrame">
+        {{timeFrame}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
   <div *ngIf="showControls" class="search-table-controls">
     <!-- Always include child divs, to support flex box style placement. -->

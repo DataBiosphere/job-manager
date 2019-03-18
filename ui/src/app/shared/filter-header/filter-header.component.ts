@@ -68,6 +68,9 @@ export class FilterHeaderComponent implements OnInit, AfterViewInit, AfterViewCh
   private readonly capabilities: CapabilitiesResponse;
   projectId: string;
 
+  showTimeFrame = true;
+  timeFrames  = ['', 'Today', 'Last 3 days', 'Last 7 days', 'This month'];
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
@@ -120,6 +123,7 @@ export class FilterHeaderComponent implements OnInit, AfterViewInit, AfterViewCh
       });
       this.chipToExpand = null;
     }
+    this.showTimeFrame = !(this.chips.has('start') || this.chips.has('end') || this.chips.has('submission'));
     this.cdr.detectChanges();
   }
 
@@ -272,6 +276,32 @@ export class FilterHeaderComponent implements OnInit, AfterViewInit, AfterViewCh
 
   saveSettings() {
     this.onDisplayFieldsChanged.emit(this.displayFields);
+  }
+
+  onTimeFrameChange(newTimeFrame: string) {
+    let newSubmission:string;
+    let d = new Date();
+    switch(newTimeFrame) {
+      case 'Today':
+        newSubmission = ((d.getMonth()) + 1 % 12).toString() + '/' + d.getDate() + '/' + d.getFullYear();
+        break;
+      case 'Last 3 days':
+        console.log(d);
+        d.setDate(d.getDate() - 3);
+        console.log(d);
+        newSubmission = ((d.getMonth()) + 1 % 12).toString() + '/' + d.getDate() + '/' + d.getFullYear();
+        break;
+      case 'Last 7 days':
+        d.setDate(d.getDate() - 7);
+        newSubmission = ((d.getMonth()) + 1 % 12).toString() + '/' + d.getDate() + '/' + d.getFullYear();
+        break;
+      case 'This month':
+        newSubmission = ((d.getMonth()) + 1 % 12).toString() + '/1/' + d.getFullYear();
+        break;
+    }
+    if (newSubmission) {
+      this.addChip('submission:' + newSubmission);
+    }
   }
 
   private refreshChips(query: string): void {
