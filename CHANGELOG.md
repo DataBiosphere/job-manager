@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v0.6.3 Release Notes
+
+### Added drop down menu to query builder for more intuitive filtering by date.
+
 ## v0.6.2 Release Notes
 
 ### Fixed bug where scattered tasks' status, duration, timing diagram and number of attempts were inaccurate.
