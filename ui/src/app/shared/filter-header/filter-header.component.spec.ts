@@ -12,7 +12,10 @@ import {
   MatListModule,
   MatMenuModule,
   MatNativeDateModule,
-  MatPaginatorModule, MatSlideToggleModule, MatSnackBar,
+  MatPaginatorModule,
+  MatSelectModule,
+  MatSlideToggleModule,
+  MatSnackBar,
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
@@ -82,6 +85,7 @@ describe('FilterHeaderComponent', () => {
         MatMenuModule,
         MatNativeDateModule,
         MatPaginatorModule,
+        MatSelectModule,
         MatSlideToggleModule,
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([

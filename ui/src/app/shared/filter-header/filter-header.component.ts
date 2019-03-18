@@ -123,7 +123,7 @@ export class FilterHeaderComponent implements OnInit, AfterViewInit, AfterViewCh
       });
       this.chipToExpand = null;
     }
-    this.showTimeFrame = !(this.chips.has('start') || this.chips.has('end') || this.chips.has('submission'));
+    this.showTimeFrame = !(this.chips.has('start') || this.chips.has('end') || this.chips.has('submission')) && this.showControls;
     this.cdr.detectChanges();
   }
 
