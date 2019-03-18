@@ -4,6 +4,8 @@
 
 ### Fixed bug where scattered tasks' status, duration, timing diagram and number of attempts were inaccurate.
 
+### Limited the size of metadata response from Cromwell by using the `includeKey` option in order to reduce the likelihood of a time-out.
+
 ## v0.6.1 Release Notes
 
 ### Fixed bug where job IDs that started with a number could not be queried for.

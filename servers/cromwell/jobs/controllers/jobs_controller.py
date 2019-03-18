@@ -88,8 +88,18 @@ def get_job(id, **kwargs):
 
     :rtype: JobMetadataResponse
     """
-    url = '{cromwell_url}/{id}/metadata'.format(
-        cromwell_url=_get_base_url(), id=id)
+
+    include_keys = ('attempt', 'callCaching', 'callRoot', 'calls',
+                    'description', 'end', 'executionEvents', 'executionStatus',
+                    'failures', 'inputs', 'jobId', 'labels', 'outputs',
+                    'parentWorkflowId', 'returnCode', 'shardIndex', 'start',
+                    'status', 'stderr', 'stdout', 'submission',
+                    'subWorkflowId', 'workflowName')
+
+    url = '{cromwell_url}/{id}/metadata?{query}'.format(
+        cromwell_url=_get_base_url(),
+        id=id,
+        query='includeKey=' + '&includeKey='.join(include_keys))
     response = requests.get(
         url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
 
