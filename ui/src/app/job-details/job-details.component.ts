@@ -26,7 +26,7 @@ export class JobDetailsComponent implements OnInit {
   }
 
   hasTabs(): boolean {
-    if (( this.job.inputs && Object.keys(this.job.inputs).length !== 0) || (this.job.outputs  && Object.keys(this.job.outputs).length !== 0)) {
+    if (this.objectNotEmpty(this.job.inputs) || this.objectNotEmpty(this.job.outputs) || this.objectNotEmpty(this.job.failures)) {
        return true;
     }
     if (this.job.extensions) {
@@ -71,6 +71,10 @@ export class JobDetailsComponent implements OnInit {
     });
   }
 
+  hasResources(): boolean {
+    return (this.job.extensions && (this.job.extensions.sourceFile || this.job.extensions.logs));
+  }
+
   private handleNav() {
     this.job = this.route.snapshot.data['job'];
     this.jobPanels.job = this.job;
@@ -86,7 +90,7 @@ export class JobDetailsComponent implements OnInit {
     }
   }
 
-  hasResources(): boolean {
-    return (this.job.extensions && (this.job.extensions.sourceFile || this.job.extensions.logs));
+  private objectNotEmpty(object: object): boolean {
+    return object && Object.keys(object).length !== 0;
   }
 }

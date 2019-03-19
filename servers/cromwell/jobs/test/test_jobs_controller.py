@@ -124,10 +124,15 @@ class TestJobsController(BaseTestCase):
                 'submission': timestamp,
                 'end': timestamp,
                 'start': timestamp,
-                'failures': [{
-                    'causedBy': [],
-                    'message': 'Task test.analysis failed'
-                }]
+                'failures': [
+                    {'causedBy': [
+                        {
+                            'causedBy': [],
+                            'message': 'Task test.analysis failed'
+                        }
+                    ],
+                    'message': 'Workflow failed'}
+                ]
             }  # yapf: disable
 
         update_label_url = self.base_url + '/{id}/labels'.format(
@@ -207,10 +212,15 @@ class TestJobsController(BaseTestCase):
                 'submission': timestamp,
                 'end': timestamp,
                 'start': timestamp,
-                'failures': [{
-                    'causedBy': [],
-                    'message': 'Task test.analysis failed'
-                }]
+                'failures': [
+                    {'causedBy': [
+                        {
+                            'causedBy': [],
+                            'message': 'Task test.analysis failed'
+                        }
+                    ],
+                        'message': 'Workflow failed'}
+                ]
             }  # yapf: disable
 
         update_label_url = self.base_url + '/{id}/labels'.format(
@@ -385,10 +395,15 @@ class TestJobsController(BaseTestCase):
                 'submission': timestamp,
                 'end': timestamp,
                 'start': timestamp,
-                'failures': [{
-                    'causedBy': [],
-                    'message': 'Task test.analysis failed'
-                }]
+                'failures': [
+                    {'causedBy': [
+                        {
+                            'causedBy': [],
+                            'message': 'Task test.analysis failed'
+                        }
+                    ],
+                        'message': 'Workflow failed'}
+                ]
             }  # yapf: disable
 
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
@@ -424,7 +439,10 @@ class TestJobsController(BaseTestCase):
                     'jobId': subworkflow_id
                 }]
             },
-            'failures': []
+            'failures': [{
+                'failure': 'Task test.analysis failed',
+                'taskName': 'Workflow failed'
+            }]
         }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)
 
@@ -504,16 +522,20 @@ class TestJobsController(BaseTestCase):
                 'submission': timestamp,
                 'end': timestamp,
                 'start': timestamp,
-                'failures': [{
-                    'causedBy': [{
-                        'causedBy': [],
-                        'message': 'test.analysis shard 0 failed'
-                    },{
-                        'causedBy': [],
-                        'message': 'test.analysis shard 1 failed'
-                    }],
-                    'message': 'Workflow failed'
-                }]
+                'failures': [
+                    {
+                        'causedBy': [
+                            {
+                                'causedBy': [],
+                                'message': 'test.analysis shard 0 failed'
+                            },{
+                                'causedBy': [],
+                                'message': 'test.analysis shard 1 failed'
+                            }
+                        ],
+                        'message': 'Workflow failed'
+                    }
+                ]
             }  # yapf: disable
 
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
