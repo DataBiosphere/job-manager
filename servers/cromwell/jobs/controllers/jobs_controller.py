@@ -109,10 +109,14 @@ def get_job(id, **kwargs):
     job = response.json()
 
     failures = [
-        format_failure(name, m)
+        format_task_failure(name, m)
         for name, metadata in job.get('calls', {}).items() for m in metadata
         if m.get('failures') is not None
     ]
+
+    # if there are no tasks/subworkflows but there are errors, get them
+    if not len(failures) and job.get('failures'):
+        failures = [format_workflow_failure(f) for f in job.get('failures')]
 
     tasks = [
         format_task(task_name, task_metadata)
@@ -215,7 +219,7 @@ def format_task(task_name, task_metadata):
         execution_events=execution_events)
 
 
-def format_failure(task_name, metadata):
+def format_task_failure(task_name, metadata):
     return FailureMessage(
         task_name=remove_workflow_name(task_name),
         failure=metadata['failures'][0].get('message'),
@@ -223,6 +227,12 @@ def format_failure(task_name, metadata):
         stdout=metadata.get('stdout'),
         stderr=metadata.get('stderr'),
         call_root=metadata.get('callRoot'))
+
+
+def format_workflow_failure(failures):
+    return FailureMessage(
+        task_name=failures.get('message'),
+        failure=failures.get('causedBy')[0].get('message'))
 
 
 def format_scattered_task(task_name, task_metadata):
