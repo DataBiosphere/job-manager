@@ -150,11 +150,7 @@ export class JobListComponent implements OnInit {
   }
 
   handleError(error: any) {
-    // if the request went bad, remove the last chip that was added
-    if (error.hasOwnProperty('title') && error.title == 'Bad Request') {
-      let lastChipKey = this.header.getChipKeys().pop();
-      this.header.removeChip(lastChipKey);
-    }
+    this.setLoading(false, false);
 
     this.snackBar.open(
       new ErrorMessageFormatterPipe().transform(error),
