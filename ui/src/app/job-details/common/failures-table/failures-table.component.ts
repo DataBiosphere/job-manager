@@ -37,15 +37,4 @@ export class JobFailuresTableComponent implements OnInit {
       return ResourceUtils.getDirectoryBrowserURL(task.callRoot, this.authService.userEmail);
     }
   }
-
-  hasTaskNames(): boolean {
-    let status = false;
-    this.dataSource.forEach((failure) => {
-      if (failure.taskName) {
-        status = true;
-        return;
-      }
-    });
-    return status;
-  }
 }
