@@ -6,6 +6,8 @@
 
 ### Remove 'loading' screen when user has made an invalid query on job list page so the user can make changes.
 
+### Tailor Cromwell metadata call to get only the cache information needed from the API, therefore improving the performance of the job details page.
+
 ## v0.6.2 Release Notes
 
 ### Fixed bug where scattered tasks' status, duration, timing diagram and number of attempts were inaccurate.
