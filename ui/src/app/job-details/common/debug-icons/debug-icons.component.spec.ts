@@ -13,8 +13,8 @@ import {MatSnackBar} from "@angular/material";
 describe('JobDebugIconsComponent', () => {
   let fixture: ComponentFixture<TestDebugIconsComponent>;
   let snackBar: MatSnackBar;
-  let testComponent: JobDebugIconsComponent;
-  let job: JobMetadataResponse = {
+  let testComponent: TestDebugIconsComponent;
+  let job = {
     failure: 'things went wrong',
     stdout : 'gs://test-bucket/test-job/stdout.txt',
     stderr: 'gs://test-bucket/test-job/stderr.txt',
@@ -52,7 +52,7 @@ describe('JobDebugIconsComponent', () => {
 
   it('should display message icon if displayMessage is set to true', async(() => {
     fixture.detectChanges();
-    testComponent.displayMessage = true;
+    testComponent.jobDebugIconsComponent.displayMessage = true;
     let de: DebugElement = fixture.debugElement;
     fixture.detectChanges();
     expect(de.queryAll(By.css('clr-icon[shape=exclamation-triangle]')).length).toEqual(1);
