@@ -28,7 +28,7 @@ export class JobDebugIconsComponent implements OnInit {
     if (!url) {
       return '';
     }
-    return this.sanitizer.bypassSecurityTrustResourceUrl(ResourceUtils.getDirectoryBrowserURL(url, this.authService.userEmail));
+    return this.sanitizer.bypassSecurityTrustResourceUrl(ResourceUtils.getResourceBrowserURL(url, this.authService.userEmail));
   }
 
   getTaskDirectory(directory): SafeUrl {

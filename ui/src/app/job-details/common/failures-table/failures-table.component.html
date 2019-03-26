@@ -20,7 +20,7 @@
                       [message]="f.failure"
                       [stdout]="f.stdout"
                       [stderr]="f.stderr"
-                      [directory]="getTaskDirectory(f)">
+                      [directory]="f.callRoot">
       </jm-debug-icons>
     </td>
   </ng-container>

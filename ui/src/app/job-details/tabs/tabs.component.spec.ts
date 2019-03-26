@@ -15,6 +15,7 @@ import {Ng2GoogleChartsModule} from 'ng2-google-charts';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {JobFailuresTableComponent} from '../common/failures-table/failures-table.component';
+import {JobDebugIconsComponent} from "../common/debug-icons/debug-icons.component";
 import {AuthService} from '../../core/auth.service';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
@@ -56,6 +57,7 @@ describe('JobTabsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        JobDebugIconsComponent,
         JobTabsComponent,
         JobFailuresTableComponent,
         JobResourcesTableComponent,

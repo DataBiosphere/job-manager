@@ -16,7 +16,6 @@ import {AuthService} from '../../core/auth.service';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusIcon} from '../../shared/common';
-import {ResourceUtils} from '../../shared/utils/resource-utils';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
@@ -67,16 +66,6 @@ export class JobTabsComponent implements OnInit, OnChanges {
 
   getStatusIcon(status: JobStatus): string {
     return JobStatusIcon[status];
-  }
-
-  getResourceUrl(url: string): string {
-    return ResourceUtils.getDirectoryBrowserURL(url, this.authService.userEmail);
-  }
-
-  getTaskDirectory(task: TaskMetadata): string {
-    if (task.callRoot) {
-      return ResourceUtils.getDirectoryBrowserURL(task.callRoot);
-    }
   }
 
   hasCallCachedTask(): boolean {
