@@ -150,6 +150,8 @@ export class JobListComponent implements OnInit {
   }
 
   handleError(error: any) {
+    this.setLoading(false, false);
+
     this.snackBar.open(
       new ErrorMessageFormatterPipe().transform(error),
       'Dismiss',
