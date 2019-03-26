@@ -4,6 +4,8 @@
 
 ### Fixed bug where failure message(s) are not displayed if the job failed before Cromwell was able to run it (most likely due to a validation error).
 
+### Remove 'loading' screen when user has made an invalid query on job list page so the user can make changes.
+
 ### Made behavior of message, log and execution icons consistent across all contexts in the job details page.
 
 ## v0.6.2 Release Notes
