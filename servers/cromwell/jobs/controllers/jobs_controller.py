@@ -89,22 +89,6 @@ def get_job(id, **kwargs):
     :rtype: JobMetadataResponse
     """
 
-    include_keys = ('attempt', 'callCaching', 'callRoot', 'calls',
-                    'description', 'end', 'executionEvents', 'executionStatus',
-                    'failures', 'inputs', 'jobId', 'labels', 'outputs',
-                    'parentWorkflowId', 'returnCode', 'shardIndex', 'start',
-                    'status', 'stderr', 'stdout', 'submission',
-                    'subWorkflowId', 'workflowName')
-
-    url = '{cromwell_url}/{id}/metadata?{query}'.format(
-        cromwell_url=_get_base_url(),
-        id=id,
-        query='includeKey=' + '&includeKey='.join(include_keys))
-    response = requests.get(
-        url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
-
-    logger.warning('size of callCaching response {}'.format(len(response.content)))
-
     include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'calls',
                     'description', 'end', 'executionEvents', 'executionStatus',
                     'failures', 'inputs', 'jobId', 'labels', 'outputs',
@@ -118,9 +102,6 @@ def get_job(id, **kwargs):
         query='includeKey=' + '&includeKey='.join(include_keys))
     response = requests.get(
         url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
-
-    logger.warning('size of callCaching:hit response {}'.format(len(response.content)))
-
 
     if response.status_code != 200:
         handle_error(response)

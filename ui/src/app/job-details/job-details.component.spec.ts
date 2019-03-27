@@ -18,6 +18,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {Ng2GoogleChartsModule} from 'ng2-google-charts';
 
+import {JobDebugIconsComponent} from "./common/debug-icons/debug-icons.component";
 import {JobDetailsComponent} from "./job-details.component"
 import {JobPanelsComponent} from './panels/panels.component';
 import {JobResourcesComponent} from './resources/resources.component';
@@ -59,6 +60,7 @@ describe('JobDetailsComponent', () => {
         AppComponent,
         FakeJobListComponent,
         TestJobDetailsComponent,
+        JobDebugIconsComponent,
         JobDetailsComponent,
         JobFailuresTableComponent,
         JobPanelsComponent,

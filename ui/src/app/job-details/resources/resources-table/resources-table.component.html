@@ -5,7 +5,7 @@
   </ng-container>
   <ng-container matColumnDef="value">
     <td mat-cell *matCellDef="let key">
-      <a *ngIf="isResourceURL(key)" href="{{ getResourceURL(key) }}">{{ entries[key] }}</a>
+      <a *ngIf="isResourceURL(key)" href="{{ getResourceURL(key) }}" target="_blank">{{ entries[key] }}</a>
       <span *ngIf="!isResourceURL(key)">{{ entries[key] | json }}</span>
     </td>
   </ng-container>
