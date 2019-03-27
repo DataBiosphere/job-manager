@@ -89,7 +89,7 @@ def get_job(id, **kwargs):
     :rtype: JobMetadataResponse
     """
 
-    include_keys = ('attempt', 'callCaching', 'callRoot', 'calls',
+    include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'calls',
                     'description', 'end', 'executionEvents', 'executionStatus',
                     'failures', 'inputs', 'jobId', 'labels', 'outputs',
                     'parentWorkflowId', 'returnCode', 'shardIndex', 'start',
