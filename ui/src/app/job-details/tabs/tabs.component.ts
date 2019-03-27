@@ -75,7 +75,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
 
   getTaskDirectory(task: TaskMetadata): string {
     if (task.callRoot) {
-      return ResourceUtils.getDirectoryBrowserURL(task.callRoot);
+      return ResourceUtils.getDirectoryBrowserURL(task.callRoot, this.authService.userEmail);
     }
   }
 
