@@ -1,0 +1,37 @@
+<div class="debug-icons">
+  <clr-tooltip *ngIf="displayMessage">
+    <a class="log-item">
+      <clr-icon clrTooltipTrigger shape="exclamation-triangle" size="24" style="color:#5C912E"></clr-icon>
+      <clr-tooltip-content clrPosition="bottom-left" clrSize="xs" class="message" *clrIfOpen>
+        <span>{{ message }}</span>
+      </clr-tooltip-content>
+    </a>
+  </clr-tooltip>
+ <clr-icon *ngIf="!getResourceUrl(stdout)" shape="file" size="24" style="color: #ccc;"></clr-icon>
+  <clr-tooltip *ngIf="getResourceUrl(stdout)">
+    <a class="log-item" [href]="getResourceUrl(stdout)" target="_blank">
+      <clr-icon clrTooltipTrigger shape="file" size="24" style="color: #5C912E;"></clr-icon>
+      <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+        <span>stderr log</span>
+      </clr-tooltip-content>
+    </a>
+  </clr-tooltip>
+  <clr-icon *ngIf="!getResourceUrl(stderr)" shape="file" class="has-alert log-error disabled" size="24" style="color: #ccc;"></clr-icon>
+  <clr-tooltip *ngIf="getResourceUrl(stderr)">
+    <a class="log-item" [href]="getResourceUrl(stderr)" target="_blank">
+      <clr-icon clrTooltipTrigger shape="file" size="24" class="has-alert log-error" style="color: #5C912E;"></clr-icon>
+      <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+        <span>stderr log</span>
+      </clr-tooltip-content>
+    </a>
+  </clr-tooltip>
+  <clr-icon *ngIf="!getTaskDirectory(directory)" shape="folder" size="24" class="is-solid" style="color: #ccc;"></clr-icon>
+  <clr-tooltip *ngIf="getTaskDirectory(directory)">
+    <a class="log-item" [href]="getTaskDirectory(directory)" target="_blank">
+      <clr-icon clrTooltipTrigger shape="folder" size="24" class="is-solid" style="color:#5C912E"></clr-icon>
+      <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+        <span>execution directory</span>
+      </clr-tooltip-content>
+    </a>
+  </clr-tooltip>
+</div>
