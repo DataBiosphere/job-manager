@@ -8,6 +8,8 @@
 
 ### Made behavior of message, log and execution icons consistent across all contexts in the job details page.
 
+Also fixed bug where log file links were being treated like directories.
+
 ## v0.6.2 Release Notes
 
 ### Fixed bug where scattered tasks' status, duration, timing diagram and number of attempts were inaccurate.
