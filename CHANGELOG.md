@@ -8,7 +8,7 @@
 
 ### Made behavior of message, log and execution icons consistent across all contexts in the job details page.
 
-Also fixed bug where log file links were being treated like directories.
+Also fixed bug where Google Console file links sometimes pointed to unexpected places.
 
 ## v0.6.2 Release Notes
 
