@@ -30,7 +30,12 @@ export class JobTimingDiagramComponent implements OnInit {
     let chartRows = 1;
 
     metadata.forEach((task) => {
-      if (task.name && task.start) {
+      if (task.shards) {
+        task.shards.forEach((shard) => {
+          this.timelineChart.dataTable.push(this.formatRow(task.name + ' shard ' + shard.shardIndex, task.name, shard));
+          chartRows++;
+        });
+      } else if (task.name && task.start) {
         if (task.executionEvents) {
           task.executionEvents.forEach((event) => {
             this.timelineChart.dataTable.push(this.formatRow(task.name, event.name, event));
@@ -48,7 +53,7 @@ export class JobTimingDiagramComponent implements OnInit {
         showBarLabels: false
       },
       width: this.tabWidth - 65,
-      height: (chartRows * 42) + 100,
+      height: (chartRows * 41) + 58,
       avoidOverlappingGridLines: false
     };
   }

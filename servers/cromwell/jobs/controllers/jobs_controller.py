@@ -17,7 +17,7 @@ from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
-from jobs.models.shard_status_count import ShardStatusCount
+from jobs.models.task_shard import TaskShard
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.models.health_response import HealthResponse
@@ -180,7 +180,7 @@ def health(**kwargs):
 
 def format_task(task_name, task_metadata):
     # check to see if task is scattered
-    if task_metadata[-1].get('shardIndex') != -1:
+    if task_metadata[0].get('shardIndex') != -1:
         return format_scattered_task(task_name, task_metadata)
     latest_attempt = task_metadata[-1]
 
@@ -201,7 +201,6 @@ def format_task(task_name, task_metadata):
 
     return TaskMetadata(
         name=remove_workflow_name(task_name),
-        execution_id=latest_attempt.get('jobId'),
         execution_status=task_statuses.cromwell_execution_to_api(
             latest_attempt.get('executionStatus')),
         start=_parse_datetime(latest_attempt.get('start'))
@@ -214,7 +213,7 @@ def format_task(task_name, task_metadata):
         attempts=latest_attempt.get('attempt'),
         call_root=latest_attempt.get('callRoot'),
         job_id=latest_attempt.get('subWorkflowId'),
-        shard_statuses=None,
+        shards=None,
         call_cached=call_cached,
         execution_events=execution_events)
 
@@ -236,46 +235,33 @@ def format_workflow_failure(failures):
 
 
 def format_scattered_task(task_name, task_metadata):
-    temp_status_collection = {}
+    filtered_shards = []
     current_shard = ''
-    minStart = _parse_datetime(task_metadata[0].get('start'))
-    maxEnd = _parse_datetime(task_metadata[0].get('end'))
+    min_start = _parse_datetime(task_metadata[0].get('start'))
 
     # go through calls in reverse to grab the latest attempt if there are multiple
-    # get earliest start time and latest end time
     for shard in task_metadata[::-1]:
         if current_shard != shard.get('shardIndex'):
-            status = task_statuses.cromwell_execution_to_api(
-                shard.get('executionStatus'))
-            if status not in temp_status_collection:
-                temp_status_collection[status] = 1
-            else:
-                temp_status_collection[
-                    status] = temp_status_collection[status] + 1
-            if minStart > _parse_datetime(shard.get('start')):
-                minStart = _parse_datetime(shard.get('start'))
-            if shard.get('executionStatus') not in ['Failed', 'Done']:
-                maxEnd = None
-            if maxEnd is not None and maxEnd < _parse_datetime(
-                    shard.get('end')):
-                maxEnd = _parse_datetime(shard.get('end'))
+            if min_start > _parse_datetime(shard.get('start')):
+                min_start = _parse_datetime(shard.get('start'))
+            filtered_shards.append(
+                TaskShard(
+                    execution_status=task_statuses.cromwell_execution_to_api(
+                        shard.get('executionStatus')),
+                    start=_parse_datetime(shard.get('start')),
+                    end=_parse_datetime(shard.get('end')),
+                    shard_index=shard.get('shardIndex')))
         current_shard = shard.get('shardIndex')
 
-    shard_status_counts = [
-        ShardStatusCount(status=status, count=count)
-        for status, count in temp_status_collection.items()
-    ]
+    sorted_shards = sorted(filtered_shards, key=lambda t: t.shard_index)
 
-    # grab attempts, path and subWorkflowId from last call
     return TaskMetadata(
         name=remove_workflow_name(task_name),
-        execution_status=_get_scattered_task_status(shard_status_counts),
-        start=minStart,
-        end=maxEnd,
-        attempts=task_metadata[-1].get('shardIndex') + 1,
+        execution_status=_get_scattered_task_status(sorted_shards),
+        attempts=len(sorted_shards),
+        start=min_start,
         call_root=remove_shard_path(task_metadata[-1].get('callRoot')),
-        job_id=task_metadata[-1].get('subWorkflowId'),
-        shard_statuses=shard_status_counts,
+        shards= sorted_shards,
         call_cached=False)
 
 
@@ -469,12 +455,12 @@ def _format_query_labels(orig_query_labels):
     return query_labels
 
 
-def _get_scattered_task_status(shard_status_counts):
+def _get_scattered_task_status(shards):
     # get all shard statuses
     statuses = {
-        shard_status_count.status
-        for shard_status_count in shard_status_counts
-        if hasattr(shard_status_count, 'status')
+        shard.execution_status
+        for shard in shards
+        if hasattr(shard, 'execution_status')
     }
     # return status by ranked applicability
     for status in [
