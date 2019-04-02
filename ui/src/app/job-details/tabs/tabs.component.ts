@@ -19,6 +19,7 @@ import {JobStatusIcon} from '../../shared/common';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
+import {JobManagerService} from "../../core/job-manager.service";
 
 @Component({
   selector: 'jm-tabs',
@@ -47,7 +48,8 @@ export class JobTabsComponent implements OnInit, OnChanges {
   ];
   tabWidth: number = 1024;
 
-  constructor(private authService: AuthService) {};
+  constructor(private authService: AuthService,
+              private readonly jobManagerService: JobManagerService) {};
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
@@ -136,6 +138,12 @@ export class JobTabsComponent implements OnInit, OnChanges {
     if (id) {
       this.navDown.emit(id);
     }
+  }
+
+  populateAttempts(task: TaskMetadata) {
+    this.jobManagerService.getAttempts(task.jobId).then((response) => {
+      task.attemptsData = response;
+    })
   }
 }
 

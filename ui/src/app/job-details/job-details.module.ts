@@ -24,6 +24,7 @@ import {GcsService} from '../core/gcs.service';
 import {JobFailuresTableComponent} from './common/failures-table/failures-table.component';
 import {JobTimingDiagramComponent} from "./tabs/timing-diagram/timing-diagram.component";
 import {JobDebugIconsComponent} from "./common/debug-icons/debug-icons.component";
+import {JobAttemptComponent} from "./common/attempt/attempt.component";
 import {Ng2GoogleChartsModule} from 'ng2-google-charts';
 
 
@@ -47,6 +48,7 @@ import {Ng2GoogleChartsModule} from 'ng2-google-charts';
     Ng2GoogleChartsModule
   ],
   declarations: [
+    JobAttemptComponent,
     JobDebugIconsComponent,
     JobDetailsComponent,
     JobPanelsComponent,

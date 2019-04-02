@@ -91,7 +91,7 @@ def get_job(id, **kwargs):
 
     include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'calls',
                     'description', 'end', 'executionEvents', 'executionStatus',
-                    'failures', 'inputs', 'jobId', 'labels', 'outputs',
+                    'failures', 'inputs', 'labels', 'outputs',
                     'parentWorkflowId', 'returnCode', 'shardIndex', 'start',
                     'status', 'stderr', 'stdout', 'submission',
                     'subWorkflowId', 'workflowName')
@@ -122,6 +122,9 @@ def get_job(id, **kwargs):
         format_task(task_name, task_metadata)
         for task_name, task_metadata in job.get('calls', {}).items()
     ]
+
+    logger.warning("tasks: {}".format(tasks))
+
     sorted_tasks = sorted(tasks, key=lambda t: t.start)
     start = _parse_datetime(job.get('start'))
     submission = _parse_datetime(job.get('submission'))
@@ -201,7 +204,6 @@ def format_task(task_name, task_metadata):
 
     return TaskMetadata(
         name=remove_workflow_name(task_name),
-        execution_id=latest_attempt.get('jobId'),
         execution_status=task_statuses.cromwell_execution_to_api(
             latest_attempt.get('executionStatus')),
         start=_parse_datetime(latest_attempt.get('start'))

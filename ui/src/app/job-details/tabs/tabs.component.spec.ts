@@ -32,7 +32,6 @@ describe('JobTabsComponent', () => {
 
   let task: TaskMetadata = {
     name: 'task1',
-    executionId: '',
     executionStatus: 'Failed',
     start: new Date('2017-11-14T13:00:00'),
     end: new Date('2017-11-14T13:15:00'),

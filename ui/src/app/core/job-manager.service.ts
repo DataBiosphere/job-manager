@@ -160,4 +160,14 @@ export class JobManagerService {
       .then(response => this.convertToAggregationJobsResponse(response.json()))
       .catch((e) => this.handleError(e));
   }
+
+  getAttempts(id:string): Promise<any> {
+    const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
+    return this.http.post(`${apiUrl}/jobs/${id}/updateLabels`,
+      new RequestOptions({headers: this.getHttpHeaders()}))
+      .toPromise()
+      .then(response => response.json())
+      .catch((e) => this.handleError(e));
+
+  }
 }
