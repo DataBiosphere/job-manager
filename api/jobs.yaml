@@ -659,6 +659,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/IndividualAttempt'
+      executionEvents:
+        type: array
+        items:
+          $ref: '#/definitions/ExecutionEvent'
 
   FailureMessage:
     description: >

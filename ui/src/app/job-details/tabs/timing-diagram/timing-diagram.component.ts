@@ -1,4 +1,4 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {TaskMetadata} from "../../../shared/model/TaskMetadata";
 import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
 
@@ -32,7 +32,13 @@ export class JobTimingDiagramComponent implements OnInit {
     metadata.forEach((task) => {
       if (task.shards) {
         task.shards.forEach((shard) => {
-          this.timelineChart.dataTable.push(this.formatRow(task.name + ' shard ' + shard.shardIndex, task.name, shard));
+          if (shard.executionEvents) {
+            shard.executionEvents.forEach((event) => {
+              this.timelineChart.dataTable.push(this.formatRow(task.name + ' shard ' + shard.shardIndex, event.name, event));
+            });
+          } else {
+            this.timelineChart.dataTable.push(this.formatRow(task.name + ' shard ' + shard.shardIndex, task.name, shard));
+          }
           chartRows++;
         });
       } else if (task.name && task.start) {

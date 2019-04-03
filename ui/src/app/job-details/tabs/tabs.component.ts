@@ -12,7 +12,6 @@ import {
 import {DataSource} from '@angular/cdk/collections';
 import {Observable} from 'rxjs/Observable';
 
-import {AuthService} from '../../core/auth.service';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusIcon} from '../../shared/common';
@@ -49,8 +48,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
   ];
   tabWidth: number = 1024;
 
-  constructor(private authService: AuthService,
-              private readonly jobManagerService: JobManagerService) {};
+  constructor(private readonly jobManagerService: JobManagerService) {};
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);

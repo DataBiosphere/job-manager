@@ -190,15 +190,8 @@ def format_task(task_name, task_metadata):
         call_cached = latest_attempt.get('callCaching') and (
             latest_attempt.get('callCaching').get('hit'))
 
-    execution_events = None
-    if latest_attempt.get('executionEvents'):
-        execution_events = [
-            ExecutionEvent(
-                name=event.get('description'),
-                start=_parse_datetime(event.get('startTime')),
-                end=_parse_datetime(event.get('endTime')))
-            for event in latest_attempt.get('executionEvents')
-        ]
+    execution_events = _get_execution_events(
+        latest_attempt.get('executionEvents'))
 
     return TaskMetadata(
         name=remove_workflow_name(task_name),
@@ -251,7 +244,9 @@ def format_scattered_task(task_name, task_metadata):
                         shard.get('executionStatus')),
                     start=_parse_datetime(shard.get('start')),
                     end=_parse_datetime(shard.get('end')),
-                    shard_index=shard.get('shardIndex')))
+                    shard_index=shard.get('shardIndex'),
+                    execution_events=_get_execution_events(
+                        shard.get('executionEvents'))))
         current_shard = shard.get('shardIndex')
 
     sorted_shards = sorted(filtered_shards, key=lambda t: t.shard_index)
@@ -431,6 +426,18 @@ def handle_error(response):
         raise Unauthorized(_get_response_message(response))
 
     response.raise_for_status()
+
+
+def _get_execution_events(events):
+    execution_events = None
+    if events:
+        execution_events = [
+            ExecutionEvent(
+                name=event.get('description'),
+                start=_parse_datetime(event.get('startTime')),
+                end=_parse_datetime(event.get('endTime'))) for event in events
+        ]
+    return execution_events
 
 
 def _parse_datetime(date_string):
