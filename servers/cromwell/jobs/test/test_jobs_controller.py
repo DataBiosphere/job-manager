@@ -83,7 +83,6 @@ class TestJobsController(BaseTestCase):
         workflow_name = 'test'
         status = 'Succeeded'
         timestamp = '2017-11-08T05:06:41.424Z'
-        response_timestamp = '2017-11-08T05:06:41.424000+00:00'
         inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
         outputs = {
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
@@ -162,7 +161,6 @@ class TestJobsController(BaseTestCase):
         workflow_name = 'test'
         status = 'Succeeded'
         timestamp = '2017-11-08T05:06:41.424Z'
-        response_timestamp = '2017-11-08T05:06:41.424000+00:00'
         inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
         outputs = {
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
@@ -426,7 +424,6 @@ class TestJobsController(BaseTestCase):
             'extensions':{
                 'tasks': [{
                     'name': 'analysis',
-                    'executionId': job_id,
                     'executionStatus': 'Succeeded',
                     'start': response_timestamp,
                     'end': response_timestamp,
@@ -479,7 +476,6 @@ class TestJobsController(BaseTestCase):
                 'status': status,
                 'calls': {
                     'test.analysis': [{
-                        'jobId': job_id1,
                         'executionStatus': 'Failed',
                         'shardIndex': 0,
                         'start': timestamp,
@@ -497,7 +493,6 @@ class TestJobsController(BaseTestCase):
                             }
                         ],
                     },{
-                        'jobId': job_id2,
                         'executionStatus': 'Failed',
                         'shardIndex': 1,
                         'start': timestamp,
@@ -574,14 +569,20 @@ class TestJobsController(BaseTestCase):
                 'tasks': [{
                     'name': 'analysis',
                     'executionStatus': 'Failed',
-                    'start': response_timestamp,
-                    'end': response_timestamp,
                     'callRoot': call_root,
                     'callCached': False,
                     'attempts': attempts,
-                    'shardStatuses': [{
-                        'count': 2,
-                        'status': 'Failed'
+                    'start': response_timestamp,
+                    'shards': [{
+                        'end': response_timestamp,
+                        'executionStatus': 'Failed',
+                        'shardIndex': 0,
+                        'start': response_timestamp
+                    },{
+                        'end': response_timestamp,
+                        'executionStatus': 'Failed',
+                        'shardIndex': 1,
+                        'start': response_timestamp
                     }]
                 }]
             }

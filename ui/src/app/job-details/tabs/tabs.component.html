@@ -24,7 +24,7 @@
         <ng-container matColumnDef="taskInfoIcons">
           <mat-header-cell *matHeaderCellDef class="slim-cell"></mat-header-cell>
           <mat-cell *matCellDef="let t" class="slim-cell">
-            <button *ngIf="t.shardStatuses" mat-icon-button class="shard-icon" [matMenuTriggerFor]="shardMenu">
+            <button *ngIf="taskIsScattered(t)" mat-icon-button class="shard-icon" [matMenuTriggerFor]="shardMenu">
               <clr-tooltip>
                 <clr-icon clrTooltipTrigger shape="layers" size="24" class="is-solid" style="color:#5C912E"></clr-icon>
                 <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
@@ -34,7 +34,7 @@
             </button>
             <mat-menu #shardMenu="matMenu" class="wide-menu shards-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
               <div class="shards-header">Scattered: {{ getScatteredCountTotal(t) }} shards</div>
-              <div class="shards-container" *ngIf="t.shardStatuses">
+              <div class="shards-container" *ngIf="taskIsScattered(t)">
                 <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
                   <div class="shard-status">
                     <clr-tooltip>

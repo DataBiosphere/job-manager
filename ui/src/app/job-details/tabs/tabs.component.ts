@@ -78,7 +78,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   hasScatteredTask(): boolean {
-    if (this.tasks.find(t => t.shardStatuses !== null)) {
+    if (this.tasks.find(t => t.shards !== null)) {
       return true;
     }
     return false;
@@ -104,12 +104,8 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   getScatteredCountTotal(task: TaskMetadata): number {
-    if (task.shardStatuses) {
-      let count = 0;
-      task.shardStatuses.forEach((status) => {
-        count += status.count;
-      });
-      return count;
+    if (task.shards) {
+      return task.shards.length;
     }
   }
 
@@ -123,15 +119,19 @@ export class JobTabsComponent implements OnInit, OnChanges {
 
   getShardCountByStatus(task:TaskMetadata, status:JobStatus): number {
     let result = 0
-    if(task.shardStatuses) {
-      task.shardStatuses.forEach((thisStatus) => {
-        if (status == thisStatus.status) {
-          result = thisStatus.count;
+    if(task.shards) {
+      task.shards.forEach((thisShard) => {
+        if (status == JobStatus[thisShard.executionStatus]) {
+          result++;
           return;
         }
       });
     }
     return result;
+  }
+
+  taskIsScattered(task:TaskMetadata): boolean {
+    return (task.shards && task.shards.length > 0)
   }
 
   navigateDown(id: string): void {
