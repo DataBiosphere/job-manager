@@ -7,13 +7,23 @@
           <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
           <mat-cell *matCellDef="let t" class="task-title">
             <a class="title-link" *ngIf="t.jobId" (click)="navigateDown(t.jobId)">{{ t.name }}</a>
-            <mat-expansion-panel *ngIf="!t.jobId" expanded="false" (opened)="populateAttempts(t)">
+            <mat-expansion-panel *ngIf="!t.jobId" expanded="false" (opened)="populateTaskAttempts(t)">
               <mat-expansion-panel-header>  
                 <p class="title-nolink">{{ t.name }}</p>
               </mat-expansion-panel-header>
-              <div>
+              <div *ngIf="!taskIsScattered(t)">
                 <div *ngFor="let attempt of t.attemptsData">
                   <jm-attempt [attempt]="attempt"></jm-attempt>
+                </div>
+              </div>
+              <div *ngIf="taskIsScattered(t)">
+                <div *ngFor="let shard of t.shards">
+                  <mat-expansion-panel expanded="false" (opened)="populateShardAttempts(shard)">
+                    <mat-expansion-panel-header>shard {{ getShardIndex(shard) }}</mat-expansion-panel-header>
+                    <div *ngFor="let attempt of shard.attemptsData">
+                      <jm-attempt [attempt]="attempt"></jm-attempt>
+                    </div>
+                  </mat-expansion-panel>
                 </div>
               </div>
             </mat-expansion-panel>

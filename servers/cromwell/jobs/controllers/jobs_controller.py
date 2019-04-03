@@ -123,8 +123,6 @@ def get_job(id, **kwargs):
         for task_name, task_metadata in job.get('calls', {}).items()
     ]
 
-    logger.warning("tasks: {}".format(tasks))
-
     sorted_tasks = sorted(tasks, key=lambda t: t.start)
     start = _parse_datetime(job.get('start'))
     submission = _parse_datetime(job.get('submission'))
@@ -264,7 +262,7 @@ def format_scattered_task(task_name, task_metadata):
         attempts=len(sorted_shards),
         start=min_start,
         call_root=remove_shard_path(task_metadata[-1].get('callRoot')),
-        shards= sorted_shards,
+        shards=sorted_shards,
         call_cached=False)
 
 
@@ -462,8 +460,7 @@ def _get_scattered_task_status(shards):
     # get all shard statuses
     statuses = {
         shard.execution_status
-        for shard in shards
-        if hasattr(shard, 'execution_status')
+        for shard in shards if hasattr(shard, 'execution_status')
     }
     # return status by ranked applicability
     for status in [

@@ -20,6 +20,7 @@ import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
 import {JobManagerService} from "../../core/job-manager.service";
+import {TaskShard} from "../../shared/model/TaskShard";
 
 @Component({
   selector: 'jm-tabs',
@@ -103,6 +104,12 @@ export class JobTabsComponent implements OnInit, OnChanges {
     }
   }
 
+  navigateDown(id: string): void {
+    if (id) {
+      this.navDown.emit(id);
+    }
+  }
+
   getScatteredCountTotal(task: TaskMetadata): number {
     if (task.shards) {
       return task.shards.length;
@@ -134,15 +141,19 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return (task.shards && task.shards.length > 0)
   }
 
-  navigateDown(id: string): void {
-    if (id) {
-      this.navDown.emit(id);
-    }
+  getShardIndex(shard:TaskShard): number {
+    return shard.shardIndex;
   }
 
-  populateAttempts(task: TaskMetadata) {
-    this.jobManagerService.getAttempts(task.jobId).then((response) => {
+  populateTaskAttempts(task: TaskMetadata) {
+    this.jobManagerService.getTaskAttempts(task.jobId).then((response) => {
       task.attemptsData = response;
+    })
+  }
+
+  populateShardAttempts(shard: TaskShard) {
+    this.jobManagerService.getShardAttempts(shard.shardIndex).then((response) => {
+      shard.attemptsData = response;
     })
   }
 }

@@ -161,9 +161,19 @@ export class JobManagerService {
       .catch((e) => this.handleError(e));
   }
 
-  getAttempts(id:string): Promise<any> {
+  getTaskAttempts(id:string): Promise<any> {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
     return this.http.post(`${apiUrl}/jobs/${id}/updateLabels`,
+      new RequestOptions({headers: this.getHttpHeaders()}))
+      .toPromise()
+      .then(response => response.json())
+      .catch((e) => this.handleError(e));
+
+  }
+
+  getShardAttempts(index:number): Promise<any> {
+    const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
+    return this.http.post(`${apiUrl}/jobs/${index}/updateLabels`,
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => response.json())
