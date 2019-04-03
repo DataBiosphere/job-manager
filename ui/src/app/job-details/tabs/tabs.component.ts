@@ -12,14 +12,12 @@ import {
 import {DataSource} from '@angular/cdk/collections';
 import {Observable} from 'rxjs/Observable';
 
-import {AuthService} from '../../core/auth.service';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobStatusIcon} from '../../shared/common';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
-import {Task} from "protractor/built/taskScheduler";
 
 @Component({
   selector: 'jm-tabs',
@@ -47,8 +45,6 @@ export class JobTabsComponent implements OnInit, OnChanges {
     'files',
   ];
   tabWidth: number = 1024;
-
-  constructor(private authService: AuthService) {};
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);

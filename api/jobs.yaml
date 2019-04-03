@@ -625,6 +625,10 @@ definitions:
         description: End datetime of the task execution in ISO8601 format with milliseconds
       shardIndex:
         type: integer
+      executionEvents:
+        type: array
+        items:
+          $ref: '#/definitions/ExecutionEvent'
 
   FailureMessage:
     description: >
