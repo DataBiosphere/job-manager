@@ -144,15 +144,20 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   populateTaskAttempts(task: TaskMetadata) {
-    this.jobManagerService.getTaskAttempts(task.jobId).then((response) => {
-      task.attemptsData = response;
+    this.jobManagerService.getTaskAttempts(this.job.id, this.getJobTaskName(task.name)).then((response) => {
+      task.attemptsData = response.attempts;
     })
   }
 
-  populateShardAttempts(shard: TaskShard) {
-    this.jobManagerService.getShardAttempts(shard.shardIndex).then((response) => {
-      shard.attemptsData = response;
+  populateShardAttempts(task: TaskMetadata, shard: TaskShard) {
+    this.jobManagerService.getShardAttempts(this.job.id, this.getJobTaskName(task.name), shard.shardIndex).then((response) => {
+      shard.attemptsData = response.attempts;
     })
+  }
+
+  getJobTaskName(taskName: string): string {
+    const parts = this.job.name.split('.');
+    return parts.pop() + '.' + taskName;
   }
 }
 

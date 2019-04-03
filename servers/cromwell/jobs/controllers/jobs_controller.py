@@ -22,6 +22,8 @@ from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.models.health_response import HealthResponse
 from jobs.models.execution_event import ExecutionEvent
+from jobs.models.individual_attempt import IndividualAttempt
+from jobs.models.job_attempts_response import JobAttemptsResponse
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
 
@@ -145,6 +147,80 @@ def get_job(id, **kwargs):
         failures=failures,
         extensions=ExtendedFields(
             tasks=sorted_tasks, parent_job_id=job.get('parentWorkflowId')))
+
+
+@requires_auth
+def get_task_attempts(id, task_name,  **kwargs):
+    """
+    Query for attempt metadata for a specified job task
+
+    :param id: Job ID
+    :type id: str
+
+    :param task_name: Task Name
+    :type task_name: str
+
+    :rtype: JobAttemptsResponse
+    """
+
+    include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'executionStatus',
+                    'inputs', 'labels', 'outputs', 'shardIndex', 'stderr', 'stdout')
+
+    url = '{cromwell_url}/{id}/metadata?{query}'.format(
+        cromwell_url=_get_base_url(),
+        id=id,
+        query='includeKey=' + '&includeKey='.join(include_keys))
+    response = requests.get(
+        url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
+
+    if response.status_code != 200:
+        handle_error(response)
+
+    job = response.json()
+
+    attempts = [
+        _convert_to_attempt(call)
+        for call in job.get('calls').get(task_name)
+    ]
+    return JobAttemptsResponse(attempts=attempts)
+
+@requires_auth
+def get_shard_attempts(id, task_name, index, **kwargs):
+    """
+    Query for attempt metadata for a specified job task shard
+
+    :param id: Job ID
+    :type id: str
+
+    :param task_name: Task Name
+    :type task_name: str
+
+    :param index: Shard Index
+    :type index: str
+
+    :rtype: JobAttemptsResponse
+    """
+
+    include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'executionStatus',
+                    'inputs', 'labels', 'outputs', 'shardIndex', 'stderr', 'stdout')
+
+    url = '{cromwell_url}/{id}/metadata?{query}'.format(
+        cromwell_url=_get_base_url(),
+        id=id,
+        query='includeKey=' + '&includeKey='.join(include_keys))
+    response = requests.get(
+        url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
+
+    if response.status_code != 200:
+        handle_error(response)
+
+    job = response.json()
+
+    attempts = [
+        _convert_to_attempt(shard)
+        for shard in job.get('calls').get(task_name) if shard.shard_index == index
+    ]
+    return JobAttemptsResponse(attempts=attempts)
 
 
 def health(**kwargs):
@@ -476,6 +552,20 @@ def _get_scattered_task_status(shards):
     ]:
         if status in statuses:
             return status
+
+def _convert_to_attempt(items):
+    attempts = [
+        IndividualAttempt(
+            attemptNumber=i.get('attemptNumber'),
+            executionStatus=i.get('executionStatus'),
+            callCached=i.get('callCached'),
+            stdout=i.get('stdout'),
+            stderr=i.get('stderr'),
+            callRoot=i.get('callRoot')
+        )
+        for i in items
+    ]
+    return attempts
 
 
 def _get_response_message(response):

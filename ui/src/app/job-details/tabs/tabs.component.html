@@ -18,7 +18,7 @@
               </div>
               <div *ngIf="taskIsScattered(t)">
                 <div *ngFor="let shard of t.shards">
-                  <mat-expansion-panel expanded="false" (opened)="populateShardAttempts(shard)">
+                  <mat-expansion-panel expanded="false" (opened)="populateShardAttempts(t.name, shard)">
                     <mat-expansion-panel-header>shard {{ getShardIndex(shard) }}</mat-expansion-panel-header>
                     <div *ngFor="let attempt of shard.attemptsData">
                       <jm-attempt [attempt]="attempt"></jm-attempt>
