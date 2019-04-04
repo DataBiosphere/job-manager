@@ -6,7 +6,7 @@ from . import BaseTestCase
 
 from jobs.controllers.utils import task_statuses
 from jobs.controllers import jobs_controller
-from jobs.models.shard_status_count import ShardStatusCount
+from jobs.models.task_shard import TaskShard
 
 import itertools
 
@@ -35,12 +35,12 @@ class TestTaskStatuses(BaseTestCase):
     def test_scattered_task_status(self):
         def failed_scattered_task():
             return [
-                ShardStatusCount(status='Failed', count=1),
-                ShardStatusCount(status='Aborting', count=1),
-                ShardStatusCount(status='Aborted', count=1),
-                ShardStatusCount(status='Running', count=1),
-                ShardStatusCount(status='Submitted', count=1),
-                ShardStatusCount(status='Succeeded', count=1)
+                TaskShard(execution_status='Failed'),
+                TaskShard(execution_status='Aborting'),
+                TaskShard(execution_status='Aborted'),
+                TaskShard(execution_status='Running'),
+                TaskShard(execution_status='Submitted'),
+                TaskShard(execution_status='Succeeded')
             ]
 
         for response in itertools.permutations(failed_scattered_task(), 6):
@@ -49,11 +49,11 @@ class TestTaskStatuses(BaseTestCase):
 
         def aborting_scattered_task():
             return [
-                ShardStatusCount(status='Aborting', count=1),
-                ShardStatusCount(status='Aborted', count=1),
-                ShardStatusCount(status='Running', count=1),
-                ShardStatusCount(status='Submitted', count=1),
-                ShardStatusCount(status='Succeeded', count=1)
+                TaskShard(execution_status='Aborting'),
+                TaskShard(execution_status='Aborted'),
+                TaskShard(execution_status='Running'),
+                TaskShard(execution_status='Submitted'),
+                TaskShard(execution_status='Succeeded')
             ]
 
         for response in itertools.permutations(aborting_scattered_task(), 5):
@@ -63,10 +63,10 @@ class TestTaskStatuses(BaseTestCase):
 
         def aborted_scattered_task():
             return [
-                ShardStatusCount(status='Aborted', count=1),
-                ShardStatusCount(status='Running', count=1),
-                ShardStatusCount(status='Submitted', count=1),
-                ShardStatusCount(status='Succeeded', count=1)
+                TaskShard(execution_status='Aborted'),
+                TaskShard(execution_status='Running'),
+                TaskShard(execution_status='Submitted'),
+                TaskShard(execution_status='Succeeded')
             ]
 
         for response in itertools.permutations(aborted_scattered_task(), 4):
@@ -76,9 +76,9 @@ class TestTaskStatuses(BaseTestCase):
 
         def running_scattered_task():
             return [
-                ShardStatusCount(status='Running', count=1),
-                ShardStatusCount(status='Submitted', count=1),
-                ShardStatusCount(status='Succeeded', count=1)
+                TaskShard(execution_status='Running'),
+                TaskShard(execution_status='Submitted'),
+                TaskShard(execution_status='Succeeded')
             ]
 
         for response in itertools.permutations(running_scattered_task(), 3):
@@ -88,8 +88,8 @@ class TestTaskStatuses(BaseTestCase):
 
         def submitted_scattered_task():
             return [
-                ShardStatusCount(status='Submitted', count=1),
-                ShardStatusCount(status='Succeeded', count=1)
+                TaskShard(execution_status='Submitted'),
+                TaskShard(execution_status='Succeeded')
             ]
 
         for response in itertools.permutations(submitted_scattered_task(), 2):

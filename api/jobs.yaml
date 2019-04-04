@@ -571,9 +571,10 @@ definitions:
       name:
         type: string
         description: The name of the job
-      executionId:
-        type: string
-        description: Backend-specific job ID
+      shards:
+        type: array
+        items:
+          $ref: '#/definitions/TaskShard'
       failures:
         type: array
         items:
@@ -599,10 +600,6 @@ definitions:
           Id of the job corresponding to this task, if this task is a nested
           child job. Expresses a child:parent relationship between this job
           and the job containing this task.
-      shardStatuses:
-        type: array
-        items:
-          $ref: '#/definitions/ShardStatusCount'
       callCached:
         type: boolean
         description: A flag to indicate if task was call-cached.
@@ -611,6 +608,28 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/ExecutionEvent'
+
+  TaskShard:
+    description: Individual shards for a scattered task
+    properties:
+      executionStatus:
+        type: string
+        description: Backend-specific task status.
+      start:
+        type: string
+        format: date-time
+        description: Start datetime of the task execution in ISO8601 format with milliseconds
+      end:
+        type: string
+        format: date-time
+        description: End datetime of the task execution in ISO8601 format with milliseconds
+      shardIndex:
+        type: integer
+      executionEvents:
+        type: array
+        items:
+          $ref: '#/definitions/ExecutionEvent'
+
   FailureMessage:
     description: >
       Failure messages with optional additional information if the failure
