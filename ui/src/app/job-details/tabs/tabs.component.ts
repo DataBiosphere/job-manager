@@ -102,12 +102,6 @@ export class JobTabsComponent implements OnInit, OnChanges {
     }
   }
 
-  navigateDown(id: string): void {
-    if (id) {
-      this.navDown.emit(id);
-    }
-  }
-
   getScatteredCountTotal(task: TaskMetadata): number {
     if (task.shards) {
       return task.shards.length;
@@ -158,6 +152,12 @@ export class JobTabsComponent implements OnInit, OnChanges {
   getJobTaskName(taskName: string): string {
     const parts = this.job.name.split('.');
     return parts.pop() + '.' + taskName;
+  }
+
+  navigateDown(id: string): void {
+    if (id) {
+      this.navDown.emit(id);
+    }
   }
 }
 
