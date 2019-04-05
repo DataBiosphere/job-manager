@@ -231,12 +231,11 @@ def format_scattered_task(task_name, task_metadata):
     filtered_shards = []
     current_shard = ''
     min_start = _parse_datetime(task_metadata[0].get('start'))
+    max_end = _parse_datetime(task_metadata[-1].get('end'))
 
     # go through calls in reverse to grab the latest attempt if there are multiple
     for shard in task_metadata[::-1]:
         if current_shard != shard.get('shardIndex'):
-            if min_start > _parse_datetime(shard.get('start')):
-                min_start = _parse_datetime(shard.get('start'))
             filtered_shards.append(
                 TaskShard(
                     execution_status=task_statuses.cromwell_execution_to_api(
@@ -246,6 +245,13 @@ def format_scattered_task(task_name, task_metadata):
                     shard_index=shard.get('shardIndex'),
                     execution_events=_get_execution_events(
                         shard.get('executionEvents'))))
+            if min_start > _parse_datetime(shard.get('start')):
+                min_start = _parse_datetime(shard.get('start'))
+            if shard.get('executionStatus') not in ['Failed', 'Done']:
+                max_end = None
+            if max_end is not None and max_end < _parse_datetime(
+                    shard.get('end')):
+                max_end = _parse_datetime(shard.get('end'))
         current_shard = shard.get('shardIndex')
 
     sorted_shards = sorted(filtered_shards, key=lambda t: t.shard_index)
@@ -255,6 +261,7 @@ def format_scattered_task(task_name, task_metadata):
         execution_status=_get_scattered_task_status(sorted_shards),
         attempts=len(sorted_shards),
         start=min_start,
+        end=max_end,
         call_root=remove_shard_path(task_metadata[-1].get('callRoot')),
         shards=sorted_shards,
         call_cached=False)
