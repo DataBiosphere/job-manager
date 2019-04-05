@@ -91,7 +91,7 @@ def get_job(id, **kwargs):
     :rtype: JobMetadataResponse
     """
 
-    include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'calls',
+    include_keys = ('attempt', 'callCaching:hit', 'callCaching:effectiveCallCachingMode', 'callRoot', 'calls',
                     'description', 'end', 'executionEvents', 'executionStatus',
                     'failures', 'inputs', 'labels', 'outputs',
                     'parentWorkflowId', 'returnCode', 'shardIndex', 'start',
@@ -150,21 +150,21 @@ def get_job(id, **kwargs):
 
 
 @requires_auth
-def get_task_attempts(id, task_name,  **kwargs):
+def get_task_attempts(id, task,  **kwargs):
     """
     Query for attempt metadata for a specified job task
 
     :param id: Job ID
     :type id: str
 
-    :param task_name: Task Name
-    :type task_name: str
+    :param task: Task Name
+    :type task: str
 
     :rtype: JobAttemptsResponse
     """
 
-    include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'executionStatus',
-                    'inputs', 'labels', 'outputs', 'shardIndex', 'stderr', 'stdout')
+    include_keys = ('attempt', 'callCaching:hit', 'callCaching:effectiveCallCachingMode', 'callRoot','end', 'executionStatus','failures',
+                    'inputs', 'labels', 'outputs', 'shardIndex', 'start', 'stderr', 'stdout')
 
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
@@ -179,21 +179,21 @@ def get_task_attempts(id, task_name,  **kwargs):
     job = response.json()
 
     attempts = [
-        _convert_to_attempt(call)
-        for call in job.get('calls').get(task_name)
+        _convert_to_attempt(dict(call))
+        for call in job.get('calls').get(task)
     ]
     return JobAttemptsResponse(attempts=attempts)
 
 @requires_auth
-def get_shard_attempts(id, task_name, index, **kwargs):
+def get_shard_attempts(id, task, index, **kwargs):
     """
     Query for attempt metadata for a specified job task shard
 
     :param id: Job ID
     :type id: str
 
-    :param task_name: Task Name
-    :type task_name: str
+    :param task: Task Name
+    :type task: str
 
     :param index: Shard Index
     :type index: str
@@ -201,8 +201,8 @@ def get_shard_attempts(id, task_name, index, **kwargs):
     :rtype: JobAttemptsResponse
     """
 
-    include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'executionStatus',
-                    'inputs', 'labels', 'outputs', 'shardIndex', 'stderr', 'stdout')
+    include_keys = ('attempt', 'callCaching:hit', 'callCaching:effectiveCallCachingMode', 'callRoot','end', 'executionStatus','failures',
+                    'inputs', 'labels', 'outputs', 'shardIndex', 'start', 'stderr', 'stdout')
 
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
@@ -218,7 +218,7 @@ def get_shard_attempts(id, task_name, index, **kwargs):
 
     attempts = [
         _convert_to_attempt(shard)
-        for shard in job.get('calls').get(task_name) if shard.shard_index == index
+        for shard in job.get('calls').get(task) if (shard.get('shardIndex') == int(index))
     ]
     return JobAttemptsResponse(attempts=attempts)
 
@@ -263,8 +263,7 @@ def format_task(task_name, task_metadata):
 
     call_cached = False
     if latest_attempt.get('callCaching'):
-        call_cached = latest_attempt.get('callCaching') and (
-            latest_attempt.get('callCaching').get('hit'))
+        call_cached = latest_attempt.get('callCaching') and (_is_call_cached(latest_attempt.get('callCaching')))
 
     execution_events = _get_execution_events(
         latest_attempt.get('executionEvents'))
@@ -308,12 +307,11 @@ def format_scattered_task(task_name, task_metadata):
     filtered_shards = []
     current_shard = ''
     min_start = _parse_datetime(task_metadata[0].get('start'))
+    max_end = _parse_datetime(task_metadata[-1].get('end'))
 
     # go through calls in reverse to grab the latest attempt if there are multiple
     for shard in task_metadata[::-1]:
         if current_shard != shard.get('shardIndex'):
-            if min_start > _parse_datetime(shard.get('start')):
-                min_start = _parse_datetime(shard.get('start'))
             filtered_shards.append(
                 TaskShard(
                     execution_status=task_statuses.cromwell_execution_to_api(
@@ -323,6 +321,13 @@ def format_scattered_task(task_name, task_metadata):
                     shard_index=shard.get('shardIndex'),
                     execution_events=_get_execution_events(
                         shard.get('executionEvents'))))
+            if min_start > _parse_datetime(shard.get('start')):
+                min_start = _parse_datetime(shard.get('start'))
+            if shard.get('executionStatus') not in ['Failed', 'Done']:
+                max_end = None
+            if max_end is not None and max_end < _parse_datetime(
+              shard.get('end')):
+                max_end = _parse_datetime(shard.get('end'))
         current_shard = shard.get('shardIndex')
 
     sorted_shards = sorted(filtered_shards, key=lambda t: t.shard_index)
@@ -332,6 +337,7 @@ def format_scattered_task(task_name, task_metadata):
         execution_status=_get_scattered_task_status(sorted_shards),
         attempts=len(sorted_shards),
         start=min_start,
+        end=max_end,
         call_root=remove_shard_path(task_metadata[-1].get('callRoot')),
         shards=sorted_shards,
         call_cached=False)
@@ -553,19 +559,33 @@ def _get_scattered_task_status(shards):
         if status in statuses:
             return status
 
-def _convert_to_attempt(items):
-    attempts = [
-        IndividualAttempt(
-            attemptNumber=i.get('attemptNumber'),
-            executionStatus=i.get('executionStatus'),
-            callCached=i.get('callCached'),
-            stdout=i.get('stdout'),
-            stderr=i.get('stderr'),
-            callRoot=i.get('callRoot')
-        )
-        for i in items
-    ]
-    return attempts
+
+def _convert_to_attempt(item):
+    attempt = IndividualAttempt(
+        execution_status=task_statuses.cromwell_execution_to_api(item.get('executionStatus')),
+        attempt_number = item.get('attempt'),
+        call_cached = _is_call_cached(item.get('callCaching')),
+        stdout = item.get('stdout'),
+        stderr = item.get('stderr'),
+        call_root = item.get('callRoot'),
+        inputs = item.get('inputs'),
+        outputs = item.get('outputs'),
+        start = _parse_datetime(item.get('start')),
+        end = _parse_datetime(item.get('end'))
+    )
+
+    if item.get('failures'):
+        attempt.failures = [
+            f.get('message') for f in item.get('failures')
+        ]
+
+    return attempt
+
+def _is_call_cached(metadata):
+    if metadata.get('hit') is not None:
+        return metadata.get('hit')
+    if metadata.get('effectiveCallCachingMode') == 'CallCachingOff':
+        return False
 
 
 def _get_response_message(response):

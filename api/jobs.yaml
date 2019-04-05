@@ -137,7 +137,7 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
-  '/jobs/{id}/{taskName}/attempts':
+  '/jobs/{id}/{task}/attempts':
     get:
       operationId: GetTaskAttempts
       summary: Query for task-level metadata for a specified job
@@ -147,7 +147,7 @@ paths:
           required: true
           type: string
           in: path
-        - name: taskName
+        - name: task
           description: task name
           required: true
           type: string
@@ -167,7 +167,7 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
-  '/jobs/{id}/{taskName}/{index}/attempts':
+  '/jobs/{id}/{task}/{index}/attempts':
     get:
       operationId: GetShardAttempts
       summary: Query for shard-level metadata for a specified job
@@ -177,7 +177,7 @@ paths:
           required: true
           type: string
           in: path
-        - name: taskName
+        - name: task
           description: task name
           required: true
           type: string
@@ -722,6 +722,18 @@ definitions:
       outputs:
         type: object
         description: Mapping of input fully qualified names to stringified values
+      start:
+        type: string
+        format: date-time
+        description: Start datetime of the task execution in ISO8601 format with milliseconds
+      end:
+        type: string
+        format: date-time
+        description: End datetime of the task execution in ISO8601 format with milliseconds
+      failures:
+        type: array
+        items:
+          $ref: '#/definitions/FailureMessage'
 
   JobAttemptsResponse:
     description: Attempts for specified task or shard

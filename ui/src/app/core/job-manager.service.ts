@@ -170,10 +170,10 @@ export class JobManagerService {
       .catch((e) => this.handleError(e));
 
   }
-
+  //
   getShardAttempts(id:string, task:string, index:number): Promise<JobAttemptsResponse> {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
-    return this.http.get(`${apiUrl}/jobs/${index}/${task}/${index}/attempts`,
+    return this.http.get(`${apiUrl}/jobs/${id}/${task}/${index}/attempts`,
       new RequestOptions({headers: this.getHttpHeaders()}))
       .toPromise()
       .then(response => response.json())

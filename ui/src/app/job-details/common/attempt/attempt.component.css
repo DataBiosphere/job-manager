@@ -1,0 +1,31 @@
+mat-list-item.mat-list-item {
+  height: auto;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75em;
+}
+
+mat-expansion-panel.mat-expansion-panel {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+  box-shadow: none;
+}
+
+.attempt-container {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75em;
+}
+
+mat-expansion-panel-header {
+  padding-left: 0px;
+}
+
+mat-panel-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #7e7b6d;
+}
+
+mat-expansion-panel.mat-expansion-panel mat-panel-description.mat-expansion-panel-header-description {
+  flex-grow: 1;
+  text-align: left;
+}

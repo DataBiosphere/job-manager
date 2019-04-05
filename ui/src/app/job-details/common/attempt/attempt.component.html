@@ -1,8 +1,51 @@
-<div class="debug-icons">
+<div class="attempt-container" *ngIf="attempt">
+  <h2>Attempt {{ attempt.attemptNumber }}
+  <clr-tooltip *ngIf="attempt.callCached">
+    <clr-icon clrTooltipTrigger shape="copy" size="24" style="color:#5C912E"></clr-icon>
+    <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+      <span>This attempt was cached</span>
+    </clr-tooltip-content>
+  </clr-tooltip>
+  <clr-tooltip>
+    <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(attempt.executionStatus)" size="24"></clr-icon>
+    <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+      <span>{{ t.executionStatus }}</span>
+    </clr-tooltip-content>
+  </clr-tooltip>
+  </h2>
   <jm-debug-icons [displayMessage]="false"
                   [message]=""
                   [stdout]="attempt.stdout"
                   [stderr]="attempt.stderr"
                   [directory]="attempt.callRoot">
   </jm-debug-icons>
+  <h3>Duration: {{ attempt.start | jmDuration: attempt.end }}</h3>
+  <div *ngIf="attempt.inputs">
+    <mat-expansion-panel expanded="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Inputs</mat-panel-title>
+      </mat-expansion-panel-header>
+      <jm-resources-table [entries]="attempt.inputs"></jm-resources-table>
+    </mat-expansion-panel>
+  </div>
+  <div *ngIf="attempt.outputs">
+    <mat-expansion-panel expanded="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Outputs</mat-panel-title>
+      </mat-expansion-panel-header>
+      <jm-resources-table [entries]="attempt.outputs"></jm-resources-table>
+    </mat-expansion-panel>
+  </div>
+  <div *ngIf="attempt.failures">
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Failure Messages</mat-panel-title>
+      </mat-expansion-panel-header>
+      <div>
+        <mat-list>
+          <mat-list-item *ngFor="let message of attempt.failures">{{ message }}></mat-list-item>
+        </mat-list>
+      </div>
+    </mat-expansion-panel>
+  </div>
 </div>

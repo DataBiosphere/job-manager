@@ -38,23 +38,23 @@ export class JobTabsComponent implements OnInit, OnChanges {
 
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
-  displayedColumns = [
-    'name',
-    'status',
-    'startTime',
-    'duration',
-    'attempts',
-    'files',
-  ];
+  // displayedColumns = [
+  //   'name',
+  //   'status',
+  //   'startTime',
+  //   'duration',
+  //   'attempts',
+  //   'files',
+  // ];
   tabWidth: number = 1024;
 
   constructor(private readonly jobManagerService: JobManagerService) {};
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
-    if (this.hasCallCachedTask() || this.hasScatteredTask()) {
-      this.displayedColumns.splice(1, 0, "taskInfoIcons");
-    }
+    // if (this.hasCallCachedTask() || this.hasScatteredTask()) {
+    //   this.displayedColumns.splice(1, 0, "taskInfoIcons");
+    // }
     if (this.tabsPanel) {
       this.tabWidth = this.tabsPanel._viewContainerRef.element.nativeElement.clientWidth;
     }

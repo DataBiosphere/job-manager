@@ -3,6 +3,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {AuthService} from '../../../core/auth.service';
 import {ActivatedRoute} from "@angular/router";
 import {IndividualAttempt} from "../../../shared/model/IndividualAttempt";
+import {JobStatus} from "../../../shared/model/JobStatus";
+import {JobStatusIcon} from "../../../shared/common";
 
 @Component({
   selector: 'jm-attempt',
@@ -17,6 +19,13 @@ export class JobAttemptComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.attempt = this.route.snapshot.data['attempt'];
+    if (this.attempt) {
+      this.attempt.start = new Date(this.attempt.start);
+      this.attempt.end = new Date(this.attempt.end);
+    }
+  }
+
+  getStatusIcon(status: string): string {
+    return JobStatusIcon[JobStatus[status]];
   }
 }

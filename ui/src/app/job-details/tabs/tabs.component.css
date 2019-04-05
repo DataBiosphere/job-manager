@@ -3,9 +3,20 @@
   clear: left;
 }
 
-mat-expansion-panel {
-  border-radius: 5px;
-  box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
+mat-expansion-panel.mat-expansion-panel {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+  box-shadow: none;
+}
+
+mat-expansion-panel.mat-expansion-panel mat-panel-description.mat-expansion-panel-header-description {
+  flex-grow: 1;
+  text-align: left;
+}
+
+mat-expansion-panel-header,
+mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
 }
 
 .header {
@@ -177,4 +188,19 @@ button.shard-icon {
 
 ::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {
   background-color: #74AE43;
+}
+
+.task-name {
+  width: 50%;
+}
+
+.task-status {
+  width: 30%;
+  text-align: right;
+}
+
+.task-links {
+  width: 15%;
+  text-align: right;
+  min-width: 100px;
 }
