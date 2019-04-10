@@ -1,5 +1,19 @@
 # Job Manager Change Log
 
+## v0.7.1 Release Notes
+
+### Added individual shards and their execution events to the timing diagram.
+
+## v0.7.0 Release Notes
+
+### Further improved the performance of the Job dDetails page when pointed at Cromwell.
+
+### Made the behavior of all log and execution directory icons/links consistent throughout the Job Details page.
+
+### Added more useful UI behavior when user submits an invalid query on the Job List page.
+
+### Surfaced additional error information from Cromwell metadata responses on the Job Details page.
+
 ## v0.6.3 Release Notes
 
 ### Fixed bug where failure message(s) are not displayed if the job failed before Cromwell was able to run it (most likely due to a validation error).

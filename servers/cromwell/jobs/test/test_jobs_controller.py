@@ -573,6 +573,7 @@ class TestJobsController(BaseTestCase):
                     'callCached': False,
                     'attempts': attempts,
                     'start': response_timestamp,
+                    'end': response_timestamp,
                     'shards': [{
                         'end': response_timestamp,
                         'executionStatus': 'Failed',
