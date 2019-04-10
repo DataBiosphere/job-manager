@@ -326,7 +326,7 @@ def format_scattered_task(task_name, task_metadata):
             if shard.get('executionStatus') not in ['Failed', 'Done']:
                 max_end = None
             if max_end is not None and max_end < _parse_datetime(
-              shard.get('end')):
+                    shard.get('end')):
                 max_end = _parse_datetime(shard.get('end'))
         current_shard = shard.get('shardIndex')
 
