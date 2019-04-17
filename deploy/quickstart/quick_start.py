@@ -223,8 +223,8 @@ def request_input_path(message, default):
         absolute_path = path.abspath(provided)
         print('Using: {0}'.format(provided))
 
-        valid = make_or_replace_or_reuse_directory(
-            provided, exit_if_invalid=False)
+        valid = make_or_replace_or_reuse_directory(provided,
+                                                   exit_if_invalid=False)
 
     return absolute_path
 

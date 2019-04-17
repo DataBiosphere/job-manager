@@ -7,8 +7,10 @@ import requests
 
 from jobs.common import enum
 
-ProviderType = enum(
-    GOOGLE='google', GOOGLE_V2='google-v2', LOCAL='local', STUB='stub')
+ProviderType = enum(GOOGLE='google',
+                    GOOGLE_V2='google-v2',
+                    LOCAL='local',
+                    STUB='stub')
 
 
 def get_provider(provider_type, project_id=None, auth_token=None):
@@ -46,11 +48,10 @@ def _get_google_provider(project_id, auth_token, provider_type):
             raise BadRequest('Missing required field `authToken`.')
         return google.GoogleJobProvider(False, False, project_id)
 
-    resp = requests.post(
-        'https://www.googleapis.com/oauth2/v2/tokeninfo',
-        params={
-            'access_token': auth_token,
-        })
+    resp = requests.post('https://www.googleapis.com/oauth2/v2/tokeninfo',
+                         params={
+                             'access_token': auth_token,
+                         })
     if resp.status_code != 200:
         raise Unauthorized('failed to validate auth token')
     current_app.logger.info('user "%s" signed in', resp.json().get('email'))
@@ -58,11 +59,15 @@ def _get_google_provider(project_id, auth_token, provider_type):
     try:
         credentials = AccessTokenCredentials(auth_token, 'user-agent')
         if provider_type == ProviderType.GOOGLE:
-            return google.GoogleJobProvider(
-                False, False, project_id, credentials=credentials)
+            return google.GoogleJobProvider(False,
+                                            False,
+                                            project_id,
+                                            credentials=credentials)
         else:
-            return google_v2.GoogleV2JobProvider(
-                False, False, project_id, credentials=credentials)
+            return google_v2.GoogleV2JobProvider(False,
+                                                 False,
+                                                 project_id,
+                                                 credentials=credentials)
     except AccessTokenCredentialsError as e:
         raise Unauthorized('Invalid authentication token:{}.'.format(e))
 

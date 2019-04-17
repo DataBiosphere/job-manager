@@ -33,8 +33,8 @@ class BaseTestCases:
         def assert_status(self, response, want, desc=None):
             if not desc:
                 desc = 'Response body is : ' + response.data.decode('utf-8')
-            super(BaseTestCases.BaseTestCase, self).assertStatus(
-                response, want, desc)
+            super(BaseTestCases.BaseTestCase,
+                  self).assertStatus(response, want, desc)
 
     class JobsControllerTestCase(BaseTestCase):
         @classmethod
@@ -63,8 +63,8 @@ class BaseTestCases:
             """
             response = self.must_query_jobs(query_params)
             self.assertEqual(len(response.results), len(job_list))
-            sorted_results = sorted(
-                response.results, key=operator.attrgetter('id'))
+            sorted_results = sorted(response.results,
+                                    key=operator.attrgetter('id'))
             sorted_job_list = sorted(job_list, key=self.api_job_id)
             for result, job in zip(sorted_results, sorted_job_list):
                 self.assertEqual(result.id, self.api_job_id(job))
@@ -106,11 +106,10 @@ class BaseTestCases:
                 else:
                     parameters.extensions = ExtendedQueryFields(
                         project_id=self.testing_project)
-            resp = self.client.open(
-                '/jobs/query',
-                method='POST',
-                data=flask.json.dumps(parameters),
-                content_type='application/json')
+            resp = self.client.open('/jobs/query',
+                                    method='POST',
+                                    data=flask.json.dumps(parameters),
+                                    content_type='application/json')
             self.assert_status(resp, 200)
             return QueryJobsResponse.from_dict(resp.json)
 
@@ -139,8 +138,9 @@ class BaseTestCases:
             labels.update(self.test_token_label)
 
             logging = param_util.build_logging_param(self.log_path)
-            resources = job_model.Resources(
-                image=DOCKER_IMAGE, logging=logging, zones=['us-central1*'])
+            resources = job_model.Resources(image=DOCKER_IMAGE,
+                                            logging=logging,
+                                            zones=['us-central1*'])
 
             env_data = {param_util.EnvParam(k, v) for (k, v) in envs.items()}
             label_data = {
@@ -201,19 +201,19 @@ class BaseTestCases:
                     }, job_model.Resources())
                 ]
 
-            return execute_redirect_stdout(lambda: dsub.run(
-                self.provider,
-                resources,
-                job_params,
-                task_descriptors,
-                name=name,
-                command=command,
-                wait=wait,
-                disable_warning=True))
+            return execute_redirect_stdout(lambda: dsub.run(self.provider,
+                                                            resources,
+                                                            job_params,
+                                                            task_descriptors,
+                                                            name=name,
+                                                            command=command,
+                                                            wait=wait,
+                                                            disable_warning=
+                                                            True))
 
         def must_abort_job(self, job_id):
-            resp = self.client.open(
-                '/jobs/{}/abort'.format(job_id), method='POST')
+            resp = self.client.open('/jobs/{}/abort'.format(job_id),
+                                    method='POST')
             self.assert_status(resp, 200)
 
         def wait_status(self, job_id, status):
@@ -243,15 +243,14 @@ class BaseTestCases:
             started = self.start_job('echo FOO', wait=True)
             api_job_id = self.api_job_id(started)
             self.wait_status(api_job_id, ApiStatus.SUCCEEDED)
-            resp = self.client.open(
-                '/jobs/{}/abort'.format(api_job_id), method='POST')
+            resp = self.client.open('/jobs/{}/abort'.format(api_job_id),
+                                    method='POST')
             self.assert_status(resp, 412)
 
         def test_abort_non_existent_job_fails(self):
-            resp = self.client.open(
-                '/jobs/{}/abort'.format(
-                    self.api_job_id({'job-id': 'not-a-job'})),
-                method='POST')
+            resp = self.client.open('/jobs/{}/abort'.format(
+                self.api_job_id({'job-id': 'not-a-job'})),
+                                    method='POST')
             self.assert_status(resp, 404)
 
         def test_get_succeeded_job(self):
@@ -262,11 +261,10 @@ class BaseTestCases:
                 'OUTPUT_KEY':
                 '{}/outputs/test-output'.format(self.testing_root)
             }
-            started = self.start_job(
-                'echo -n >${OUTPUT_KEY}',
-                labels={'label': 'the_label_value'},
-                inputs=inputs,
-                outputs=outputs)
+            started = self.start_job('echo -n >${OUTPUT_KEY}',
+                                     labels={'label': 'the_label_value'},
+                                     inputs=inputs,
+                                     outputs=outputs)
             api_job_id = self.api_job_id(started)
             self.wait_status(api_job_id, ApiStatus.SUCCEEDED)
 
@@ -287,9 +285,9 @@ class BaseTestCases:
             self.assertTrue(job.failures[0].timestamp)
 
         def test_get_non_existent_job_fails(self):
-            resp = self.client.open(
-                '/jobs/{}'.format(self.api_job_id({'job-id': 'not-a-job'})),
-                method='GET')
+            resp = self.client.open('/jobs/{}'.format(
+                self.api_job_id({'job-id': 'not-a-job'})),
+                                    method='GET')
             self.assert_status(resp, 404)
 
         # TODO(bryancrampton) Add tests around dsub job's with multiple tasks and
@@ -300,15 +298,15 @@ class BaseTestCases:
             name_job = self.start_job('echo NAME', name='named-job')
             other_name_job = self.start_job('echo OTHER', name='other-job')
             no_name_job = self.start_job('echo UNSPECIFIED')
-            self.assert_query_matches(
-                QueryJobsRequest(name='named-job'), [name_job])
+            self.assert_query_matches(QueryJobsRequest(name='named-job'),
+                                      [name_job])
             self.assert_query_matches(QueryJobsRequest(name='job'), [])
 
         def test_query_jobs_by_status(self):
             succeeded = self.start_job('echo SUCCEEDED', name='succeeded')
             self.wait_status(self.api_job_id(succeeded), ApiStatus.SUCCEEDED)
-            running = self.start_job(
-                'echo RUNNING && sleep 30', name='running')
+            running = self.start_job('echo RUNNING && sleep 30',
+                                     name='running')
             self.wait_status(self.api_job_id(running), ApiStatus.RUNNING)
             self.assert_query_matches(
                 QueryJobsRequest(status=[ApiStatus.SUCCEEDED]), [succeeded])
@@ -329,8 +327,9 @@ class BaseTestCases:
                 QueryJobsRequest(labels={'job-id': job['job-id']}), [job])
 
         def test_query_jobs_by_label_task_id(self):
-            started = self.start_job(
-                'echo BY_TASK_ID', name='by_task_id', task_count=2)
+            started = self.start_job('echo BY_TASK_ID',
+                                     name='by_task_id',
+                                     task_count=2)
             jobs = self.must_query_jobs(
                 QueryJobsRequest(labels={'job-id': started['job-id']}))
             for task_id in started['task-id']:
@@ -342,9 +341,8 @@ class BaseTestCases:
         def test_query_jobs_by_label_user_id(self):
             job = self.start_job('echo BY_USER_ID', name='by_user_id')
             self.assert_query_matches(
-                QueryJobsRequest(
-                    extensions=ExtendedQueryFields(user_id=job['user-id'])),
-                [job])
+                QueryJobsRequest(extensions=ExtendedQueryFields(
+                    user_id=job['user-id'])), [job])
 
         def test_query_jobs_by_label(self):
             labels = {
@@ -358,17 +356,19 @@ class BaseTestCases:
                 'overlap_key': 'overlap_value'
             }
 
-            label_job = self.start_job(
-                'echo LABEL', labels=labels, name='labeljob')
+            label_job = self.start_job('echo LABEL',
+                                       labels=labels,
+                                       name='labeljob')
             label_job_id = self.api_job_id(label_job)
-            other_label_job = self.start_job(
-                'echo OTHER', labels=other_labels, name='otherlabeljob')
+            other_label_job = self.start_job('echo OTHER',
+                                             labels=other_labels,
+                                             name='otherlabeljob')
             other_label_job_id = self.api_job_id(other_label_job)
             no_label_job = self.start_job('echo NO_LABEL', name='nolabeljob')
             no_label_job_id = self.api_job_id(no_label_job)
 
-            self.assert_query_matches(
-                QueryJobsRequest(labels=labels), [label_job])
+            self.assert_query_matches(QueryJobsRequest(labels=labels),
+                                      [label_job])
             self.assert_query_matches(
                 QueryJobsRequest(labels={'overlap_key': 'overlap_value'}),
                 [label_job, other_label_job])
@@ -382,21 +382,18 @@ class BaseTestCases:
             third_job = self.start_job('echo THREE', name='job3', wait=True)
             fourth_time = datetime.datetime.now()
 
-            self.assert_query_matches(
-                QueryJobsRequest(submission=first_time),
-                [first_job, second_job, third_job])
-            self.assert_query_matches(
-                QueryJobsRequest(submission=second_time),
-                [second_job, third_job])
-            self.assert_query_matches(
-                QueryJobsRequest(submission=third_time), [third_job])
-            self.assert_query_matches(
-                QueryJobsRequest(end=second_time), [first_job])
-            self.assert_query_matches(
-                QueryJobsRequest(end=third_time), [first_job, second_job])
-            self.assert_query_matches(
-                QueryJobsRequest(end=fourth_time),
-                [first_job, second_job, third_job])
+            self.assert_query_matches(QueryJobsRequest(submission=first_time),
+                                      [first_job, second_job, third_job])
+            self.assert_query_matches(QueryJobsRequest(submission=second_time),
+                                      [second_job, third_job])
+            self.assert_query_matches(QueryJobsRequest(submission=third_time),
+                                      [third_job])
+            self.assert_query_matches(QueryJobsRequest(end=second_time),
+                                      [first_job])
+            self.assert_query_matches(QueryJobsRequest(end=third_time),
+                                      [first_job, second_job])
+            self.assert_query_matches(QueryJobsRequest(end=fourth_time),
+                                      [first_job, second_job, third_job])
             self.assert_query_matches(
                 QueryJobsRequest(end=fourth_time, submission=second_time),
                 [second_job, third_job])
@@ -412,15 +409,15 @@ class BaseTestCases:
             job4 = self.start_job('echo FOURTH_JOB', name='job_w')
             job5 = self.start_job('echo FIFTH_JOB', name='job_v')
 
+            response = self.assert_query_matches(QueryJobsRequest(page_size=2),
+                                                 [job4, job5])
             response = self.assert_query_matches(
-                QueryJobsRequest(page_size=2), [job4, job5])
-            response = self.assert_query_matches(
-                QueryJobsRequest(
-                    page_size=2, page_token=response.next_page_token),
+                QueryJobsRequest(page_size=2,
+                                 page_token=response.next_page_token),
                 [job2, job3])
             response = self.assert_query_matches(
-                QueryJobsRequest(
-                    page_size=2, page_token=response.next_page_token), [job1])
+                QueryJobsRequest(page_size=2,
+                                 page_token=response.next_page_token), [job1])
 
         def test_query_jobs_submission_pagination(self):
             job1 = self.start_job('echo FIRST_JOB', name='job_z')
@@ -436,15 +433,13 @@ class BaseTestCases:
                 QueryJobsRequest(page_size=2, submission=min_time),
                 [job5, job6])
             response = self.assert_query_matches(
-                QueryJobsRequest(
-                    page_size=2,
-                    page_token=response.next_page_token,
-                    submission=min_time), [job3, job4])
+                QueryJobsRequest(page_size=2,
+                                 page_token=response.next_page_token,
+                                 submission=min_time), [job3, job4])
             response = self.assert_query_matches(
-                QueryJobsRequest(
-                    page_size=2,
-                    page_token=response.next_page_token,
-                    submission=min_time), [job2])
+                QueryJobsRequest(page_size=2,
+                                 page_token=response.next_page_token,
+                                 submission=min_time), [job2])
 
         def status_counts_to_dict(self, status_counts):
             return {
@@ -495,30 +490,32 @@ class BaseTestCases:
             running_job_list.append(job_aborted)
             # Create a job to fail
             job_failed = self.api_job_id(
-                self.start_job(
-                    'not_a_command', labels=labels, name='agg-failed'))
+                self.start_job('not_a_command',
+                               labels=labels,
+                               name='agg-failed'))
             # Created a succeeded job
             job_succeeded = self.api_job_id(
-                self.start_job(
-                    'echo SUCCEEDED', labels=labels, name='agg-succeeded'))
+                self.start_job('echo SUCCEEDED',
+                               labels=labels,
+                               name='agg-succeeded'))
             # Created a running job
             running_job_list.append(
                 self.api_job_id(
-                    self.start_job(
-                        'sleep 180', labels=labels, name='agg-running')))
+                    self.start_job('sleep 180',
+                                   labels=labels,
+                                   name='agg-running')))
             # Create a running job that has different label values
             running_job_list.append(
                 self.api_job_id(
-                    self.start_job(
-                        'sleep 180', labels=another_value,
-                        name='agg-running')))
+                    self.start_job('sleep 180',
+                                   labels=another_value,
+                                   name='agg-running')))
             # Create a running job that has different labels
             running_job_list.append(
                 self.api_job_id(
-                    self.start_job(
-                        'sleep 180',
-                        labels=different_labels,
-                        name='agg-running')))
+                    self.start_job('sleep 180',
+                                   labels=different_labels,
+                                   name='agg-running')))
 
             # wait_status need 10s on local provider
             if current_app.config['PROVIDER_TYPE'] == ProviderType.LOCAL:
@@ -590,5 +587,5 @@ class BaseTestCases:
 
             # Cancel running jobs for testing
             for running_job in running_job_list:
-                self.client.open(
-                    '/jobs/{}/abort'.format(running_job), method='POST')
+                self.client.open('/jobs/{}/abort'.format(running_job),
+                                 method='POST')

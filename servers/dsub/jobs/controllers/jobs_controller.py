@@ -185,18 +185,17 @@ def _handle_http_error(error, proj_id):
 
 
 def _metadata_response(id, job):
-    return JobMetadataResponse(
-        id=id,
-        status=job_statuses.dsub_to_api(job),
-        submission=job['create-time'],
-        name=job['job-name'],
-        start=job.get('start-time'),
-        end=job['end-time'],
-        inputs=job['inputs'],
-        outputs=job['outputs'],
-        labels=labels.dsub_to_api(job),
-        failures=failures.get_failures(job),
-        extensions=extensions.get_extensions(job))
+    return JobMetadataResponse(id=id,
+                               status=job_statuses.dsub_to_api(job),
+                               submission=job['create-time'],
+                               name=job['job-name'],
+                               start=job.get('start-time'),
+                               end=job['end-time'],
+                               inputs=job['inputs'],
+                               outputs=job['outputs'],
+                               labels=labels.dsub_to_api(job),
+                               failures=failures.get_failures(job),
+                               extensions=extensions.get_extensions(job))
 
 
 def _auth_token():

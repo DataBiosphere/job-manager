@@ -45,8 +45,8 @@ class TestJobsController(BaseTestCase):
         abort_url = self.base_url + '/{id}/abort'.format(id=workflow_id)
         mock_request.post(abort_url, json=_request_callback)
 
-        response = self.client.open(
-            '/jobs/{id}/abort'.format(id=workflow_id), method='POST')
+        response = self.client.open('/jobs/{id}/abort'.format(id=workflow_id),
+                                    method='POST')
         self.assertStatus(response, 200)
 
     @requests_mock.mock()
@@ -67,8 +67,8 @@ class TestJobsController(BaseTestCase):
         abort_url = self.base_url + '/{id}/abort'.format(id=workflow_id)
         mock_request.post(abort_url, json=_request_callback)
 
-        response = self.client.open(
-            '/jobs/{id}/abort'.format(id=workflow_id), method='POST')
+        response = self.client.open('/jobs/{id}/abort'.format(id=workflow_id),
+                                    method='POST')
         self.assertStatus(response, 404)
 
     @requests_mock.mock()
@@ -407,8 +407,8 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open(
-            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
+                                    method='GET')
         self.assertStatus(response, 200)
         response_data = json.loads(response.data)
         expected_data = {
@@ -536,8 +536,8 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open(
-            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
+                                    method='GET')
         self.assertStatus(response, 200)
         response_data = json.loads(response.data)
         expected_data = {
@@ -602,8 +602,8 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open(
-            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
+                                    method='GET')
         self.assertStatus(response, 400)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -619,8 +619,8 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open(
-            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
+                                    method='GET')
         self.assertStatus(response, 404)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -636,8 +636,8 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open(
-            '/jobs/{id}'.format(id=workflow_id), method='GET')
+        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
+                                    method='GET')
         self.assertStatus(response, 500)
         self.assertEquals(json.loads(response.data)['detail'], error_message)
 
@@ -657,11 +657,10 @@ class TestJobsController(BaseTestCase):
         mock_request.post(query_url, json=_request_callback)
 
         query = QueryJobsRequest()
-        response = self.client.open(
-            '/jobs/query',
-            method='POST',
-            data=json.dumps(query),
-            content_type='application/json')
+        response = self.client.open('/jobs/query',
+                                    method='POST',
+                                    data=json.dumps(query),
+                                    content_type='application/json')
         self.assertStatus(response, 200)
 
     def test_empty_cromwell_query_params(self):
@@ -718,8 +717,8 @@ class TestJobsController(BaseTestCase):
         query_params.extend([{'status': s} for s in query.status])
         self.assertItemsEqual(
             sorted(query_params),
-            sorted(
-                jobs_controller.cromwell_query_params(query, 23, 100, False)))
+            sorted(jobs_controller.cromwell_query_params(
+                query, 23, 100, False)))
 
     def test_format_job(self):
         time = '2017-10-27T18:04:47.271Z'
@@ -731,16 +730,15 @@ class TestJobsController(BaseTestCase):
             'end': time
         }
         formatted_time = dateutil.parser.parse(time).astimezone(tzutc())
-        result = QueryJobsResult(
-            id=job.get('id'),
-            name=job.get('name'),
-            status=job.get('status'),
-            submission=formatted_time,
-            start=formatted_time,
-            end=formatted_time,
-            extensions=ExtendedFields())
-        self.assertEqual(
-            jobs_controller.format_job(job, formatted_time), result)
+        result = QueryJobsResult(id=job.get('id'),
+                                 name=job.get('name'),
+                                 status=job.get('status'),
+                                 submission=formatted_time,
+                                 start=formatted_time,
+                                 end=formatted_time,
+                                 extensions=ExtendedFields())
+        self.assertEqual(jobs_controller.format_job(job, formatted_time),
+                         result)
 
     def test_format_job_without_milliseconds(self):
         time = '2017-10-27T18:04:47Z'
@@ -752,30 +750,28 @@ class TestJobsController(BaseTestCase):
             'end': time
         }
         formatted_time = dateutil.parser.parse(time).astimezone(tzutc())
-        result = QueryJobsResult(
-            id=job.get('id'),
-            name=job.get('name'),
-            status=job.get('status'),
-            submission=formatted_time,
-            start=formatted_time,
-            end=formatted_time,
-            extensions=ExtendedFields())
-        self.assertEqual(
-            jobs_controller.format_job(job, formatted_time), result)
+        result = QueryJobsResult(id=job.get('id'),
+                                 name=job.get('name'),
+                                 status=job.get('status'),
+                                 submission=formatted_time,
+                                 start=formatted_time,
+                                 end=formatted_time,
+                                 extensions=ExtendedFields())
+        self.assertEqual(jobs_controller.format_job(job, formatted_time),
+                         result)
 
     def test_format_job_with_no_start_date(self):
         time = '2017-10-27T18:04:47Z'
         job = {'id': '12345', 'name': 'TestJob', 'status': 'Failed'}
         formatted_time = dateutil.parser.parse(time).astimezone(tzutc())
-        result = QueryJobsResult(
-            id=job.get('id'),
-            name=job.get('name'),
-            status=job.get('status'),
-            start=formatted_time,
-            submission=formatted_time,
-            extensions=ExtendedFields())
-        self.assertEqual(
-            jobs_controller.format_job(job, formatted_time), result)
+        result = QueryJobsResult(id=job.get('id'),
+                                 name=job.get('name'),
+                                 status=job.get('status'),
+                                 start=formatted_time,
+                                 submission=formatted_time,
+                                 extensions=ExtendedFields())
+        self.assertEqual(jobs_controller.format_job(job, formatted_time),
+                         result)
 
     def test_format_job_with_no_end_date(self):
         time = '2017-10-27T18:04:47Z'
@@ -786,16 +782,15 @@ class TestJobsController(BaseTestCase):
             'start': time
         }
         formatted_time = dateutil.parser.parse(time).astimezone(tzutc())
-        result = QueryJobsResult(
-            id=job.get('id'),
-            name=job.get('name'),
-            status=job.get('status'),
-            submission=formatted_time,
-            start=formatted_time,
-            end=None,
-            extensions=ExtendedFields())
-        self.assertEqual(
-            jobs_controller.format_job(job, formatted_time), result)
+        result = QueryJobsResult(id=job.get('id'),
+                                 name=job.get('name'),
+                                 status=job.get('status'),
+                                 submission=formatted_time,
+                                 start=formatted_time,
+                                 end=None,
+                                 extensions=ExtendedFields())
+        self.assertEqual(jobs_controller.format_job(job, formatted_time),
+                         result)
 
     def test_page_from_offset(self):
         self.assertEqual(
