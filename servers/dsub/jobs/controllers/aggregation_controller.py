@@ -63,8 +63,8 @@ def get_job_aggregations(timeFrame, projectId=None):
         _to_aggregation('Job Name', 'name', job_name_summary)
     ] + _to_top_labels_aggregations(label_summaries)
 
-    return AggregationResponse(
-        summary=_to_summary_counts(total_summary), aggregations=aggregations)
+    return AggregationResponse(summary=_to_summary_counts(total_summary),
+                               aggregations=aggregations)
 
 
 def _count_total_summary(job, total_summary):
@@ -106,8 +106,8 @@ def _to_aggregation(name, key, summary):
             counts_list.append(StatusCount(status=status, count=count))
 
         entries.append(
-            AggregationEntry(
-                label=item, status_counts=StatusCounts(counts_list)))
+            AggregationEntry(label=item,
+                             status_counts=StatusCounts(counts_list)))
 
     return Aggregation(name=name, key=key, entries=entries)
 
@@ -122,15 +122,15 @@ def _to_top_labels_aggregations(label_summaries):
             continue
         total_count = 0
         for _, counts in item.items():
-            total_count += sum(
-                v for v in counts.values() if v > _LABEL_MIN_COUNT_FOR_RANK)
+            total_count += sum(v for v in counts.values()
+                               if v > _LABEL_MIN_COUNT_FOR_RANK)
         label_freq[label] = total_count
 
     aggregations = []
     num_label = min(len(label_freq), _NUM_TOP_LABEL)
 
-    for k, _ in sorted(
-            label_freq.items(), key=lambda x: x[1], reverse=True)[0:num_label]:
+    for k, _ in sorted(label_freq.items(), key=lambda x: x[1],
+                       reverse=True)[0:num_label]:
         aggregations.append(_to_aggregation(k, k, label_summaries[k]))
 
     return aggregations

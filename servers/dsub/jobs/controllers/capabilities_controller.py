@@ -17,14 +17,15 @@ def get_capabilities():
         display_fields=[
             DisplayField(field='name', display='Name', filterable=True),
             DisplayField(field='status', display='Status'),
-            DisplayField(
-                field='submission', display='Submitted', field_type='date'),
+            DisplayField(field='submission',
+                         display='Submitted',
+                         field_type='date'),
             DisplayField(field='labels.job-id', display='Job ID'),
             DisplayField(field='labels.task-id', display='Task ID'),
             DisplayField(field='labels.attempt', display='Attempt'),
             DisplayField(field='extensions.userId', display='User ID'),
-            DisplayField(
-                field='extensions.statusDetail', display='Status Detail'),
+            DisplayField(field='extensions.statusDetail',
+                         display='Status Detail'),
         ],
         common_labels=['job-id', 'task-id', 'attempt'],
         query_extensions=['userId'])

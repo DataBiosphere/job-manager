@@ -14,7 +14,7 @@ def get_failures(job):
     if (job['status'] == job_statuses.DsubStatus.FAILURE
             and job['status-message'] and job['last-update']):
         return [
-            FailureMessage(
-                failure=job['status-message'], timestamp=job['last-update'])
+            FailureMessage(failure=job['status-message'],
+                           timestamp=job['last-update'])
         ]
     return None

@@ -53,14 +53,12 @@ class BaseGoogleTestCases:
             self.wait_status(api_job_id, ApiStatus.ABORTED)
 
         def test_query_jobs_invalid_project(self):
-            params = QueryJobsRequest(
-                extensions=ExtendedQueryFields(
-                    project_id='some-bogus-project-id'))
-            resp = self.client.open(
-                '/jobs/query',
-                method='POST',
-                data=flask.json.dumps(params),
-                content_type='application/json')
+            params = QueryJobsRequest(extensions=ExtendedQueryFields(
+                project_id='some-bogus-project-id'))
+            resp = self.client.open('/jobs/query',
+                                    method='POST',
+                                    data=flask.json.dumps(params),
+                                    content_type='application/json')
             self.assert_status(resp, 404)
             self.assertEqual(resp.json['detail'],
                              'Project \"some-bogus-project-id\" not found')
