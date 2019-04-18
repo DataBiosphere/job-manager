@@ -22,11 +22,10 @@ def get_extensions(job):
         EventDetail(e['start-time'], e['name']) for e in job.get('events', [])
     ]
 
-    return ExtendedFields(
-        user_id=job['user-id'],
-        status_detail=job.get('status-detail'),
-        logs=logs.dsub_to_api(job),
-        last_update=job.get('last-update'),
-        envs=job['envs'],
-        source_file=script,
-        events=events)
+    return ExtendedFields(user_id=job['user-id'],
+                          status_detail=job.get('status-detail'),
+                          logs=logs.dsub_to_api(job),
+                          last_update=job.get('last-update'),
+                          envs=job['envs'],
+                          source_file=script,
+                          events=events)

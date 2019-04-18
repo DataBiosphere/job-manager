@@ -41,10 +41,11 @@ def abort_job(id, **kwargs):
 
     :rtype: None
     """
-    url = '{cromwell_url}/{id}/abort'.format(
-        cromwell_url=_get_base_url(), id=id)
-    response = requests.post(
-        url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
+    url = '{cromwell_url}/{id}/abort'.format(cromwell_url=_get_base_url(),
+                                             id=id)
+    response = requests.post(url,
+                             auth=kwargs.get('auth'),
+                             headers=kwargs.get('auth_headers'))
     if response.status_code != 200:
         handle_error(response)
 
@@ -62,13 +63,12 @@ def update_job_labels(id, body, **kwargs):
     :rtype: UpdateJobLabelsResponse
     """
     payload = UpdateJobLabelsRequest.from_dict(body).labels
-    url = '{cromwell_url}/{id}/labels'.format(
-        cromwell_url=_get_base_url(), id=id)
-    response = requests.patch(
-        url,
-        json=payload,
-        auth=kwargs.get('auth'),
-        headers=kwargs.get('auth_headers'))
+    url = '{cromwell_url}/{id}/labels'.format(cromwell_url=_get_base_url(),
+                                              id=id)
+    response = requests.patch(url,
+                              json=payload,
+                              auth=kwargs.get('auth'),
+                              headers=kwargs.get('auth_headers'))
 
     if response.status_code != 200:
         handle_error(response)
@@ -100,8 +100,9 @@ def get_job(id, **kwargs):
         cromwell_url=_get_base_url(),
         id=id,
         query='includeKey=' + '&includeKey='.join(include_keys))
-    response = requests.get(
-        url, auth=kwargs.get('auth'), headers=kwargs.get('auth_headers'))
+    response = requests.get(url,
+                            auth=kwargs.get('auth'),
+                            headers=kwargs.get('auth_headers'))
 
     if response.status_code != 200:
         handle_error(response)
@@ -142,8 +143,8 @@ def get_job(id, **kwargs):
         outputs=update_key_names(job.get('outputs', {})),
         labels=job.get('labels'),
         failures=failures,
-        extensions=ExtendedFields(
-            tasks=sorted_tasks, parent_job_id=job.get('parentWorkflowId')))
+        extensions=ExtendedFields(tasks=sorted_tasks,
+                                  parent_job_id=job.get('parentWorkflowId')))
 
 
 def health(**kwargs):
@@ -160,10 +161,9 @@ def health(**kwargs):
     logger.debug("Using {} to query Cromwell status".format(status_url))
 
     try:
-        response = requests.get(
-            status_url,
-            auth=kwargs.get('auth'),
-            headers=kwargs.get('auth_headers'))
+        response = requests.get(status_url,
+                                auth=kwargs.get('auth'),
+                                headers=kwargs.get('auth_headers'))
 
         if response.status_code != 200:
             logger.warning(
@@ -212,19 +212,17 @@ def format_task(task_name, task_metadata):
 
 
 def format_task_failure(task_name, metadata):
-    return FailureMessage(
-        task_name=remove_workflow_name(task_name),
-        failure=metadata['failures'][0].get('message'),
-        timestamp=_parse_datetime(metadata.get('end')),
-        stdout=metadata.get('stdout'),
-        stderr=metadata.get('stderr'),
-        call_root=metadata.get('callRoot'))
+    return FailureMessage(task_name=remove_workflow_name(task_name),
+                          failure=metadata['failures'][0].get('message'),
+                          timestamp=_parse_datetime(metadata.get('end')),
+                          stdout=metadata.get('stdout'),
+                          stderr=metadata.get('stderr'),
+                          call_root=metadata.get('callRoot'))
 
 
 def format_workflow_failure(failures):
-    return FailureMessage(
-        task_name=failures.get('message'),
-        failure=failures.get('causedBy')[0].get('message'))
+    return FailureMessage(task_name=failures.get('message'),
+                          failure=failures.get('causedBy')[0].get('message'))
 
 
 def format_scattered_task(task_name, task_metadata):
@@ -316,11 +314,11 @@ def query_jobs(body, **kwargs):
 
     has_auth = headers is not None
 
-    response = requests.post(
-        _get_base_url() + '/query',
-        json=cromwell_query_params(query, page, query_page_size, has_auth),
-        auth=auth,
-        headers=headers)
+    response = requests.post(_get_base_url() + '/query',
+                             json=cromwell_query_params(
+                                 query, page, query_page_size, has_auth),
+                             auth=auth,
+                             headers=headers)
 
     if response.status_code != 200:
         handle_error(response)
@@ -335,10 +333,9 @@ def query_jobs(body, **kwargs):
     if page >= last_page:
         return QueryJobsResponse(results=jobs_list, total_size=total_results)
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
-    return QueryJobsResponse(
-        results=jobs_list,
-        total_size=total_results,
-        next_page_token=next_page_token)
+    return QueryJobsResponse(results=jobs_list,
+                             total_size=total_results,
+                             next_page_token=next_page_token)
 
 
 def get_last_page(total_results, page_size):
@@ -438,10 +435,10 @@ def _get_execution_events(events):
     execution_events = None
     if events:
         execution_events = [
-            ExecutionEvent(
-                name=event.get('description'),
-                start=_parse_datetime(event.get('startTime')),
-                end=_parse_datetime(event.get('endTime'))) for event in events
+            ExecutionEvent(name=event.get('description'),
+                           start=_parse_datetime(event.get('startTime')),
+                           end=_parse_datetime(event.get('endTime')))
+            for event in events
         ]
     return execution_events
 

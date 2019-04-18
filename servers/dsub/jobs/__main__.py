@@ -27,34 +27,30 @@ def split_env_flag(name):
 # values. These arguments will rarely be specified as flags directly, aside from
 # occasional use during local debugging.
 parser = argparse.ArgumentParser()
-parser.add_argument(
-    '--provider_type',
-    type=str,
-    help='The dsub provider type to use for managing jobs',
-    default=os.environ.get('PROVIDER_TYPE'))
-parser.add_argument(
-    '--path_prefix',
-    type=str,
-    help='Path prefix, e.g. /api/v1, to serve from',
-    default=os.environ.get('PATH_PREFIX'))
+parser.add_argument('--provider_type',
+                    type=str,
+                    help='The dsub provider type to use for managing jobs',
+                    default=os.environ.get('PROVIDER_TYPE'))
+parser.add_argument('--path_prefix',
+                    type=str,
+                    help='Path prefix, e.g. /api/v1, to serve from',
+                    default=os.environ.get('PATH_PREFIX'))
 parser.add_argument(
     '--allow_origins',
     type=str,
     nargs='+',
     help='Origins to allow for CORS; defaults to CORS disabled',
     default=split_env_flag('ALLOW_ORIGINS'))
-parser.add_argument(
-    '--requires_auth',
-    type=int,
-    help='Boolean indicating if authentication is required',
-    default=os.environ.get('REQUIRES_AUTH'))
+parser.add_argument('--requires_auth',
+                    type=int,
+                    help='Boolean indicating if authentication is required',
+                    default=os.environ.get('REQUIRES_AUTH'))
 
 if __name__ == '__main__':
-    parser.add_argument(
-        '--port',
-        type=int,
-        default=8190,
-        help='The port on which to serve HTTP requests')
+    parser.add_argument('--port',
+                        type=int,
+                        default=8190,
+                        help='The port on which to serve HTTP requests')
     args = parser.parse_args()
 else:
     # Allow unknown args if we aren't the main program, these include flags to
@@ -66,13 +62,12 @@ app.app.config['PROVIDER_TYPE'] = args.provider_type
 app.app.config['REQUIRES_AUTH'] = bool(args.requires_auth)
 if args.allow_origins:
     prefix = args.path_prefix or ''
-    CORS(
-        app.app,
-        resources={
-            prefix + '/*': {
-                'origins': args.allow_origins,
-            },
-        })
+    CORS(app.app,
+         resources={
+             prefix + '/*': {
+                 'origins': args.allow_origins,
+             },
+         })
 
 # Log to stderr.
 handler = logging.StreamHandler()
