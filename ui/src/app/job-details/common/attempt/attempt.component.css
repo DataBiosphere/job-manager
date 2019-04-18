@@ -1,31 +1,107 @@
-mat-list-item.mat-list-item {
-  height: auto;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.75em;
-}
-
 mat-expansion-panel.mat-expansion-panel {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.26);
   box-shadow: none;
+  width: 100%;
 }
 
-.attempt-container {
+mat-expansion-panel-header.mat-expansion-panel-header {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.75em;
+  font-weight: 500;
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-flow: row;
+  line-height: 4rem;
 }
 
-mat-expansion-panel-header {
-  padding-left: 0px;
+mat-expansion-panel.mat-expansion-panel.list-row mat-expansion-panel-header.mat-expansion-panel-header {
+  font-size: 0.75rem;
 }
 
-mat-panel-title {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.85em;
-  font-weight: 600;
-  color: #7e7b6d;
+mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title {
+  display: block;
+}
+
+mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title .task-name {
+  text-align: left;
+  min-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  color: rgba(0, 0, 0, 0.87);
+  padding-left: 20px;
 }
 
 mat-expansion-panel.mat-expansion-panel mat-panel-description.mat-expansion-panel-header-description {
-  flex-grow: 1;
+  display: -webkit-box;
+  flex-flow: row;
+  justify-content: end;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-expansion-panel.mat-expansion-panel .task-status,
+mat-expansion-panel.mat-expansion-panel .task-start,
+mat-expansion-panel.mat-expansion-panel .task-duration,
+mat-expansion-panel.mat-expansion-panel .task-inputs,
+mat-expansion-panel.mat-expansion-panel .task-outputs,
+mat-expansion-panel.mat-expansion-panel .task-links,
+mat-expansion-panel.mat-expansion-panel .task-attempts {
   text-align: left;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-start,
+mat-expansion-panel.mat-expansion-panel .task-duration {
+  width: 150px;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-status,
+mat-expansion-panel.mat-expansion-panel .task-links,
+mat-expansion-panel.mat-expansion-panel .task-inputs,
+mat-expansion-panel.mat-expansion-panel .task-outputs,
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  width: 110px;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  text-align: right;
+}
+
+mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-header[aria-disabled='true'] {
+  padding-right: 32px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+mat-expansion-panel.mat-expansion-panel .task-inputs clr-icon,
+mat-expansion-panel.mat-expansion-panel .task-outputs clr-icon {
+  color: #5C912E;
+  margin-right: 1rem;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
+  padding-left: 5px;
+}
+
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+  line-height: 0.65rem;
+  color: #fff;
+  display: block;
+  margin: 0 0.5rem 0 0;
+  height: auto;
+}
+
+.operation-id {
+  display: inline-table;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  text-decoration: underline;
+  color: rgba(0, 0, 0, 0.54);
 }

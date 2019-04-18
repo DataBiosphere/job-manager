@@ -1,51 +1,64 @@
-<div class="attempt-container" *ngIf="attempt">
-  <h2>Attempt {{ attempt.attemptNumber }}
-  <clr-tooltip *ngIf="attempt.callCached">
-    <clr-icon clrTooltipTrigger shape="copy" size="24" style="color:#5C912E"></clr-icon>
-    <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-      <span>This attempt was cached</span>
-    </clr-tooltip-content>
-  </clr-tooltip>
-  <clr-tooltip>
-    <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(attempt.executionStatus)" size="24"></clr-icon>
-    <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-      <span>{{ t.executionStatus }}</span>
-    </clr-tooltip-content>
-  </clr-tooltip>
-  </h2>
-  <jm-debug-icons [displayMessage]="false"
-                  [message]=""
-                  [stdout]="attempt.stdout"
-                  [stderr]="attempt.stderr"
-                  [directory]="attempt.callRoot">
-  </jm-debug-icons>
-  <h3>Duration: {{ attempt.start | jmDuration: attempt.end }}</h3>
-  <div *ngIf="attempt.inputs">
-    <mat-expansion-panel expanded="false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>Inputs</mat-panel-title>
-      </mat-expansion-panel-header>
-      <jm-resources-table [entries]="attempt.inputs"></jm-resources-table>
-    </mat-expansion-panel>
-  </div>
-  <div *ngIf="attempt.outputs">
-    <mat-expansion-panel expanded="false">
-      <mat-expansion-panel-header>
-        <mat-panel-title>Outputs</mat-panel-title>
-      </mat-expansion-panel-header>
-      <jm-resources-table [entries]="attempt.outputs"></jm-resources-table>
-    </mat-expansion-panel>
-  </div>
-  <div *ngIf="attempt.failures">
-    <mat-expansion-panel expanded="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>Failure Messages</mat-panel-title>
-      </mat-expansion-panel-header>
-      <div>
-        <mat-list>
-          <mat-list-item *ngFor="let message of attempt.failures">{{ message }}></mat-list-item>
-        </mat-list>
+<mat-expansion-panel class="list-header" disabled="disabled">
+  <mat-expansion-panel-header *ngIf="attempt">
+    <mat-panel-title>
+      <div class="task-name">
+        attempt {{ attempt.attemptNumber }}
+        <clr-tooltip>
+          (<a (click)="openDialog($event, attempt.operationId)" class="operation-id" clrTooltipTrigger>{{ attempt.operationId }}</a>)
+          <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
+            <span>operation id: include this detail when filing an issue</span>
+          </clr-tooltip-content>
+        </clr-tooltip>
       </div>
-    </mat-expansion-panel>
-  </div>
-</div>
+    </mat-panel-title>
+    <mat-panel-description>
+      <div class="task-status">
+        <clr-tooltip>
+          <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(attempt.executionStatus)" size="18"></clr-icon>
+          <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+            <span>{{ attempt.executionStatus }}</span>
+          </clr-tooltip-content>
+        </clr-tooltip>
+      </div>
+      <div class="task-start"><jm-datetime [datetime]="attempt.start"></jm-datetime></div>
+      <div class="task-duration">
+        {{ attempt.start | jmDuration: attempt.end }}
+        <clr-tooltip *ngIf="attempt.callCached">
+          <clr-icon clrTooltipTrigger shape="history" size="14" style="color:rgba(0, 0, 0, 0.54)"></clr-icon>
+          <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+            <span>This attempt was cached</span>
+          </clr-tooltip-content>
+        </clr-tooltip>
+      </div>
+      <div class="task-inputs">
+        <button mat-icon-button *ngIf="hasInputs(attempt)">
+          <clr-tooltip>
+            <clr-icon clrTooltipTrigger shape="import" size="18" style="color:#5C912E"></clr-icon>
+            <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+              <span>inputs</span>
+            </clr-tooltip-content>
+          </clr-tooltip>
+        </button>
+      </div>
+      <div class="task-inputs">
+        <button mat-icon-button *ngIf="hasOutputs(attempt)">
+          <clr-tooltip>
+            <clr-icon clrTooltipTrigger shape="export" size="18" style="color:#5C912E"></clr-icon>
+            <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+              <span>outputs</span>
+            </clr-tooltip-content>
+          </clr-tooltip>
+        </button>
+      </div>
+      <div class="task-links">
+        <jm-debug-icons [displayMessage]="false"
+                        [message]=""
+                        [stdout]="attempt.stdout"
+                        [stderr]="attempt.stderr"
+                        [directory]="attempt.callRoot">
+        </jm-debug-icons>
+      </div>
+      <div class="task-attempts">#{{ attempt.attemptNumber }}</div>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+</mat-expansion-panel>

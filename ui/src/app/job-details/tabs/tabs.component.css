@@ -3,20 +3,138 @@
   clear: left;
 }
 
-mat-expansion-panel.mat-expansion-panel {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+.mat-expansion-panel-spacing {
+  margin: 0;
+}
+
+mat-expansion-panel.mat-expansion-panel.content {
+  border: 1px solid rgba(0, 0, 0, 0.26);
+  border-radius: 5px;
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
+}
+
+mat-expansion-panel.mat-expansion-panel.content mat-expansion-panel.mat-expansion-panel {
+  min-width: 1280px;
+  border: 1px solid rgba(0, 0, 0, 0.26);
+  border-top: none;
   box-shadow: none;
 }
 
-mat-expansion-panel.mat-expansion-panel mat-panel-description.mat-expansion-panel-header-description {
-  flex-grow: 1;
+mat-expansion-panel.mat-expansion-panel.content mat-expansion-panel.mat-expansion-panel.list-header {
+  border-top: 1px solid rgba(0, 0, 0, 0.26);
+  margin-top: 20px;
+}
+
+mat-expansion-panel-header.mat-expansion-panel-header {
+  display: flex;
+  flex-flow: row;
+  line-height: 4rem;
+}
+
+mat-expansion-panel.mat-expansion-panel.list-header mat-expansion-panel-header.mat-expansion-panel-header {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background-color: #F1F4F7;
+  color: #333F52;
+}
+
+mat-expansion-panel.mat-expansion-panel.list-row mat-expansion-panel-header.mat-expansion-panel-header {
+  font-size: 0.75rem;
+}
+
+mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title {
+  display: block;
+}
+
+mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title .task-name {
   text-align: left;
+  min-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+mat-expansion-panel.mat-expansion-panel mat-panel-description.mat-expansion-panel-header-description {
+  display: -webkit-box;
+  flex-flow: row;
+  justify-content: end;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-expansion-panel.mat-expansion-panel .task-status,
+mat-expansion-panel.mat-expansion-panel .task-start,
+mat-expansion-panel.mat-expansion-panel .task-duration,
+mat-expansion-panel.mat-expansion-panel .task-inputs,
+mat-expansion-panel.mat-expansion-panel .task-outputs,
+mat-expansion-panel.mat-expansion-panel .task-links,
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  text-align: left;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-start,
+mat-expansion-panel.mat-expansion-panel .task-duration {
+  width: 150px;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-status,
+mat-expansion-panel.mat-expansion-panel .task-links,
+mat-expansion-panel.mat-expansion-panel .task-inputs,
+mat-expansion-panel.mat-expansion-panel .task-outputs,
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  width: 110px;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  text-align: right;
+}
+
+mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-header[aria-disabled='true'] {
+  padding-right: 32px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  text-align: right;
 }
 
 mat-expansion-panel-header,
 mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-inputs clr-icon,
+mat-expansion-panel.mat-expansion-panel .task-outputs clr-icon {
+  color: #5C912E;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
+  padding-left: 5px;
+}
+
+::ng-deep mat-expansion-panel.mat-expansion-panel mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.26);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+}
+
+mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded clr-icon {
+  color: #ccc;
+}
+
+mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description {
+  color: #ccc;
+}
+
+mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description .task-attempts {
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded .task-name {
+  color: rgba(0, 0, 0, 0.87);
+  font-weight: 600;
 }
 
 .header {
@@ -47,14 +165,6 @@ a.title-link {
   overflow: hidden;
 }
 
-::ng-deep .mat-expansion-panel-header.title {
-  display: inline;
-  padding-top: 1rem;
-  margin-bottom: 0;
-  font-size: 1.2rem;
-  position: absolute;
-}
-
 ::ng-deep .mat-tab-labels  {
   justify-content: flex-start;
 }
@@ -67,56 +177,6 @@ a.title-link {
 ::ng-deep .mat-tab-label.mat-tab-label-active {
   font-weight: 600;
   color: #333F52;
-}
-
-.mat-table {
-  margin-top: 20px;
-  display: table;
-  width: 99%;
-  border-radius: 5px;
-  border: 1px solid #CCCFD4;
-  box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.mat-header-row, .mat-row {
-  display: table-row;
-  padding: 0;
-  border: none;
-}
-
-.mat-header-cell, .mat-cell {
-  display: table-cell;
-  vertical-align: middle;
-  padding: 8px 8px 8px 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.mat-cell {
-  height: auto;
-  font-size: 0.75rem;
-}
-
-.mat-header-row {
-  background-color: #F1F4F7;
-  min-height: 48px;
-}
-
-.mat-header-cell {
-  color: #333F52;
-  font-size: 0.7rem;
-  font-weight: 600;
-}
-
-.mat-header-cell.slim-cell, .mat-cell.slim-cell {
-  text-align: right;
-}
-
-.log-item {
-  color: black;
-  cursor: pointer;
-  text-decoration: none;
 }
 
 clr-tooltip-content {
@@ -140,15 +200,6 @@ clr-tooltip-content {
 
 clr-icon {
   margin-right: 1rem;
-}
-
-/* override default color of alert triangle for clarity icon */
-::ng-deep clr-icon.log-error .clr-i-alert.clr-i-outline--alerted {
-  fill: #e62700;
-}
-
-::ng-deep clr-icon.log-error.disabled .clr-i-alert.clr-i-outline--alerted {
-  fill: currentColor;
 }
 
 a.title-link, p.title-nolink {

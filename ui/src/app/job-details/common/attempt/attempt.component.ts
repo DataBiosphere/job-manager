@@ -28,4 +28,16 @@ export class JobAttemptComponent implements OnInit {
   getStatusIcon(status: string): string {
     return JobStatusIcon[JobStatus[status]];
   }
+
+  hasInputs(attempt: IndividualAttempt): boolean {
+    return attempt.inputs && (Object.keys(attempt.inputs).length !== 0);
+  }
+
+  hasOutputs(attempt: IndividualAttempt): boolean {
+    return attempt.outputs && (Object.keys(attempt.outputs).length !== 0);
+  }
+
+  openDialog(event, id): void {
+    event.stopPropagation();
+  }
 }

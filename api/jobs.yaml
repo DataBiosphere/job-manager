@@ -636,6 +636,9 @@ definitions:
       inputs:
         type: object
         description: Mapping of input fully qualified names to stringified values
+      outputs:
+        type: object
+        description: Mapping of input fully qualified names to stringified values
       # TODO: Define a generalized enum for this. For details, see
       # https://github.com/DataBiosphere/job-manager/pull/14.
       executionStatus:
@@ -730,6 +733,9 @@ definitions:
         type: string
         format: date-time
         description: End datetime of the task execution in ISO8601 format with milliseconds
+      operationId:
+        type: string
+        description: Unique ID for an attempt
       failures:
         type: array
         items:

@@ -167,7 +167,7 @@ def get_task_attempts(id, task, **kwargs):
 
     include_keys = ('attempt', 'callCaching:hit',
                     'callCaching:effectiveCallCachingMode', 'callRoot', 'end',
-                    'executionStatus', 'failures', 'inputs', 'labels',
+                    'executionStatus', 'failures', 'inputs', 'jobId', 'labels',
                     'outputs', 'shardIndex', 'start', 'stderr', 'stdout')
 
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
@@ -286,6 +286,7 @@ def format_task(task_name, task_metadata):
         stderr=latest_attempt.get('stderr'),
         stdout=latest_attempt.get('stdout'),
         inputs=update_key_names(latest_attempt.get('inputs', {})),
+        outputs=update_key_names(latest_attempt.get('outputs', {})),
         return_code=latest_attempt.get('returnCode'),
         attempts=latest_attempt.get('attempt'),
         call_root=latest_attempt.get('callRoot'),
@@ -566,9 +567,11 @@ def _get_scattered_task_status(shards):
 
 
 def _convert_to_attempt(item):
+    operation_parts = item.get('jobId').split('/')
     attempt = IndividualAttempt(
         execution_status=task_statuses.cromwell_execution_to_api(
             item.get('executionStatus')),
+        operation_id=operation_parts[-1],
         attempt_number=item.get('attempt'),
         call_cached=_is_call_cached(item.get('callCaching')),
         stdout=item.get('stdout'),

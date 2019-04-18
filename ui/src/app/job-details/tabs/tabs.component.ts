@@ -87,12 +87,12 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return this.job.failures && (this.job.failures.length !== 0);
   }
 
-  hasInputs(): boolean {
-    return this.job.inputs && (Object.keys(this.job.inputs).length !== 0);
+  hasInputs(task:TaskMetadata): boolean {
+    return task.inputs && (Object.keys(task.inputs).length !== 0);
   }
 
-  hasOutputs(): boolean {
-    return this.job.outputs && (Object.keys(this.job.outputs).length !== 0);
+  hasOutputs(task:TaskMetadata): boolean {
+    return task.outputs && (Object.keys(task.outputs).length !== 0);
   }
 
   hasTasks(): boolean {
@@ -100,6 +100,10 @@ export class JobTabsComponent implements OnInit, OnChanges {
       let tasks: TaskMetadata[] = this.job.extensions.tasks || [];
       return tasks.length > 0;
     }
+  }
+
+  openDialog(event, data): void {
+    event.stopPropagation();
   }
 
   getScatteredCountTotal(task: TaskMetadata): number {
