@@ -37,6 +37,16 @@ export class JobAttemptComponent implements OnInit {
     return attempt.outputs && (Object.keys(attempt.outputs).length !== 0);
   }
 
+  hasFailures(attempt: IndividualAttempt): boolean {
+    return attempt.failures && (Object.keys(attempt.failures).length !== 0);
+  }
+
+  getFailures(attempt: IndividualAttempt): string {
+    if (this.hasFailures(attempt)) {
+      return attempt.failures.join('\n');
+    }
+  }
+
   openDialog(event, id): void {
     event.stopPropagation();
   }

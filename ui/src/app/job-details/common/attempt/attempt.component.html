@@ -4,7 +4,9 @@
       <div class="task-name">
         attempt {{ attempt.attemptNumber }}
         <clr-tooltip>
-          (<a (click)="openDialog($event, attempt.operationId)" class="operation-id" clrTooltipTrigger>{{ attempt.operationId }}</a>)
+          <span class="operation-id-container">
+            <a (click)="openDialog($event, attempt.operationId)" class="operation-id" clrTooltipTrigger>{{ attempt.operationId }}</a>
+          </span>
           <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
             <span>operation id: include this detail when filing an issue</span>
           </clr-tooltip-content>
@@ -51,8 +53,8 @@
         </button>
       </div>
       <div class="task-links">
-        <jm-debug-icons [displayMessage]="false"
-                        [message]=""
+        <jm-debug-icons [displayMessage]="hasFailures(attempt)"
+                        [message]="getFailures(attempt)"
                         [stdout]="attempt.stdout"
                         [stderr]="attempt.stderr"
                         [directory]="attempt.callRoot">

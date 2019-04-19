@@ -163,6 +163,10 @@ export class JobTabsComponent implements OnInit, OnChanges {
       this.navDown.emit(id);
     }
   }
+
+  navigatetoScatters(id: string): void {
+
+  }
 }
 
 /** Simple database with an observable list of jobs to be subscribed to by the

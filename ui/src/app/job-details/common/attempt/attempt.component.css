@@ -3,7 +3,6 @@ mat-expansion-panel.mat-expansion-panel {
   margin: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.26);
   box-shadow: none;
-  width: 100%;
 }
 
 mat-expansion-panel-header.mat-expansion-panel-header {
@@ -47,7 +46,6 @@ mat-expansion-panel.mat-expansion-panel .task-start,
 mat-expansion-panel.mat-expansion-panel .task-duration,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
 mat-expansion-panel.mat-expansion-panel .task-outputs,
-mat-expansion-panel.mat-expansion-panel .task-links,
 mat-expansion-panel.mat-expansion-panel .task-attempts {
   text-align: left;
 }
@@ -65,8 +63,13 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
   width: 110px;
 }
 
+mat-expansion-panel.mat-expansion-panel .task-links,
 mat-expansion-panel.mat-expansion-panel .task-attempts {
   text-align: right;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-links {
+  overflow: visible !important;
 }
 
 mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-header[aria-disabled='true'] {
@@ -95,9 +98,14 @@ clr-tooltip-content {
   height: auto;
 }
 
+.operation-id-container {
+  display: block;
+  float: right;
+}
+
 .operation-id {
-  display: inline-table;
-  max-width: 100px;
+  display: block;
+  max-width: 250px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

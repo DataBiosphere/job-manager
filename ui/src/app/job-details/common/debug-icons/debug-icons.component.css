@@ -7,6 +7,11 @@ clr-tooltip-content {
   margin: -0.6rem 0.5rem 0 0;
   height: auto;
   line-height: 1rem;
+  text-align: left;
+}
+
+:host-context(.mat-expansion-panel-header) clr-tooltip-content {
+  max-width: 50%;
 }
 
 clr-tooltip a {

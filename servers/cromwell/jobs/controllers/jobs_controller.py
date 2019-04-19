@@ -567,11 +567,9 @@ def _get_scattered_task_status(shards):
 
 
 def _convert_to_attempt(item):
-    operation_parts = item.get('jobId').split('/')
     attempt = IndividualAttempt(
         execution_status=task_statuses.cromwell_execution_to_api(
             item.get('executionStatus')),
-        operation_id=operation_parts[-1],
         attempt_number=item.get('attempt'),
         call_cached=_is_call_cached(item.get('callCaching')),
         stdout=item.get('stdout'),
@@ -580,7 +578,8 @@ def _convert_to_attempt(item):
         inputs=item.get('inputs'),
         outputs=item.get('outputs'),
         start=_parse_datetime(item.get('start')),
-        end=_parse_datetime(item.get('end')))
+        end=_parse_datetime(item.get('end')),
+        operation_id=item.get('jobId') or None)
 
     if item.get('failures'):
         attempt.failures = [f.get('message') for f in item.get('failures')]
