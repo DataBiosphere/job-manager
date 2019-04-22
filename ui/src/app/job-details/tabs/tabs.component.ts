@@ -91,8 +91,16 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return task.inputs && (Object.keys(task.inputs).length !== 0);
   }
 
+  getInputKeys(task:TaskMetadata): string[] {
+    return Object.keys(task.inputs);
+  }
+
   hasOutputs(task:TaskMetadata): boolean {
     return task.outputs && (Object.keys(task.outputs).length !== 0);
+  }
+
+  getOutputKeys(task:TaskMetadata): string[] {
+    return Object.keys(task.outputs);
   }
 
   hasTasks(): boolean {

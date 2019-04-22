@@ -47,7 +47,7 @@
                     </clr-tooltip>
                   </div>
                   <div class="task-inputs">
-                    <button mat-icon-button *ngIf="hasInputs(t)" (click)="openDialog($event, t.inputs)">
+                    <button mat-icon-button *ngIf="hasInputs(t)" [mat-menu-trigger-for]="inputMenu" (click)="$event.stopPropagation()">
                       <clr-tooltip>
                         <clr-icon clrTooltipTrigger shape="import" size="18"></clr-icon>
                         <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
@@ -55,9 +55,20 @@
                         </clr-tooltip-content>
                       </clr-tooltip>
                     </button>
+                    <mat-menu #inputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+                      <mat-table [dataSource]="getInputKeys(t)" (click)="$event.stopPropagation()">
+                        <ng-container matColumnDef="key">
+                          <mat-cell class="input-key" *matCellDef="let key">{{ key }}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="value">
+                          <mat-cell class="input-value" *matCellDef="let key">{{ t.inputs[key] }}</mat-cell>
+                        </ng-container>
+                        <mat-row *matRowDef="let key; columns: ['key','value']"></mat-row>
+                      </mat-table>
+                    </mat-menu>
                   </div>
                   <div class="task-outputs">
-                      <button mat-icon-button *ngIf="hasOutputs(t)">
+                      <button mat-icon-button *ngIf="hasOutputs(t)" [mat-menu-trigger-for]="outputMenu" (click)="$event.stopPropagation()">
                         <clr-tooltip>
                           <clr-icon clrTooltipTrigger shape="export" size="18"></clr-icon>
                           <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
@@ -65,6 +76,17 @@
                           </clr-tooltip-content>
                         </clr-tooltip>
                       </button>
+                    <mat-menu #outputMenu="matMenu" class="wide-menu input-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
+                      <mat-table [dataSource]="getOutputKeys(t)" (click)="$event.stopPropagation()">
+                        <ng-container matColumnDef="key">
+                          <mat-cell class="input-key" *matCellDef="let key">{{ key }}</mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="value">
+                          <mat-cell class="input-value" *matCellDef="let key">{{ t.outputs[key] }}</mat-cell>
+                        </ng-container>
+                        <mat-row *matRowDef="let key; columns: ['key','value']"></mat-row>
+                      </mat-table>
+                    </mat-menu>
                   </div>
                   <div class="task-links">
                     <jm-debug-icons [displayMessage]="false"
