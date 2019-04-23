@@ -33,24 +33,30 @@
         </clr-tooltip>
       </div>
       <div class="task-inputs">
-        <button mat-icon-button *ngIf="hasInputs(attempt)">
+        <button mat-icon-button *ngIf="hasInputs(attempt)" [mat-menu-trigger-for]="inputMenu" (click)="$event.stopPropagation()">
           <clr-tooltip>
-            <clr-icon clrTooltipTrigger shape="import" size="18" style="color:#5C912E"></clr-icon>
+            <clr-icon clrTooltipTrigger shape="import" size="18"></clr-icon>
             <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
               <span>inputs</span>
             </clr-tooltip-content>
           </clr-tooltip>
         </button>
+        <mat-menu #inputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+          <jm-resources-table [entries]="attempt.inputs" (click)="$event.stopPropagation()"></jm-resources-table>
+        </mat-menu>
       </div>
-      <div class="task-inputs">
-        <button mat-icon-button *ngIf="hasOutputs(attempt)">
+      <div class="task-outputs">
+        <button mat-icon-button *ngIf="hasOutputs(attempt)" [mat-menu-trigger-for]="outputMenu" (click)="$event.stopPropagation()">
           <clr-tooltip>
-            <clr-icon clrTooltipTrigger shape="export" size="18" style="color:#5C912E"></clr-icon>
+            <clr-icon clrTooltipTrigger shape="import" size="18"></clr-icon>
             <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
               <span>outputs</span>
             </clr-tooltip-content>
           </clr-tooltip>
         </button>
+        <mat-menu #outputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+          <jm-resources-table [entries]="attempt.outputs" (click)="$event.stopPropagation()"></jm-resources-table>
+        </mat-menu>
       </div>
       <div class="task-links">
         <jm-debug-icons [displayMessage]="hasFailures(attempt)"

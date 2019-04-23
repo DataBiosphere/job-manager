@@ -23,9 +23,8 @@ td,
 th {
   display: table-cell;
   text-align: left;
-  line-height: 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  width: 50%;
+  line-height: 1.2rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
   font-size: 0.75rem;
 }
 
@@ -58,6 +57,7 @@ td {
 
 .mat-cell {
   height: auto;
+  margin: 0;
 }
 
 .mat-header-row {
@@ -77,4 +77,56 @@ td {
 
 a {
   color: #5C912E;
+}
+
+mat-table.resources-table td.resource-key {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+mat-table.resources-table td.resource-value {
+  width: 100%;
+}
+
+:host-context(div.mat-menu-panel.input-menu) mat-table.resources-table {
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  width: auto;
+}
+
+:host-context(div.mat-menu-panel.input-menu) mat-table.resources-table mat-row.mat-row {
+  min-height: auto;
+  padding: 0;
+}
+
+:host-context(div.mat-menu-panel.input-menu) mat-table.resources-table mat-row.mat-row:first-child td {
+  border-top: none;
+}
+
+:host-context(div.mat-menu-panel.input-menu) mat-table.resources-table td.resource-key,
+:host-context(div.mat-menu-panel.input-menu) mat-table.resources-table td.resource-value {
+  font-weight: 400;
+  font-size: 0.7rem;
+  line-height: 1rem;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+
+:host-context(div.mat-menu-panel.input-menu) mat-table.resources-table td.resource-key {
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+:host-context(div.mat-menu-panel.input-menu) mat-table.resources-table td.resource-value {
+  min-width: 300px;
+  max-width: 600px;
 }

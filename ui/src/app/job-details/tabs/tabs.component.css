@@ -233,34 +233,5 @@ a.title-link, p.title-nolink {
 
 ::ng-deep div.mat-menu-panel.input-menu {
   max-width: 700px;
-}
-
-::ng-deep div.mat-menu-panel.input-menu mat-table.mat-table mat-row.mat-row {
-  min-height: auto;
-  padding: 0;
-  vertical-align: top;
-  align-items: normal;
-}
-
-::ng-deep div.mat-menu-panel.input-menu mat-table.mat-table mat-cell.mat-cell.input-key,
-::ng-deep div.mat-menu-panel.input-menu mat-table.mat-table mat-cell.mat-cell.input-value {
-  min-height: auto;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 400;
-  font-size: 0.7rem;
-  vertical-align: top;
-  padding: 5px 10px;
-}
-
-::ng-deep div.mat-menu-panel.input-menu mat-table.mat-table mat-cell.mat-cell.input-key {
-  max-width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-}
-
-::ng-deep div.mat-menu-panel.input-menu mat-table.mat-table mat-cell.mat-cell.input-value {
-  min-width: 300px;
-  max-width: 600px;
+  max-height: 600px;
 }
