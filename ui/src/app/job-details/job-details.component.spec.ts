@@ -34,6 +34,7 @@ import {JobStatus} from "../shared/model/JobStatus";
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {JobFailuresTableComponent} from "./common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./tabs/timing-diagram/timing-diagram.component";
+import {JobScatteredAttemptsComponent} from "./tabs/scattered-attempts/scattered-attempts.component";
 
 describe('JobDetailsComponent', () => {
 
@@ -68,6 +69,7 @@ describe('JobDetailsComponent', () => {
         JobResourcesTableComponent,
         JobTabsComponent,
         JobTimingDiagramComponent,
+        JobScatteredAttemptsComponent,
       ],
       imports: [
         ClrIconModule,

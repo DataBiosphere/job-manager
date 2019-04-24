@@ -327,7 +327,11 @@ def format_scattered_task(task_name, task_metadata):
                     end=_parse_datetime(shard.get('end')),
                     shard_index=shard.get('shardIndex'),
                     execution_events=_get_execution_events(
-                        shard.get('executionEvents'))))
+                        shard.get('executionEvents')),
+                    stdout=shard.get('stdout'),
+                    stderr=shard.get('stderr'),
+                    call_root=shard.get('callRoot'),
+                    attempts=shard.get('attempt'),))
             if min_start > _parse_datetime(shard.get('start')):
                 min_start = _parse_datetime(shard.get('start'))
             if shard.get('executionStatus') not in ['Failed', 'Done']:
@@ -578,8 +582,7 @@ def _convert_to_attempt(item):
         inputs=item.get('inputs'),
         outputs=item.get('outputs'),
         start=_parse_datetime(item.get('start')),
-        end=_parse_datetime(item.get('end')),
-        operation_id=item.get('jobId') or None)
+        end=_parse_datetime(item.get('end')))
 
     if item.get('failures'):
         attempt.failures = [f.get('message') for f in item.get('failures')]

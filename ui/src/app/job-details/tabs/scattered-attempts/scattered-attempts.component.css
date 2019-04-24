@@ -1,26 +1,19 @@
-.content {
-  margin: 1rem;
-  clear: left;
+mat-dialog-content.mat-dialog-content {
+  overflow: hidden;
 }
 
 .mat-expansion-panel-spacing {
   margin: 0;
 }
 
-mat-expansion-panel.mat-expansion-panel.content {
-  border: 1px solid rgba(0, 0, 0, 0.26);
-  border-radius: 5px;
-  box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
-}
-
-mat-expansion-panel.mat-expansion-panel.content mat-expansion-panel.mat-expansion-panel {
-  min-width: 1280px;
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel {
+  min-width: 1080px;
   border: 1px solid rgba(0, 0, 0, 0.26);
   border-top: none;
   box-shadow: none;
 }
 
-mat-expansion-panel.mat-expansion-panel.content mat-expansion-panel.mat-expansion-panel.list-header {
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.list-header {
   border-top: 1px solid rgba(0, 0, 0, 0.26);
   margin-top: 20px;
 }
@@ -48,7 +41,7 @@ mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-head
 
 mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title .task-name {
   text-align: left;
-  min-width: 300px;
+  min-width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -73,7 +66,7 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
 
 mat-expansion-panel.mat-expansion-panel .task-start,
 mat-expansion-panel.mat-expansion-panel .task-duration {
-  width: 150px;
+  width: 140px;
 }
 
 mat-expansion-panel.mat-expansion-panel.list-header .task-links {
@@ -85,7 +78,7 @@ mat-expansion-panel.mat-expansion-panel .task-links,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
 mat-expansion-panel.mat-expansion-panel .task-outputs,
 mat-expansion-panel.mat-expansion-panel .task-attempts {
-  width: 110px;
+  width: 100px;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-attempts {
@@ -117,75 +110,45 @@ mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
   padding-left: 5px;
 }
 
-::ng-deep mat-expansion-panel.mat-expansion-panel mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded clr-icon {
+  color: #ccc;
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description {
+  color: #ccc;
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description .task-attempts {
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded .task-name {
+  color: rgba(0, 0, 0, 0.87);
+  font-weight: 600;
+}
+
+::ng-deep mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {
   padding: 0;
   margin: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.26);
   border-bottom: 1px solid rgba(0, 0, 0, 0.26);
 }
 
-mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded clr-icon {
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded clr-icon {
   color: #ccc;
 }
 
-mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description {
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description {
   color: #ccc;
 }
 
-mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description .task-attempts {
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description .task-attempts {
   color: rgba(0, 0, 0, 0.87);
 }
 
-mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded .task-name {
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded .task-name {
   color: rgba(0, 0, 0, 0.87);
   font-weight: 600;
-}
-
-.header {
-  margin-right: 1rem;
-}
-
-.title {
-  margin-top: .6rem;
-  margin-bottom: .6rem;
-  font-size: 1.2rem;
-  color: gray;
-}
-
-.title-link {
-  color: black;
-}
-
-a.title-link {
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.mat-expansion-panel.has-tasks {
-  overflow: hidden;
-}
-
-::ng-deep .mat-tab-body-wrapper .mat-tab-body.mat-tab-body-active {
-  overflow-y: hidden;
-  z-index: 1;
-}
-
-::ng-deep .mat-tab-body-active .mat-tab-body-content {
-  overflow: hidden;
-}
-
-::ng-deep .mat-tab-labels  {
-  justify-content: flex-start;
-}
-
-::ng-deep .mat-tab-label {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-}
-
-::ng-deep .mat-tab-label.mat-tab-label-active {
-  font-weight: 600;
-  color: #333F52;
 }
 
 clr-tooltip-content {
@@ -198,46 +161,4 @@ clr-tooltip-content {
   display: block;
   margin: -0.6rem 0.5rem 0 0;
   height: auto;
-}
-
-::ng-deep .shards-menu.mat-menu-panel {
-  overflow: visible;
-}
-
-clr-icon {
-  margin-right: 1rem;
-}
-
-a.title-link, p.title-nolink {
-  display: inline-flex;
-}
-
-.scatter-icon {
-  display: block;
-  float: right;
-  color: #5C912E;
-}
-
-::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {
-  background-color: #74AE43;
-}
-
-.task-name {
-  width: 50%;
-}
-
-.task-status {
-  width: 30%;
-  text-align: right;
-}
-
-.task-links {
-  width: 15%;
-  text-align: right;
-  min-width: 100px;
-}
-
-::ng-deep div.mat-menu-panel.input-menu {
-  max-width: 700px;
-  max-height: 600px;
 }

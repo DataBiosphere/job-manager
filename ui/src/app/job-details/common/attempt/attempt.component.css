@@ -26,12 +26,18 @@ mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-head
 mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title .task-name {
   text-align: left;
   min-width: 280px;
+  max-width: 280px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
   color: rgba(0, 0, 0, 0.87);
   padding-left: 20px;
+}
+
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-name {
+  min-width: 180px;
+  max-width: 180px;
 }
 
 mat-expansion-panel.mat-expansion-panel mat-panel-description.mat-expansion-panel-header-description {
@@ -55,12 +61,25 @@ mat-expansion-panel.mat-expansion-panel .task-duration {
   width: 150px;
 }
 
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-start,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-duration {
+  width: 140px;
+}
+
 mat-expansion-panel.mat-expansion-panel .task-status,
 mat-expansion-panel.mat-expansion-panel .task-links,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
 mat-expansion-panel.mat-expansion-panel .task-outputs,
 mat-expansion-panel.mat-expansion-panel .task-attempts {
   width: 110px;
+}
+
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-status,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-inputs,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-outputs,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-attempts {
+  width: 100px;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-links,

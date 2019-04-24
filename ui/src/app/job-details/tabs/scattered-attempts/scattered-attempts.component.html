@@ -1,0 +1,64 @@
+<h2 mat-dialog-title *ngIf="data">{{ data.shardsData.taskName }}</h2>
+<mat-dialog-content #dialogContainer *ngIf="data && data.shardsData">
+  <mat-accordion class="content">
+    <mat-expansion-panel disabled="disabled" expanded="false" class="list-header">
+      <mat-expansion-panel-header>
+        <mat-panel-title><div class="task-name">Task Name</div></mat-panel-title>
+        <mat-panel-description>
+          <div class="task-status">Status</div>
+          <div class="task-start">Start</div>
+          <div class="task-duration">Duration</div>
+          <div class="task-inputs">Inputs</div>
+          <div class="task-outputs">Outputs</div>
+          <div class="task-links">Links</div>
+          <div class="task-attempts">Attempts</div>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+    </mat-expansion-panel>
+    <ng-container *ngFor="let shard of data.shardsData.taskShards">
+      <mat-expansion-panel class="list-row" expanded="false" (opened)="getShardAttempts(shard)">
+        <mat-expansion-panel-header [expandedHeight]="'48px'">
+          <mat-panel-title>
+            <div class="task-name">shard {{ shard.shardIndex }}</div>
+          </mat-panel-title>
+          <mat-panel-description>
+            <div class="task-status status-icon">
+              <clr-tooltip>
+                <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(shard.executionStatus)" size="18"></clr-icon>
+                <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+                  <span>{{ shard.executionStatus }}</span>
+                </clr-tooltip-content>
+              </clr-tooltip>
+            </div>
+            <div class="task-start">
+              <jm-datetime *ngIf="shard.start" [datetime]="shard.start"></jm-datetime>
+            </div>
+            <div class="task-duration">
+              <ng-container *ngIf="shard.start && shard.end">
+                {{ shard.start | jmDuration: shard.end }}
+                <clr-tooltip *ngIf="shard.callCached">
+                  <clr-icon clrTooltipTrigger shape="history" size="14" style="color:rgba(0, 0, 0, 0.54)"></clr-icon>
+                  <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+                    <span>This task was cached</span>
+                  </clr-tooltip-content>
+                </clr-tooltip>
+              </ng-container>
+            </div>
+            <div class="task-inputs">&nbsp;</div>
+            <div class="task-outputs">&nbsp;</div>
+            <div class="task-links">
+              <jm-debug-icons [displayMessage]="false"
+                              [message]=""
+                              [stdout]="shard.stdout"
+                              [stderr]="shard.stderr"
+                              [directory]="shard.callRoot">
+              </jm-debug-icons>
+            </div>
+            <div class="task-attempts">{{ shard.attempts }}</div>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <jm-attempt [attempt]="attempt" *ngFor="let attempt of shard.attemptsData"></jm-attempt>
+      </mat-expansion-panel>
+    </ng-container>
+  </mat-accordion>
+</mat-dialog-content>

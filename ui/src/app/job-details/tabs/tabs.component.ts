@@ -10,6 +10,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
+import {MatDialog} from "@angular/material";
 import {Observable} from 'rxjs/Observable';
 
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
@@ -20,6 +21,8 @@ import {JobFailuresTableComponent} from "../common/failures-table/failures-table
 import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
 import {JobManagerService} from "../../core/job-manager.service";
 import {TaskShard} from "../../shared/model/TaskShard";
+import {JobScatteredAttemptsComponent} from "./scattered-attempts/scattered-attempts.component";
+import {IndividualAttempt} from "../../shared/model/IndividualAttempt";
 
 @Component({
   selector: 'jm-tabs',
@@ -38,17 +41,10 @@ export class JobTabsComponent implements OnInit, OnChanges {
 
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
-  // displayedColumns = [
-  //   'name',
-  //   'status',
-  //   'startTime',
-  //   'duration',
-  //   'attempts',
-  //   'files',
-  // ];
   tabWidth: number = 1024;
 
-  constructor(private readonly jobManagerService: JobManagerService) {};
+  constructor(private readonly jobManagerService: JobManagerService,
+              public scatteredAttemptsDialog: MatDialog) {};
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
@@ -91,16 +87,8 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return task.inputs && (Object.keys(task.inputs).length !== 0);
   }
 
-  getInputKeys(task:TaskMetadata): string[] {
-    return Object.keys(task.inputs);
-  }
-
   hasOutputs(task:TaskMetadata): boolean {
     return task.outputs && (Object.keys(task.outputs).length !== 0);
-  }
-
-  getOutputKeys(task:TaskMetadata): string[] {
-    return Object.keys(task.outputs);
   }
 
   hasTasks(): boolean {
@@ -172,8 +160,35 @@ export class JobTabsComponent implements OnInit, OnChanges {
     }
   }
 
-  navigatetoScatters(id: string): void {
+  openScatteredAttemptsDialog(task: TaskMetadata): void {
+    let trimmedShards: TaskShard[] = [];
 
+    // remove executionEvents, since they're not needed outside the timing diagram
+    task.shards.forEach((shard) => {
+      let newShard: TaskShard = {};
+      newShard.start = new Date(shard.start);
+      newShard.end = new Date(shard.end);
+      newShard.stdout = shard.stdout;
+      newShard.stderr = shard.stderr;
+      newShard.callRoot = shard.callRoot;
+      newShard.attempts = shard.attempts;
+      newShard.shardIndex = shard.shardIndex;
+      newShard.executionStatus = shard.executionStatus;
+      trimmedShards.push(newShard);
+    });
+
+    const data = {
+      taskId: this.job.id,
+      taskName: this.getJobTaskName(task.name),
+      taskShards: trimmedShards
+    };
+
+    this.scatteredAttemptsDialog.open(JobScatteredAttemptsComponent, {
+      disableClose: false,
+      data: {
+        shardsData: data
+      }
+    });
   }
 }
 

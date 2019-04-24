@@ -25,6 +25,7 @@ import {FakeCapabilitiesService} from '../../testing/fake-capabilities.service';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobResourcesTableComponent} from '../resources/resources-table/resources-table.component';
 import {JobTimingDiagramComponent} from './timing-diagram/timing-diagram.component';
+import {JobScatteredAttemptsComponent} from './scattered-attempts/scattered-attempts.component';
 
 describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;

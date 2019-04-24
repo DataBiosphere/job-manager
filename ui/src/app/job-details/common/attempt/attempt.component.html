@@ -3,14 +3,6 @@
     <mat-panel-title>
       <div class="task-name">
         attempt {{ attempt.attemptNumber }}
-        <clr-tooltip>
-          <span class="operation-id-container">
-            <a (click)="openDialog($event, attempt.operationId)" class="operation-id" clrTooltipTrigger>{{ attempt.operationId }}</a>
-          </span>
-          <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
-            <span>operation id: include this detail when filing an issue</span>
-          </clr-tooltip-content>
-        </clr-tooltip>
       </div>
     </mat-panel-title>
     <mat-panel-description>

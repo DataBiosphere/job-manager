@@ -29,7 +29,7 @@
                   <div class="task-status status-icon">
                     <clr-tooltip>
                       <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(t.executionStatus)" size="18"></clr-icon>
-                      <clr-tooltip-content clrPosition="letitletitleft" clrSize="xs" *clrIfOpen>
+                      <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
                         <span>{{ t.executionStatus }}</span>
                       </clr-tooltip-content>
                     </clr-tooltip>
@@ -51,7 +51,7 @@
                       <clr-tooltip>
                         <clr-icon clrTooltipTrigger shape="import" size="18"></clr-icon>
                         <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-                          <span>imports</span>
+                          <span>inputs</span>
                         </clr-tooltip-content>
                       </clr-tooltip>
                     </button>
@@ -64,7 +64,7 @@
                       <clr-tooltip>
                         <clr-icon clrTooltipTrigger shape="export" size="18"></clr-icon>
                         <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-                          <span>imports</span>
+                          <span>outputs</span>
                         </clr-tooltip-content>
                       </clr-tooltip>
                     </button>
@@ -117,7 +117,7 @@
                       <clr-tooltip>
                         <clr-icon clrTooltipTrigger shape="import" size="18"></clr-icon>
                         <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-                          <span>imports</span>
+                          <span>inputs</span>
                         </clr-tooltip-content>
                       </clr-tooltip>
                     </button>
@@ -130,7 +130,7 @@
                       <clr-tooltip>
                         <clr-icon clrTooltipTrigger shape="export" size="18"></clr-icon>
                         <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-                          <span>imports</span>
+                          <span>outputs</span>
                         </clr-tooltip-content>
                       </clr-tooltip>
                     </button>
@@ -157,7 +157,7 @@
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <div class="task-name">
-                    <a class="title-link" (click)="navigatetoScatters(t.jobId)">{{ t.name }}</a>
+                    <a class="title-link" (click)="openScatteredAttemptsDialog(t)">{{ t.name }}</a>
                     <clr-tooltip class="scatter-icon">
                        <clr-icon clrTooltipTrigger shape="layers" size="24" class="is-solid"></clr-icon>
                        <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
@@ -192,7 +192,7 @@
                       <clr-tooltip>
                         <clr-icon clrTooltipTrigger shape="import" size="18"></clr-icon>
                         <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-                          <span>imports</span>
+                          <span>inputs</span>
                         </clr-tooltip-content>
                       </clr-tooltip>
                     </button>
@@ -205,7 +205,7 @@
                       <clr-tooltip>
                         <clr-icon clrTooltipTrigger shape="import" size="18"></clr-icon>
                         <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-                          <span>imports</span>
+                          <span>outputs</span>
                         </clr-tooltip-content>
                       </clr-tooltip>
                     </button>

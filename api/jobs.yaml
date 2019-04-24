@@ -733,9 +733,6 @@ definitions:
         type: string
         format: date-time
         description: End datetime of the task execution in ISO8601 format with milliseconds
-      operationId:
-        type: string
-        description: Unique ID for an attempt
       failures:
         type: array
         items:
@@ -763,11 +760,20 @@ definitions:
         type: string
         format: date-time
         description: End datetime of the task execution in ISO8601 format with milliseconds
-      name:
-        type: string
-        description: The name of the job
       shardIndex:
         type: integer
+      stdout:
+        type: string
+        description: If from a task, path to the standard output file for this task or shard
+      stderr:
+        type: string
+        description: If from a task, path to the standard error file for this task or shard
+      callRoot:
+        type: string
+        description: If from a task, the root directory of the task or shard execution
+      attempts:
+        type: integer
+        description: Number of times the task was run
       attemptsData:
         type: array
         items:

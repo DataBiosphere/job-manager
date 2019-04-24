@@ -1,13 +1,9 @@
 clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem 0.5rem;
-  font-size: 0.65rem;
-  color: #fff;
-  display: block;
-  margin: -0.6rem 0.5rem 0 0;
-  height: auto;
-  line-height: 1rem;
   text-align: left;
+  line-height: 1rem;
+  font-size: 0.65rem;
+  max-width: 500px;
+  z-index: 999;
 }
 
 :host-context(.mat-expansion-panel-header) clr-tooltip-content {
