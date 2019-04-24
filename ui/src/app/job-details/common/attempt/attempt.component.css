@@ -57,17 +57,17 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
 }
 
 mat-expansion-panel.mat-expansion-panel .task-start,
-mat-expansion-panel.mat-expansion-panel .task-duration {
+mat-expansion-panel.mat-expansion-panel .task-links {
   width: 150px;
 }
 
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-start,
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-duration {
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links {
   width: 140px;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-status,
-mat-expansion-panel.mat-expansion-panel .task-links,
+mat-expansion-panel.mat-expansion-panel .task-duration,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
 mat-expansion-panel.mat-expansion-panel .task-outputs,
 mat-expansion-panel.mat-expansion-panel .task-attempts {
@@ -75,7 +75,7 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
 }
 
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-status,
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-duration,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-inputs,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-outputs,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-attempts {

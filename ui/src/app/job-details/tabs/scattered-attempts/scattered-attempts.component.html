@@ -31,24 +31,22 @@
               </clr-tooltip>
             </div>
             <div class="task-start">
-              <jm-datetime *ngIf="shard.start" [datetime]="shard.start"></jm-datetime>
+              <jm-datetime [datetime]="shard.start"></jm-datetime>
             </div>
             <div class="task-duration">
-              <ng-container *ngIf="shard.start && shard.end">
-                {{ shard.start | jmDuration: shard.end }}
-                <clr-tooltip *ngIf="shard.callCached">
-                  <clr-icon clrTooltipTrigger shape="history" size="14" style="color:rgba(0, 0, 0, 0.54)"></clr-icon>
-                  <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-                    <span>This task was cached</span>
-                  </clr-tooltip-content>
-                </clr-tooltip>
-              </ng-container>
+              {{ shard.start | jmDuration: shard.end }}
+              <clr-tooltip *ngIf="shard.callCached">
+                <clr-icon clrTooltipTrigger shape="history" size="14" style="color:rgba(0, 0, 0, 0.54)"></clr-icon>
+                <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+                  <span>This task was cached</span>
+                </clr-tooltip-content>
+              </clr-tooltip>
             </div>
             <div class="task-inputs">&nbsp;</div>
             <div class="task-outputs">&nbsp;</div>
             <div class="task-links">
-              <jm-debug-icons [displayMessage]="false"
-                              [message]=""
+              <jm-debug-icons [displayMessage]="hasFailures(shard)"
+                              [message]="getFailures(shard)"
                               [stdout]="shard.stdout"
                               [stderr]="shard.stderr"
                               [directory]="shard.callRoot">

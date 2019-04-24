@@ -79,7 +79,6 @@
                                     [stderr]="t.stderr"
                                     [directory]="t.callRoot">
                     </jm-debug-icons>
-
                   </div>
                   <div class="task-attempts">&nbsp;</div>
                 </mat-panel-description>
@@ -139,8 +138,8 @@
                     </mat-menu>
                   </div>
                   <div class="task-links">
-                    <jm-debug-icons [displayMessage]="false"
-                                    [message]=""
+                    <jm-debug-icons [displayMessage]="hasTaskFailures(t)"
+                                    [message]="getTaskFailures(t)"
                                     [stdout]="t.stdout"
                                     [stderr]="t.stderr"
                                     [directory]="t.callRoot">

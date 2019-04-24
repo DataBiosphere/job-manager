@@ -72,7 +72,7 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
 }
 
 mat-expansion-panel.mat-expansion-panel .task-start,
-mat-expansion-panel.mat-expansion-panel .task-duration {
+mat-expansion-panel.mat-expansion-panel .task-links {
   width: 150px;
 }
 
@@ -81,7 +81,7 @@ mat-expansion-panel.mat-expansion-panel.list-header .task-links {
 }
 
 mat-expansion-panel.mat-expansion-panel .task-status,
-mat-expansion-panel.mat-expansion-panel .task-links,
+mat-expansion-panel.mat-expansion-panel .task-duration,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
 mat-expansion-panel.mat-expansion-panel .task-outputs,
 mat-expansion-panel.mat-expansion-panel .task-attempts {
@@ -139,6 +139,10 @@ mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansi
 mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded .task-name {
   color: rgba(0, 0, 0, 0.87);
   font-weight: 600;
+}
+
+mat-dialog-container.mat-dialog-container {
+  overflow: visible;
 }
 
 .header {

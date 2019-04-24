@@ -659,10 +659,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/TaskShard'
-      failures:
+      failureMessages:
         type: array
         items:
-          $ref: '#/definitions/FailureMessage'
+          type: string
       returnCode:
         type: integer
         description: Task execution return code
@@ -733,10 +733,10 @@ definitions:
         type: string
         format: date-time
         description: End datetime of the task execution in ISO8601 format with milliseconds
-      failures:
+      failureMessages:
         type: array
         items:
-          $ref: '#/definitions/FailureMessage'
+          type: string
 
   JobAttemptsResponse:
     description: Attempts for specified task or shard
@@ -774,6 +774,10 @@ definitions:
       attempts:
         type: integer
         description: Number of times the task was run
+      failureMessages:
+        type: array
+        items:
+          type: string
       attemptsData:
         type: array
         items:

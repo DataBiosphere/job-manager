@@ -22,7 +22,6 @@ import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.compone
 import {JobManagerService} from "../../core/job-manager.service";
 import {TaskShard} from "../../shared/model/TaskShard";
 import {JobScatteredAttemptsComponent} from "./scattered-attempts/scattered-attempts.component";
-import {IndividualAttempt} from "../../shared/model/IndividualAttempt";
 
 @Component({
   selector: 'jm-tabs',
@@ -65,20 +64,6 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return JobStatusIcon[status];
   }
 
-  hasCallCachedTask(): boolean {
-    if (this.tasks.find(t => t.callCached === true)) {
-      return true;
-    }
-    return false;
-  }
-
-  hasScatteredTask(): boolean {
-    if (this.tasks.find(t => t.shards !== null)) {
-      return true;
-    }
-    return false;
-  }
-
   hasFailures(): boolean {
     return this.job.failures && (this.job.failures.length !== 0);
   }
@@ -98,54 +83,23 @@ export class JobTabsComponent implements OnInit, OnChanges {
     }
   }
 
-  openDialog(event, data): void {
-    event.stopPropagation();
+  hasTaskFailures(task: TaskMetadata): boolean {
+    return task.failureMessages && (Object.keys(task.failureMessages).length !== 0);
   }
 
-  getScatteredCountTotal(task: TaskMetadata): number {
-    if (task.shards) {
-      return task.shards.length;
+  getTaskFailures(task: TaskMetadata): string {
+    if (this.hasTaskFailures(task)) {
+      return task.failureMessages.join('\n');
     }
-  }
-
-  // these are the shard statuses we care about
-  getShardStatuses(): JobStatus[] {
-    return [JobStatus.Succeeded,
-            JobStatus.Failed,
-            JobStatus.Running,
-            JobStatus.Submitted];
-   }
-
-  getShardCountByStatus(task:TaskMetadata, status:JobStatus): number {
-    let result = 0
-    if(task.shards) {
-      task.shards.forEach((thisShard) => {
-        if (status == JobStatus[thisShard.executionStatus]) {
-          result++;
-          return;
-        }
-      });
-    }
-    return result;
   }
 
   taskIsScattered(task:TaskMetadata): boolean {
     return (task.shards && task.shards.length > 0)
   }
 
-  getShardIndex(shard:TaskShard): number {
-    return shard.shardIndex;
-  }
-
   populateTaskAttempts(task: TaskMetadata) {
     this.jobManagerService.getTaskAttempts(this.job.id, this.getJobTaskName(task.name)).then((response) => {
       task.attemptsData = response.attempts;
-    })
-  }
-
-  populateShardAttempts(task: TaskMetadata, shard: TaskShard) {
-    this.jobManagerService.getShardAttempts(this.job.id, this.getJobTaskName(task.name), shard.shardIndex).then((response) => {
-      shard.attemptsData = response.attempts;
     })
   }
 
@@ -174,6 +128,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
       newShard.attempts = shard.attempts;
       newShard.shardIndex = shard.shardIndex;
       newShard.executionStatus = shard.executionStatus;
+      newShard.failureMessages = shard.failureMessages;
       trimmedShards.push(newShard);
     });
 

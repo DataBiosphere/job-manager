@@ -10,19 +10,12 @@ import {JobStatusIcon} from "../../../shared/common";
   templateUrl: 'scattered-attempts.component.html',
   styleUrls: ['scattered-attempts.component.css']
 })
-export class JobScatteredAttemptsComponent implements OnInit {
+export class JobScatteredAttemptsComponent {
   @ViewChild('dialogContainer') dialogContainer: HTMLElement;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private readonly jobManagerService: JobManagerService) {
-  }
-
-  ngOnInit(): void {
-    // this.dialogContainer.hidden = true;
-    // if (this.data.shardsData) {
-    //   this.dialogContainer.hidden = false;
-    // }
   }
 
   getShardAttempts(shard: TaskShard) {
@@ -33,5 +26,15 @@ export class JobScatteredAttemptsComponent implements OnInit {
 
   getStatusIcon(status: JobStatus): string {
     return JobStatusIcon[status];
+  }
+
+  hasFailures(shard: TaskShard): boolean {
+    return shard.failureMessages && (Object.keys(shard.failureMessages).length !== 0);
+  }
+
+  getFailures(shard: TaskShard): string {
+    if (this.hasFailures(shard)) {
+      return shard.failureMessages.join('\n');
+    }
   }
 }

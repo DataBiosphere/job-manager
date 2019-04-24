@@ -1,5 +1,6 @@
 mat-dialog-content.mat-dialog-content {
-  overflow: hidden;
+  min-height: 180px;
+  max-height: 80vh;
 }
 
 .mat-expansion-panel-spacing {
@@ -65,7 +66,7 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
 }
 
 mat-expansion-panel.mat-expansion-panel .task-start,
-mat-expansion-panel.mat-expansion-panel .task-duration {
+mat-expansion-panel.mat-expansion-panel .task-links {
   width: 140px;
 }
 
@@ -74,7 +75,7 @@ mat-expansion-panel.mat-expansion-panel.list-header .task-links {
 }
 
 mat-expansion-panel.mat-expansion-panel .task-status,
-mat-expansion-panel.mat-expansion-panel .task-links,
+mat-expansion-panel.mat-expansion-panel .task-duration,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
 mat-expansion-panel.mat-expansion-panel .task-outputs,
 mat-expansion-panel.mat-expansion-panel .task-attempts {

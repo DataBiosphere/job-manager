@@ -276,6 +276,10 @@ def format_task(task_name, task_metadata):
     execution_events = _get_execution_events(
         latest_attempt.get('executionEvents'))
 
+    failure_messages = None
+    if latest_attempt.get('failures'):
+        failure_messages = [f.get('message') for f in latest_attempt.get('failures')]
+
     return TaskMetadata(
         name=remove_workflow_name(task_name),
         execution_status=task_statuses.cromwell_execution_to_api(
@@ -293,7 +297,8 @@ def format_task(task_name, task_metadata):
         job_id=latest_attempt.get('subWorkflowId'),
         shards=None,
         call_cached=call_cached,
-        execution_events=execution_events)
+        execution_events=execution_events,
+        failure_messages=failure_messages)
 
 
 def format_task_failure(task_name, metadata):
@@ -319,6 +324,9 @@ def format_scattered_task(task_name, task_metadata):
     # go through calls in reverse to grab the latest attempt if there are multiple
     for shard in task_metadata[::-1]:
         if current_shard != shard.get('shardIndex'):
+            failure_messages = None
+            if shard.get('failures'):
+                failure_messages = [f.get('message') for f in shard.get('failures')]
             filtered_shards.append(
                 TaskShard(
                     execution_status=task_statuses.cromwell_execution_to_api(
@@ -331,7 +339,8 @@ def format_scattered_task(task_name, task_metadata):
                     stdout=shard.get('stdout'),
                     stderr=shard.get('stderr'),
                     call_root=shard.get('callRoot'),
-                    attempts=shard.get('attempt'),))
+                    attempts=shard.get('attempt'),
+                    failure_messages=failure_messages))
             if min_start > _parse_datetime(shard.get('start')):
                 min_start = _parse_datetime(shard.get('start'))
             if shard.get('executionStatus') not in ['Failed', 'Done']:
@@ -585,7 +594,7 @@ def _convert_to_attempt(item):
         end=_parse_datetime(item.get('end')))
 
     if item.get('failures'):
-        attempt.failures = [f.get('message') for f in item.get('failures')]
+        attempt.failure_messages = [f.get('message') for f in item.get('failures')]
 
     return attempt
 

@@ -38,12 +38,12 @@ export class JobAttemptComponent implements OnInit {
   }
 
   hasFailures(attempt: IndividualAttempt): boolean {
-    return attempt.failures && (Object.keys(attempt.failures).length !== 0);
+    return attempt.failureMessages && (Object.keys(attempt.failureMessages).length !== 0);
   }
 
   getFailures(attempt: IndividualAttempt): string {
     if (this.hasFailures(attempt)) {
-      return attempt.failures.join('\n');
+      return attempt.failureMessages.join('\n');
     }
   }
 
