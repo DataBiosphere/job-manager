@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v0.7.2 Release Notes
+
+### Added customized favicon.
+
 ## v0.7.1 Release Notes
 
 ### Added individual shards and their execution events to the timing diagram.
