@@ -4,6 +4,8 @@
 
 ### Fixed incorrect tooltip for standard out log.
 
+### Added customized favicon.
+
 ## v0.7.1 Release Notes
 
 ### Added individual shards and their execution events to the timing diagram.
