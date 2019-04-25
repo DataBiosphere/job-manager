@@ -2,6 +2,8 @@
 
 ## v0.7.2 Release Notes
 
+### Fixed incorrect tooltip for standard out log.
+
 ### Added customized favicon.
 
 ## v0.7.1 Release Notes
