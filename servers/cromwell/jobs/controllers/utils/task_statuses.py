@@ -33,7 +33,7 @@ CROMWELL_EXECUTION_STATUS_MAP = {
     CromwellExecutionStatus.UNSTARTABLE: ApiStatus.FAILED,
     CromwellExecutionStatus.ABORTED: ApiStatus.ABORTED,
     CromwellExecutionStatus.BYPASSED: ApiStatus.SUBMITTED,
-    CromwellExecutionStatus.RETRYABLEFAILURE: ApiStatus.RUNNING,
+    CromwellExecutionStatus.RETRYABLEFAILURE: ApiStatus.FAILED,
     CromwellExecutionStatus.FAILED: ApiStatus.FAILED,
     CromwellExecutionStatus.DONE: ApiStatus.SUCCEEDED
 }
