@@ -438,7 +438,7 @@ class TestJobsController(BaseTestCase):
             },
             'failures': [{
                 'failure': 'Task test.analysis failed',
-                'taskName': 'Workflow failed'
+                'taskName': 'Workflow Error'
             }]
         }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)
