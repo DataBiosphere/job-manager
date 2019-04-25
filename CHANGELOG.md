@@ -9,7 +9,6 @@
 ### Fixed incorrect tooltip for standard out log.
 
 ### Added customized favicon.
->>>>>>> master
 
 ## v0.7.1 Release Notes
 
