@@ -23,7 +23,7 @@ class TestTaskStatuses(BaseTestCase):
         self.assertEqual(task_statuses.cromwell_execution_to_api('Unstartable'), 'Failed')
         self.assertEqual(task_statuses.cromwell_execution_to_api('Aborted'), 'Aborted')
         self.assertEqual(task_statuses.cromwell_execution_to_api('Bypassed'), 'Submitted')
-        self.assertEqual(task_statuses.cromwell_execution_to_api('RetryableFailure'), 'Running')
+        self.assertEqual(task_statuses.cromwell_execution_to_api('RetryableFailure'), 'Failed')
         self.assertEqual(task_statuses.cromwell_execution_to_api('Failed'), 'Failed')
         self.assertEqual(task_statuses.cromwell_execution_to_api('Done'), 'Succeeded')
     # yapf: enable
