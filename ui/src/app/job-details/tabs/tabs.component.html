@@ -87,7 +87,11 @@
           </ng-container>
 
           <ng-container *ngIf="!t.jobId">
-            <mat-expansion-panel *ngIf="!taskIsScattered(t)" class="list-row" expanded="false" (opened)="populateTaskAttempts(t)">
+            <mat-expansion-panel *ngIf="!taskIsScattered(t)"
+                                 class="list-row"
+                                 expanded="false"
+                                 (opened)="populateTaskAttempts(t)"
+                                 disabled="{{ hasOnlyOneAttempt(t) }}">
               <mat-expansion-panel-header [expandedHeight]="'48px'">
                 <mat-panel-title><div class="task-name">{{ t.name }}</div></mat-panel-title>
                 <mat-panel-description>
@@ -152,7 +156,10 @@
               </mat-expansion-panel-header>
               <jm-attempt [attempt]="attempt" *ngFor="let attempt of t.attemptsData"></jm-attempt>
             </mat-expansion-panel>
-            <mat-expansion-panel *ngIf="taskIsScattered(t)" class="list-row" expanded="false" disabled="disabled">
+            <mat-expansion-panel *ngIf="taskIsScattered(t)"
+                                 class="list-row"
+                                 expanded="false"
+                                 disabled="disabled">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <div class="task-name">

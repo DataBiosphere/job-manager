@@ -87,6 +87,10 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return task.failureMessages && (Object.keys(task.failureMessages).length !== 0);
   }
 
+  hasOnlyOneAttempt(task: TaskMetadata): boolean {
+    return task.attempts == 1;
+  }
+
   getTaskFailures(task: TaskMetadata): string {
     if (this.hasTaskFailures(task)) {
       return task.failureMessages.join('\n');
