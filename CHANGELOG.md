@@ -1,5 +1,16 @@
 # Job Manager Change Log
 
+## v0.7.2 Release Notes
+
+### Improved the clarity of workflow-level errors.
+
+### Fixed incorrectly translated job attempt status from Cromwell backend.
+
+### Fixed incorrect tooltip for standard out log.
+
+### Added customized favicon.
+>>>>>>> master
+
 ## v0.7.1 Release Notes
 
 ### Added individual shards and their execution events to the timing diagram.
