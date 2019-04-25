@@ -221,7 +221,7 @@ def format_task_failure(task_name, metadata):
 
 
 def format_workflow_failure(failures):
-    return FailureMessage(task_name=failures.get('message'),
+    return FailureMessage('Workflow Error',
                           failure=failures.get('causedBy')[0].get('message'))
 
 
