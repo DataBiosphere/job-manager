@@ -2,6 +2,8 @@
 
 ## v0.7.2 Release Notes
 
+### Fixed incorrectly translated job attempt status from Cromwell backend.
+
 ### Fixed incorrect tooltip for standard out log.
 
 ### Added customized favicon.
