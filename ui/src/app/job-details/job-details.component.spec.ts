@@ -6,6 +6,7 @@ import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
+  MatDialogModule,
   MatDividerModule,
   MatExpansionModule,
   MatListModule,
@@ -35,6 +36,7 @@ import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {JobFailuresTableComponent} from "./common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./tabs/timing-diagram/timing-diagram.component";
 import {JobScatteredAttemptsComponent} from "./tabs/scattered-attempts/scattered-attempts.component";
+import {JobAttemptComponent} from "./common/attempt/attempt.component";
 
 describe('JobDetailsComponent', () => {
 
@@ -61,6 +63,7 @@ describe('JobDetailsComponent', () => {
         AppComponent,
         FakeJobListComponent,
         TestJobDetailsComponent,
+        JobAttemptComponent,
         JobDebugIconsComponent,
         JobDetailsComponent,
         JobFailuresTableComponent,
@@ -77,6 +80,7 @@ describe('JobDetailsComponent', () => {
         CommonModule,
         MatButtonModule,
         MatCardModule,
+        MatDialogModule,
         MatDividerModule,
         MatExpansionModule,
         MatListModule,

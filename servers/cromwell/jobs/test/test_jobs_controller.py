@@ -88,7 +88,6 @@ class TestJobsController(BaseTestCase):
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
         }
         labels = {}
-        job_id = 'operations/abcde'
         std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
         std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
         attempts = 1
@@ -106,7 +105,6 @@ class TestJobsController(BaseTestCase):
                 'status': status,
                 'calls': {
                     'test.analysis': [{
-                        'jobId': job_id,
                         'executionStatus': 'Done',
                         'start': timestamp,
                         'end': timestamp,
@@ -114,6 +112,7 @@ class TestJobsController(BaseTestCase):
                         'stdout': std_out,
                         'returnCode': return_code,
                         'inputs': inputs,
+                        'outputs': outputs,
                         'attempt': attempts
                     }]
                 },
@@ -169,7 +168,6 @@ class TestJobsController(BaseTestCase):
             "existing_test_label1": "existing_test_label_value1",
             "existing_test_label2": "existing_test_label_value2"
         }
-        job_id = 'operations/abcde'
         std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
         std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
         attempts = 1
@@ -193,7 +191,6 @@ class TestJobsController(BaseTestCase):
                 'status': status,
                 'calls': {
                     'test.analysis': [{
-                        'jobId': job_id,
                         'executionStatus': 'Done',
                         'start': timestamp,
                         'end': timestamp,
@@ -360,7 +357,6 @@ class TestJobsController(BaseTestCase):
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
         }
         labels = {'cromwell-workflow-id': 'cromwell-12345'}
-        job_id = 'operations/abcde'
         std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
         std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
         attempts = 1
@@ -374,7 +370,6 @@ class TestJobsController(BaseTestCase):
                 'status': status,
                 'calls': {
                     'test.analysis': [{
-                        'jobId': job_id,
                         'executionStatus': 'Done',
                         'shardIndex': -1,
                         'start': timestamp,
@@ -383,6 +378,7 @@ class TestJobsController(BaseTestCase):
                         'stdout': std_out,
                         'returnCode': return_code,
                         'inputs': inputs,
+                        'outputs': outputs,
                         'attempt': attempts,
                         'subWorkflowId': subworkflow_id
                     }]
@@ -431,6 +427,7 @@ class TestJobsController(BaseTestCase):
                     'stdout': std_out,
                     'callCached': False,
                     'inputs': jobs_controller.update_key_names(inputs),
+                    'outputs': jobs_controller.update_key_names(outputs),
                     'returnCode': return_code,
                     'attempts': attempts,
                     'jobId': subworkflow_id
@@ -460,8 +457,6 @@ class TestJobsController(BaseTestCase):
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
         }
         labels = {'cromwell-workflow-id': 'cromwell-12345'}
-        job_id1 = 'operations/abcde'
-        job_id2 = 'operations/dffdf'
         call_root = '/cromwell/cromwell-executions/id/call-analysis'
         std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
         std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
@@ -575,13 +570,23 @@ class TestJobsController(BaseTestCase):
                     'start': response_timestamp,
                     'end': response_timestamp,
                     'shards': [{
+                        'attempts': attempts,
                         'end': response_timestamp,
+                        'callRoot': call_root,
+                        'stderr': std_err,
+                        'stdout': std_out,
                         'executionStatus': 'Failed',
+                        'failureMessages': ['test.analysis shard 0 failed'],
                         'shardIndex': 0,
                         'start': response_timestamp
                     },{
+                        'attempts': attempts,
                         'end': response_timestamp,
+                        'callRoot': call_root,
+                        'stderr': std_err,
+                        'stdout': std_out,
                         'executionStatus': 'Failed',
+                        'failureMessages': ['test.analysis shard 1 failed'],
                         'shardIndex': 1,
                         'start': response_timestamp
                     }]

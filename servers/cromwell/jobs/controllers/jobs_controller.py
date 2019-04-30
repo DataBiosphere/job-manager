@@ -278,7 +278,9 @@ def format_task(task_name, task_metadata):
 
     failure_messages = None
     if latest_attempt.get('failures'):
-        failure_messages = [f.get('message') for f in latest_attempt.get('failures')]
+        failure_messages = [
+            f.get('message') for f in latest_attempt.get('failures')
+        ]
 
     return TaskMetadata(
         name=remove_workflow_name(task_name),
@@ -326,7 +328,9 @@ def format_scattered_task(task_name, task_metadata):
         if current_shard != shard.get('shardIndex'):
             failure_messages = None
             if shard.get('failures'):
-                failure_messages = [f.get('message') for f in shard.get('failures')]
+                failure_messages = [
+                    f.get('message') for f in shard.get('failures')
+                ]
             filtered_shards.append(
                 TaskShard(
                     execution_status=task_statuses.cromwell_execution_to_api(
@@ -594,7 +598,9 @@ def _convert_to_attempt(item):
         end=_parse_datetime(item.get('end')))
 
     if item.get('failures'):
-        attempt.failure_messages = [f.get('message') for f in item.get('failures')]
+        attempt.failure_messages = [
+            f.get('message') for f in item.get('failures')
+        ]
 
     return attempt
 
