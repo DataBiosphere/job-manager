@@ -33,6 +33,7 @@ describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;
   let fixture: ComponentFixture<TestTasksComponent>;
   let fakeJobService: FakeJobManagerService;
+  let tasks: TaskMetadata[] = [];
 
   let task: TaskMetadata = {
     name: 'task1',
@@ -41,20 +42,92 @@ describe('JobTabsComponent', () => {
     end: new Date('2017-11-14T13:15:00'),
     attempts: 1,
     returnCode: 0,
+    callCached: false,
     stderr: 'gs://test-bucket/stderr.txt',
     stdout: 'gs://test-bucket/stdout.txt',
+    callRoot: 'gs://test-bucket',
     inputs: {},
+    outputs: {},
     jobId: 'subworkflow123',
     attemptsData: []
-  }
+  };
+  tasks.push(task);
+
+  let callCachedTask: TaskMetadata = {
+    name: 'task2',
+    executionStatus: 'Succeeded',
+    start: new Date('2017-11-14T13:00:00'),
+    end: new Date('2017-11-14T13:15:00'),
+    attempts: 1,
+    returnCode: 0,
+    callCached: true,
+    stderr: 'gs://test-bucket/stderr.txt',
+    stdout: 'gs://test-bucket/stdout.txt',
+    callRoot: 'gs://test-bucket',
+    inputs: {},
+    outputs: {},
+    attemptsData: []
+  };
+  tasks.push(callCachedTask);
+
+  let taskWithInput: TaskMetadata = {
+    name: 'task3',
+    executionStatus: 'Succeeded',
+    start: new Date('2017-11-14T13:00:00'),
+    end: new Date('2017-11-14T13:15:00'),
+    attempts: 1,
+    returnCode: 0,
+    callCached: false,
+    stderr: 'gs://test-bucket/stderr.txt',
+    stdout: 'gs://test-bucket/stdout.txt',
+    callRoot: 'gs://test-bucket',
+    inputs: {'string': 'hello world'},
+    outputs: {},
+    attemptsData: []
+  };
+  tasks.push(taskWithInput);
+
+  let taskWithOutput: TaskMetadata = {
+    name: 'task4',
+    executionStatus: 'Succeeded',
+    start: new Date('2017-11-14T13:00:00'),
+    end: new Date('2017-11-14T13:15:00'),
+    attempts: 1,
+    returnCode: 0,
+    callCached: false,
+    stderr: 'gs://test-bucket/stderr.txt',
+    stdout: 'gs://test-bucket/stdout.txt',
+    callRoot: 'gs://test-bucket',
+    inputs: {},
+    outputs: {'string': 'hello world'},
+    attemptsData: []
+  };
+  tasks.push(taskWithOutput);
+
+  let taskWithTwoAttempts: TaskMetadata = {
+    name: 'task5',
+    executionStatus: 'Succeeded',
+    start: new Date('2017-11-14T13:00:00'),
+    end: new Date('2017-11-14T13:15:00'),
+    attempts: 2,
+    returnCode: 0,
+    callCached: false,
+    stderr: 'gs://test-bucket/stderr.txt',
+    stdout: 'gs://test-bucket/stdout.txt',
+    callRoot: 'gs://test-bucket',
+    inputs: {},
+    outputs: {},
+    attemptsData: []
+  };
+  tasks.push(taskWithTwoAttempts);
 
   let job: JobMetadataResponse = {
     id: 'test-id',
     name: 'test-name',
     status: JobStatus.Failed,
     submission: new Date('2015-04-20T20:00:00'),
-    extensions: { tasks: [task] },
-  }
+    extensions: { tasks: tasks },
+  };
   let snackBar: MatSnackBar;
 
   beforeEach(async(() => {
@@ -104,11 +177,14 @@ describe('JobTabsComponent', () => {
   it('should display task data in each row', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
+
+    expect(de.queryAll(By.css('mat-expansion-panel.list-row div.task-name')).length)
+      .toEqual(tasks.length);
     expect(de.queryAll(By.css('.task-name'))[1].nativeElement.textContent)
       .toContain(task.name);
     expect(de.queryAll(By.css('a.title-link')).length)
       .toEqual(1);
-    expect(de.query(By.css('.task-status clr-icon')).attributes['shape'])
+    expect(de.queryAll(By.css('.task-status clr-icon'))[0].attributes['shape'])
       .toContain('error');
     expect(de.queryAll(By.css('.task-start'))[1].nativeElement.textContent)
       .toContain('Nov 14, 2017');
@@ -120,6 +196,43 @@ describe('JobTabsComponent', () => {
       .toContain('stdout.txt');
     expect(de.queryAll(By.css('.task-links a.log-item'))[1].properties['href'])
       .toContain('stderr.txt');
+  }));
+
+  it('should display attempt rows for each task attempt if there was more than one', async(() => {
+    const attempts = [
+      {
+        attemptNumber: 1,
+        callCached: false,
+        callRoot: 'gs://test-bucket',
+        start: new Date('2017-11-14T13:00:00'),
+        end: new Date('2017-11-14T13:15:00'),
+        executionStatus: 'Failed',
+        failureMessages: [
+          'Task failed.'
+        ],
+        inputs: {},
+        stderr: 'gs://test-bucket/stderr.txt',
+        stdout: 'gs://test-bucket/stdout.txt',
+      },{
+        attemptNumber: 2,
+        callRoot: 'gs://test-bucket/attempt-2',
+        start: new Date('2017-11-14T13:00:00'),
+        end: new Date('2017-11-14T13:15:00'),
+        executionStatus: 'Succeeded',
+        inputs: {},
+        outputs: {},
+        stderr: 'gs://test-bucket/attempt-2/stderr.txt',
+        stdout: 'gs://test-bucket/attempt-2/stdout.txt',
+      }
+    ];
+    taskWithTwoAttempts.attemptsData = attempts;
+
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('mat-expansion-panel.list-row div.task-name')).length)
+      .toEqual(tasks.length + attempts.length);
+    expect(de.queryAll(By.css('.task-attempts'))[5].nativeElement.textContent.trim())
+      .toEqual('2');
   }));
 
   @Component({
