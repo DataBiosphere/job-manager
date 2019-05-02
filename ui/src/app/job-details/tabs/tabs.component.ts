@@ -47,9 +47,6 @@ export class JobTabsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
-    // if (this.hasCallCachedTask() || this.hasScatteredTask()) {
-    //   this.displayedColumns.splice(1, 0, "taskInfoIcons");
-    // }
     if (this.tabsPanel) {
       this.tabWidth = this.tabsPanel._viewContainerRef.element.nativeElement.clientWidth;
     }
@@ -91,6 +88,32 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return task.attempts == 1;
   }
 
+  getScatteredCountTotal(task: TaskMetadata): number {
+    if (task.shards) {
+      return task.shards.length;
+    }
+  }
+  // these are the shard statuses we care about
+  getShardStatuses(): JobStatus[] {
+    return [JobStatus.Succeeded,
+      JobStatus.Failed,
+      JobStatus.Running,
+      JobStatus.Submitted];
+  }
+
+  getShardCountByStatus(task:TaskMetadata, status:JobStatus): number {
+    let result = 0
+    if(task.shards) {
+      task.shards.forEach((thisShard) => {
+        if (status == JobStatus[thisShard.executionStatus]) {
+          result++;
+          return;
+        }
+      });
+    }
+    return result;
+  }
+
   getTaskFailures(task: TaskMetadata): string {
     if (this.hasTaskFailures(task)) {
       return task.failureMessages.join('\n');
@@ -121,7 +144,8 @@ export class JobTabsComponent implements OnInit, OnChanges {
   openScatteredAttemptsDialog(task: TaskMetadata): void {
     let trimmedShards: TaskShard[] = [];
 
-    // remove executionEvents, since they're not needed outside the timing diagram
+    // remove executionEvents, since they're not needed outside the timing diagram,
+    // and preserve start and end as Date objects for task shards
     task.shards.forEach((shard) => {
       let newShard: TaskShard = {};
       newShard.start = new Date(shard.start);

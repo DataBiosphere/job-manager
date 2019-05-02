@@ -43,7 +43,7 @@ mat-expansion-panel.mat-expansion-panel.list-row mat-expansion-panel-header.mat-
 }
 
 mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title {
-  display: block;
+  display: flex;
 }
 
 mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title .task-name {
@@ -208,37 +208,55 @@ clr-tooltip-content {
   overflow: visible;
 }
 
+::ng-deep .shards-menu.mat-menu-panel clr-tooltip-content {
+  margin-right: 0.25rem;
+}
+
 clr-icon {
   margin-right: 1rem;
+}
+
+button.shard-icon {
+  display: inline-flex;
+  margin-left: 1.5rem;
+}
+
+.shards-container {
+  display: inline-flex;
+  flex-direction: row;
+}
+
+.shards-header {
+  font-size: 0.8rem;
+  line-height: 1.5rem;
+  margin: 0 0.5rem 0 0.5rem;
+  font-weight: bold;
+}
+
+.shards-statuses {
+  margin: 0.5rem;
+}
+
+.shard-count {
+  text-align: center;
+  font-size: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+.shard-status clr-icon {
+  margin: 0 auto;
+}
+
+.scatter-icon {
+  color: #5C912E;
 }
 
 a.title-link, p.title-nolink {
   display: inline-flex;
 }
 
-.scatter-icon {
-  display: block;
-  float: right;
-  color: #5C912E;
-}
-
 ::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {
   background-color: #74AE43;
-}
-
-.task-name {
-  width: 50%;
-}
-
-.task-status {
-  width: 30%;
-  text-align: right;
-}
-
-.task-links {
-  width: 15%;
-  text-align: right;
-  min-width: 100px;
 }
 
 ::ng-deep div.mat-menu-panel.input-menu {
