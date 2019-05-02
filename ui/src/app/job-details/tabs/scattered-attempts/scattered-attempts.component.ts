@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit, ViewChild} from "@angular/core";
+import {Component, Inject, ViewChild} from "@angular/core";
 import {MAT_DIALOG_DATA} from "@angular/material";
 import {JobManagerService} from "../../../core/job-manager.service";
 import {TaskShard} from "../../../shared/model/TaskShard";

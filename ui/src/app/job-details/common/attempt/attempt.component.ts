@@ -1,7 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
 
-import {AuthService} from '../../../core/auth.service';
-import {ActivatedRoute} from "@angular/router";
 import {IndividualAttempt} from "../../../shared/model/IndividualAttempt";
 import {JobStatus} from "../../../shared/model/JobStatus";
 import {JobStatusIcon} from "../../../shared/common";
@@ -13,10 +11,6 @@ import {JobStatusIcon} from "../../../shared/common";
 })
 export class JobAttemptComponent implements OnInit {
   @Input() attempt: IndividualAttempt;
-
-  constructor(private authService: AuthService,
-              private readonly route: ActivatedRoute) {
-  }
 
   ngOnInit() {
     if (this.attempt) {
@@ -45,9 +39,5 @@ export class JobAttemptComponent implements OnInit {
     if (this.hasFailures(attempt)) {
       return attempt.failureMessages.join('\n');
     }
-  }
-
-  openDialog(event, id): void {
-    event.stopPropagation();
   }
 }

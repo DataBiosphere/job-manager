@@ -151,15 +151,3 @@ mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-
   color: rgba(0, 0, 0, 0.87);
   font-weight: 600;
 }
-
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem 0.5rem;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.65rem;
-  line-height: 0.65rem;
-  color: #fff;
-  display: block;
-  margin: -0.6rem 0.5rem 0 0;
-  height: auto;
-}

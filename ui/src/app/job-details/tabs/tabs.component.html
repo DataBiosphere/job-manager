@@ -21,7 +21,7 @@
                                  (opened)="populateTaskAttempts(t)"
                                  expanded="false"
                                  class="list-row">
-              <mat-expansion-panel-header>
+              <mat-expansion-panel-header [expandedHeight]="'48px'">
                 <mat-panel-title>
                   <div class="task-name">
                     <a *ngIf="t.jobId" class="title-link" (click)="navigateDown(t.jobId)">{{ t.name }}</a>

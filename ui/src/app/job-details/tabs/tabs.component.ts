@@ -93,6 +93,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
       return task.shards.length;
     }
   }
+
   // these are the shard statuses we care about
   getShardStatuses(): JobStatus[] {
     return [JobStatus.Succeeded,
