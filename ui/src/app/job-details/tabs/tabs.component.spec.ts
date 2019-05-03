@@ -198,6 +198,30 @@ describe('JobTabsComponent', () => {
       .toContain('stderr.txt');
   }));
 
+  it('should display the correct icon if the task was call cached', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+
+    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(3) .task-duration clr-icon')).attributes['shape'])
+      .toEqual('history');
+  }));
+
+  it('should display the correct icon if the task has inputs', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+
+    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(4) .task-inputs clr-icon')).attributes['shape'])
+      .toEqual('import');
+  }));
+
+  it('should display the correct icon if the task has outputs', async(() => {
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+
+    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(5) .task-outputs clr-icon')).attributes['shape'])
+      .toEqual('export');
+  }));
+
   it('should display attempt rows for each task attempt if there was more than one', async(() => {
     const attempts = [
       {
