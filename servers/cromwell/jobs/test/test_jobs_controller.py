@@ -596,6 +596,236 @@ class TestJobsController(BaseTestCase):
         self.assertDictEqual(response_data, expected_data)
 
     @requests_mock.mock()
+    def test_get_task_attempts_returns_200(self, mock_request):
+        """
+        Test case for get_task_attempts
+
+        Query for task attempts data for a specific non-scattered task
+        """
+        workflow_id = 'id'
+        workflow_name = 'test'
+        task_name = 'test.task'
+        status = 'Failed'
+        timestamp = '2017-11-08T05:06:41.424Z'
+        response_timestamp = '2017-11-08T05:06:41.424000+00:00'
+        inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
+        outputs = {
+            'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
+        }
+        labels = {'cromwell-workflow-id': 'cromwell-12345'}
+        call_root = '/cromwell/cromwell-executions/id/call-analysis'
+        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
+        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        return_code = 0
+
+        def _request_callback(request, context):
+            context.status_code = 200
+            return {
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
+                'calls': {
+                    task_name: [{
+                        'executionStatus': 'RetryableFailure',
+                        'shardIndex': -1,
+                        'start': timestamp,
+                        'end': timestamp,
+                        'stderr': std_err,
+                        'stdout': std_out,
+                        'returnCode': return_code,
+                        'inputs': inputs,
+                        'outputs': outputs,
+                        'attempt': 1,
+                        'callCaching': {
+                            'effectiveCallCachingMode': 'ReadAndWriteCache',
+                            'hit': 'False'
+                        },
+                        'callRoot': call_root
+                    },{
+                        'executionStatus': 'Done',
+                        'shardIndex': -1,
+                        'start': timestamp,
+                        'end': timestamp,
+                        'stderr': std_err,
+                        'stdout': std_out,
+                        'returnCode': return_code,
+                        'inputs': inputs,
+                        'outputs': outputs,
+                        'attempt': 2,
+                        'callCaching': {
+                            'effectiveCallCachingMode': 'WriteCache',
+                            'hit': 'False'
+                        },
+                        'callRoot': call_root
+                    }]
+                },
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
+                'failures': [
+                    {'causedBy': [
+                        {
+                            'causedBy': [],
+                            'message': 'Task test1:1 failed. The job was stopped before the command finished. PAPI error code 2.'
+                        }
+                    ],
+                        'message': 'Workflow failed'}
+                ]
+            }  # yapf: disable
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
+        response = self.client.open('/jobs/{id}/{task}/attempts'.format(id=workflow_id,task=task_name),
+                                    method='GET')
+        self.assertStatus(response, 200)
+        response_data = json.loads(response.data)
+        expected_data = {
+            'attempts': [{
+                'attemptNumber': 1,
+                'callCached': 'False',
+                'callRoot': call_root,
+                'start': response_timestamp,
+                'end': response_timestamp,
+                'executionStatus': 'Failed',
+                'inputs': inputs,
+                'outputs': outputs,
+                'stderr': std_err,
+                'stdout': std_out
+            },{
+                'attemptNumber': 2,
+                'callCached': 'False',
+                'callRoot': call_root,
+                'start': response_timestamp,
+                'end': response_timestamp,
+                'executionStatus': 'Succeeded',
+                'inputs': inputs,
+                'outputs': outputs,
+                'stderr': std_err,
+                'stdout': std_out
+            }]
+        }  # yapf: disable
+        self.assertDictEqual(response_data, expected_data)
+
+    @requests_mock.mock()
+    def test_get_shard_attempts_returns_200(self, mock_request):
+        """
+        Test case for get_shard_attempts
+
+        Query for shard attempts data for a specific scattered task
+        """
+        workflow_id = 'id'
+        workflow_name = 'test'
+        task_name = 'test.task'
+        status = 'Failed'
+        timestamp = '2017-11-08T05:06:41.424Z'
+        response_timestamp = '2017-11-08T05:06:41.424000+00:00'
+        inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
+        outputs = {
+            'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
+        }
+        labels = {'cromwell-workflow-id': 'cromwell-12345'}
+        call_root = '/cromwell/cromwell-executions/id/call-analysis'
+        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
+        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        return_code = 0
+
+        def _request_callback(request, context):
+            context.status_code = 200
+            return {
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
+                'calls': {
+                    task_name: [{
+                        'executionStatus': 'RetryableFailure',
+                        'shardIndex': 0,
+                        'start': timestamp,
+                        'end': timestamp,
+                        'stderr': std_err,
+                        'stdout': std_out,
+                        'returnCode': return_code,
+                        'inputs': inputs,
+                        'outputs': outputs,
+                        'attempt': 1,
+                        'callCaching': {
+                            'effectiveCallCachingMode': 'ReadAndWriteCache',
+                            'hit': 'False'
+                        },
+                        'callRoot': call_root
+                    },{
+                        'executionStatus': 'Done',
+                        'shardIndex': 0,
+                        'start': timestamp,
+                        'end': timestamp,
+                        'stderr': std_err,
+                        'stdout': std_out,
+                        'returnCode': return_code,
+                        'inputs': inputs,
+                        'outputs': outputs,
+                        'attempt': 2,
+                        'callCaching': {
+                            'effectiveCallCachingMode': 'WriteCache',
+                            'hit': 'False'
+                        },
+                        'callRoot': call_root
+                    }]
+                },
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
+                'failures': [
+                    {'causedBy': [
+                        {
+                            'causedBy': [],
+                            'message': 'Task test1:1 failed. The job was stopped before the command finished. PAPI error code 2.'
+                        }
+                    ],
+                        'message': 'Workflow failed'}
+                ]
+            }  # yapf: disable
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
+        response = self.client.open('/jobs/{id}/{task}/{index}/attempts'.format(id=workflow_id,task=task_name,index=0),
+                                    method='GET')
+        self.assertStatus(response, 200)
+        response_data = json.loads(response.data)
+        expected_data = {
+            'attempts': [{
+                'attemptNumber': 1,
+                'callCached': 'False',
+                'callRoot': call_root,
+                'start': response_timestamp,
+                'end': response_timestamp,
+                'executionStatus': 'Failed',
+                'inputs': inputs,
+                'outputs': outputs,
+                'stderr': std_err,
+                'stdout': std_out
+            },{
+                'attemptNumber': 2,
+                'callCached': 'False',
+                'callRoot': call_root,
+                'start': response_timestamp,
+                'end': response_timestamp,
+                'executionStatus': 'Succeeded',
+                'inputs': inputs,
+                'outputs': outputs,
+                'stderr': std_err,
+                'stdout': std_out
+            }]
+        }  # yapf: disable
+        self.assertDictEqual(response_data, expected_data)
+
+    @requests_mock.mock()
     def test_get_job_bad_request(self, mock_request):
         workflow_id = 'id'
         error_message = 'Invalid workflow ID: {}.'.format(workflow_id)
