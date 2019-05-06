@@ -21,7 +21,7 @@
   <p class="job-id">ID: <b>{{ job.id }}</b></p>
   <div *ngIf="job.labels">
     <span class="label" *ngFor="let l of labels">
-      <span *ngIf="job.labels[l] != ''">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
+      <span *ngIf="job.labels[l]">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
     </span>
   </div>
 </div>

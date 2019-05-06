@@ -109,6 +109,10 @@
     <mat-tab *ngIf="hasOutputs()" label="Outputs">
       <jm-resources-table [entries]="job.outputs"></jm-resources-table>
     </mat-tab>
+    <!-- Secondary Labels tab -->
+    <mat-tab *ngIf="job.labels" label="Labels">
+      <jm-resources-table [entries]="job.labels"></jm-resources-table>
+    </mat-tab>
     <!-- Task timing diagram tab -->
     <mat-tab *ngIf="hasTasks()" label="Timing Diagram">
       <jm-timing-diagram [metadata]="job.extensions.tasks" [tabWidth]="tabWidth"></jm-timing-diagram>

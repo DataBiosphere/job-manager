@@ -5,6 +5,9 @@ import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {TaskMetadata} from '../shared/model/TaskMetadata';
 import {JobTabsComponent} from "./tabs/tabs.component";
 import {JobPanelsComponent} from "./panels/panels.component";
+import {CapabilitiesResponse} from "../shared/model/CapabilitiesResponse";
+import {DisplayField} from "../shared/model/DisplayField";
+import {CapabilitiesService} from "../core/capabilities.service";
 
 @Component({
   selector: 'jm-job-details',
@@ -15,14 +18,20 @@ export class JobDetailsComponent implements OnInit {
   @ViewChild(JobTabsComponent) taskTabs;
   @ViewChild(JobPanelsComponent) jobPanels;
   public job: JobMetadataResponse;
+  private readonly capabilities: CapabilitiesResponse;
+  primaryLabels: DisplayField[];
+  secondaryLabels: DisplayField[];
 
   constructor(
     private readonly router: Router,
-    private readonly route: ActivatedRoute
-  ) {}
+    private readonly route: ActivatedRoute,
+    private readonly capabilitiesService: CapabilitiesService) {
+    this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
+  }
 
   ngOnInit(): void {
     this.job = this.route.snapshot.data['job'];
+    this.primaryLabels = this.capabilities.displayFields.filter(field => !field.secondary);
   }
 
   hasTabs(): boolean {

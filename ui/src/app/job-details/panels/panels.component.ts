@@ -11,6 +11,7 @@ import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobStatusIcon} from "../../shared/common";
+import {DisplayField} from "../../shared/model/DisplayField";
 
 @Component({
   selector: 'jm-panels',
@@ -25,6 +26,7 @@ export class JobPanelsComponent implements OnInit {
   ];
 
   @Input() job: JobMetadataResponse;
+  @Input() primaryLabels: DisplayField[];
   @Output() close: EventEmitter<any> = new EventEmitter();
   @Output() navUp: EventEmitter<any> = new EventEmitter();
   @ViewChild(JobFailuresTableComponent) jobFailures;
@@ -38,9 +40,16 @@ export class JobPanelsComponent implements OnInit {
 
   ngOnInit() {
     this.setUpExtensions();
+    console.log(this.job.labels);
     if (this.job.labels) {
-      this.labels = Object.keys(this.job.labels).sort();
+      this.labels = this.primaryLabels.map(field => {
+        if (field.field.match('labels.')) {
+          return field.field.replace('labels.', '');
+        }
+        return;
+      }).filter(Boolean).sort();
     }
+    console.log(this.labels);
   }
 
   whiteListedExtensions(): string[] {

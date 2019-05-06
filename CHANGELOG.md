@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v0.7.3 Release Notes
+
+### Labels are configurable to show at the top of the Job Details page (default) or only in a tab.
+
 ## v0.7.2 Release Notes
 
 ### Improved the clarity of workflow-level errors.
@@ -9,7 +13,6 @@
 ### Fixed incorrect tooltip for standard out log.
 
 ### Added customized favicon.
->>>>>>> master
 
 ## v0.7.1 Release Notes
 
