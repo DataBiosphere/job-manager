@@ -1,5 +1,21 @@
 # Job Manager Change Log
 
+## v1.0.0 Release Notes
+
+### Multiple changes to the "List" tab in the Job Details page for Cromwell jobs
+
+#### If a task has multiple attempts it can clicked on, which will expand to show additional rows, one for each attempt
+
+#### Scattered task names are a link that will display scattered task shards in a dialog
+
+##### User can click on each shard to see shard attempt data
+
+#### Added icons for inputs and outputs which can be clicked on to show a full list
+
+#### Changed the call-cached icon and moved it into the "duration" column
+
+### Re-implemented shard data requests to get data more efficiently from the API
+
 ## v0.7.2 Release Notes
 
 ### Improved the clarity of workflow-level errors.

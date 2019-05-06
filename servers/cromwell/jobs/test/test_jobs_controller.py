@@ -679,7 +679,8 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}/{task}/attempts'.format(id=workflow_id,task=task_name),
+        response = self.client.open('/jobs/{id}/{task}/attempts'.format(
+            id=workflow_id, task=task_name),
                                     method='GET')
         self.assertStatus(response, 200)
         response_data = json.loads(response.data)
@@ -794,8 +795,11 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}/{task}/{index}/attempts'.format(id=workflow_id,task=task_name,index=0),
-                                    method='GET')
+        response = self.client.open(
+            '/jobs/{id}/{task}/{index}/attempts'.format(id=workflow_id,
+                                                        task=task_name,
+                                                        index=0),
+            method='GET')
         self.assertStatus(response, 200)
         response_data = json.loads(response.data)
         expected_data = {
