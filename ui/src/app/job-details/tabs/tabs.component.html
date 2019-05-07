@@ -79,6 +79,7 @@
         <ng-container matColumnDef="files">
           <mat-header-cell *matHeaderCellDef> Log files </mat-header-cell>
           <mat-cell *matCellDef="let t" class="column">
+            <!-- button (click)="previewFile()">Click Me</button -->
             <jm-debug-icons [displayMessage]="false"
                             [message]="t.failure"
                             [stdout]="t.stdout"

@@ -18,6 +18,10 @@ import {JobStatusIcon} from '../../shared/common';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
+import {GcsService} from "../../core/gcs.service";
+import {ResourceUtils} from "../../shared/utils/resource-utils";
+import {ErrorMessageFormatterPipe} from "../../shared/pipes/error-message-formatter.pipe";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'jm-tabs',
@@ -45,6 +49,10 @@ export class JobTabsComponent implements OnInit, OnChanges {
     'files',
   ];
   tabWidth: number = 1024;
+
+  constructor(
+    private errorBar: MatSnackBar,
+    private readonly gcsService: GcsService) {}
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
@@ -133,6 +141,35 @@ export class JobTabsComponent implements OnInit, OnChanges {
     if (id) {
       this.navDown.emit(id);
     }
+  }
+
+  previewFile() {
+    const path = 'gs://fc-f7f94fee-8305-44fc-becc-19184f2c5ce6/3b1d5a62-b100-472b-9133-06170c1dfd69/funWorkflow/b749242a-54a3-4aa8-917f-2bfbb9aa93a8/call-simpleTask/simpleTask-stdout.log';
+    console.log(path);
+    this.readResourceFile(path).then(entries => {
+      for (let data of entries.filter(e => !!e).sort()) {
+        if (data) {
+          console.log(data);
+        }
+      }
+    });
+  }
+
+  private readResourceFile(file: string): Promise<[string, string]> {
+    let bucket = ResourceUtils.getResourceBucket(file);
+    let object = ResourceUtils.getResourceObject(file);
+    return this.gcsService.readObject(bucket, object)
+      .then(data => [file, data] as [string, string])
+      .catch(error => this.handleError(error));
+  }
+
+  private handleError(error: any): any {
+    this.errorBar.open(
+      new ErrorMessageFormatterPipe().transform(error),
+      'Dismiss',
+      {
+        duration: 3000,
+      });
   }
 }
 
