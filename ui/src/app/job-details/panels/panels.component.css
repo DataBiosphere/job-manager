@@ -21,7 +21,7 @@ p {
 }
 
 .job-id {
-  margin-bottom: 1.2rem !important;
+  margin-bottom: 0.5rem;
 }
 
 .mat-card-title {
@@ -33,7 +33,7 @@ p {
   float: left;
   width: 18rem;
   height: 11rem;
-  margin: 1rem 1rem 3rem 1rem;
+  margin: 1rem 1rem 2rem 1rem;
   border-radius: 5px;
   box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
   padding: 0 0 24px 0;
@@ -90,4 +90,9 @@ mat-card-title .job-status {
 
 mat-card-title clr-icon {
   margin-top: -3px;
+}
+
+.job-labels {
+  font-size: 0.8rem;
+  line-height: 1.25rem;
 }

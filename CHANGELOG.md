@@ -2,7 +2,9 @@
 
 ## v0.7.3 Release Notes
 
-### Labels are configurable to show at the top of the Job Details page (default) or only in a tab.
+### Labels that are set to be hidden on the Job List page will not be shown at the top of the Job Details page.
+
+#### The full list of labels associated with a job has been moved to a new 'Labels' tab.
 
 ## v0.7.2 Release Notes
 

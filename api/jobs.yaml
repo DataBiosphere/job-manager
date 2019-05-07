@@ -224,11 +224,6 @@ definitions:
           primary field values.
         type: boolean
         default: true
-      secondary:
-        description: >
-          Whether this field is of lower importance for the job details page.
-        type: boolean
-        default: false
       filterable:
         description: >
           Whether the user should be able to quickly filter by

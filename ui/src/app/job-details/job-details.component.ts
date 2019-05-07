@@ -5,9 +5,8 @@ import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {TaskMetadata} from '../shared/model/TaskMetadata';
 import {JobTabsComponent} from "./tabs/tabs.component";
 import {JobPanelsComponent} from "./panels/panels.component";
-import {CapabilitiesResponse} from "../shared/model/CapabilitiesResponse";
-import {DisplayField} from "../shared/model/DisplayField";
-import {CapabilitiesService} from "../core/capabilities.service";
+import {SettingsService} from "../core/settings.service";
+import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 
 @Component({
   selector: 'jm-job-details',
@@ -18,24 +17,28 @@ export class JobDetailsComponent implements OnInit {
   @ViewChild(JobTabsComponent) taskTabs;
   @ViewChild(JobPanelsComponent) jobPanels;
   public job: JobMetadataResponse;
-  private readonly capabilities: CapabilitiesResponse;
-  primaryLabels: DisplayField[];
-  secondaryLabels: DisplayField[];
+
+  projectId: string;
+  primaryLabels: string[] = [];
 
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly capabilitiesService: CapabilitiesService) {
-    this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
-  }
+    private readonly settingsService: SettingsService) {}
 
   ngOnInit(): void {
     this.job = this.route.snapshot.data['job'];
-    this.primaryLabels = this.capabilities.displayFields.filter(field => !field.secondary);
+    const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
+    this.projectId = req.extensions.projectId || '';
+    if (this.settingsService.getSavedSettingValue('displayColumns', this.projectId)) {
+      this.primaryLabels = this.settingsService.getSavedSettingValue('displayColumns', this.projectId).filter(field => field.match('labels.')).map(field => field.replace('labels.',''));
+    } else {
+      this.primaryLabels = Object.keys(this.job.labels);
+    }
   }
 
   hasTabs(): boolean {
-    if (this.objectNotEmpty(this.job.inputs) || this.objectNotEmpty(this.job.outputs) || this.objectNotEmpty(this.job.failures)) {
+    if (this.objectNotEmpty(this.job.inputs) || this.objectNotEmpty(this.job.outputs) || this.objectNotEmpty(this.job.failures) || this.objectNotEmpty(this.job.labels)) {
        return true;
     }
     if (this.job.extensions) {

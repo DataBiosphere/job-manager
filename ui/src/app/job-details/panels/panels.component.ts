@@ -40,16 +40,9 @@ export class JobPanelsComponent implements OnInit {
 
   ngOnInit() {
     this.setUpExtensions();
-    console.log(this.job.labels);
     if (this.job.labels) {
-      this.labels = this.primaryLabels.map(field => {
-        if (field.field.match('labels.')) {
-          return field.field.replace('labels.', '');
-        }
-        return;
-      }).filter(Boolean).sort();
+      this.labels = Object.keys(this.job.labels).sort();
     }
-    console.log(this.labels);
   }
 
   whiteListedExtensions(): string[] {
@@ -110,6 +103,10 @@ export class JobPanelsComponent implements OnInit {
 
   hasFailures(): boolean {
     return this.job.failures && (this.job.failures.length > 0);
+  }
+
+  hasPrimaryLabels(): boolean {
+    return this.primaryLabels.filter(label => this.job.labels.hasOwnProperty(label)).length > 0;
   }
 
   getStatusIcon(status: JobStatus): string {
