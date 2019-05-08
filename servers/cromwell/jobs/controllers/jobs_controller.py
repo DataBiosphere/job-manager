@@ -213,7 +213,8 @@ def format_task(task_name, task_metadata):
 
 def format_task_failure(task_name, metadata):
     return FailureMessage(task_name=remove_workflow_name(task_name),
-                          failure=_get_deepest_message(metadata.get('failures')),
+                          failure=get_deepest_message(
+                              metadata.get('failures')),
                           timestamp=_parse_datetime(metadata.get('end')),
                           stdout=metadata.get('stdout'),
                           stderr=metadata.get('stderr'),
@@ -443,9 +444,11 @@ def _get_execution_events(events):
         ]
     return execution_events
 
-def _get_deepest_message(metadata_list):
-    if 'causedBy' in metadata_list[0] and len(metadata_list[0].get('causedBy')):
-        return _get_deepest_message(metadata_list[0].get('causedBy'))
+
+def get_deepest_message(metadata_list):
+    if 'causedBy' in metadata_list[0] and len(
+            metadata_list[0].get('causedBy')):
+        return get_deepest_message(metadata_list[0].get('causedBy'))
     else:
         return metadata_list[0].get('message')
 
