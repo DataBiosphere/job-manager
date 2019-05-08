@@ -1,5 +1,11 @@
 # Job Manager Change Log
 
+## v0.7.3 Release Notes
+
+### Elevated sub-workflow errors to the parent workflow error card on the Job Details page.
+
+#### Added a link to the sub-workflow in the error card.
+
 ## v0.7.2 Release Notes
 
 ### Improved the clarity of workflow-level errors.
@@ -9,7 +15,6 @@
 ### Fixed incorrect tooltip for standard out log.
 
 ### Added customized favicon.
->>>>>>> master
 
 ## v0.7.1 Release Notes
 

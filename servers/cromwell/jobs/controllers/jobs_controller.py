@@ -212,22 +212,13 @@ def format_task(task_name, task_metadata):
 
 
 def format_task_failure(task_name, metadata):
-    if 'failures' in metadata:
-        logger.warning('in first if')
-        failure = metadata['failures'][0]
-        if 'causedBy' in failure and len(failure['causedBy']):
-            logger.warning('in second if')
-            return format_task_failure(task_name, failure['causedBy'][0])
-    else:
-        logger.warning('in else')
-        failure = metadata
-
     return FailureMessage(task_name=remove_workflow_name(task_name),
-                          failure=failure.get('message'),
+                          failure=_get_deepest_message(metadata.get('failures')),
                           timestamp=_parse_datetime(metadata.get('end')),
                           stdout=metadata.get('stdout'),
                           stderr=metadata.get('stderr'),
-                          call_root=metadata.get('callRoot'))
+                          call_root=metadata.get('callRoot'),
+                          job_id=metadata.get('subWorkflowId'))
 
 
 def format_workflow_failure(failures):
@@ -451,6 +442,12 @@ def _get_execution_events(events):
             for event in events
         ]
     return execution_events
+
+def _get_deepest_message(metadata_list):
+    if 'causedBy' in metadata_list[0] and len(metadata_list[0].get('causedBy')):
+        return _get_deepest_message(metadata_list[0].get('causedBy'))
+    else:
+        return metadata_list[0].get('message')
 
 
 def _parse_datetime(date_string):

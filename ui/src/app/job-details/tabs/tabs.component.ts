@@ -66,14 +66,14 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   hasCallCachedTask(): boolean {
-    if (this.tasks.find(t => t.callCached === true)) {
+    if (this.tasks && this.tasks.find(t => t.callCached === true)) {
       return true;
     }
     return false;
   }
 
   hasScatteredTask(): boolean {
-    if (this.tasks.find(t => t.shards !== null)) {
+    if (this.tasks && this.tasks.find(t => t.shards !== null)) {
       return true;
     }
     return false;
