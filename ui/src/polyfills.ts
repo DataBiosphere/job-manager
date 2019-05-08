@@ -41,6 +41,8 @@
 import 'core-js/es6/reflect';
 import 'core-js/es7/reflect';
 
+/** For Firefox support of Clarity Icons */
+import '@webcomponents/custom-elements/custom-elements.min.js';
 
 /**
  * Required to support Web Animations `@angular/animation`.

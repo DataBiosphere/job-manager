@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v0.7.3 Release Notes
+
+### Fixed the display of icons in Firefox.
+
 ## v0.7.2 Release Notes
 
 ### Improved the clarity of workflow-level errors.
@@ -9,7 +13,6 @@
 ### Fixed incorrect tooltip for standard out log.
 
 ### Added customized favicon.
->>>>>>> master
 
 ## v0.7.1 Release Notes
 
