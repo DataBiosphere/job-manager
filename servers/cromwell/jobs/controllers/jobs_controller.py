@@ -212,8 +212,18 @@ def format_task(task_name, task_metadata):
 
 
 def format_task_failure(task_name, metadata):
+    if 'failures' in metadata:
+        logger.warning('in first if')
+        failure = metadata['failures'][0]
+        if 'causedBy' in failure and len(failure['causedBy']):
+            logger.warning('in second if')
+            return format_task_failure(task_name, failure['causedBy'][0])
+    else:
+        logger.warning('in else')
+        failure = metadata
+
     return FailureMessage(task_name=remove_workflow_name(task_name),
-                          failure=metadata['failures'][0].get('message'),
+                          failure=failure.get('message'),
                           timestamp=_parse_datetime(metadata.get('end')),
                           stdout=metadata.get('stdout'),
                           stderr=metadata.get('stderr'),
