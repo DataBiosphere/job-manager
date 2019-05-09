@@ -591,6 +591,50 @@ class TestJobsController(BaseTestCase):
         self.assertDictEqual(response_data, expected_data)
 
     @requests_mock.mock()
+    def test_nested_message_is_returned(self, mock_request):
+        """
+        Test case for get_deepest_message
+
+        Deepest error message gets returned instead of highest-level message
+        """
+        top_level_message = [{
+            'causedBy': [],
+            'message': 'This is the right message to return'
+        }]
+
+        second_level_message = [{
+            'causedBy': [{
+                'causedBy': [],
+                'message': 'This is the right message to return'
+            }],
+            'message':
+            'Workflow failed'
+        }]
+
+        third_level_message = [{
+            'causedBy': [{
+                'causedBy': [{
+                    'causedBy': [],
+                    'message': 'This is the right message to return'
+                }],
+                'message':
+                'This is the wrong message to return'
+            }],
+            'message':
+            'Workflow failed'
+        }]
+
+        self.assertEqual(
+            'This is the right message to return',
+            jobs_controller.get_deepest_message(top_level_message))
+        self.assertEqual(
+            jobs_controller.get_deepest_message(top_level_message),
+            jobs_controller.get_deepest_message(second_level_message))
+        self.assertEqual(
+            jobs_controller.get_deepest_message(second_level_message),
+            jobs_controller.get_deepest_message(third_level_message))
+
+    @requests_mock.mock()
     def test_get_job_bad_request(self, mock_request):
         workflow_id = 'id'
         error_message = 'Invalid workflow ID: {}.'.format(workflow_id)

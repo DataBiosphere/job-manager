@@ -4,8 +4,9 @@ p {
 }
 
 .content {
-  margin: 0 1rem 1rem 1rem;
+  margin: 0 0 1rem 1rem;
   padding-top: 2rem;
+  min-width: 57rem;
 }
 
 .header {
@@ -26,14 +27,14 @@ p {
 
 .mat-card-title {
   font-size: 1.1rem;
-  color: gray
+  color: gray;
 }
 
 .card {
   float: left;
   width: 18rem;
   height: 11rem;
-  margin: 1rem 1rem 3rem 1rem;
+  margin: 1rem 1rem 2rem 0px;
   border-radius: 5px;
   box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
   padding: 0 0 24px 0;

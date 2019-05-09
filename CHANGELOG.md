@@ -4,6 +4,10 @@
 
 ### Changed color of message icon from green to red to make it stand out more.
 
+### Elevated sub-workflow errors to the parent workflow error card on the Job Details page.
+
+#### Added a link to the sub-workflow in the error card.
+
 ## v0.7.2 Release Notes
 
 ### Improved the clarity of workflow-level errors.
