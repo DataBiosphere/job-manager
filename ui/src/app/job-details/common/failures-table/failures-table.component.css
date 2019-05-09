@@ -98,3 +98,12 @@ td.failure-links {
   min-width: 107px;
   padding-right: 0px;
 }
+
+.title-link {
+  color: black;
+}
+
+a.title-link {
+  text-decoration: underline;
+  cursor: pointer;
+}

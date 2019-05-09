@@ -4,6 +4,10 @@
 
 ### Fixed the display of icons in Firefox.
 
+### Elevated sub-workflow errors to the parent workflow error card on the Job Details page.
+
+#### Added a link to the sub-workflow in the error card.
+
 ## v0.7.2 Release Notes
 
 ### Improved the clarity of workflow-level errors.
