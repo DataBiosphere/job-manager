@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v0.7.3 Release Notes
+
+### Changed color of message icon from green to red to make it stand out more.
+
 ## v0.7.2 Release Notes
 
 ### Improved the clarity of workflow-level errors.
@@ -9,7 +13,6 @@
 ### Fixed incorrect tooltip for standard out log.
 
 ### Added customized favicon.
->>>>>>> master
 
 ## v0.7.1 Release Notes
 
