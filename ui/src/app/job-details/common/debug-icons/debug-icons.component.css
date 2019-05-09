@@ -1,13 +1,25 @@
 clr-tooltip-content {
   text-align: left;
-  line-height: 1rem;
+  color: #fff;
+  padding: 0.25rem 0.5rem;
   font-size: 0.65rem;
   max-width: 500px;
   z-index: 999;
+  line-height: 0.8rem;
+  height: auto;
 }
 
-:host-context(.mat-expansion-panel-header) clr-tooltip-content {
+::ng-deep clr-tooltip-content.message {
+  display: block;
+  margin: 0 0 0 2rem;
+  line-height: 1rem;
+  overflow-wrap: break-word;
+  max-width: 29rem;
+}
+
+:host-context(.mat-expansion-panel-header) clr-tooltip-content.message {
   max-width: 50%;
+  margin-bottom: 4rem;
 }
 
 clr-tooltip a {

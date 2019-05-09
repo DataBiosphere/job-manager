@@ -812,6 +812,13 @@ definitions:
       callRoot:
         type: string
         description: If from a task, the root directory of the task or shard execution
+      jobId:
+        type: string
+        description: >
+          Id of the job corresponding to this task, if this task is a nested
+          child job. Expresses a child:parent relationship between this job
+          and the job containing this task.
+
   FieldType:
     type: string
     default: text

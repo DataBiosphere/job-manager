@@ -16,6 +16,12 @@
 
 ### Re-implemented shard data requests to get data more efficiently from the API
 
+## v0.7.3 Release Notes
+
+### Elevated sub-workflow errors to the parent workflow error card on the Job Details page.
+
+#### Added a link to the sub-workflow in the error card.
+
 ## v0.7.2 Release Notes
 
 ### Improved the clarity of workflow-level errors.
