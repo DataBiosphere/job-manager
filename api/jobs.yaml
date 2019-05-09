@@ -698,8 +698,7 @@ definitions:
           $ref: '#/definitions/ExecutionEvent'
 
   IndividualAttempt:
-    description: >
-      The most granular collection of data for a workflow
+    description: The most granular collection of data for a job.
     properties:
       attemptNumber:
         type: integer

@@ -65,7 +65,7 @@ def update_job_labels(id, body):
     Returns:
         UpdateJobLabelsResponse: Response - never actually returned
     """
-    raise NotImplemented('Label updates not supported by dsub.')
+    raise NotImplementedError('Label updates not supported by dsub.')
 
 
 def get_job(id):
@@ -189,7 +189,7 @@ def get_shard_attempts(id, task, index, **kwargs):
 
     :rtype: JobAttemptsResponse - never actually returned
     """
-    raise NotImplemented('Scattered jobs not supported by dsub.')
+    raise NotImplementedError('Scattered jobs not supported by dsub.')
 
 
 def get_task_attempts(id, task, **kwargs):
@@ -204,7 +204,7 @@ def get_task_attempts(id, task, **kwargs):
 
     :rtype: JobAttemptsResponse - never actually returned
     """
-    raise NotImplemented('Tasks not supported by dsub.')
+    raise NotImplementedError('Tasks not supported by dsub.')
 
 
 def _handle_http_error(error, proj_id):

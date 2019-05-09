@@ -184,7 +184,7 @@ def get_task_attempts(id, task, **kwargs):
     job = response.json()
 
     attempts = [
-        _convert_to_attempt(dict(call)) for call in job.get('calls').get(task)
+        _convert_to_attempt(call) for call in job.get('calls').get(task)
     ]
     return JobAttemptsResponse(attempts=attempts)
 
@@ -606,8 +606,9 @@ def _convert_to_attempt(item):
 
 
 def _is_call_cached(metadata):
-    if metadata.get('hit') is not None:
-        return metadata.get('hit')
+    hit = metadata.get('hit')
+    if hit is not None:
+        return hit
     if metadata.get('effectiveCallCachingMode') == 'CallCachingOff':
         return False
 
