@@ -237,7 +237,7 @@ class BaseTestCases:
 
         def test_update_job_labels(self):
             resp = self.client.open('/jobs/asdf/updateLabels', method='POST')
-            self.assert_status(resp, 501)
+            self.assert_status(resp, 500)
 
         def test_abort_terminal_job_fails(self):
             started = self.start_job('echo FOO', wait=True)
