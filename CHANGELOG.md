@@ -2,6 +2,8 @@
 
 ## v0.7.3 Release Notes
 
+### Added styling to Job Details page tabs to add clarity.
+
 ### Elevated sub-workflow errors to the parent workflow error card on the Job Details page.
 
 #### Added a link to the sub-workflow in the error card.

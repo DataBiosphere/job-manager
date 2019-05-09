@@ -1,5 +1,5 @@
 <mat-expansion-panel class="content" expanded="true" [disabled]="true" [ngClass]="{'has-tasks' : hasTasks()}" #tabsPanel>
-  <mat-tab-group [(selectedIndex)]="selectedTab">
+  <mat-tab-group [(selectedIndex)]="selectedTab" disableRipple="true">
     <mat-tab *ngIf="hasTasks()" label="List View">
       <mat-table [dataSource]="dataSource">
         <!-- Task name column -->
