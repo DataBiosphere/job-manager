@@ -1,6 +1,7 @@
 .content {
   margin: 1rem;
   clear: left;
+  min-width: 56rem;
 }
 
 mat-expansion-panel {
