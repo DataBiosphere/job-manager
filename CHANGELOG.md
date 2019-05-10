@@ -16,6 +16,10 @@
 
 ## v0.7.3 Release Notes
 
+### Fixed the broken display of icons in Firefox.
+
+### Changed the color of the message icon from green to red to make it stand out more.
+
 ### Added styling to Job Details page tabs to add clarity.
 
 ### Elevated sub-workflow errors to the parent workflow error card on the Job Details page.
