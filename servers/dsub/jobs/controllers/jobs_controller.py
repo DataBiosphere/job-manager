@@ -189,7 +189,7 @@ def get_shard_attempts(id, task, index, **kwargs):
 
     :rtype: JobAttemptsResponse - never actually returned
     """
-    raise NotImplementedError('Scattered jobs not supported by dsub.')
+    raise NotImplementedError('Tasks not supported by dsub.')
 
 
 def get_task_attempts(id, task, **kwargs):
