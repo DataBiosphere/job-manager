@@ -2,7 +2,9 @@
 
 ## v0.7.3 Release Notes
 
-### Fixed the display of icons in Firefox.
+### Fixed the broken display of icons in Firefox.
+
+### Added styling to Job Details page tabs to add clarity.
 
 ### Elevated sub-workflow errors to the parent workflow error card on the Job Details page.
 
