@@ -70,7 +70,8 @@ a.title-link {
 }
 
 ::ng-deep .mat-tab-label.mat-tab-label-active,
-::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-label.mat-tab-label-active:focus{
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-label.mat-tab-label-active:focus,
+::ng-deep .mat-tab-label:hover {
   font-weight: 600;
   opacity: 1;
   background-color: rgba(116,174,67,0.15);
