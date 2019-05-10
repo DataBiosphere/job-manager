@@ -1,12 +1,10 @@
 mat-table {
   margin-top: 20px;
   display: table;
-  width: 99%;
+  width: 100%;
   border-radius: 5px;
   border: 1px solid #CCCFD4;
   box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
-  margin-left: auto;
-  margin-right: auto;
 }
 
 :host-context(mat-card.card) mat-table {
@@ -26,10 +24,9 @@ mat-table {
 td,
 th {
   text-align: left;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   line-height: 1rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  height: 1rem;
   display: table-cell;
 }
 
@@ -55,8 +52,8 @@ td.failure-task {
 
 th.failure-message,
 td.failure-message {
-  width: 100%;
   line-height: 1.25rem;
+  word-wrap: break-word;
 }
 
 th.failure-links,

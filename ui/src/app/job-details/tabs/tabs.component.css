@@ -54,6 +54,7 @@ mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-head
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
+  padding-right: 2px;
 }
 
 mat-expansion-panel.mat-expansion-panel mat-panel-description.mat-expansion-panel-header-description {
@@ -70,6 +71,13 @@ mat-expansion-panel.mat-expansion-panel .task-inputs,
 mat-expansion-panel.mat-expansion-panel .task-outputs,
 mat-expansion-panel.mat-expansion-panel .task-attempts {
   text-align: left;
+}
+
+::ng-deep .mat-tab-labels  {
+  justify-content: flex-start;
+  background: none;
+  border-bottom: 2px #74AE43 solid;
+  text-transform: uppercase;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-start,
@@ -107,6 +115,9 @@ mat-expansion-panel-header,
 mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
+  background: none;
+  opacity: 1;
+  color: #333F52;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-inputs clr-icon,
@@ -116,6 +127,36 @@ mat-expansion-panel.mat-expansion-panel .task-outputs clr-icon {
 
 mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
   padding-left: 5px;
+}
+
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-label:focus,
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-link:focus,
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-label:not(.mat-tab-disabled):focus,
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-link:not(.mat-tab-disabled):focus {
+  color: #333F52;
+  background: none;
+}
+
+::ng-deep .mat-tab-label.mat-tab-label-active,
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-label.mat-tab-label-active:focus,
+::ng-deep .mat-tab-label:hover {
+  font-weight: 600;
+  opacity: 1;
+  background-color: rgba(116,174,67,0.15);
+}
+
+::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {
+  background-color: #74AE43;
+  height: 8px;
+}
+
+.mat-table {
+  margin-top: 20px;
+  display: table;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #CCCFD4;
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
 }
 
 ::ng-deep mat-expansion-panel.mat-expansion-panel mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {

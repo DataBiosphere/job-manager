@@ -2,21 +2,21 @@
 
 ## v1.0.0 Release Notes
 
-### Multiple changes to the "List" tab in the Job Details page for Cromwell jobs
+### Multiple changes to the "List" tab in the Job Details page for Cromwell jobs.
 
-#### If a task has multiple attempts it can clicked on, which will expand to show additional rows, one for each attempt
+#### If a task or shard has multiple attempts it can be clicked on, which will expand to show additional rows, one for each attempt.
 
-#### Scattered task names are a link that will display scattered task shards in a dialog
+#### Scattered task names are a link that will display scattered task shards in a dialog box.
 
-##### User can click on each shard to see shard attempt data
+#### Added icons for inputs and outputs which can be clicked on to show the full list.
 
-#### Added icons for inputs and outputs which can be clicked on to show a full list
+#### Changed the call-cached icon and moved it into the "duration" column.
 
-#### Changed the call-cached icon and moved it into the "duration" column
-
-### Re-implemented shard data requests to get data more efficiently from the API
+### Re-implemented shard data requests to get data more efficiently from the API.
 
 ## v0.7.3 Release Notes
+
+### Added styling to Job Details page tabs to add clarity.
 
 ### Elevated sub-workflow errors to the parent workflow error card on the Job Details page.
 
