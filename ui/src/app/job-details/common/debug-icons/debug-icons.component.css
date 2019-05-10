@@ -1,9 +1,12 @@
+clr-tooltip-content {
+  font-size: 0.65rem;
+  line-height: 0.8rem;
+}
+
 clr-tooltip-content.message {
   background-color: rgba(0, 0, 0, 0.65);
   padding: 0.25rem 0.5rem;
-  font-size: 0.65rem;
   color: #fff;
-  display: block;
   margin: -0.6rem 0.5rem 0 0;
   height: auto;
   line-height: 1rem;

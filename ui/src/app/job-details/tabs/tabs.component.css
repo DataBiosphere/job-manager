@@ -35,6 +35,7 @@ a.title-link {
 
 ::ng-deep .mat-tab-body-active .mat-tab-body-content {
   overflow: hidden;
+  padding-right: 2px;
 }
 
 ::ng-deep .mat-expansion-panel-header.title {
@@ -47,27 +48,47 @@ a.title-link {
 
 ::ng-deep .mat-tab-labels  {
   justify-content: flex-start;
+  background: none;
+  border-bottom: 2px #74AE43 solid;
 }
 
 ::ng-deep .mat-tab-label {
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
+  background: none;
+  opacity: 1;
+  color: #333F52;
+  text-transform: uppercase;
 }
 
-::ng-deep .mat-tab-label.mat-tab-label-active {
-  font-weight: 600;
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-label:focus,
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-link:focus,
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-label:not(.mat-tab-disabled):focus,
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-link:not(.mat-tab-disabled):focus {
   color: #333F52;
+  background: none;
+}
+
+::ng-deep .mat-tab-label.mat-tab-label-active,
+::ng-deep mat-tab-group.mat-tab-group.mat-primary .mat-tab-label.mat-tab-label-active:focus,
+::ng-deep .mat-tab-label:hover {
+  font-weight: 600;
+  opacity: 1;
+  background-color: rgba(116,174,67,0.15);
+}
+
+::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {
+  background-color: #74AE43;
+  height: 8px;
 }
 
 .mat-table {
   margin-top: 20px;
   display: table;
-  width: 99%;
+  width: 100%;
   border-radius: 5px;
   border: 1px solid #CCCFD4;
   box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .mat-header-row, .mat-row {
@@ -174,8 +195,4 @@ button.shard-icon {
 
 .shard-status clr-icon {
   margin: 0 auto;
-}
-
-::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {
-  background-color: #74AE43;
 }
