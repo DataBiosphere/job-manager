@@ -1,7 +1,7 @@
 mat-table {
   margin-top: 20px;
   display: table;
-  width: 100%;
+  width: 99%;
   border-radius: 5px;
   border: 1px solid #CCCFD4;
   box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
