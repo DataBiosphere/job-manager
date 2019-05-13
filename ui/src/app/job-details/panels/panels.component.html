@@ -24,54 +24,54 @@
       <span *ngIf="job.labels[l]">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
     </span>
   </div>
-</div>
 
-<mat-card class="card">
-  <mat-card-title>Status: <span class="job-status">{{ job.status }}</span>
-    <clr-icon [attr.shape]="getStatusIcon(job.status)" size="20"></clr-icon>
-  </mat-card-title>
-  <mat-card-content>
-    <p><b>
-      <ng-container *ngIf="numTasks > 0">
-        Tasks: {{ numSucceededTasks }} succeeded, {{ numFailedTasks }} failed, {{ numRunningTasks }} currently being processed
-      </ng-container>
-    </b></p>
-    <p id="submitted" *ngIf="job.submission">
-      Submitted:
-      <jm-datetime [datetime]="job.submission"></jm-datetime>
-    </p>
-    <p id="started" *ngIf="job.start">
-      Started:
-      <jm-datetime [datetime]="job.start"></jm-datetime>
-    </p>
-    <p id="ended" *ngIf="job.end">
-      Ended:
-      <jm-datetime [datetime]="job.end"></jm-datetime>
-      ({{ job.start | jmDuration: job.end }})
-    </p>
-  </mat-card-content>
-</mat-card>
-
-<mat-card class="card" *ngIf="whiteListedExtensions().length > 0">
-  <mat-card-title>Details</mat-card-title>
-  <mat-card-content>
-    <div *ngFor="let f of whiteListedExtensions()">
-      <p class="detail-field">
-        <!--TODO(bryancrampton): Format dates correctly here-->
-        <span>{{ f + ': ' + job.extensions[f] }}</span>
+  <mat-card class="card">
+    <mat-card-title>Status: <span class="job-status">{{ job.status }}</span>
+      <clr-icon [attr.shape]="getStatusIcon(job.status)" size="20"></clr-icon>
+    </mat-card-title>
+    <mat-card-content>
+      <p><b>
+        <ng-container *ngIf="numTasks > 0">
+          Tasks: {{ numSucceededTasks }} succeeded, {{ numFailedTasks }} failed, {{ numRunningTasks }} currently being processed
+        </ng-container>
+      </b></p>
+      <p id="submitted" *ngIf="job.submission">
+        Submitted:
+        <jm-datetime [datetime]="job.submission"></jm-datetime>
       </p>
-    </div>
-  </mat-card-content>
-</mat-card>
+      <p id="started" *ngIf="job.start">
+        Started:
+        <jm-datetime [datetime]="job.start"></jm-datetime>
+      </p>
+      <p id="ended" *ngIf="job.end">
+        Ended:
+        <jm-datetime [datetime]="job.end"></jm-datetime>
+        ({{ job.start | jmDuration: job.end }})
+      </p>
+    </mat-card-content>
+  </mat-card>
 
-<mat-card class="card" *ngIf="hasFailures()">
-  <mat-card-title>Errors ({{ job.failures.length }} total)</mat-card-title>
-  <mat-card-content>
-    <jm-failures-table [failures]="job.failures"
-                       [numToShow]="numOfErrorsToShow"
-                       [showHeaders]="false"
-                       [displayedColumns]="['name','links']"
-                       [context]="'card'">
-    </jm-failures-table>
-  </mat-card-content>
-</mat-card>
+  <mat-card class="card" *ngIf="whiteListedExtensions().length > 0">
+    <mat-card-title>Details</mat-card-title>
+    <mat-card-content>
+      <div *ngFor="let f of whiteListedExtensions()">
+        <p class="detail-field">
+          <!--TODO(bryancrampton): Format dates correctly here-->
+          <span>{{ f + ': ' + job.extensions[f] }}</span>
+        </p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card" *ngIf="hasFailures()">
+    <mat-card-title>Errors ({{ job.failures.length }} total)</mat-card-title>
+    <mat-card-content>
+      <jm-failures-table [failures]="job.failures"
+                         [numToShow]="numOfErrorsToShow"
+                         [showHeaders]="false"
+                         [displayedColumns]="['name','links']"
+                         [context]="'card'">
+      </jm-failures-table>
+    </mat-card-content>
+  </mat-card>
+</div>

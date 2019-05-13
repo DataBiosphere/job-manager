@@ -1,10 +1,22 @@
 # Job Manager Change Log
 
-## v0.7.3 Release Notes
+## v1.1 Release Notes
 
 ### Labels that are set to be hidden on the Job List page will not be shown at the top of the Job Details page.
 
 #### The full list of labels associated with a job has been moved to a new 'Labels' tab.
+
+## v0.7.3 Release Notes
+
+### Fixed the broken display of icons in Firefox.
+
+### Changed the color of the message icon from green to red to make it stand out more.
+
+### Added styling to Job Details page tabs to add clarity.
+
+### Elevated sub-workflow errors to the parent workflow error card on the Job Details page.
+
+#### Added a link to the sub-workflow in the error card.
 
 ## v0.7.2 Release Notes
 
