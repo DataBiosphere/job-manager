@@ -3,7 +3,7 @@ import {MAT_DIALOG_DATA} from "@angular/material";
 import {JobManagerService} from "../../../core/job-manager.service";
 import {TaskShard} from "../../../shared/model/TaskShard";
 import {JobStatus} from "../../../shared/model/JobStatus";
-import {JobStatusIcon} from "../../../shared/common";
+import {JobStatusIcon, objectNotEmpty} from "../../../shared/common";
 
 @Component({
   selector: 'jm-scattered-attempts-component',
@@ -29,7 +29,7 @@ export class JobScatteredAttemptsComponent {
   }
 
   hasFailures(shard: TaskShard): boolean {
-    return shard.failureMessages && (Object.keys(shard.failureMessages).length !== 0);
+    return objectNotEmpty(shard.failureMessages);
   }
 
   getFailures(shard: TaskShard): string {

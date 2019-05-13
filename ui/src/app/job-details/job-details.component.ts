@@ -4,7 +4,8 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {TaskMetadata} from '../shared/model/TaskMetadata';
 import {JobTabsComponent} from "./tabs/tabs.component";
-import {JobPanelsComponent} from "./panels/panels.component";
+import {JobPanelsComponent} from './panels/panels.component';
+import {objectNotEmpty} from '../shared/common';
 
 @Component({
   selector: 'jm-job-details',
@@ -26,7 +27,7 @@ export class JobDetailsComponent implements OnInit {
   }
 
   hasTabs(): boolean {
-    if (this.objectNotEmpty(this.job.inputs) || this.objectNotEmpty(this.job.outputs) || this.objectNotEmpty(this.job.failures)) {
+    if (objectNotEmpty(this.job.inputs) || objectNotEmpty(this.job.outputs) || objectNotEmpty(this.job.failures)) {
        return true;
     }
     if (this.job.extensions) {
@@ -88,9 +89,5 @@ export class JobDetailsComponent implements OnInit {
     if (this.job.extensions.tasks) {
       this.taskTabs.timingDiagram.buildTimelineData(this.job.extensions.tasks);
     }
-  }
-
-  private objectNotEmpty(object: object): boolean {
-    return object && Object.keys(object).length !== 0;
   }
 }

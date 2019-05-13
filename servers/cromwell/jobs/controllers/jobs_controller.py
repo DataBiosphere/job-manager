@@ -32,6 +32,15 @@ _DEFAULT_PAGE_SIZE = 64
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
+attempt_include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'end',
+                        'executionStatus', 'failures', 'inputs', 'jobId',
+                        'outputs', 'shardIndex', 'start', 'stderr', 'stdout')
+
+job_include_keys = attempt_include_keys + (
+    'calls', 'description', 'executionEvents', 'labels', 'parentWorkflowId',
+    'returnCode', 'shardIndex', 'start', 'status', 'submission',
+    'subWorkflowId', 'workflowName')
+
 
 @requires_auth
 def abort_job(id, **kwargs):
@@ -91,18 +100,10 @@ def get_job(id, **kwargs):
     :rtype: JobMetadataResponse
     """
 
-    include_keys = ('attempt', 'callCaching:hit',
-                    'callCaching:effectiveCallCachingMode', 'callRoot',
-                    'calls', 'description', 'end', 'executionEvents',
-                    'executionStatus', 'failures', 'inputs', 'labels',
-                    'outputs', 'parentWorkflowId', 'returnCode', 'shardIndex',
-                    'start', 'status', 'stderr', 'stdout', 'submission',
-                    'subWorkflowId', 'workflowName')
-
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
         id=id,
-        query='includeKey=' + '&includeKey='.join(include_keys))
+        query='includeKey=' + '&includeKey='.join(job_include_keys))
     response = requests.get(url,
                             auth=kwargs.get('auth'),
                             headers=kwargs.get('auth_headers'))
@@ -165,15 +166,10 @@ def get_task_attempts(id, task, **kwargs):
     :rtype: JobAttemptsResponse
     """
 
-    include_keys = ('attempt', 'callCaching:hit',
-                    'callCaching:effectiveCallCachingMode', 'callRoot', 'end',
-                    'executionStatus', 'failures', 'inputs', 'jobId', 'labels',
-                    'outputs', 'shardIndex', 'start', 'stderr', 'stdout')
-
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
         id=id,
-        query='includeKey=' + '&includeKey='.join(include_keys))
+        query='includeKey=' + '&includeKey='.join(attempt_include_keys))
     response = requests.get(url,
                             auth=kwargs.get('auth'),
                             headers=kwargs.get('auth_headers'))
@@ -206,15 +202,10 @@ def get_shard_attempts(id, task, index, **kwargs):
     :rtype: JobAttemptsResponse
     """
 
-    include_keys = ('attempt', 'callCaching:hit',
-                    'callCaching:effectiveCallCachingMode', 'callRoot', 'end',
-                    'executionStatus', 'failures', 'inputs', 'labels',
-                    'outputs', 'shardIndex', 'start', 'stderr', 'stdout')
-
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
         id=id,
-        query='includeKey=' + '&includeKey='.join(include_keys))
+        query='includeKey=' + '&includeKey='.join(attempt_include_keys))
     response = requests.get(url,
                             auth=kwargs.get('auth'),
                             headers=kwargs.get('auth_headers'))
@@ -616,11 +607,11 @@ def _convert_to_attempt(item):
 
 
 def _is_call_cached(metadata):
-    hit = metadata.get('hit')
-    if hit is not None:
-        return hit
-    if metadata.get('effectiveCallCachingMode') == 'CallCachingOff':
-        return False
+    if metadata is not None:
+        hit = metadata.get('hit')
+        if hit is not None:
+            return hit
+    return False
 
 
 def _get_response_message(response):

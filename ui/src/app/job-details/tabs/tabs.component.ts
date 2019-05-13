@@ -22,6 +22,7 @@ import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.compone
 import {JobManagerService} from "../../core/job-manager.service";
 import {TaskShard} from "../../shared/model/TaskShard";
 import {JobScatteredAttemptsComponent} from "./scattered-attempts/scattered-attempts.component";
+import {objectNotEmpty} from '../../shared/common';
 
 @Component({
   selector: 'jm-tabs',
@@ -61,30 +62,16 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return JobStatusIcon[status];
   }
 
-  hasCallCachedTask(): boolean {
-    if (this.tasks && this.tasks.find(t => t.callCached === true)) {
-      return true;
-    }
-    return false;
-  }
-
-  hasScatteredTask(): boolean {
-    if (this.tasks && this.tasks.find(t => t.shards !== null)) {
-      return true;
-    }
-    return false;
-  }
-
   hasFailures(): boolean {
-    return this.job.failures && (this.job.failures.length !== 0);
+    return objectNotEmpty(this.job.failures);
   }
 
   hasInputs(task:TaskMetadata): boolean {
-    return task.inputs && (Object.keys(task.inputs).length !== 0);
+    return objectNotEmpty(task.inputs);
   }
 
   hasOutputs(task:TaskMetadata): boolean {
-    return task.outputs && (Object.keys(task.outputs).length !== 0);
+    return objectNotEmpty(task.outputs);
   }
 
   hasTasks(): boolean {
@@ -95,7 +82,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   hasTaskFailures(task: TaskMetadata): boolean {
-    return task.failureMessages && (Object.keys(task.failureMessages).length !== 0);
+    return objectNotEmpty(task.failureMessages);
   }
 
   hasOnlyOneAttempt(task: TaskMetadata): boolean {
