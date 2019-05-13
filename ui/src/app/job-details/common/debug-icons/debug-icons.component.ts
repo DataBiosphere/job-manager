@@ -9,7 +9,7 @@ import {ResourceUtils} from "../../../shared/utils/resource-utils";
   templateUrl: './debug-icons.component.html',
   styleUrls: ['./debug-icons.component.css']
 })
-export class JobDebugIconsComponent implements OnInit {
+export class JobDebugIconsComponent {
   @Input() displayMessage: boolean;
   @Input() message: string;
   @Input() stdout: string;
@@ -18,10 +18,6 @@ export class JobDebugIconsComponent implements OnInit {
 
   constructor(private authService: AuthService,
               private sanitizer:DomSanitizer) {
-  }
-
-  ngOnInit() {
-    // mark URLs as safe
   }
 
   getResourceUrl(url: string): SafeUrl {

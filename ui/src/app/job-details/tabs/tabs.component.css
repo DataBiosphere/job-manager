@@ -1,7 +1,7 @@
 .content {
   margin: 1rem;
   clear: left;
-  min-width: 56rem;
+  min-width: 896px;
 }
 
 .mat-expansion-panel-spacing {
@@ -23,7 +23,7 @@ mat-expansion-panel.mat-expansion-panel.content mat-expansion-panel.mat-expansio
 
 mat-expansion-panel.mat-expansion-panel.content mat-expansion-panel.mat-expansion-panel.list-header {
   border-top: 1px solid rgba(0, 0, 0, 0.26);
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 mat-expansion-panel-header.mat-expansion-panel-header {
@@ -147,7 +147,7 @@ mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
 
 ::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {
   background-color: #74AE43;
-  height: 8px;
+  height: 0.5rem;
 }
 
 .mat-table {
@@ -164,6 +164,7 @@ mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
   margin: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.26);
   border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+  overflow: visible;
 }
 
 mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded clr-icon {
@@ -192,8 +193,8 @@ mat-dialog-container.mat-dialog-container {
 }
 
 .title {
-  margin-top: .6rem;
-  margin-bottom: .6rem;
+  margin-top: 0.6rem;
+  margin-bottom: 0.6rem;
   font-size: 1.2rem;
   color: gray;
 }
@@ -207,17 +208,14 @@ a.title-link {
   cursor: pointer;
 }
 
-.mat-expansion-panel.has-tasks {
-  overflow: hidden;
+::ng-deep div.mat-tab-body-wrapper {
+  overflow: visible;
 }
 
-::ng-deep .mat-tab-body-wrapper .mat-tab-body.mat-tab-body-active {
-  overflow-y: hidden;
-  z-index: 1;
-}
-
+::ng-deep .mat-tab-body-wrapper .mat-tab-body.mat-tab-body-active,
 ::ng-deep .mat-tab-body-active .mat-tab-body-content {
-  overflow: hidden;
+  z-index: 1;
+  overflow: visible;
 }
 
 ::ng-deep .mat-tab-labels  {
@@ -258,11 +256,6 @@ clr-icon {
   margin-right: 1rem;
 }
 
-button.shard-icon {
-  display: inline-flex;
-  margin-left: 1.5rem;
-}
-
 .shards-container {
   display: inline-flex;
   flex-direction: row;
@@ -286,7 +279,7 @@ button.shard-icon {
 }
 
 .shard-status clr-icon {
-  margin: 0 auto;
+  margin-right: 0;
 }
 
 .scatter-icon {

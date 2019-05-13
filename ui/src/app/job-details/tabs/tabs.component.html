@@ -29,8 +29,8 @@
                     <span *ngIf="!t.jobId && !taskIsScattered(t)">{{ t.name }}</span>
                   </div>
                   <span *ngIf="taskIsScattered(t)" class="scatter-icon-container">
-                      <button mat-icon-button [matMenuTriggerFor]="shardMenu">
-                        <clr-tooltip class="scatter-icon">
+                      <button mat-icon-button [matMenuTriggerFor]="shardMenu" class="scatter-icon">
+                        <clr-tooltip>
                           <clr-icon clrTooltipTrigger shape="layers" size="24" class="is-solid"></clr-icon>
                           <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
                             <span>task is scattered</span>
