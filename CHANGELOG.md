@@ -8,6 +8,8 @@
 
 #### Scattered task names are a link that will display scattered task shards in a dialog box.
 
+#### Scattered sub-workflow shards are a link that will take the users to a "Job Details" page with details of that shard.
+
 #### Added icons for inputs and outputs which can be clicked on to show the full list.
 
 #### Changed the call-cached icon and moved it into the "duration" column.
