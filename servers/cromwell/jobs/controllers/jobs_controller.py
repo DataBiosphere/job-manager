@@ -325,20 +325,19 @@ def format_scattered_task(task_name, task_metadata):
                     f.get('message') for f in shard.get('failures')
                 ]
             filtered_shards.append(
-                Shard(
-                    execution_status=task_statuses.cromwell_execution_to_api(
-                        shard.get('executionStatus')),
-                    start=_parse_datetime(shard.get('start')),
-                    end=_parse_datetime(shard.get('end')),
-                    shard_index=shard.get('shardIndex'),
-                    execution_events=_get_execution_events(
-                        shard.get('executionEvents')),
-                    stdout=shard.get('stdout'),
-                    stderr=shard.get('stderr'),
-                    call_root=shard.get('callRoot'),
-                    attempts=shard.get('attempt'),
-                    failure_messages=failure_messages,
-                    job_id=shard.get('subWorkflowId')))
+                Shard(execution_status=task_statuses.cromwell_execution_to_api(
+                    shard.get('executionStatus')),
+                      start=_parse_datetime(shard.get('start')),
+                      end=_parse_datetime(shard.get('end')),
+                      shard_index=shard.get('shardIndex'),
+                      execution_events=_get_execution_events(
+                          shard.get('executionEvents')),
+                      stdout=shard.get('stdout'),
+                      stderr=shard.get('stderr'),
+                      call_root=shard.get('callRoot'),
+                      attempts=shard.get('attempt'),
+                      failure_messages=failure_messages,
+                      job_id=shard.get('subWorkflowId')))
             if min_start > _parse_datetime(shard.get('start')):
                 min_start = _parse_datetime(shard.get('start'))
             if shard.get('executionStatus') not in ['Failed', 'Done']:
