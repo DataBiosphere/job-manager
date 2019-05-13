@@ -17,7 +17,7 @@ from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
-from jobs.models.task_shard import TaskShard
+from jobs.models.shard import Shard
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.models.health_response import HealthResponse
@@ -325,7 +325,7 @@ def format_scattered_task(task_name, task_metadata):
                     f.get('message') for f in shard.get('failures')
                 ]
             filtered_shards.append(
-                TaskShard(
+                Shard(
                     execution_status=task_statuses.cromwell_execution_to_api(
                         shard.get('executionStatus')),
                     start=_parse_datetime(shard.get('start')),
@@ -337,7 +337,8 @@ def format_scattered_task(task_name, task_metadata):
                     stderr=shard.get('stderr'),
                     call_root=shard.get('callRoot'),
                     attempts=shard.get('attempt'),
-                    failure_messages=failure_messages))
+                    failure_messages=failure_messages,
+                    job_id=shard.get('subWorkflowId')))
             if min_start > _parse_datetime(shard.get('start')):
                 min_start = _parse_datetime(shard.get('start'))
             if shard.get('executionStatus') not in ['Failed', 'Done']:

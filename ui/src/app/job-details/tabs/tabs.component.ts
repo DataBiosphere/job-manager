@@ -20,7 +20,7 @@ import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
 import {JobManagerService} from "../../core/job-manager.service";
-import {TaskShard} from "../../shared/model/TaskShard";
+import {Shard} from "../../shared/model/Shard";
 import {JobScatteredAttemptsComponent} from "./scattered-attempts/scattered-attempts.component";
 import {objectNotEmpty} from '../../shared/common';
 
@@ -144,12 +144,12 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   openScatteredAttemptsDialog(task: TaskMetadata): void {
-    let trimmedShards: TaskShard[] = [];
+    let trimmedShards: Shard[] = [];
 
     // remove executionEvents, since they're not needed outside the timing diagram,
     // and preserve start and end as Date objects for task shards
     task.shards.forEach((shard) => {
-      let newShard: TaskShard = {};
+      let newShard: Shard = {};
       newShard.start = new Date(shard.start);
       newShard.end = new Date(shard.end);
       newShard.stdout = shard.stdout;
@@ -159,13 +159,14 @@ export class JobTabsComponent implements OnInit, OnChanges {
       newShard.shardIndex = shard.shardIndex;
       newShard.executionStatus = shard.executionStatus;
       newShard.failureMessages = shard.failureMessages;
+      newShard.jobId = shard.jobId;
       trimmedShards.push(newShard);
     });
 
     const data = {
       taskId: this.job.id,
       taskName: this.getJobTaskName(task.name),
-      taskShards: trimmedShards
+      shards: trimmedShards
     };
 
     this.scatteredAttemptsDialog.open(JobScatteredAttemptsComponent, {

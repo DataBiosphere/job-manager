@@ -8,7 +8,7 @@
     </a>
   </clr-tooltip>
  <clr-icon *ngIf="!getResourceUrl(stdout)" shape="file" size="24" class="disabled"></clr-icon>
-  <clr-tooltip *ngIf="getResourceUrl(stdout)">
+  <clr-tooltip *ngIf="!!getResourceUrl(stdout)">
     <a class="log-item" [href]="getResourceUrl(stdout)" target="_blank">
       <clr-icon clrTooltipTrigger shape="file" size="24"></clr-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
@@ -17,7 +17,7 @@
     </a>
   </clr-tooltip>
   <clr-icon *ngIf="!getResourceUrl(stderr)" shape="file" class="has-alert log-error disabled" size="24"></clr-icon>
-  <clr-tooltip *ngIf="getResourceUrl(stderr)">
+  <clr-tooltip *ngIf="!!getResourceUrl(stderr)">
     <a class="log-item" [href]="getResourceUrl(stderr)" target="_blank">
       <clr-icon clrTooltipTrigger shape="file" size="24" class="has-alert log-error"></clr-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
@@ -26,7 +26,7 @@
     </a>
   </clr-tooltip>
   <clr-icon *ngIf="!getTaskDirectory(directory)" shape="folder" size="24" class="is-solid disabled"></clr-icon>
-  <clr-tooltip *ngIf="getTaskDirectory(directory)">
+  <clr-tooltip *ngIf="!!getTaskDirectory(directory)">
     <a class="log-item" [href]="getTaskDirectory(directory)" target="_blank">
       <clr-icon clrTooltipTrigger shape="folder" size="24" class="is-solid"></clr-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>

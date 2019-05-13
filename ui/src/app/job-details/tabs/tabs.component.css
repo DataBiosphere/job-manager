@@ -1,7 +1,7 @@
 .content {
   margin: 1rem;
   clear: left;
-  min-width: 896px;
+  min-width: 1230px;
 }
 
 .mat-expansion-panel-spacing {
@@ -15,7 +15,7 @@ mat-expansion-panel.mat-expansion-panel.content {
 }
 
 mat-expansion-panel.mat-expansion-panel.content mat-expansion-panel.mat-expansion-panel {
-  min-width: 1280px;
+  min-width: 1080px;
   border: 1px solid rgba(0, 0, 0, 0.26);
   border-top: none;
   box-shadow: none;
@@ -49,12 +49,12 @@ mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-head
 
 mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title .task-name {
   text-align: left;
-  min-width: 300px;
+  padding-right: 10px;
+  min-width: 170px;
+  max-width: 170px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
-  padding-right: 2px;
 }
 
 mat-expansion-panel.mat-expansion-panel mat-panel-description.mat-expansion-panel-header-description {
@@ -203,9 +203,10 @@ mat-dialog-container.mat-dialog-container {
   color: black;
 }
 
-a.title-link {
+::ng-deep .task-name a.title-link {
   text-decoration: underline;
   cursor: pointer;
+  display: inline;
 }
 
 ::ng-deep div.mat-tab-body-wrapper {
@@ -284,10 +285,6 @@ clr-icon {
 
 .scatter-icon {
   color: #5C912E;
-}
-
-a.title-link, p.title-nolink {
-  display: inline-flex;
 }
 
 ::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {

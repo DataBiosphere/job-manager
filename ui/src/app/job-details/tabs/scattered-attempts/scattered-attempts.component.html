@@ -15,11 +15,17 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
     </mat-expansion-panel>
-    <ng-container *ngFor="let shard of data.shardsData.taskShards">
-      <mat-expansion-panel class="list-row" expanded="false" (opened)="getShardAttempts(shard)">
+    <ng-container *ngFor="let shard of data.shardsData.shards">
+      <mat-expansion-panel class="list-row"
+                           expanded="false"
+                           disabled="{{ !!shard.jobId }}"
+                           (opened)="getShardAttempts(shard)">
         <mat-expansion-panel-header [expandedHeight]="'48px'">
           <mat-panel-title>
-            <div class="task-name">shard {{ shard.shardIndex }}</div>
+            <div class="task-name">
+              <a *ngIf="shard.jobId" class="title-link" href="/jobs/{{ shard.jobId }}">shard {{ shard.shardIndex }}</a>
+              <span *ngIf="!shard.jobId">shard {{ shard.shardIndex }}</span>
+            </div>
           </mat-panel-title>
           <mat-panel-description>
             <div class="task-status status-icon">

@@ -658,7 +658,7 @@ definitions:
       shards:
         type: array
         items:
-          $ref: '#/definitions/TaskShard'
+          $ref: '#/definitions/Shard'
       failureMessages:
         type: array
         items:
@@ -745,8 +745,8 @@ definitions:
         items:
           $ref: '#/definitions/IndividualAttempt'
 
-  TaskShard:
-    description: Individual shards for a scattered task
+  Shard:
+    description: Individual shards for a scattered task or sub-workflow
     properties:
       executionStatus:
         type: string
@@ -785,6 +785,10 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/ExecutionEvent'
+      jobId:
+        type: string
+        description: >
+          Id of the job corresponding to this shard, if this is a scattered sub-workflow shard
 
   FailureMessage:
     description: >

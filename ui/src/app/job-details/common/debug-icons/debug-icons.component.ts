@@ -21,15 +21,16 @@ export class JobDebugIconsComponent {
   }
 
   getResourceUrl(url: string): SafeUrl {
-    if (!url) {
+    if (!url || !ResourceUtils.isResourceURL(url)) {
       return '';
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(ResourceUtils.getResourceBrowserURL(url, this.authService.userEmail));
   }
 
   getTaskDirectory(directory): SafeUrl {
-    if (directory) {
+    if (directory && ResourceUtils.isResourceURL(directory)) {
       return this.sanitizer.bypassSecurityTrustResourceUrl(ResourceUtils.getDirectoryBrowserURL(directory, this.authService.userEmail));
     }
+    return '';
   }
 }

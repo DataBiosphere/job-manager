@@ -151,3 +151,12 @@ mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-
   color: rgba(0, 0, 0, 0.87);
   font-weight: 600;
 }
+
+.title-link {
+  color: black;
+}
+
+a.title-link {
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -1,7 +1,7 @@
 import {Component, Inject, ViewChild} from "@angular/core";
 import {MAT_DIALOG_DATA} from "@angular/material";
 import {JobManagerService} from "../../../core/job-manager.service";
-import {TaskShard} from "../../../shared/model/TaskShard";
+import {Shard} from "../../../shared/model/Shard";
 import {JobStatus} from "../../../shared/model/JobStatus";
 import {JobStatusIcon, objectNotEmpty} from "../../../shared/common";
 
@@ -18,7 +18,7 @@ export class JobScatteredAttemptsComponent {
     private readonly jobManagerService: JobManagerService) {
   }
 
-  getShardAttempts(shard: TaskShard) {
+  getShardAttempts(shard: Shard) {
     this.jobManagerService.getShardAttempts(this.data.shardsData.taskId, this.data.shardsData.taskName, shard.shardIndex).then((response) => {
       shard.attemptsData = response.attempts;
     });
@@ -28,11 +28,11 @@ export class JobScatteredAttemptsComponent {
     return JobStatusIcon[status];
   }
 
-  hasFailures(shard: TaskShard): boolean {
+  hasFailures(shard: Shard): boolean {
     return objectNotEmpty(shard.failureMessages);
   }
 
-  getFailures(shard: TaskShard): string {
+  getFailures(shard: Shard): string {
     if (this.hasFailures(shard)) {
       return shard.failureMessages.join('\n');
     }
