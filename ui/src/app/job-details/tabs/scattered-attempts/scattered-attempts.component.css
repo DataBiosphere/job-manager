@@ -1,0 +1,173 @@
+mat-dialog-content.mat-dialog-content {
+  min-height: 180px;
+  max-height: 80vh;
+}
+
+.mat-expansion-panel-spacing {
+  margin: 0;
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel {
+  min-width: 1080px;
+  border: 1px solid rgba(0, 0, 0, 0.26);
+  border-top: none;
+  box-shadow: none;
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.list-header {
+  border-top: 1px solid rgba(0, 0, 0, 0.26);
+  margin-top: 20px;
+}
+
+mat-expansion-panel-header.mat-expansion-panel-header {
+  display: flex;
+  flex-flow: row;
+  line-height: 4rem;
+}
+
+mat-expansion-panel.mat-expansion-panel.list-header mat-expansion-panel-header.mat-expansion-panel-header {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background-color: #F1F4F7;
+  color: #333F52;
+}
+
+mat-expansion-panel.mat-expansion-panel.list-row mat-expansion-panel-header.mat-expansion-panel-header {
+  font-size: 0.75rem;
+}
+
+mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title {
+  display: block;
+}
+
+mat-expansion-panel.mat-expansion-panel mat-panel-title.mat-expansion-panel-header-title .task-name {
+  text-align: left;
+  min-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+mat-expansion-panel.mat-expansion-panel mat-panel-description.mat-expansion-panel-header-description {
+  display: -webkit-box;
+  flex-flow: row;
+  justify-content: end;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-expansion-panel.mat-expansion-panel .task-status,
+mat-expansion-panel.mat-expansion-panel .task-start,
+mat-expansion-panel.mat-expansion-panel .task-duration,
+mat-expansion-panel.mat-expansion-panel .task-inputs,
+mat-expansion-panel.mat-expansion-panel .task-outputs,
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  text-align: left;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-start,
+mat-expansion-panel.mat-expansion-panel .task-links {
+  width: 140px;
+}
+
+mat-expansion-panel.mat-expansion-panel.list-header .task-links {
+  text-align: center;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-status,
+mat-expansion-panel.mat-expansion-panel .task-duration,
+mat-expansion-panel.mat-expansion-panel .task-inputs,
+mat-expansion-panel.mat-expansion-panel .task-outputs,
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  width: 100px;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  text-align: right;
+}
+
+mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-header[aria-disabled='true'] {
+  padding-right: 32px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-expansion-panel.mat-expansion-panel .task-links,
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  text-align: right;
+}
+
+mat-expansion-panel-header,
+mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-inputs clr-icon,
+mat-expansion-panel.mat-expansion-panel .task-outputs clr-icon {
+  color: #5C912E;
+}
+
+mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
+  padding-left: 5px;
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded clr-icon {
+  color: #ccc;
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description {
+  color: #ccc;
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description .task-attempts {
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded .task-name {
+  color: rgba(0, 0, 0, 0.87);
+  font-weight: 600;
+}
+
+::ng-deep mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.26);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded clr-icon {
+  color: #ccc;
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description {
+  color: #ccc;
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded mat-panel-description.mat-expansion-panel-header-description .task-attempts {
+  color: rgba(0, 0, 0, 0.87);
+}
+
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded .task-name {
+  color: rgba(0, 0, 0, 0.87);
+  font-weight: 600;
+}
+
+.title-link {
+  color: black;
+}
+
+a.title-link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.task-status clr-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.task-duration clr-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color:rgba(0, 0, 0, 0.54)
+}

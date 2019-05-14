@@ -41,6 +41,9 @@
 .query-form clr-icon {
   vertical-align: top;
   padding: 0;
+  color: #5C912E;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .query-form clr-icon[shape='filter-2'] {
@@ -69,6 +72,8 @@ search-button {
 .mat-raised-button.status-button clr-icon {
   margin-right: 3px;
   margin-top: -3px;
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 .search-table-controls {
@@ -83,6 +88,12 @@ search-button {
 
 .chipShell {
   padding: 0 !important;
+}
+
+.settings-icon clr-icon {
+  width: 1.625rem;
+  height: 1.625rem;
+  color: #5C912E;
 }
 
 ::ng-deep .mat-menu-panel.settings-menu {
@@ -137,11 +148,11 @@ h2.settings-header {
 
 .settings-button-container {
   text-align: right;
-  padding-right: 5px;
+  padding-right: 0.3125rem;
 }
 
 button.apply-link {
-  font-size: 12px;
+  font-size: 0.75rem;
   text-transform: uppercase;
   cursor: pointer;
   border: none;
@@ -156,10 +167,15 @@ button.apply-link:hover {
 
 button.clear-query {
   top: 0px;
-  left: -50px;
-  padding: 0px;
-  height: 40px;
-  width: 40px;
+  left: -3.125rem;
+  padding: 0;
+  height: 2.5rem;
+  width: 2.5rem;
+}
+
+button.clear-query clr-icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 ::ng-deep .search-table-controls .mat-paginator-navigation-previous.mat-icon-button,
@@ -167,9 +183,9 @@ button.clear-query {
   border-radius: 5px;
   border: 1px solid #5C912E;
   padding: 0px;
-  width: 28px;
-  height: 28px;
-  margin-left: 8px;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-left: 0.5rem;
 }
 ::ng-deep .search-table-controls .mat-paginator-navigation-previous.mat-icon-button:disabled,
 ::ng-deep .search-table-controls .mat-paginator-navigation-next.mat-icon-button:disabled {
@@ -178,8 +194,8 @@ button.clear-query {
 
 ::ng-deep .search-table-controls .mat-button-wrapper .mat-paginator-increment,
 ::ng-deep .search-table-controls .mat-button-wrapper .mat-paginator-decrement {
-  width: 4px;
-  height: 4px;
+  width: 0.25rem;
+  height: 0.25rem;
   color: #5C912E;
   margin: 0 0 0 10px;
 }

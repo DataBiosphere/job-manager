@@ -1,8 +1,8 @@
 mat-table {
-  margin-top: 20px;
+  margin-top: 1.25rem;
   display: table;
-  width: 100%;
-  border-radius: 5px;
+  width: 99%;
+  border-radius: 0.3125rem;
   border: 1px solid #CCCFD4;
   box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
 }
@@ -34,17 +34,17 @@ th {
   background-color: #F1F4F7;
   color: #333F52;
   font-weight: 600;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
 }
 
 td {
-  padding: 16px;
+  padding: 1rem;
 }
 
 th.failure-task,
 td.failure-task {
-  min-width: 150px;
-  max-width: 300px;
+  min-width: 9.375rem;
+  max-width: 18.75rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -58,7 +58,7 @@ td.failure-message {
 
 th.failure-links,
 td.failure-links {
-  min-width: 79px;
+  min-width: 4.9375rem;
 }
 
 .log-item {
@@ -77,7 +77,7 @@ td.failure-links {
 
 :host-context(mat-card.card) td,
 :host-context(mat-card.card) th {
-  padding: 5px 10px 5px 0px;
+  padding: 0.3125rem 0.625rem 0.3125rem 0;
   line-height: 0.7rem;
 }
 
@@ -86,14 +86,24 @@ td.failure-links {
 }
 
 :host-context(mat-card.card) .failure-task {
-  width: 150px;
-  max-width: 150px;
+  width: 9.375rem;
+  max-width: 9.375rem;
   font-size: 0.7rem;
 }
 
 :host-context(mat-card.card) td.failure-links {
-  min-width: 107px;
+  min-width: 6.6875rem;
   padding-right: 0px;
+}
+
+clr-tooltip-content {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.65rem;
+  line-height: 0.65rem;
+  color: #fff;
+  display: block;
+  margin: -0.6rem 0.5rem 0 0;
+  height: auto;
 }
 
 .title-link {

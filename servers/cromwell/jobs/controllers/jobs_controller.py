@@ -17,11 +17,13 @@ from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
-from jobs.models.task_shard import TaskShard
+from jobs.models.shard import Shard
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.models.health_response import HealthResponse
 from jobs.models.execution_event import ExecutionEvent
+from jobs.models.individual_attempt import IndividualAttempt
+from jobs.models.job_attempts_response import JobAttemptsResponse
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
 
@@ -29,6 +31,15 @@ _DEFAULT_PAGE_SIZE = 64
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('{module_path}'.format(module_path=__name__))
+
+attempt_include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'end',
+                        'executionStatus', 'failures', 'inputs', 'jobId',
+                        'outputs', 'shardIndex', 'start', 'stderr', 'stdout')
+
+job_include_keys = attempt_include_keys + (
+    'calls', 'description', 'executionEvents', 'labels', 'parentWorkflowId',
+    'returnCode', 'shardIndex', 'start', 'status', 'submission',
+    'subWorkflowId', 'workflowName')
 
 
 @requires_auth
@@ -89,17 +100,10 @@ def get_job(id, **kwargs):
     :rtype: JobMetadataResponse
     """
 
-    include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'calls',
-                    'description', 'end', 'executionEvents', 'executionStatus',
-                    'failures', 'inputs', 'jobId', 'labels', 'outputs',
-                    'parentWorkflowId', 'returnCode', 'shardIndex', 'start',
-                    'status', 'stderr', 'stdout', 'submission',
-                    'subWorkflowId', 'workflowName')
-
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
         id=id,
-        query='includeKey=' + '&includeKey='.join(include_keys))
+        query='includeKey=' + '&includeKey='.join(job_include_keys))
     response = requests.get(url,
                             auth=kwargs.get('auth'),
                             headers=kwargs.get('auth_headers'))
@@ -123,6 +127,7 @@ def get_job(id, **kwargs):
         format_task(task_name, task_metadata)
         for task_name, task_metadata in job.get('calls', {}).items()
     ]
+
     sorted_tasks = sorted(tasks, key=lambda t: t.start)
     start = _parse_datetime(job.get('start'))
     submission = _parse_datetime(job.get('submission'))
@@ -145,6 +150,76 @@ def get_job(id, **kwargs):
         failures=failures,
         extensions=ExtendedFields(tasks=sorted_tasks,
                                   parent_job_id=job.get('parentWorkflowId')))
+
+
+@requires_auth
+def get_task_attempts(id, task, **kwargs):
+    """
+    Query for attempt metadata for a specified job task
+
+    :param id: Job ID
+    :type id: str
+
+    :param task: Task Name
+    :type task: str
+
+    :rtype: JobAttemptsResponse
+    """
+
+    url = '{cromwell_url}/{id}/metadata?{query}'.format(
+        cromwell_url=_get_base_url(),
+        id=id,
+        query='includeKey=' + '&includeKey='.join(attempt_include_keys))
+    response = requests.get(url,
+                            auth=kwargs.get('auth'),
+                            headers=kwargs.get('auth_headers'))
+
+    if response.status_code != 200:
+        handle_error(response)
+
+    job = response.json()
+
+    attempts = [
+        _convert_to_attempt(call) for call in job.get('calls').get(task)
+    ]
+    return JobAttemptsResponse(attempts=attempts)
+
+
+@requires_auth
+def get_shard_attempts(id, task, index, **kwargs):
+    """
+    Query for attempt metadata for a specified job task shard
+
+    :param id: Job ID
+    :type id: str
+
+    :param task: Task Name
+    :type task: str
+
+    :param index: Shard Index
+    :type index: str
+
+    :rtype: JobAttemptsResponse
+    """
+
+    url = '{cromwell_url}/{id}/metadata?{query}'.format(
+        cromwell_url=_get_base_url(),
+        id=id,
+        query='includeKey=' + '&includeKey='.join(attempt_include_keys))
+    response = requests.get(url,
+                            auth=kwargs.get('auth'),
+                            headers=kwargs.get('auth_headers'))
+
+    if response.status_code != 200:
+        handle_error(response)
+
+    job = response.json()
+
+    attempts = [
+        _convert_to_attempt(shard) for shard in job.get('calls').get(task)
+        if (shard.get('shardIndex') == int(index))
+    ]
+    return JobAttemptsResponse(attempts=attempts)
 
 
 def health(**kwargs):
@@ -186,11 +261,17 @@ def format_task(task_name, task_metadata):
 
     call_cached = False
     if latest_attempt.get('callCaching'):
-        call_cached = latest_attempt.get('callCaching') and (
-            latest_attempt.get('callCaching').get('hit'))
+        call_cached = latest_attempt.get('callCaching') and (_is_call_cached(
+            latest_attempt.get('callCaching')))
 
     execution_events = _get_execution_events(
         latest_attempt.get('executionEvents'))
+
+    failure_messages = None
+    if latest_attempt.get('failures'):
+        failure_messages = [
+            f.get('message') for f in latest_attempt.get('failures')
+        ]
 
     return TaskMetadata(
         name=remove_workflow_name(task_name),
@@ -202,13 +283,15 @@ def format_task(task_name, task_metadata):
         stderr=latest_attempt.get('stderr'),
         stdout=latest_attempt.get('stdout'),
         inputs=update_key_names(latest_attempt.get('inputs', {})),
+        outputs=update_key_names(latest_attempt.get('outputs', {})),
         return_code=latest_attempt.get('returnCode'),
         attempts=latest_attempt.get('attempt'),
         call_root=latest_attempt.get('callRoot'),
         job_id=latest_attempt.get('subWorkflowId'),
         shards=None,
         call_cached=call_cached,
-        execution_events=execution_events)
+        execution_events=execution_events,
+        failure_messages=failure_messages)
 
 
 def format_task_failure(task_name, metadata):
@@ -236,15 +319,25 @@ def format_scattered_task(task_name, task_metadata):
     # go through calls in reverse to grab the latest attempt if there are multiple
     for shard in task_metadata[::-1]:
         if current_shard != shard.get('shardIndex'):
+            failure_messages = None
+            if shard.get('failures'):
+                failure_messages = [
+                    f.get('message') for f in shard.get('failures')
+                ]
             filtered_shards.append(
-                TaskShard(
-                    execution_status=task_statuses.cromwell_execution_to_api(
-                        shard.get('executionStatus')),
-                    start=_parse_datetime(shard.get('start')),
-                    end=_parse_datetime(shard.get('end')),
-                    shard_index=shard.get('shardIndex'),
-                    execution_events=_get_execution_events(
-                        shard.get('executionEvents'))))
+                Shard(execution_status=task_statuses.cromwell_execution_to_api(
+                    shard.get('executionStatus')),
+                      start=_parse_datetime(shard.get('start')),
+                      end=_parse_datetime(shard.get('end')),
+                      shard_index=shard.get('shardIndex'),
+                      execution_events=_get_execution_events(
+                          shard.get('executionEvents')),
+                      stdout=shard.get('stdout'),
+                      stderr=shard.get('stderr'),
+                      call_root=shard.get('callRoot'),
+                      attempts=shard.get('attempt'),
+                      failure_messages=failure_messages,
+                      job_id=shard.get('subWorkflowId')))
             if min_start > _parse_datetime(shard.get('start')):
                 min_start = _parse_datetime(shard.get('start'))
             if shard.get('executionStatus') not in ['Failed', 'Done']:
@@ -489,6 +582,36 @@ def _get_scattered_task_status(shards):
     ]:
         if status in statuses:
             return status
+
+
+def _convert_to_attempt(item):
+    attempt = IndividualAttempt(
+        execution_status=task_statuses.cromwell_execution_to_api(
+            item.get('executionStatus')),
+        attempt_number=item.get('attempt'),
+        call_cached=_is_call_cached(item.get('callCaching')),
+        stdout=item.get('stdout'),
+        stderr=item.get('stderr'),
+        call_root=item.get('callRoot'),
+        inputs=item.get('inputs'),
+        outputs=item.get('outputs'),
+        start=_parse_datetime(item.get('start')),
+        end=_parse_datetime(item.get('end')))
+
+    if item.get('failures'):
+        attempt.failure_messages = [
+            f.get('message') for f in item.get('failures')
+        ]
+
+    return attempt
+
+
+def _is_call_cached(metadata):
+    if metadata is not None:
+        hit = metadata.get('hit')
+        if hit is not None:
+            return hit
+    return False
 
 
 def _get_response_message(response):

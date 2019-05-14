@@ -5,7 +5,6 @@ import {Component, DebugElement, ViewChild} from '@angular/core';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {SharedModule} from '../../../shared/shared.module';
 import {JobDebugIconsComponent} from "./debug-icons.component";
-import {JobMetadataResponse} from "../../../shared/model/JobMetadataResponse";
 import {AuthService} from "../../../core/auth.service";
 import {FakeCapabilitiesService} from "../../../testing/fake-capabilities.service";
 import {MatSnackBar} from "@angular/material";
@@ -78,7 +77,7 @@ describe('JobDebugIconsComponent', () => {
 
   @Component({
     selector: 'jm-test-debug-icons-component',
-    template: `<jm-debug-icons [displayMessage]="displayMessage"
+    template: `<jm-debug-icons [displayMessage]="false"
                                [message]="job.failure"
                                [stdout]="job.stdout"
                                [stderr]="job.stderr"
