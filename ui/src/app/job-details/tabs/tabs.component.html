@@ -31,7 +31,7 @@
                   <span *ngIf="taskIsScattered(t)" class="scatter-icon-container">
                       <button mat-icon-button [matMenuTriggerFor]="shardMenu" class="scatter-icon">
                         <clr-tooltip>
-                          <clr-icon clrTooltipTrigger shape="layers" size="24" class="is-solid"></clr-icon>
+                          <clr-icon clrTooltipTrigger shape="layers" class="is-solid"></clr-icon>
                           <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
                             <span>task is scattered</span>
                           </clr-tooltip-content>
@@ -43,7 +43,7 @@
                           <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
                             <div class="shard-status">
                               <clr-tooltip>
-                                <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(jobStatus)" size="18"></clr-icon>
+                                <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(jobStatus)"></clr-icon>
                                 <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
                                   <span>{{ jobStatus }}</span>
                                 </clr-tooltip-content>
@@ -58,7 +58,7 @@
                 <mat-panel-description>
                   <div class="task-status status-icon">
                     <clr-tooltip>
-                      <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(t.executionStatus)" size="18"></clr-icon>
+                      <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(t.executionStatus)"></clr-icon>
                       <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
                         <span>{{ t.executionStatus }}</span>
                       </clr-tooltip-content>
@@ -70,7 +70,7 @@
                   <div class="task-duration">
                     {{ t.start | jmDuration: t.end }}
                     <clr-tooltip *ngIf="t.callCached">
-                      <clr-icon clrTooltipTrigger shape="history" size="14" style="color:rgba(0, 0, 0, 0.54)"></clr-icon>
+                      <clr-icon clrTooltipTrigger shape="history"></clr-icon>
                       <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
                         <span>This task was cached</span>
                       </clr-tooltip-content>
@@ -79,7 +79,7 @@
                   <div class="task-inputs">
                     <button mat-icon-button *ngIf="hasInputs(t)" [mat-menu-trigger-for]="inputMenu" (click)="$event.stopPropagation()">
                       <clr-tooltip>
-                        <clr-icon clrTooltipTrigger shape="import" size="18"></clr-icon>
+                        <clr-icon clrTooltipTrigger shape="import"></clr-icon>
                         <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
                           <span>inputs</span>
                         </clr-tooltip-content>
@@ -92,7 +92,7 @@
                   <div class="task-outputs">
                     <button mat-icon-button *ngIf="hasOutputs(t)" [mat-menu-trigger-for]="outputMenu" (click)="$event.stopPropagation()">
                       <clr-tooltip>
-                        <clr-icon clrTooltipTrigger shape="export" size="18"></clr-icon>
+                        <clr-icon clrTooltipTrigger shape="export"></clr-icon>
                         <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
                           <span>outputs</span>
                         </clr-tooltip-content>

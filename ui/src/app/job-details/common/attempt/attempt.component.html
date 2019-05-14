@@ -8,7 +8,7 @@
     <mat-panel-description>
       <div class="task-status">
         <clr-tooltip>
-          <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(attempt.executionStatus)" size="18"></clr-icon>
+          <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(attempt.executionStatus)"></clr-icon>
           <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
             <span>{{ attempt.executionStatus }}</span>
           </clr-tooltip-content>
@@ -18,7 +18,7 @@
       <div class="task-duration">
         {{ attempt.start | jmDuration: attempt.end }}
         <clr-tooltip *ngIf="attempt.callCached">
-          <clr-icon clrTooltipTrigger shape="history" size="14" style="color:rgba(0, 0, 0, 0.54)"></clr-icon>
+          <clr-icon clrTooltipTrigger shape="history" style="color:rgba(0, 0, 0, 0.54)"></clr-icon>
           <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
             <span>This attempt was cached</span>
           </clr-tooltip-content>
@@ -27,7 +27,7 @@
       <div class="task-inputs">
         <button mat-icon-button *ngIf="hasInputs(attempt)" [mat-menu-trigger-for]="inputMenu" (click)="$event.stopPropagation()">
           <clr-tooltip>
-            <clr-icon clrTooltipTrigger shape="import" size="18"></clr-icon>
+            <clr-icon clrTooltipTrigger shape="import"></clr-icon>
             <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
               <span>inputs</span>
             </clr-tooltip-content>
@@ -40,7 +40,7 @@
       <div class="task-outputs">
         <button mat-icon-button *ngIf="hasOutputs(attempt)" [mat-menu-trigger-for]="outputMenu" (click)="$event.stopPropagation()">
           <clr-tooltip>
-            <clr-icon clrTooltipTrigger shape="import" size="18"></clr-icon>
+            <clr-icon clrTooltipTrigger shape="export"></clr-icon>
             <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
               <span>outputs</span>
             </clr-tooltip-content>

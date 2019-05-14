@@ -27,6 +27,8 @@ clr-tooltip a {
 clr-icon,
 clr-icon.is-solid {
   color: #5C912E;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 clr-icon.disabled {

@@ -160,3 +160,14 @@ a.title-link {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.task-status clr-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.task-duration clr-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color:rgba(0, 0, 0, 0.54)
+}

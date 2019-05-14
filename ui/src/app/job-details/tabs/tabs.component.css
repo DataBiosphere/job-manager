@@ -283,6 +283,19 @@ clr-icon {
   margin-right: 0;
 }
 
+.task-status clr-icon,
+.task-inputs clr-icon,
+.task-outputs clr-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.task-duration clr-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color:rgba(0, 0, 0, 0.54)
+}
+
 .scatter-icon {
   color: #5C912E;
 }
@@ -292,6 +305,6 @@ clr-icon {
 }
 
 ::ng-deep div.mat-menu-panel.input-menu {
-  max-width: 700px;
-  max-height: 600px;
+  max-width: 43.75rem;
+  max-height: 34rem;
 }

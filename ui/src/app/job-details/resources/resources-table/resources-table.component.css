@@ -16,7 +16,7 @@ mat-table {
 th {
   color: #999;
   font-weight: normal;
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
 }
 
 td,
@@ -29,11 +29,11 @@ th {
 }
 
 td {
-  padding: 16px;
+  padding: 1rem;
 }
 
 .mat-table {
-  margin-top: 20px;
+  margin-top: 1.25rem;
   display: table;
   border-radius: 5px;
   border: 1px solid #CCCFD4;
@@ -67,7 +67,7 @@ td {
 .mat-header-cell {
   color: #333F52;
   font-weight: 600;
-  padding: 16px 8px;
+  padding: 1rem 0.5rem;
 }
 
 .mat-header-cell.slim-cell, .mat-cell.slim-cell {
@@ -79,7 +79,7 @@ a {
 }
 
 mat-table.resources-table td.resource-key {
-  max-width: 300px;
+  max-width: 18.75rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -114,11 +114,11 @@ mat-table.resources-table td.resource-value {
   font-size: 0.7rem;
   line-height: 1rem;
   vertical-align: top;
-  padding: 5px 10px;
+  padding: 0.3125rem 0.625rem;
 }
 
 :host-context(div.mat-menu-panel.input-menu) mat-table.resources-table td.resource-key {
-  max-width: 100px;
+  max-width: 6.25rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -126,6 +126,6 @@ mat-table.resources-table td.resource-value {
 }
 
 :host-context(div.mat-menu-panel.input-menu) mat-table.resources-table td.resource-value {
-  min-width: 300px;
-  max-width: 600px;
+  min-width: 18.75rem;
+  max-width: 37.5rem;
 }

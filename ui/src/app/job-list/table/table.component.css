@@ -2,7 +2,7 @@
 
 
 .mat-table {
-  margin: 0 15px;
+  margin: 0 1rem;
   width: 95%;
   display: table;
   border-radius: 5px;
@@ -19,7 +19,7 @@
 .mat-header-cell, .mat-cell {
   display: table-cell;
   vertical-align: middle;
-  padding: 8px;
+  padding: 0.5rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 
@@ -35,7 +35,7 @@
 
 .mat-header-row {
   background-color: #F1F4F7;
-  min-height: 48px;
+  min-height: 3rem;
 }
 
 .mat-header-cell {
@@ -92,19 +92,29 @@
 }
 
 .mat-menu-panel.details-menu .mat-list-item a clr-icon {
-  padding-right: 10px;
+  padding-right: 0.625rem;
+}
+
+clr-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.task-status clr-icon {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 ::ng-deep .mat-menu-panel.details-menu {
   width: auto;
   overflow: visible;
-  padding: 12px 24px 24px 24px;
+  padding: 0.75rem 1.5rem 1.5rem 1.5rem;
 }
 
 ::ng-deep .mat-menu-panel.field-menu {
   width: auto;
   overflow: visible;
-  padding: 0px 15px;
+  padding: 0px 1rem;
 }
 
 ::ng-deep .mat-menu-panel.details-menu .mat-card-subtitle {
@@ -133,7 +143,7 @@
 ::ng-deep a.inline-filter {
   display: block;
   cursor: pointer;
-  max-width: 210px;
+  max-width: 13.125rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -155,15 +165,15 @@
   background-color: white;
   width: 100%;
   font-weight: bold;
-  font-size: .65rem;
-  padding: .65rem;
+  font-size: 0.65rem;
+  padding: 0.65rem;
 }
 
 .group-button {
   font-weight: bold;
-  font-size: .65rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
-  margin: .65rem;
+  margin: 0.65rem;
 }
 
 /* Label Editing */
@@ -173,7 +183,7 @@
 }
 
 .edit-field .mat-icon-button {
-  height: 18px;
+  height: 1.125rem;
   flex-shrink: 0;
   line-height: 0;
   border-radius: 0;
@@ -188,7 +198,7 @@ div.button-container {
 }
 
 button.apply-link {
-  font-size: 12px;
+  font-size: 0.75rem;
   border: none;
   display: inline;
   text-transform: uppercase;

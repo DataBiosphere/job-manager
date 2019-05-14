@@ -36,20 +36,20 @@
             <mat-list>
               <mat-list-item>
                 <a [routerLink]="[j.id]" [queryParams]="getQueryParams()">
-                  <clr-icon shape="arrow" dir="right" size="18"></clr-icon>
+                  <clr-icon shape="arrow" dir="right"></clr-icon>
                   <span>Job details</span>
                 </a>
               </mat-list-item>
               <mat-list-item *ngIf="canAbort(j)">
                 <a (click)="abortJob(j)" class="inline-filter">
-                  <clr-icon shape="times-circle" size="18"></clr-icon>
+                  <clr-icon shape="times-circle"></clr-icon>
                   <span>Abort job</span>
                 </a>
               </mat-list-item>
               <mat-list-item *ngIf="j[firstColumn] && canFilterBy(firstColumn)">
                 <clr-tooltip>
                   <a (click)="filterOnColumnValue(firstColumn, j[firstColumn])" clrTooltipTrigger class="inline-filter">
-                    <clr-icon shape="filter-2" size="18"></clr-icon>
+                    <clr-icon shape="filter-2"></clr-icon>
                     <span>Filter by {{ getFilterFromField(firstColumn) }}:{{ j[firstColumn] }} {{ firstColumn }}</span>
                     <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
                       <span>Filter by {{ getFilterFromField(firstColumn) }}:{{ j[firstColumn] }}</span>
@@ -95,7 +95,7 @@
                 <div *ngIf="!canEdit(df) && canFilterBy(df.field)" class="mat-menu-content filter-menu">
                   <clr-tooltip>
                     <a (click)="filterOnColumnValue(df.field, getFieldValue(j, df))" clrTooltipTrigger class="inline-filter">
-                      <clr-icon shape="filter-2" size="18"></clr-icon>
+                      <clr-icon shape="filter-2"></clr-icon>
                       <span>Filter by {{ getFilterFromField(df.field) }}:{{ getFieldValue(j, df) }}</span>
                       <clr-tooltip-content clrPosition="bottom-left" clrSize="xs" *clrIfOpen>
                         Filter by {{ getFilterFromField(df.field) }}:{{ getFieldValue(j, df) }}
@@ -129,8 +129,8 @@
           <jm-datetime [datetime]="getFieldValue(j, df)"></jm-datetime>
         </div>
         <div class="display-field" *ngIf="isSimpleField(df)">{{ getFieldValue(j, df) }}</div>
-        <clr-tooltip *ngIf=isStatusField(df)>
-          <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(getFieldValue(j, df))" size="24"></clr-icon>
+        <clr-tooltip *ngIf=isStatusField(df) class="job-status">
+          <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(getFieldValue(j, df))"></clr-icon>
           <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
             <span>{{ getFieldValue(j, df) }}</span>
           </clr-tooltip-content>
