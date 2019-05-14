@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 
 import {IndividualAttempt} from "../../../shared/model/IndividualAttempt";
 import {JobStatus} from "../../../shared/model/JobStatus";
-import {JobStatusIcon} from "../../../shared/common";
+import {JobStatusIcon, objectNotEmpty} from "../../../shared/common";
 
 @Component({
   selector: 'jm-attempt',
@@ -24,15 +24,15 @@ export class JobAttemptComponent implements OnInit {
   }
 
   hasInputs(attempt: IndividualAttempt): boolean {
-    return attempt.inputs && (Object.keys(attempt.inputs).length !== 0);
+    return objectNotEmpty(attempt.inputs);
   }
 
   hasOutputs(attempt: IndividualAttempt): boolean {
-    return attempt.outputs && (Object.keys(attempt.outputs).length !== 0);
+    return objectNotEmpty(attempt.outputs);
   }
 
   hasFailures(attempt: IndividualAttempt): boolean {
-    return attempt.failureMessages && (Object.keys(attempt.failureMessages).length !== 0);
+    return objectNotEmpty(attempt.failureMessages);
   }
 
   getFailures(attempt: IndividualAttempt): string {
