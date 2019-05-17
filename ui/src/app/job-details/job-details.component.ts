@@ -42,8 +42,10 @@ export class JobDetailsComponent implements OnInit {
     // otherwise, go with default list from capabilities
     if (this.settingsService.getSavedSettingValue('displayColumns', this.projectId)) {
       this.primaryLabels = this.settingsService.getSavedSettingValue('displayColumns', this.projectId).filter(field => field.match('labels.')).map(field => field.replace('labels.',''));
-    } else {
+    } else if (this.capabilities.displayFields) {
       this.primaryLabels = this.capabilities.displayFields.map((df) => df.field).filter(field => field.match('labels.')).map(field => field.replace('labels.',''));
+    } else if (this.job.labels) {
+      this.primaryLabels = Object.keys(this.job.labels);
     }
   }
 

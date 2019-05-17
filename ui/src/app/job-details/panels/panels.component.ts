@@ -106,7 +106,10 @@ export class JobPanelsComponent implements OnInit {
   }
 
   hasPrimaryLabels(): boolean {
-    return this.primaryLabels.filter(label => this.job.labels.hasOwnProperty(label)).length > 0;
+    if (this.primaryLabels && this.job.labels) {
+      return this.primaryLabels.filter(label => this.job.labels.hasOwnProperty(label)).length > 0;
+    }
+    return false;
   }
 
   getStatusIcon(status: JobStatus): string {
