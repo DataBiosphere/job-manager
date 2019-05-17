@@ -65,7 +65,7 @@ def update_job_labels(id, body):
     Returns:
         UpdateJobLabelsResponse: Response - never actually returned
     """
-    raise NotImplemented('Label updates not supported by dsub.')
+    raise NotImplementedError('Label updates not supported by dsub.')
 
 
 def get_job(id):
@@ -172,6 +172,39 @@ def health():
         HealthResponse: Health of the service and its link to its backend.
     """
     return HealthResponse(available=True)
+
+
+def get_shard_attempts(id, task, index, **kwargs):
+    """
+    Query for attempt metadata for a specified job task shard
+
+    :param id: Job ID
+    :type id: str
+
+    :param task: Task Name
+    :type task: str
+
+    :param index: Shard Index
+    :type index: str
+
+    :rtype: JobAttemptsResponse - never actually returned
+    """
+    raise NotImplementedError('Tasks not supported by dsub.')
+
+
+def get_task_attempts(id, task, **kwargs):
+    """
+    Query for attempt metadata for a specified job task
+
+    :param id: Job ID
+    :type id: str
+
+    :param task: Task Name
+    :type task: str
+
+    :rtype: JobAttemptsResponse - never actually returned
+    """
+    raise NotImplementedError('Tasks not supported by dsub.')
 
 
 def _handle_http_error(error, proj_id):

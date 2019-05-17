@@ -1,96 +1,126 @@
 <mat-expansion-panel class="content" expanded="true" [disabled]="true" [ngClass]="{'has-tasks' : hasTasks()}" #tabsPanel>
   <mat-tab-group [(selectedIndex)]="selectedTab" disableRipple="true">
     <mat-tab *ngIf="hasTasks()" label="List View">
-      <mat-table [dataSource]="dataSource">
-        <!-- Task name column -->
-        <ng-container matColumnDef="name">
-          <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-          <mat-cell *matCellDef="let t" class="task-title">
-            <a class="title-link" *ngIf="t.jobId" (click)="navigateDown(t.jobId)">{{ t.name }}</a>
-            <p *ngIf="!t.jobId" class="title-nolink">{{ t.name }}</p>
-          </mat-cell>
-        </ng-container>
-
-        <!-- Shard Statuses column -->
-        <ng-container matColumnDef="taskInfoIcons">
-          <mat-header-cell *matHeaderCellDef class="slim-cell"></mat-header-cell>
-          <mat-cell *matCellDef="let t" class="slim-cell">
-            <button *ngIf="taskIsScattered(t)" mat-icon-button class="shard-icon" [matMenuTriggerFor]="shardMenu">
-              <clr-tooltip>
-                <clr-icon clrTooltipTrigger shape="layers" size="24" class="is-solid" style="color:#5C912E"></clr-icon>
-                <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
-                  <span>task shards</span>
-                </clr-tooltip-content>
-              </clr-tooltip>
-            </button>
-            <mat-menu #shardMenu="matMenu" class="wide-menu shards-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
-              <div class="shards-header">Scattered: {{ getScatteredCountTotal(t) }} shards</div>
-              <div class="shards-container" *ngIf="taskIsScattered(t)">
-                <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
-                  <div class="shard-status">
+      <mat-accordion>
+        <mat-expansion-panel disabled="disabled" class="list-header">
+          <mat-expansion-panel-header>
+            <mat-panel-title><div class="task-name">Task Name</div></mat-panel-title>
+            <mat-panel-description>
+              <div class="task-status">Status</div>
+              <div class="task-start">Start</div>
+              <div class="task-duration">Duration</div>
+              <div class="task-inputs">Inputs</div>
+              <div class="task-outputs">Outputs</div>
+              <div class="task-links">Links</div>
+              <div class="task-attempts">Attempts</div>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+        </mat-expansion-panel>
+        <ng-container *ngFor="let t of tasks">
+            <mat-expansion-panel disabled="{{ !!t.jobId || hasOnlyOneAttempt(t) || !!taskIsScattered(t) }}"
+                                 (opened)="populateTaskAttempts(t)"
+                                 expanded="false"
+                                 class="list-row">
+              <mat-expansion-panel-header [expandedHeight]="'48px'">
+                <mat-panel-title>
+                  <div class="task-name">
+                    <a *ngIf="t.jobId" class="title-link" (click)="navigateDown(t.jobId)">{{ t.name }}</a>
+                    <a *ngIf="taskIsScattered(t)" class="title-link" (click)="openScatteredAttemptsDialog(t)">{{ t.name }}</a>
+                    <span *ngIf="!t.jobId && !taskIsScattered(t)">{{ t.name }}</span>
+                  </div>
+                  <span *ngIf="taskIsScattered(t)" class="scatter-icon-container">
+                    <button mat-icon-button [matMenuTriggerFor]="shardMenu" class="scatter-icon">
+                      <clr-tooltip>
+                        <clr-icon clrTooltipTrigger shape="layers" class="is-solid"></clr-icon>
+                        <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+                          <span>task is scattered</span>
+                        </clr-tooltip-content>
+                      </clr-tooltip>
+                    </button>
+                    <mat-menu #shardMenu="matMenu" class="wide-menu shards-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+                      <div class="shards-header">Scattered: {{ getScatteredCountTotal(t) }} shards</div>
+                      <div class="shards-container" *ngIf="taskIsScattered(t)">
+                        <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
+                          <div class="shard-status">
+                            <clr-tooltip>
+                              <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(jobStatus)"></clr-icon>
+                              <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+                                <span>{{ jobStatus }}</span>
+                              </clr-tooltip-content>
+                            </clr-tooltip>
+                          </div>
+                          <div class="shard-count">{{ getShardCountByStatus(t, jobStatus) }}</div>
+                        </div>
+                      </div>
+                    </mat-menu>
+                  </span>
+                </mat-panel-title>
+                <mat-panel-description>
+                  <div class="task-status status-icon">
                     <clr-tooltip>
-                      <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(jobStatus)" size="18"></clr-icon>
-                      <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
-                        <span>{{ jobStatus }}</span>
+                      <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(t.executionStatus)"></clr-icon>
+                      <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+                        <span>{{ t.executionStatus }}</span>
                       </clr-tooltip-content>
                     </clr-tooltip>
                   </div>
-                  <div class="shard-count">{{ getShardCountByStatus(t, jobStatus) }}</div>
-                </div>
-              </div>
-            </mat-menu>
-            <clr-tooltip *ngIf="t.callCached">
-              <clr-icon clrTooltipTrigger shape="copy" size="24" style="color:#5C912E"></clr-icon>
-              <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-                <span>This task was cached</span>
-              </clr-tooltip-content>
-            </clr-tooltip>
-          </mat-cell>
+                  <div class="task-start">
+                    <jm-datetime [datetime]="t.start"></jm-datetime>
+                  </div>
+                  <div class="task-duration">
+                    {{ t.start | jmDuration: t.end }}
+                    <clr-tooltip *ngIf="t.callCached">
+                      <clr-icon clrTooltipTrigger shape="history"></clr-icon>
+                      <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+                        <span>This task was cached</span>
+                      </clr-tooltip-content>
+                    </clr-tooltip>
+                  </div>
+                  <div class="task-inputs">
+                    <button mat-icon-button *ngIf="hasInputs(t)" [mat-menu-trigger-for]="inputMenu" (click)="$event.stopPropagation()">
+                      <clr-tooltip>
+                        <clr-icon clrTooltipTrigger shape="import"></clr-icon>
+                        <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+                          <span>inputs</span>
+                        </clr-tooltip-content>
+                      </clr-tooltip>
+                    </button>
+                    <mat-menu #inputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+                      <jm-resources-table [entries]="t.inputs" (click)="$event.stopPropagation()"></jm-resources-table>
+                    </mat-menu>
+                  </div>
+                  <div class="task-outputs">
+                    <button mat-icon-button *ngIf="hasOutputs(t)" [mat-menu-trigger-for]="outputMenu" (click)="$event.stopPropagation()">
+                      <clr-tooltip>
+                        <clr-icon clrTooltipTrigger shape="export"></clr-icon>
+                        <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+                          <span>outputs</span>
+                        </clr-tooltip-content>
+                      </clr-tooltip>
+                    </button>
+                    <mat-menu #outputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+                      <jm-resources-table [entries]="t.outputs" (click)="$event.stopPropagation()"></jm-resources-table>
+                    </mat-menu>
+                  </div>
+                  <div class="task-links">
+                    <jm-debug-icons [displayMessage]="hasTaskFailures(t)"
+                                    [message]="getTaskFailures(t)"
+                                    [stdout]="t.stdout"
+                                    [stderr]="t.stderr"
+                                    [directory]="t.callRoot">
+                    </jm-debug-icons>
+                  </div>
+                  <div class="task-attempts">
+                    <span *ngIf="!t.jobId && !taskIsScattered(t)">{{ t.attempts }}</span>
+                  </div>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <ng-container *ngIf="!hasOnlyOneAttempt(t)">
+                <jm-attempt [attempt]="attempt" *ngFor="let attempt of t.attemptsData"></jm-attempt>
+              </ng-container>
+            </mat-expansion-panel>
         </ng-container>
-
-        <!-- Status column -->
-        <ng-container matColumnDef="status">
-          <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
-          <mat-cell *matCellDef="let t">
-            <clr-tooltip>
-              <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(t.executionStatus)" size="24"></clr-icon>
-              <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-                <span>{{ t.executionStatus }}</span>
-              </clr-tooltip-content>
-            </clr-tooltip>
-          </mat-cell>
-        </ng-container>
-
-        <!-- Task detail columns -->
-        <ng-container matColumnDef="startTime">
-          <mat-header-cell *matHeaderCellDef> Start Time </mat-header-cell>
-          <mat-cell *matCellDef="let t" class="column">
-            <jm-datetime [datetime]="t.start"></jm-datetime>
-          </mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="duration">
-          <mat-header-cell *matHeaderCellDef> Duration </mat-header-cell>
-          <mat-cell *matCellDef="let t" class="column">{{ t.start | jmDuration: t.end }}</mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="attempts">
-          <mat-header-cell *matHeaderCellDef> Attempts </mat-header-cell>
-          <mat-cell *matCellDef="let t" class="column">{{ t.attempts }}</mat-cell>
-        </ng-container>
-        <ng-container matColumnDef="files">
-          <mat-header-cell *matHeaderCellDef> Log files </mat-header-cell>
-          <mat-cell *matCellDef="let t" class="column">
-            <jm-debug-icons [displayMessage]="false"
-                            [message]="t.failure"
-                            [stdout]="t.stdout"
-                            [stderr]="t.stderr"
-                            [directory]="t.callRoot">
-            </jm-debug-icons>
-          </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let t; columns: displayedColumns;"></mat-row>
-      </mat-table>
+      </mat-accordion>
     </mat-tab>
     <!-- Task failures tab -->
     <mat-tab *ngIf="hasFailures()" label="Errors">
@@ -102,11 +132,11 @@
       </jm-failures-table>
     </mat-tab>
     <!-- Task inputs tab -->
-    <mat-tab *ngIf="hasInputs()" label="Inputs">
+    <mat-tab *ngIf="hasInputs(job)" label="Inputs">
       <jm-resources-table [entries]="job.inputs"></jm-resources-table>
     </mat-tab>
     <!-- Task outputs tab -->
-    <mat-tab *ngIf="hasOutputs()" label="Outputs">
+    <mat-tab *ngIf="hasOutputs(job)" label="Outputs">
       <jm-resources-table [entries]="job.outputs"></jm-resources-table>
     </mat-tab>
     <!-- Secondary Labels tab -->

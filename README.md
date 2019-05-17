@@ -8,8 +8,6 @@
 [![Github](https://img.shields.io/badge/Docker%20Image-dsub%20shim%20API-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-api-dsub)
 [![Github](https://img.shields.io/badge/Docker%20Image-cromwell%20shim%20API-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-api-cromwell)
 
-_This product is in Alpha and not yet ready for production use. We welcome all feedback!_
-
 ## User facing documentation
 
 Welcome to the Job Manager repository! If you're a developer you're in the right place.

@@ -1,10 +1,29 @@
 # Job Manager Change Log
 
-## v1.1 Release Notes
+
+## v1.1.0 Release Notes
 
 ### Labels that are set to be hidden on the Job List page will not be shown at the top of the Job Details page.
 
 #### The full list of labels associated with a job has been moved to a new 'Labels' tab.
+
+### Fixed bug with icon designating scattered tasks.
+
+## v1.0.0 Release Notes
+
+### Multiple changes to the "List" tab in the Job Details page for Cromwell jobs.
+
+#### If a task or shard has multiple attempts it can be clicked on, which will expand to show additional rows, one for each attempt.
+
+#### Scattered task names are a link that will display scattered task shards in a dialog box.
+
+#### Scattered sub-workflow shards are a link that will take the users to a "Job Details" page with details of that shard.
+
+#### Added icons for inputs and outputs which can be clicked on to show the full list.
+
+#### Changed the call-cached icon and moved it into the "duration" column.
+
+### Re-implemented shard data requests to get data more efficiently from the API.
 
 ## v0.7.3 Release Notes
 

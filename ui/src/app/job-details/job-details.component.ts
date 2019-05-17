@@ -9,6 +9,7 @@ import {SettingsService} from "../core/settings.service";
 import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 import {CapabilitiesService} from "../core/capabilities.service";
 import {CapabilitiesResponse} from "../shared/model/CapabilitiesResponse";
+import {objectNotEmpty} from '../shared/common';
 
 @Component({
   selector: 'jm-job-details',
@@ -47,7 +48,7 @@ export class JobDetailsComponent implements OnInit {
   }
 
   hasTabs(): boolean {
-    if (this.objectNotEmpty(this.job.inputs) || this.objectNotEmpty(this.job.outputs) || this.objectNotEmpty(this.job.failures) || this.objectNotEmpty(this.job.labels)) {
+    if (objectNotEmpty(this.job.inputs) || objectNotEmpty(this.job.outputs) || objectNotEmpty(this.job.failures)) {
        return true;
     }
     if (this.job.extensions) {
@@ -109,9 +110,5 @@ export class JobDetailsComponent implements OnInit {
     if (this.job.extensions.tasks) {
       this.taskTabs.timingDiagram.buildTimelineData(this.job.extensions.tasks);
     }
-  }
-
-  private objectNotEmpty(object: object): boolean {
-    return object && Object.keys(object).length !== 0;
   }
 }
