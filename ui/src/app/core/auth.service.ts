@@ -4,6 +4,7 @@ import {MatSnackBar} from "@angular/material";
 
 import {CapabilitiesService} from './capabilities.service';
 import {ConfigLoaderService} from "../../environments/config-loader.service";
+import {Observable} from "rxjs";
 
 declare const gapi: any;
 
@@ -15,6 +16,10 @@ export class AuthService {
   public authToken: string;
   public userId: string;
   public userEmail: string;
+  private logoutTimer: number;
+  private warningTimer: number;
+  readonly LOGOUT_INTERVAL = 15000;
+  readonly WARNING_INTERVAL = this.LOGOUT_INTERVAL - 5000;
 
   private initAuth(scopes: string[]): Promise<any> {
     const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
@@ -35,6 +40,7 @@ export class AuthService {
       this.userId = user.getId();
       this.userEmail = user.getBasicProfile().getEmail();
       this.authenticated.next(true);
+      this.setUpEventListeners();
     } else {
       this.authToken = undefined;
       this.userId = undefined;
@@ -98,5 +104,40 @@ export class AuthService {
 
   private handleError(error): void {
       this.snackBar.open('An error occurred: ' + error);
+  }
+
+  private setUpEventListeners(): void {
+    const mouseWheelStream = Observable.fromEvent(window, "mousewheel");
+    mouseWheelStream.subscribe(() => this.resetTimers());
+
+    const mouseDownStream = Observable.fromEvent(window, "mousedown");
+    mouseDownStream.subscribe(() => this.resetTimers());
+
+    const mouseMoveStream = Observable.fromEvent(window, "mousemove");
+    mouseMoveStream.subscribe(() => this.resetTimers());
+
+    const keyDownStream = Observable.fromEvent(window, "keydown");
+    keyDownStream.subscribe(() => this.resetTimers());
+
+    const keyUpStream = Observable.fromEvent(window, "keyup");
+    keyUpStream.subscribe(() => this.resetTimers());
+
+    this.resetTimers();
+  }
+
+  private resetTimers(): void {
+    window.clearTimeout(this.logoutTimer);
+    window.clearTimeout(this.warningTimer);
+    this.snackBar.dismiss();
+
+    this.warningTimer = window.setTimeout(() => {
+      this.snackBar.open('You are about to be looged out due to inactivity');
+    }, this.WARNING_INTERVAL);
+
+    this.logoutTimer = window.setTimeout(() => {
+      this.signOut().then(() => {
+        window.location.reload();
+      });
+    }, this.LOGOUT_INTERVAL);
   }
 }
