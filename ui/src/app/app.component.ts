@@ -14,7 +14,6 @@ export class AppComponent {
     private readonly authService: AuthService
   ) {}
 
-
   isSignedIn(): boolean {
     return !!this.authService.userId;
   }

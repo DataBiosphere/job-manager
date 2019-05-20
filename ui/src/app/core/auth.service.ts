@@ -16,10 +16,12 @@ export class AuthService {
   public authToken: string;
   public userId: string;
   public userEmail: string;
+  public userDomain: string;
+  public forcedLogoutDomains: string[];
   private logoutTimer: number;
   private warningTimer: number;
-  readonly LOGOUT_INTERVAL = 15000;
-  readonly WARNING_INTERVAL = this.LOGOUT_INTERVAL - 5000;
+  public logoutInterval: number;
+  readonly WARNING_INTERVAL = 10000;
 
   private initAuth(scopes: string[]): Promise<any> {
     const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
@@ -39,12 +41,17 @@ export class AuthService {
       this.authToken = user.getAuthResponse().access_token;
       this.userId = user.getId();
       this.userEmail = user.getBasicProfile().getEmail();
+      this.userDomain = user.getHostedDomain();
       this.authenticated.next(true);
-      this.setUpEventListeners();
+
+      if (this.forcedLogoutDomains && this.forcedLogoutDomains.includes(this.userDomain)) {
+        this.setUpEventListeners();
+      }
     } else {
       this.authToken = undefined;
       this.userId = undefined;
       this.userEmail = undefined;
+      this.userDomain = undefined;
       this.authenticated.next(false);
     }
   }
@@ -56,6 +63,12 @@ export class AuthService {
       if (!capabilities.authentication || !capabilities.authentication.isRequired) {
         return;
       }
+
+      if (capabilities.authentication.forcedLogoutDomains && capabilities.authentication.forcedLogoutTime && capabilities.authentication.forcedLogoutTime > (this.WARNING_INTERVAL * 2)) {
+        this.forcedLogoutDomains = capabilities.authentication.forcedLogoutDomains;
+        this.logoutInterval = capabilities.authentication.forcedLogoutTime;
+      }
+
       this.initAuthPromise = new Promise<void>( (resolve, reject) => {
         gapi.load('client:auth2', {
           callback: () => this.initAuth(capabilities.authentication.scopes)
@@ -102,6 +115,11 @@ export class AuthService {
     return auth2.signOut();
   }
 
+  private revokeToken(): Promise<any> {
+    const auth2 = gapi.auth2.getAuthInstance();
+    return auth2.disconnect();
+  }
+
   private handleError(error): void {
       this.snackBar.open('An error occurred: ' + error);
   }
@@ -125,19 +143,20 @@ export class AuthService {
     this.resetTimers();
   }
 
-  private resetTimers(): void {
+  public resetTimers(): void {
+    console.log('in resetTimers');
     window.clearTimeout(this.logoutTimer);
     window.clearTimeout(this.warningTimer);
     this.snackBar.dismiss();
 
     this.warningTimer = window.setTimeout(() => {
-      this.snackBar.open('You are about to be looged out due to inactivity');
-    }, this.WARNING_INTERVAL);
+      this.snackBar.open('You are about to be logged out due to inactivity');
+    }, this.logoutInterval - this.WARNING_INTERVAL);
 
     this.logoutTimer = window.setTimeout(() => {
-      this.signOut().then(() => {
+      this.revokeToken().then(() => {
         window.location.reload();
       });
-    }, this.LOGOUT_INTERVAL);
+    }, this.logoutInterval);
   }
 }
