@@ -1,5 +1,8 @@
 <div class="details-container">
-  <jm-panels [job]="job" (close)="handleClose()" (navUp)="handleNavUp()"></jm-panels>
+  <jm-panels [job]="job"
+             [primaryLabels]="primaryLabels"
+             (close)="handleClose()"
+             (navUp)="handleNavUp()"></jm-panels>
   <jm-resources *ngIf="hasResources()" [job]="job"></jm-resources>
   <!-- Only show the tasks table if there is at least 1 task. -->
   <jm-tabs *ngIf="hasTabs()"
