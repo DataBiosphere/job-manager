@@ -1,6 +1,6 @@
 <div class="content">
   <mat-form-field class="query-form">
-    <span matPrefix><clr-icon shape="filter-2" size="24" style="color: #5C912E"></clr-icon></span>
+    <span matPrefix><clr-icon shape="filter-2"></clr-icon></span>
     <mat-chip-list #chipList>
       <mat-chip
         *ngFor="let chipKey of getChipKeys()"
@@ -34,7 +34,7 @@
     </mat-chip-list>
   </mat-form-field>
   <button mat-button *ngIf="hasChipsToClear()" matSuffix mat-icon-button aria-label="Clear" (click)="removeAllChips()" class="clear-query">
-    <clr-icon shape="close" size="24" style="color: #5C912E"></clr-icon>
+    <clr-icon shape="close"></clr-icon>
   </button>
 
   <div *ngIf="showControls" class="search-table-controls">
@@ -42,7 +42,7 @@
     <div class="status-filter-buttons">
       <ng-container *ngIf="shouldDisplayStatusButtons()">
         <button class="mat-raised-button status-button {{ status | lowercase }}-button" (click)="showJobsWithStatus(status)" *ngFor="let status of buttonStatuses">
-          <clr-icon [attr.shape]="getStatusIcon(status)" size="18"></clr-icon>
+          <clr-icon [attr.shape]="getStatusIcon(status)"></clr-icon>
           {{ status }} <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus(status) }})</span>
         </button>
       </ng-container>
@@ -58,9 +58,9 @@
     </div>
 
     <div class="settings-icon-container">
-      <button mat-icon-button class="shard-icon" [matMenuTriggerFor]="settingsMenu" class="settings-icon">
+      <button mat-icon-button [matMenuTriggerFor]="settingsMenu" class="settings-icon">
         <clr-tooltip>
-          <clr-icon clrTooltipTrigger shape="cog" size="26"  class="is-solid" style="color: #5C912E"></clr-icon>
+          <clr-icon clrTooltipTrigger shape="cog" class="is-solid"></clr-icon>
           <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
             <span>view settings</span>
           </clr-tooltip-content>

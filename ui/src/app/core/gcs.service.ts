@@ -33,6 +33,9 @@ export class GcsService {
   }
 
   getObjectData(bucket: string, object: string): Promise<string> {
+    console.log(bucket);
+    console.log(object);
+
     return gapi.client.request({
       path: `${GcsService.apiPrefix}/b/${bucket}/o/${object}`,
       params: {alt: 'media'},

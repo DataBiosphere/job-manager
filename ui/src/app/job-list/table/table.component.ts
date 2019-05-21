@@ -16,7 +16,7 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
 import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
 import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
-import {JobStatusIcon} from '../../shared/common';
+import {JobStatusIcon, objectNotEmpty} from '../../shared/common';
 import {ActivatedRoute, Params} from '@angular/router';
 import {BulkLabelField} from '../../shared/model/BulkLabelField';
 import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
@@ -358,6 +358,6 @@ export class JobsTableComponent implements OnInit {
   }
 
   private doesResultHaveLabelChanges (result: object): boolean {
-    return Object.keys(result['fields']).length > 0;
+    return objectNotEmpty(result['fields']);
   }
 }

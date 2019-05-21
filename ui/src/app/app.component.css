@@ -17,11 +17,6 @@ h1 {
   margin: 0;
 }
 
-.sign-out-container clr-icon {
-  margin-top: -2px;
-  fill: #fff;
-}
-
 .sign-out-container button.mat-raised-button {
   position: absolute;
   right: 15px;

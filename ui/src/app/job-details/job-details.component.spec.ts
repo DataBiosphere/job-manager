@@ -6,10 +6,12 @@ import {Component, DebugElement} from '@angular/core';
 import {
   MatButtonModule,
   MatCardModule,
+  MatDialogModule,
   MatDividerModule,
   MatExpansionModule,
   MatListModule,
   MatMenuModule,
+  MatSnackBar,
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
@@ -34,6 +36,12 @@ import {JobStatus} from "../shared/model/JobStatus";
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {JobFailuresTableComponent} from "./common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./tabs/timing-diagram/timing-diagram.component";
+import {JobScatteredAttemptsComponent} from "./tabs/scattered-attempts/scattered-attempts.component";
+import {JobAttemptComponent} from "./common/attempt/attempt.component";
+import {FakeCapabilitiesService} from "../testing/fake-capabilities.service";
+import {SettingsService} from "../core/settings.service";
+import {AuthService} from "../core/auth.service";
+import {CapabilitiesService} from "../core/capabilities.service";
 
 describe('JobDetailsComponent', () => {
 
@@ -41,6 +49,7 @@ describe('JobDetailsComponent', () => {
   let fixture: ComponentFixture<TestJobDetailsComponent>;
   let router: Router;
   let fakeJobService: FakeJobManagerService;
+  let snackBar: MatSnackBar;
 
   const jobId = '123';
   function testJob(): JobMetadataResponse {
@@ -55,11 +64,16 @@ describe('JobDetailsComponent', () => {
 
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService([testJob()]);
+    let fakeCapabilitiesService: FakeCapabilitiesService = new FakeCapabilitiesService({});
+    let authService = new AuthService(null, fakeCapabilitiesService, null, snackBar);
+    let settingsService: SettingsService = new SettingsService(authService, fakeCapabilitiesService, localStorage);
+
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
         FakeJobListComponent,
         TestJobDetailsComponent,
+        JobAttemptComponent,
         JobDebugIconsComponent,
         JobDetailsComponent,
         JobFailuresTableComponent,
@@ -68,6 +82,7 @@ describe('JobDetailsComponent', () => {
         JobResourcesTableComponent,
         JobTabsComponent,
         JobTimingDiagramComponent,
+        JobScatteredAttemptsComponent,
       ],
       imports: [
         ClrIconModule,
@@ -75,6 +90,7 @@ describe('JobDetailsComponent', () => {
         CommonModule,
         MatButtonModule,
         MatCardModule,
+        MatDialogModule,
         MatDividerModule,
         MatExpansionModule,
         MatListModule,
@@ -96,6 +112,9 @@ describe('JobDetailsComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
+        {provide: SettingsService, useValue: settingsService},
+        {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
+        {provide: AuthService, useValue: authService},
         JobDetailsResolver
       ],
     }).compileComponents();

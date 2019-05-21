@@ -10,6 +10,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
+import {MatDialog} from "@angular/material";
 import {Observable} from 'rxjs/Observable';
 
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
@@ -22,6 +23,10 @@ import {GcsService} from "../../core/gcs.service";
 import {ResourceUtils} from "../../shared/utils/resource-utils";
 import {ErrorMessageFormatterPipe} from "../../shared/pipes/error-message-formatter.pipe";
 import {MatSnackBar} from "@angular/material";
+import {JobManagerService} from "../../core/job-manager.service";
+import {Shard} from "../../shared/model/Shard";
+import {JobScatteredAttemptsComponent} from "./scattered-attempts/scattered-attempts.component";
+import {objectNotEmpty} from '../../shared/common';
 
 @Component({
   selector: 'jm-tabs',
@@ -40,25 +45,15 @@ export class JobTabsComponent implements OnInit, OnChanges {
 
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;
-  displayedColumns = [
-    'name',
-    'status',
-    'startTime',
-    'duration',
-    'attempts',
-    'files',
-  ];
   tabWidth: number = 1024;
 
-  constructor(
-    private errorBar: MatSnackBar,
-    private readonly gcsService: GcsService) {}
+  constructor(private errorBar: MatSnackBar,
+              private readonly gcsService: GcsService,
+              private readonly jobManagerService: JobManagerService,
+              public scatteredAttemptsDialog: MatDialog) {};
 
   ngOnInit() {
     this.dataSource = new TasksDataSource(this.database);
-    if (this.hasCallCachedTask() || this.hasScatteredTask()) {
-      this.displayedColumns.splice(1, 0, "taskInfoIcons");
-    }
     if (this.tabsPanel) {
       this.tabWidth = this.tabsPanel._viewContainerRef.element.nativeElement.clientWidth;
     }
@@ -73,30 +68,16 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return JobStatusIcon[status];
   }
 
-  hasCallCachedTask(): boolean {
-    if (this.tasks.find(t => t.callCached === true)) {
-      return true;
-    }
-    return false;
-  }
-
-  hasScatteredTask(): boolean {
-    if (this.tasks.find(t => t.shards !== null)) {
-      return true;
-    }
-    return false;
-  }
-
   hasFailures(): boolean {
-    return this.job.failures && (this.job.failures.length !== 0);
+    return objectNotEmpty(this.job.failures);
   }
 
-  hasInputs(): boolean {
-    return this.job.inputs && (Object.keys(this.job.inputs).length !== 0);
+  hasInputs(task:TaskMetadata): boolean {
+    return objectNotEmpty(task.inputs);
   }
 
-  hasOutputs(): boolean {
-    return this.job.outputs && (Object.keys(this.job.outputs).length !== 0);
+  hasOutputs(task:TaskMetadata): boolean {
+    return objectNotEmpty(task.outputs);
   }
 
   hasTasks(): boolean {
@@ -104,6 +85,14 @@ export class JobTabsComponent implements OnInit, OnChanges {
       let tasks: TaskMetadata[] = this.job.extensions.tasks || [];
       return tasks.length > 0;
     }
+  }
+
+  hasTaskFailures(task: TaskMetadata): boolean {
+    return objectNotEmpty(task.failureMessages);
+  }
+
+  hasOnlyOneAttempt(task: TaskMetadata): boolean {
+    return task.attempts == 1;
   }
 
   getScatteredCountTotal(task: TaskMetadata): number {
@@ -115,13 +104,13 @@ export class JobTabsComponent implements OnInit, OnChanges {
   // these are the shard statuses we care about
   getShardStatuses(): JobStatus[] {
     return [JobStatus.Succeeded,
-            JobStatus.Failed,
-            JobStatus.Running,
-            JobStatus.Submitted];
-   }
+      JobStatus.Failed,
+      JobStatus.Running,
+      JobStatus.Submitted];
+  }
 
   getShardCountByStatus(task:TaskMetadata, status:JobStatus): number {
-    let result = 0
+    let result = 0;
     if(task.shards) {
       task.shards.forEach((thisShard) => {
         if (status == JobStatus[thisShard.executionStatus]) {
@@ -133,8 +122,25 @@ export class JobTabsComponent implements OnInit, OnChanges {
     return result;
   }
 
+  getTaskFailures(task: TaskMetadata): string {
+    if (this.hasTaskFailures(task)) {
+      return task.failureMessages.join('\n');
+    }
+  }
+
   taskIsScattered(task:TaskMetadata): boolean {
     return (task.shards && task.shards.length > 0)
+  }
+
+  populateTaskAttempts(task: TaskMetadata) {
+    this.jobManagerService.getTaskAttempts(this.job.id, this.getJobTaskName(task.name)).then((response) => {
+      task.attemptsData = response.attempts;
+    })
+  }
+
+  getJobTaskName(taskName: string): string {
+    const parts = this.job.name.split('.');
+    return parts.pop() + '.' + taskName;
   }
 
   navigateDown(id: string): void {
@@ -143,8 +149,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
     }
   }
 
-  previewFile() {
-    const path = 'gs://fc-f7f94fee-8305-44fc-becc-19184f2c5ce6/3b1d5a62-b100-472b-9133-06170c1dfd69/funWorkflow/b749242a-54a3-4aa8-917f-2bfbb9aa93a8/call-simpleTask/simpleTask-stdout.log';
+  previewFile(path): void {
     console.log(path);
     this.readResourceFile(path).then(entries => {
       for (let data of entries.filter(e => !!e).sort()) {
@@ -152,15 +157,18 @@ export class JobTabsComponent implements OnInit, OnChanges {
           console.log(data);
         }
       }
-    });
+    }).catch(error => this.handleError(error));;
   }
 
   private readResourceFile(file: string): Promise<[string, string]> {
     let bucket = ResourceUtils.getResourceBucket(file);
     let object = ResourceUtils.getResourceObject(file);
+
+    console.log(bucket);
+    console.log(object);
+
     return this.gcsService.readObject(bucket, object)
-      .then(data => [file, data] as [string, string])
-      .catch(error => this.handleError(error));
+      .then(data => [file, data] as [string, string]);
   }
 
   private handleError(error: any): any {
@@ -170,6 +178,40 @@ export class JobTabsComponent implements OnInit, OnChanges {
       {
         duration: 3000,
       });
+  }
+
+  openScatteredAttemptsDialog(task: TaskMetadata): void {
+    let trimmedShards: Shard[] = [];
+
+    // remove executionEvents, since they're not needed outside the timing diagram,
+    // and preserve start and end as Date objects for task shards
+    task.shards.forEach((shard) => {
+      let newShard: Shard = {};
+      newShard.start = new Date(shard.start);
+      newShard.end = new Date(shard.end);
+      newShard.stdout = shard.stdout;
+      newShard.stderr = shard.stderr;
+      newShard.callRoot = shard.callRoot;
+      newShard.attempts = shard.attempts;
+      newShard.shardIndex = shard.shardIndex;
+      newShard.executionStatus = shard.executionStatus;
+      newShard.failureMessages = shard.failureMessages;
+      newShard.jobId = shard.jobId;
+      trimmedShards.push(newShard);
+    });
+
+    const data = {
+      taskId: this.job.id,
+      taskName: this.getJobTaskName(task.name),
+      shards: trimmedShards
+    };
+
+    this.scatteredAttemptsDialog.open(JobScatteredAttemptsComponent, {
+      disableClose: false,
+      data: {
+        shardsData: data
+      }
+    });
   }
 }
 
