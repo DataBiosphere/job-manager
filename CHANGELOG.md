@@ -1,5 +1,14 @@
 # Job Manager Change Log
 
+
+## v1.1.0 Release Notes
+
+### Labels that are set to be hidden on the Job List page will not be shown at the top of the Job Details page.
+
+#### The full list of labels associated with a job has been moved to a new 'Labels' tab.
+
+### Fixed bug with icon designating scattered tasks.
+
 ## v1.0.0 Release Notes
 
 ### Multiple changes to the "List" tab in the Job Details page for Cromwell jobs.

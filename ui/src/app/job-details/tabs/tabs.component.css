@@ -296,8 +296,10 @@ clr-icon {
   color:rgba(0, 0, 0, 0.54)
 }
 
-.scatter-icon {
+.scatter-icon clr-icon {
   color: #5C912E;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 ::ng-deep .mat-tab-group.mat-primary .mat-ink-bar {

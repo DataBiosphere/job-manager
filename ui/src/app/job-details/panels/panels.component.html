@@ -19,9 +19,9 @@
     </clr-tooltip>
   </button>
   <p class="job-id">ID: <b>{{ job.id }}</b></p>
-  <div *ngIf="job.labels">
-    <span class="label" *ngFor="let l of labels">
-      <span *ngIf="job.labels[l] != ''">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
+  <div *ngIf="hasPrimaryLabels()" class="job-labels">
+    <span class="label" *ngFor="let l of primaryLabels">
+      <span *ngIf="job.labels[l]">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
     </span>
   </div>
 

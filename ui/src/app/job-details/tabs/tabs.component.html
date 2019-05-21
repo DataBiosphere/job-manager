@@ -29,31 +29,31 @@
                     <span *ngIf="!t.jobId && !taskIsScattered(t)">{{ t.name }}</span>
                   </div>
                   <span *ngIf="taskIsScattered(t)" class="scatter-icon-container">
-                      <button mat-icon-button [matMenuTriggerFor]="shardMenu" class="scatter-icon">
-                        <clr-tooltip>
-                          <clr-icon clrTooltipTrigger shape="layers" class="is-solid"></clr-icon>
-                          <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
-                            <span>task is scattered</span>
-                          </clr-tooltip-content>
-                        </clr-tooltip>
-                      </button>
-                      <mat-menu #shardMenu="matMenu" class="wide-menu shards-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
-                        <div class="shards-header">Scattered: {{ getScatteredCountTotal(t) }} shards</div>
-                        <div class="shards-container" *ngIf="taskIsScattered(t)">
-                          <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
-                            <div class="shard-status">
-                              <clr-tooltip>
-                                <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(jobStatus)"></clr-icon>
-                                <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
-                                  <span>{{ jobStatus }}</span>
-                                </clr-tooltip-content>
-                              </clr-tooltip>
-                            </div>
-                            <div class="shard-count">{{ getShardCountByStatus(t, jobStatus) }}</div>
+                    <button mat-icon-button [matMenuTriggerFor]="shardMenu" class="scatter-icon">
+                      <clr-tooltip>
+                        <clr-icon clrTooltipTrigger shape="layers" class="is-solid"></clr-icon>
+                        <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+                          <span>task is scattered</span>
+                        </clr-tooltip-content>
+                      </clr-tooltip>
+                    </button>
+                    <mat-menu #shardMenu="matMenu" class="wide-menu shards-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+                      <div class="shards-header">Scattered: {{ getScatteredCountTotal(t) }} shards</div>
+                      <div class="shards-container" *ngIf="taskIsScattered(t)">
+                        <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
+                          <div class="shard-status">
+                            <clr-tooltip>
+                              <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(jobStatus)"></clr-icon>
+                              <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+                                <span>{{ jobStatus }}</span>
+                              </clr-tooltip-content>
+                            </clr-tooltip>
                           </div>
+                          <div class="shard-count">{{ getShardCountByStatus(t, jobStatus) }}</div>
                         </div>
-                      </mat-menu>
-                    </span>
+                      </div>
+                    </mat-menu>
+                  </span>
                 </mat-panel-title>
                 <mat-panel-description>
                   <div class="task-status status-icon">
@@ -138,6 +138,10 @@
     <!-- Task outputs tab -->
     <mat-tab *ngIf="hasOutputs(job)" label="Outputs">
       <jm-resources-table [entries]="job.outputs"></jm-resources-table>
+    </mat-tab>
+    <!-- Secondary Labels tab -->
+    <mat-tab *ngIf="job.labels" label="Labels">
+      <jm-resources-table [entries]="job.labels"></jm-resources-table>
     </mat-tab>
     <!-- Task timing diagram tab -->
     <mat-tab *ngIf="hasTasks()" label="Timing Diagram">
