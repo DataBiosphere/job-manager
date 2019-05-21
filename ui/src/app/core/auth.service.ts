@@ -144,7 +144,6 @@ export class AuthService {
   }
 
   public resetTimers(): void {
-    console.log('in resetTimers');
     window.clearTimeout(this.logoutTimer);
     window.clearTimeout(this.warningTimer);
     this.snackBar.dismiss();
