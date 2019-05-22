@@ -119,8 +119,8 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
         - If the field is `editable`, then `fieldType` is required.
         - If the field is `editable`, then `filterable` will be ignored.
 
-- (Required, CaaS only) Configure fields to display
-  - **Note:** If you want to use use Job Manager against Cromwell-as-a-Service, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
+- (Required, CromIAM only) Configure fields to display
+  - **Note:** If you want to use use Job Manager against CromIAM, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
 ```json
 {
   "displayFields": [
@@ -187,6 +187,81 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
   }
 }
 ```
+
+- (Required, CromIAM with automatic signout) Configure fields to display
+  - **Note:** If you want to use use Job Manager against CromIAM and you want inactive users to be signed out after a specific interval of time, the `capabilities_config.json` must also include some extra fields, which are shown as below:
+```json
+{
+  "displayFields": [
+    {
+      "field": "id",
+      "display": "Workflow ID"
+    },
+    {
+      "field": "name",
+      "display": "Name",
+      "filterable": true
+    },
+    {
+      "field": "status",
+      "display": "Status"
+    },
+    {
+      "field": "submission",
+      "display": "Submitted",
+      "fieldType": "date"
+    },
+    {
+      "field": "labels.label",
+      "display": "Label",
+      "fieldType": "text",
+      "editable": true,
+      "bulkEditable": true
+    },
+    {
+      "field": "labels.flag",
+      "display": "Flag",
+      "editable": true,
+      "bulkEditable": true,
+      "fieldType": "list",
+      "validFieldValues": [
+        "archive",
+        "follow-up"
+      ]
+    },
+    {
+      "field": "labels.comment",
+      "display": "Comment",
+      "fieldType": "text",
+      "editable": true
+    }
+  ],
+  "commonLabels": [
+    "id",
+    "name",
+    "label",
+    "comment",
+    "flag"
+  ],
+  "queryExtensions": [
+    "hideArchived"
+  ],
+  "authentication": {
+    "isRequired": true,
+    "scopes": [
+      "openid",
+      "email",
+      "profile"
+    ]
+    "forcedLogoutDomains": [
+      "foo.bar"
+    ],
+    "forcedLogoutTime": 20000000
+  }
+}
+```
+  - The `forcedLogoutDomains` setting is an array of user domains where this should apply.
+  - The `forcedLogoutTime` is the amount of inactive time (in milliseconds) that will trigger an automatic sign-out.
 
 - Link docker compose
   - **Note:** You may have completed this already if following the Job Manager [Development instructions](../../README.md#Development)
