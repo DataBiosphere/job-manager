@@ -182,7 +182,8 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     "scopes": [
       "openid",
       "email",
-      "profile"
+      "profile",
+      "https://www.googleapis.com/auth/devstorage.read_only"
     ]
   }
 }
