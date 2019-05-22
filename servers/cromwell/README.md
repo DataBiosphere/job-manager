@@ -252,7 +252,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
       "openid",
       "email",
       "profile"
-    ]
+    ],
     "forcedLogoutDomains": [
       "foo.bar"
     ],
