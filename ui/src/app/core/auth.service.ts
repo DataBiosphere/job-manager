@@ -102,7 +102,7 @@ export class AuthService {
     })
   }
 
-  public signIn(): Promise<any> {
+  public signIn(): Promise<void> {
     return new Promise<void>( (resolve, reject) => {
       gapi.auth2.getAuthInstance().signIn()
         .then(user => resolve(user))
@@ -110,14 +110,20 @@ export class AuthService {
     });
   }
 
-  public signOut(): Promise<any> {
-    const auth2 = gapi.auth2.getAuthInstance();
-    return auth2.signOut();
+  public signOut(): Promise<void> {
+    return new Promise<void>( (resolve, reject) => {
+      gapi.auth2.getAuthInstance().signOut()
+        .then(user => resolve(user))
+        .catch(error => reject(error))
+    });
   }
 
-  private revokeToken(): Promise<any> {
-    const auth2 = gapi.auth2.getAuthInstance();
-    return auth2.disconnect();
+  private revokeToken(): Promise<void> {
+    return new Promise<void>( (resolve, reject) => {
+      gapi.auth2.getAuthInstance().disconnect()
+        .then(user => resolve(user))
+        .catch(error => reject(error))
+    });
   }
 
   private handleError(error): void {
