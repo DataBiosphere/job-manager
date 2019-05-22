@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewContainerRef} from '@angular/core';
-import {MatSnackBar, MatSnackBarConfig} from '@angular/material'
+import {MatSnackBar} from '@angular/material'
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {AuthService} from '../core/auth.service';
@@ -20,7 +20,9 @@ export class SignInComponent implements OnInit {
     let returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     this.authService.authenticated.subscribe( (authenticated) => {
       if (authenticated) {
-        this.router.navigateByUrl(returnUrl);
+        this.router.navigateByUrl(returnUrl).then(() => {
+          this.authService.resetTimers();
+        });
       }
     });
   }

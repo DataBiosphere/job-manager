@@ -259,6 +259,14 @@ definitions:
         description: OAuth 2.0 requested scopes
         items:
           type: string
+      forcedLogoutDomains:
+        type: array
+        description: Domains where a forced logout will happen after an interval of inactivity has passed.
+        items:
+          type: string
+      forcedLogoutTime:
+        type: integer
+        description: Number of milliseconds for the interval of inactivity.
 
   DisplayField:
     description: Description of a display field
