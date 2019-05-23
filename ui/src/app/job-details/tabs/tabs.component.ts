@@ -150,7 +150,6 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   previewFile(path): void {
-    console.log(path);
     this.readResourceFile(path).then(entries => {
       for (let data of entries.filter(e => !!e).sort()) {
         if (data) {
@@ -163,9 +162,6 @@ export class JobTabsComponent implements OnInit, OnChanges {
   private readResourceFile(file: string): Promise<[string, string]> {
     let bucket = ResourceUtils.getResourceBucket(file);
     let object = ResourceUtils.getResourceObject(file);
-
-    console.log(bucket);
-    console.log(object);
 
     return this.gcsService.readObject(bucket, object)
       .then(data => [file, data] as [string, string]);
