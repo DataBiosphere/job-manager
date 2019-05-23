@@ -3,6 +3,8 @@
 
 ## v1.1.0 Release Notes
 
+### Added the ability – with the addition of a specific scope to the capabilities config file – to see the contents of Google Storage log files within the UI.
+
 ### Added the ability to configure auto sign-out after a period of inactivity, per user domain, if Job Manager is pointing at a CromIAM.
 
 ### Labels that are set to be hidden on the Job List page will not be shown at the top of the Job Details page.
