@@ -44,7 +44,7 @@ export class AuthService {
       this.userDomain = user.getHostedDomain();
       this.authenticated.next(true);
 
-      if (this.forcedLogoutDomains && this.forcedLogoutDomains.includes(this.userDomain)) {
+      if (this.logoutInterval && this.forcedLogoutDomains && this.forcedLogoutDomains.includes(this.userDomain)) {
         this.setUpEventListeners();
       }
     } else {
