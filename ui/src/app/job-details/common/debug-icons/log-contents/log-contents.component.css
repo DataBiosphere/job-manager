@@ -1,6 +1,5 @@
-::ng-deep mat-dialog-container.mat-dialog-container {
+mat-dialog-container.mat-dialog-container {
   overflow: visible;
-  background-color: #D5DFD0;
 }
 
 .mat-dialog-title {
@@ -19,6 +18,8 @@
   line-height: 1rem;
   background-color: #fff;
   color: #000;
+  border-top: 1px solid #5C912E;
+  border-bottom: 1px solid #5C912E;
 }
 
 mat-dialog-actions.mat-dialog-actions {

@@ -1,9 +1,12 @@
 # Job Manager Change Log
 
-
 ## v1.2.0 Release Notes
 
 ### Added the ability – with the addition of a specific scope to the capabilities config file – to see the contents of Google Storage log files within the UI.
+
+## v1.1.1 Release Notes
+
+### Fixed auto-logout bug which was triggering logout with no configuration.
 
 ## v1.1.0 Release Notes
 
