@@ -21,7 +21,9 @@ export class SignInComponent implements OnInit {
     this.authService.authenticated.subscribe( (authenticated) => {
       if (authenticated) {
         this.router.navigateByUrl(returnUrl).then(() => {
-          this.authService.resetTimers();
+          if(this.authService.logoutInterval){
+            this.authService.resetTimers();
+          }
         });
       }
     });

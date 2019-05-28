@@ -1,6 +1,10 @@
 # Job Manager Change Log
 
 
+## v1.1.1 Release Notes
+
+### Fixed auto-logout bug which was triggering logout with no configuration.
+
 ## v1.1.0 Release Notes
 
 ### Added the ability to configure auto sign-out after a period of inactivity, per user domain, if Job Manager is pointing at a CromIAM.
