@@ -19,10 +19,6 @@ import {JobStatusIcon} from '../../shared/common';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
-import {GcsService} from "../../core/gcs.service";
-import {ResourceUtils} from "../../shared/utils/resource-utils";
-import {ErrorMessageFormatterPipe} from "../../shared/pipes/error-message-formatter.pipe";
-import {MatSnackBar} from "@angular/material";
 import {JobManagerService} from "../../core/job-manager.service";
 import {Shard} from "../../shared/model/Shard";
 import {JobScatteredAttemptsComponent} from "./scattered-attempts/scattered-attempts.component";
@@ -47,9 +43,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
   dataSource: TasksDataSource | null;
   tabWidth: number = 1024;
 
-  constructor(private errorBar: MatSnackBar,
-              private readonly gcsService: GcsService,
-              private readonly jobManagerService: JobManagerService,
+  constructor(private readonly jobManagerService: JobManagerService,
               public scatteredAttemptsDialog: MatDialog) {};
 
   ngOnInit() {
@@ -147,33 +141,6 @@ export class JobTabsComponent implements OnInit, OnChanges {
     if (id) {
       this.navDown.emit(id);
     }
-  }
-
-  previewFile(path): void {
-    this.readResourceFile(path).then(entries => {
-      for (let data of entries.filter(e => !!e).sort()) {
-        if (data) {
-          console.log(data);
-        }
-      }
-    }).catch(error => this.handleError(error));;
-  }
-
-  private readResourceFile(file: string): Promise<[string, string]> {
-    let bucket = ResourceUtils.getResourceBucket(file);
-    let object = ResourceUtils.getResourceObject(file);
-
-    return this.gcsService.readObject(bucket, object)
-      .then(data => [file, data] as [string, string]);
-  }
-
-  private handleError(error: any): any {
-    this.errorBar.open(
-      new ErrorMessageFormatterPipe().transform(error),
-      'Dismiss',
-      {
-        duration: 3000,
-      });
   }
 
   openScatteredAttemptsDialog(task: TaskMetadata): void {

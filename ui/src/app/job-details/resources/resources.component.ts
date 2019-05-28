@@ -48,9 +48,9 @@ export class JobResourcesComponent implements OnInit {
         this.tabIds.push('source-file');
       }
 
-      if (this.job.extensions.logs) {
+      if (this.job.extensions.logs && this.gcsService.canReadFiles()) {
         const files = Object.keys(this.job.extensions.logs);
-        Promise.all(files.map(file => this.readResourceFile(file)))
+        Promise.all(files.map(file => this.readResourceFile(this.job.extensions.logs[file], file)))
           .then(entries => {
             // Sort log files by the file name (tuples will be converted to
             // string and compared).
@@ -103,9 +103,9 @@ export class JobResourcesComponent implements OnInit {
     }
   }
 
-  private readResourceFile(file: string): Promise<[string, string]> {
-    let bucket = ResourceUtils.getResourceBucket(this.job.extensions.logs[file]);
-    let object = ResourceUtils.getResourceObject(this.job.extensions.logs[file]);
+  private readResourceFile(resource: string, file: string): Promise<[string, string]> {
+    const bucket = ResourceUtils.getResourceBucket(resource);
+    const object = ResourceUtils.getResourceObject(resource);
     return this.gcsService.readObject(bucket, object)
       .then(data => [file, data] as [string, string])
       .catch(error => this.handleError(error));

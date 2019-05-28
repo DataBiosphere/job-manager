@@ -56,7 +56,6 @@
                   </span>
                 </mat-panel-title>
                 <mat-panel-description>
-                  <button *ngIf="t.stdout" (click)="previewFile(t.stdout)">preview stdout</button>
                   <div class="task-status status-icon">
                     <clr-tooltip>
                       <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(t.executionStatus)"></clr-icon>

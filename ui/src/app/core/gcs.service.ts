@@ -7,27 +7,27 @@ declare const gapi: any;
 @Injectable()
 export class GcsService {
 
-  private static readonly apiPrefix = "https://www.googleapis.com/storage/v1";
+  private static readonly apiPrefix = 'https://www.googleapis.com/storage/v1';
   private static readonly maximumBytes = 1000000;
 
   constructor(private readonly authService: AuthService) {}
 
   readObject(bucket: string, object: string): Promise<string> {
-    return this.isAuthenticated()
+    return this.canReadFiles()
       .then(() => this.getObjectData(bucket, object))
       .catch(response => this.handleError(response));
   }
 
-  isAuthenticated(): Promise<void> {
+  canReadFiles(): Promise<void> {
     return this.authService.isAuthenticated().then( authenticated => {
-      if (authenticated) {
+      if (authenticated && this.authService.gcsReadAccess) {
         return Promise.resolve();
       }
 
       return Promise.reject({
         status: 401,
         title: 'Unauthorized',
-        message: 'Authentication failed, please try signing in again.'
+        message: 'Authentication failed or user does not have read access, please try signing in again.'
       });
     });
   }

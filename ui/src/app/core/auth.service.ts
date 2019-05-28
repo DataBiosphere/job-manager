@@ -17,6 +17,7 @@ export class AuthService {
   public userId: string;
   public userEmail: string;
   public userDomain: string;
+  public gcsReadAccess: boolean;
   public forcedLogoutDomains: string[];
   private logoutTimer: number;
   private warningTimer: number;
@@ -25,6 +26,7 @@ export class AuthService {
 
   private initAuth(scopes: string[]): Promise<any> {
     const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
+    this.gcsReadAccess = scopes.includes('https://www.googleapis.com/auth/devstorage.read_only');
 
     return new Promise<void>( (resolve, reject) => {
       gapi.auth2.init({
@@ -44,7 +46,7 @@ export class AuthService {
       this.userDomain = user.getHostedDomain();
       this.authenticated.next(true);
 
-      if (this.forcedLogoutDomains && this.forcedLogoutDomains.includes(this.userDomain)) {
+      if (this.logoutInterval && this.forcedLogoutDomains && this.forcedLogoutDomains.includes(this.userDomain)) {
         this.setUpEventListeners();
       }
     } else {

@@ -30,6 +30,7 @@ import {JobAttemptComponent} from "./common/attempt/attempt.component";
 import {JobTabsComponent} from "./tabs/tabs.component";
 import {JobTimingDiagramComponent} from "./tabs/timing-diagram/timing-diagram.component";
 import {JobScatteredAttemptsComponent} from "./tabs/scattered-attempts/scattered-attempts.component";
+import {JobLogContentsComponent} from "./common/debug-icons/log-contents/log-contents.component";
 
 
 @NgModule({
@@ -55,12 +56,14 @@ import {JobScatteredAttemptsComponent} from "./tabs/scattered-attempts/scattered
     Ng2GoogleChartsModule
   ],
   entryComponents: [
-    JobScatteredAttemptsComponent
+    JobLogContentsComponent,
+    JobScatteredAttemptsComponent,
   ],
   declarations: [
     JobAttemptComponent,
     JobDebugIconsComponent,
     JobDetailsComponent,
+    JobLogContentsComponent,
     JobPanelsComponent,
     JobResourcesComponent,
     JobResourcesTableComponent,

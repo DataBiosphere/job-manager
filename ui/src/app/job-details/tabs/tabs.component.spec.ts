@@ -28,6 +28,8 @@ import {JobTimingDiagramComponent} from './timing-diagram/timing-diagram.compone
 import {JobAttemptComponent} from "../common/attempt/attempt.component";
 import {JobManagerService} from "../../core/job-manager.service";
 import {FakeJobManagerService} from "../../testing/fake-job-manager.service";
+import {GcsService} from "../../core/gcs.service";
+import {FakeGcsService} from "../../testing/fake-gcs.service";
 
 describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;
@@ -156,6 +158,7 @@ describe('JobTabsComponent', () => {
         SharedModule
       ],
       providers: [
+        {provide: GcsService, useValue: new FakeGcsService('test-bucket', null, null)},
         {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, snackBar)},
         {provide: JobManagerService, useValue: fakeJobService},
 
@@ -192,10 +195,6 @@ describe('JobTabsComponent', () => {
       .toEqual('0h 15m');
     expect(de.queryAll(By.css('.task-attempts'))[1].nativeElement.textContent.trim())
       .toEqual('');
-    expect(de.queryAll(By.css('.task-links a.log-item'))[0].properties['href'])
-      .toContain('stdout.txt');
-    expect(de.queryAll(By.css('.task-links a.log-item'))[1].properties['href'])
-      .toContain('stderr.txt');
   }));
 
   it('should display the correct icon if the task was call cached', async(() => {

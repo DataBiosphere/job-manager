@@ -8,6 +8,7 @@ import {JobDebugIconsComponent} from "./debug-icons.component";
 import {AuthService} from "../../../core/auth.service";
 import {FakeCapabilitiesService} from "../../../testing/fake-capabilities.service";
 import {MatSnackBar} from "@angular/material";
+import {GcsService} from "../../../core/gcs.service";
 
 describe('JobDebugIconsComponent', () => {
   let fixture: ComponentFixture<TestDebugIconsComponent>;
@@ -33,6 +34,7 @@ describe('JobDebugIconsComponent', () => {
         SharedModule
       ],
       providers: [
+        {provide: GcsService},
         {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, snackBar)}
       ],
     }).compileComponents();
@@ -57,22 +59,21 @@ describe('JobDebugIconsComponent', () => {
     expect(de.queryAll(By.css('clr-icon[shape=exclamation-triangle]')).length).toEqual(1);
   }));
 
-  it('should link to the right location for stdout', async(() => {
+  it('should calculate to the right location for stdout', async(() => {
     fixture.detectChanges();
-    let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('a.log-item'))[0].nativeElement.href).toEqual('https://console.cloud.google.com/storage/browser/test-bucket/test-job?prefix=stdout.txt');
+    expect(testComponent.jobDebugIconsComponent.getResourceUrl(job.stdout) == 'https://console.cloud.google.com/storage/browser/test-bucket/test-job?prefix=stdout.txt');
   }));
 
-  it('should link to the right location for stderr', async(() => {
+  it('should calculate to the right location for stderr', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('a.log-item'))[1].nativeElement.href).toEqual('https://console.cloud.google.com/storage/browser/test-bucket/test-job?prefix=stderr.txt');
+    expect(testComponent.jobDebugIconsComponent.getResourceUrl(job.stderr) == 'https://console.cloud.google.com/storage/browser/test-bucket/test-job?prefix=stderr.txt');
   }));
 
   it('should link to the right location for execution directory', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('a.log-item'))[2].nativeElement.href).toEqual('https://console.cloud.google.com/storage/browser/test-bucket/test-job/');
+    expect(de.queryAll(By.css('a.log-item'))[0].nativeElement.href).toEqual('https://console.cloud.google.com/storage/browser/test-bucket/test-job/');
   }));
 
   @Component({

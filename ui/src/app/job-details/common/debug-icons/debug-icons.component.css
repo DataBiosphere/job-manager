@@ -51,3 +51,9 @@ clr-icon.disabled {
 ::ng-deep clr-icon.log-error.disabled .clr-i-alert.clr-i-outline--alerted {
   fill: #ccc;
 }
+
+button.log-item {
+  border: 0;
+  background-color: transparent;
+  cursor: pointer;
+}
