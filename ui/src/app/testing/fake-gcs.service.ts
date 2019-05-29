@@ -12,8 +12,8 @@ export class FakeGcsService extends GcsService {
     return Promise.resolve();
   }
 
-  canReadFiles(): Promise<void> {
-    return Promise.resolve();
+  canReadFiles(): Promise<boolean> {
+    return Promise.resolve(false);
   }
 
   getObjectData(bucket: string, object: string): Promise<string> {

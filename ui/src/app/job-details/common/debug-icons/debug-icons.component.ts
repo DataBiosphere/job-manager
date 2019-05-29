@@ -27,20 +27,22 @@ export class JobDebugIconsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.stdout) {
-      this.getLogContents(this.stdout).then((value) => {
-        this.logFileData[this.getFileName(this.stdout)] = value;
-      });
-    }
-    if (this.stderr) {
-      this.getLogContents(this.stderr).then((value) => {
-        this.logFileData[this.getFileName(this.stderr)] = value;
-      });
+    if (this.authService.gcsReadAccess) {
+      if (this.stdout) {
+        this.getLogContents(this.stdout).then((value) => {
+          this.logFileData[this.getFileName(this.stdout)] = value;
+        });
+      }
+      if (this.stderr) {
+        this.getLogContents(this.stderr).then((value) => {
+          this.logFileData[this.getFileName(this.stderr)] = value;
+        });
+      }
     }
   }
 
   getResourceUrl(url: string): string {
-    if ((!url || !ResourceUtils.isResourceURL(url)) || !this.hasContents(this.getFileName(url))) {
+    if (!url || !ResourceUtils.isResourceURL(url) || (this.authService.gcsReadAccess && !this.hasContents(this.getFileName(url)))) {
       return '';
     }
     return ResourceUtils.getResourceBrowserURL(url, this.authService.userEmail);
@@ -57,7 +59,8 @@ export class JobDebugIconsComponent implements OnInit {
     return Object.keys(this.logFileData).includes(fileName) && this.logFileData[fileName] != '';
   }
 
-  showOrLinkTo(url: string): void {
+  showOrLinkTo(e: MouseEvent, url: string): void {
+    e.stopPropagation();
     if (this.hasContents(this.getFileName(url))) {
       this.logContentsDialog.open(JobLogContentsComponent, {
         disableClose: false,
@@ -67,7 +70,7 @@ export class JobDebugIconsComponent implements OnInit {
           logLink: this.getResourceUrl(url)
         }
       });
-    } else {
+    } else if (url) {
       window.open(this.getResourceUrl(url));
     }
   }

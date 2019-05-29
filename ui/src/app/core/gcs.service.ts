@@ -12,24 +12,18 @@ export class GcsService {
 
   constructor(private readonly authService: AuthService) {}
 
-  readObject(bucket: string, object: string): Promise<string> {
+  readObject(bucket: string, object: string): Promise<any> {
     return this.canReadFiles()
       .then(() => this.getObjectData(bucket, object))
-      .catch(response => this.handleError(response));
+      .catch(() => Promise.resolve(false));
   }
 
-  canReadFiles(): Promise<void> {
+  canReadFiles(): Promise<boolean> {
     return this.authService.isAuthenticated().then( authenticated => {
       if (authenticated && this.authService.gcsReadAccess) {
-        return Promise.resolve();
+        return Promise.resolve(true);
       }
-
-      return Promise.reject({
-        status: 401,
-        title: 'Unauthorized',
-        message: 'Authentication failed or user does not have read access, please try signing in again.'
-      });
-    });
+    }).catch(() =>  Promise.resolve(false));
   }
 
   getObjectData(bucket: string, object: string): Promise<string> {
