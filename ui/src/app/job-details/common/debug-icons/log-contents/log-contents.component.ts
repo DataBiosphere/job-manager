@@ -1,6 +1,5 @@
 import {Component, Inject} from "@angular/core";
 import {MAT_DIALOG_DATA} from "@angular/material";
-import {AuthService} from "../../../../core/auth.service";
 
 @Component({
   selector: 'jm-log-contents-component',

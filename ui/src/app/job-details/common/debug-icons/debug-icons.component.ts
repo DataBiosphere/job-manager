@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 
 import {AuthService} from '../../../core/auth.service';
 import {ResourceUtils} from "../../../shared/utils/resource-utils";
