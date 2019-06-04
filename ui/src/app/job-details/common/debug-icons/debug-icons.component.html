@@ -8,7 +8,7 @@
     </a>
   </clr-tooltip>
  <clr-icon *ngIf="!getResourceUrl(stdout)" shape="file" class="disabled"></clr-icon>
-  <clr-tooltip *ngIf="!!getResourceUrl(stdout)">
+  <clr-tooltip *ngIf="getResourceUrl(stdout)">
     <button class="log-item" (click)="showOrLinkTo($event, stdout)">
       <clr-icon clrTooltipTrigger shape="file"></clr-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
@@ -17,7 +17,7 @@
     </button>
   </clr-tooltip>
   <clr-icon *ngIf="!getResourceUrl(stderr)" shape="file" class="has-alert log-error disabled"></clr-icon>
-  <clr-tooltip *ngIf="!!getResourceUrl(stderr)">
+  <clr-tooltip *ngIf="getResourceUrl(stderr)">
     <button class="log-item" (click)="showOrLinkTo($event, stderr)">
       <clr-icon clrTooltipTrigger shape="file" class="has-alert log-error"></clr-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
@@ -26,7 +26,7 @@
     </button>
   </clr-tooltip>
   <clr-icon *ngIf="!getDirectoryUrl(directory)" shape="folder" class="is-solid disabled"></clr-icon>
-  <clr-tooltip *ngIf="!!getDirectoryUrl(directory)">
+  <clr-tooltip *ngIf="getDirectoryUrl(directory)">
     <a class="log-item" [href]="getDirectoryUrl(directory)" target="_blank" (click)="$event.stopPropagation()">
       <clr-icon clrTooltipTrigger shape="folder" class="is-solid"></clr-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
