@@ -15,7 +15,7 @@ export class GcsService {
   readObject(bucket: string, object: string): Promise<any> {
     return this.canReadFiles()
       .then(() => this.getObjectData(bucket, object))
-      .catch(() => Promise.resolve(false));
+      .catch((error) => Promise.reject(error));
   }
 
   canReadFiles(): Promise<boolean> {

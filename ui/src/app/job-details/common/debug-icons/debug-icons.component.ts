@@ -4,8 +4,9 @@ import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 import {AuthService} from '../../../core/auth.service';
 import {ResourceUtils} from "../../../shared/utils/resource-utils";
 import {GcsService} from "../../../core/gcs.service";
-import {MatDialog} from "@angular/material";
+import {MatDialog, MatSnackBar} from "@angular/material";
 import {JobLogContentsComponent} from "./log-contents/log-contents.component";
+import {ErrorMessageFormatterPipe} from "../../../shared/pipes/error-message-formatter.pipe";
 
 @Component({
   selector: 'jm-debug-icons',
@@ -23,6 +24,7 @@ export class JobDebugIconsComponent implements OnInit {
   constructor(private authService: AuthService,
               private gcsService: GcsService,
               public logContentsDialog: MatDialog,
+              private snackBar: MatSnackBar,
               private sanitizer:DomSanitizer) {
   }
 
@@ -31,11 +33,15 @@ export class JobDebugIconsComponent implements OnInit {
       if (this.stdout) {
         this.getLogContents(this.stdout).then((value) => {
           this.logFileData[this.getFileName(this.stdout)] = value;
+        }).catch(error => {
+          Promise.resolve(error);
         });
       }
       if (this.stderr) {
         this.getLogContents(this.stderr).then((value) => {
           this.logFileData[this.getFileName(this.stderr)] = value;
+        }).catch(error => {
+          Promise.resolve(error);
         });
       }
     }
@@ -75,11 +81,15 @@ export class JobDebugIconsComponent implements OnInit {
     }
   }
 
-  private async getLogContents(url: string): Promise<string> {
+  private getLogContents(url: string): Promise<string> {
     const bucket = ResourceUtils.getResourceBucket(url);
     const object = ResourceUtils.getResourceObject(url);
-    return await this.gcsService.readObject(bucket, object)
-      .then(data => data);
+    return this.gcsService.readObject(bucket, object)
+      .then(data => data)
+      .catch(error => {
+        this.handleError(error);
+        return Promise.resolve(false);
+      });
   }
 
   private getFileName(filePath: string): string {
@@ -95,5 +105,11 @@ export class JobDebugIconsComponent implements OnInit {
       return fileParts.slice(-2).join('/');
     }
 
+  }
+
+  handleError(error: any) {
+    this.snackBar.open(
+      new ErrorMessageFormatterPipe().transform(error),
+      'Dismiss');
   }
 }
