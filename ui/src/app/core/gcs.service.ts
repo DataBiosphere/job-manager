@@ -14,7 +14,7 @@ export class GcsService {
 
   readObject(bucket: string, object: string): Promise<any> {
     return this.canReadFiles()
-      .then(() => this.getObjectData(bucket, object))
+      .then(() => Promise.resolve(this.getObjectData(bucket, object)))
       .catch((error) => Promise.reject(error));
   }
 
@@ -34,9 +34,9 @@ export class GcsService {
     })
     .then(response => {
       if (response.headers["content-length"] == GcsService.maximumBytes) {
-        return response.body + "\n\nTruncated download at 1MB...";
+        return Promise.resolve(response.body + "\n\nTruncated download at 1MB...");
       }
-      return response.body;
+      return Promise.resolve(response.body);
     })
     .catch(response => this.handleError(response));
   }
