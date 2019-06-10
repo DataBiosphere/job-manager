@@ -88,7 +88,6 @@ export class JobDebugIconsComponent implements OnInit {
       .then(data => data)
       .catch(error => {
         this.handleError(error);
-        return Promise.resolve(false);
       });
   }
 

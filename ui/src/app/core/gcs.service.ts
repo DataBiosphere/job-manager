@@ -13,32 +13,54 @@ export class GcsService {
   constructor(private readonly authService: AuthService) {}
 
   readObject(bucket: string, object: string): Promise<any> {
-    return this.canReadFiles()
-      .then(() => Promise.resolve(this.getObjectData(bucket, object)))
-      .catch((error) => Promise.reject(error));
+    return this.canReadFiles(bucket, object)
+      .then(() => this.getObjectData(bucket, object)
+      .catch((error) => this.handleError(error))
+    );
   }
 
-  canReadFiles(): Promise<boolean> {
+  canReadFiles(bucket: string, object: string): Promise<void> {
     return this.authService.isAuthenticated().then( authenticated => {
       if (authenticated && this.authService.gcsReadAccess) {
-        return Promise.resolve(true);
+        return Promise.resolve();
       }
-    }).catch(() =>  Promise.resolve(false));
+    }).catch((error) => Promise.reject(error));
   }
 
-  getObjectData(bucket: string, object: string): Promise<string> {
+  getObjectData(bucket: string, object: string): Promise<any> {
+    return this.hasContent(bucket, object)
+      .then((hasContent) => {
+        if (hasContent) {
+          return gapi.client.request({
+            path: `${GcsService.apiPrefix}/b/${bucket}/o/${object}`,
+            params: {alt: 'media'},
+            headers: {range: 'bytes=0-999999'} // Limit file size to 1MB
+          })
+            .then(response => {
+              if (response.headers["content-length"] == GcsService.maximumBytes) {
+                return response.body + "\n\nTruncated download at 1MB...";
+              }
+              return response.body;
+            })
+            .catch(response => this.handleError(response));
+        }
+        else {
+          return '';
+        }
+      });
+  }
+
+  hasContent(bucket: string, object: string): Promise<boolean> {
     return gapi.client.request({
-      path: `${GcsService.apiPrefix}/b/${bucket}/o/${object}`,
-      params: {alt: 'media'},
-      headers: {range: 'bytes=0-999999'} // Limit file size to 1MB
+      path: `${GcsService.apiPrefix}/b/${bucket}/o/${object}`
     })
-    .then(response => {
-      if (response.headers["content-length"] == GcsService.maximumBytes) {
-        return Promise.resolve(response.body + "\n\nTruncated download at 1MB...");
-      }
-      return Promise.resolve(response.body);
-    })
-    .catch(response => this.handleError(response));
+      .then((resource) => {
+        if (resource.result.size > 0) {
+          return Promise.resolve(true);
+        }
+        return Promise.resolve(false);
+      })
+      .catch((error) => Promise.reject(error));
   }
 
   private handleError(response: any): Promise<string> {
