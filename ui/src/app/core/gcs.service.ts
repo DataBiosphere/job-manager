@@ -13,18 +13,18 @@ export class GcsService {
   constructor(private readonly authService: AuthService) {}
 
   readObject(bucket: string, object: string): Promise<any> {
-    return this.canReadFiles(bucket, object)
+    return this.canReadFiles()
       .then(() => this.getObjectData(bucket, object)
-      .catch((error) => this.handleError(error))
+      .catch(() => '')
     );
   }
 
-  canReadFiles(bucket: string, object: string): Promise<void> {
+  canReadFiles(): Promise<any> {
     return this.authService.isAuthenticated().then( authenticated => {
       if (authenticated && this.authService.gcsReadAccess) {
         return Promise.resolve();
       }
-    }).catch((error) => Promise.reject(error));
+    }).catch((error) => this.handleError(error));
   }
 
   getObjectData(bucket: string, object: string): Promise<any> {
@@ -47,7 +47,8 @@ export class GcsService {
         else {
           return '';
         }
-      });
+      })
+      .catch((error) => this.handleError(error));
   }
 
   hasContent(bucket: string, object: string): Promise<boolean> {
@@ -60,7 +61,7 @@ export class GcsService {
         }
         return Promise.resolve(false);
       })
-      .catch((error) => Promise.reject(error));
+      .catch((error) => this.handleError(error));
   }
 
   private handleError(response: any): Promise<string> {
@@ -70,10 +71,29 @@ export class GcsService {
     if (response.status == 404 || response.status == 416) {
       return Promise.resolve("");
     }
-    return Promise.reject({
-      status: response.status,
-      title: "Could not read file",
-      message: response.body,
-    });
+
+    if (response.hasOwnProperty('message')) {
+      return Promise.reject({
+        status: response.status,
+        title: "Could not read file",
+        message: response.message,
+      });
+    }
+    if (response.hasOwnProperty('body')) {
+      let parsedBody = JSON.parse(response.body);
+      if (parsedBody.error.errors[0].message) {
+        return Promise.reject({
+          status: response.status,
+          title: "Could not read file",
+          message: parsedBody.error.errors[0].message,
+        });
+      } else {
+        return Promise.reject({
+          status: response.status,
+          title: "Could not read file",
+          message: response.body,
+        });
+      }
+    }
   }
 }
