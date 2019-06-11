@@ -35,6 +35,7 @@ describe('JobDebugIconsComponent', () => {
       ],
       providers: [
         {provide: GcsService},
+        {provide: MatSnackBar},
         {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, snackBar)}
       ],
     }).compileComponents();

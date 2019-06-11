@@ -161,7 +161,7 @@ describe('JobTabsComponent', () => {
         {provide: GcsService, useValue: new FakeGcsService('test-bucket', null, null)},
         {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, snackBar)},
         {provide: JobManagerService, useValue: fakeJobService},
-
+        {provide: MatSnackBar},
       ]
     }).compileComponents();
   }));

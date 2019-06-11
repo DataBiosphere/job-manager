@@ -12,7 +12,7 @@ export class GcsService {
 
   constructor(private readonly authService: AuthService) {}
 
-  readObject(bucket: string, object: string): Promise<any> {
+  readObject(bucket: string, object: string): Promise<string> {
     return this.canReadFiles()
       .then(() => this.getObjectData(bucket, object)
       .catch(() => '')

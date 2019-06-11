@@ -1,8 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {AuthService} from '../core/auth.service';
-import {FieldDataType, queryDataTypes, queryExtensionsDataTypes, STORAGE_REF} from "../shared/common";
+import {FieldDataType, queryExtensionsDataTypes, STORAGE_REF} from "../shared/common";
 import {CapabilitiesService} from "./capabilities.service";
-import {JobStatus} from "../shared/model/JobStatus";
 
 type Settings = {
   v1: {

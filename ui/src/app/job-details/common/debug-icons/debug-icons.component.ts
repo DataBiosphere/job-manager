@@ -85,10 +85,7 @@ export class JobDebugIconsComponent implements OnInit {
     const bucket = ResourceUtils.getResourceBucket(url);
     const object = ResourceUtils.getResourceObject(url);
     return this.gcsService.readObject(bucket, object)
-      .then(data => data)
-      .catch(error => {
-        this.handleError(error);
-      });
+      .then(data => data);
   }
 
   private getFileName(filePath: string): string {
