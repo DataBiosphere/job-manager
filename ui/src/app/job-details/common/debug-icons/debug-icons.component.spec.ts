@@ -60,12 +60,12 @@ describe('JobDebugIconsComponent', () => {
     expect(de.queryAll(By.css('clr-icon[shape=exclamation-triangle]')).length).toEqual(1);
   }));
 
-  it('should calculate to the right location for stdout', async(() => {
+  it('should calculate the right location for stdout', async(() => {
     fixture.detectChanges();
     expect(testComponent.jobDebugIconsComponent.getResourceUrl(job.stdout) == 'https://console.cloud.google.com/storage/browser/test-bucket/test-job?prefix=stdout.txt');
   }));
 
-  it('should calculate to the right location for stderr', async(() => {
+  it('should calculate the right location for stderr', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(testComponent.jobDebugIconsComponent.getResourceUrl(job.stderr) == 'https://console.cloud.google.com/storage/browser/test-bucket/test-job?prefix=stderr.txt');
