@@ -1,6 +1,4 @@
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Injectable} from '@angular/core';
-
 import {AuthService} from '../core/auth.service';
 
 declare const gapi: any;
@@ -30,15 +28,15 @@ export class ProjectsService {
   }
 
   listProjects(filter: string): Promise<ProjectListView> {
-    return this.authService.isAuthenticated().then( authenticated => {
-      if (authenticated) {
-        return gapi.client.request({
-          path: ProjectsService.apiUrl,
-          params: {
-            filter: `id:"${filter}" lifecycleState:ACTIVE`,
-            pageSize: ProjectsService.defaultPageSize,
-          }
-        })
+    const authenticated = this.authService.isAuthenticated();
+    if (authenticated) {
+      return gapi.client.request({
+        path: ProjectsService.apiUrl,
+        params: {
+          filter: `id:"${filter}" lifecycleState:ACTIVE`,
+          pageSize: ProjectsService.defaultPageSize,
+        }
+      })
         .then(response => {
           let exhaustive = !response.result.nextPageToken;
           return {
@@ -47,13 +45,12 @@ export class ProjectsService {
           }
         })
         .catch(response => this.handleError(response));
-      } else {
-        return Promise.reject({
-          status: 401,
-          title: "Unauthorized",
-          message: "Authentication failed, please try signing in again."
-        })
-      }
-    });
+    } else {
+      return Promise.reject({
+        status: 401,
+        title: "Unauthorized",
+        message: "Authentication failed, please try signing in again."
+      })
+    }
   }
 }

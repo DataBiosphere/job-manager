@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewContainerRef} from '@angular/core';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 
 import {AuthService} from '../../../core/auth.service';
@@ -21,29 +21,33 @@ export class JobDebugIconsComponent implements OnInit {
   @Input() directory: string;
   logFileData: Map<string, string> = new Map();
 
-  constructor(private authService: AuthService,
-              private gcsService: GcsService,
-              public logContentsDialog: MatDialog,
-              private snackBar: MatSnackBar,
-              private sanitizer:DomSanitizer) {
-  }
+  constructor(private readonly authService: AuthService,
+              private readonly gcsService: GcsService,
+              private readonly snackBar: MatSnackBar,
+              private readonly sanitizer:DomSanitizer,
+              public logContentsDialog: MatDialog) {}
 
   ngOnInit(): void {
-    if (this.authService.gcsReadAccess) {
-      if (this.stdout) {
-        this.getLogContents(this.stdout).then((value) => {
-          this.logFileData[this.getFileName(this.stdout)] = value;
-        }).catch(error => {
-          Promise.resolve(error);
-        });
+    try {
+      const authenticated = this.authService.isAuthenticated()
+      if (authenticated && this.authService.gcsReadAccess) {
+        if (this.stdout) {
+          this.getLogContents(this.stdout).then((value) => {
+            this.logFileData[this.getFileName(this.stdout)] = value;
+          }).catch(error => {
+            this.handleError(error);
+          });
+        }
+        if (this.stderr) {
+          this.getLogContents(this.stderr).then((value) => {
+            this.logFileData[this.getFileName(this.stderr)] = value;
+          }).catch(error => {
+            this.handleError(error);
+          });
+        }
       }
-      if (this.stderr) {
-        this.getLogContents(this.stderr).then((value) => {
-          this.logFileData[this.getFileName(this.stderr)] = value;
-        }).catch(error => {
-          Promise.resolve(error);
-        });
-      }
+    } catch (error) {
+      this.handleError(error);
     }
   }
 
@@ -81,11 +85,15 @@ export class JobDebugIconsComponent implements OnInit {
     }
   }
 
-  private getLogContents(url: string): Promise<string> {
-    const bucket = ResourceUtils.getResourceBucket(url);
-    const object = ResourceUtils.getResourceObject(url);
-    return this.gcsService.readObject(bucket, object)
-      .then(data => data);
+  private async getLogContents(url: string): Promise<string> {
+    try {
+      const bucket = ResourceUtils.getResourceBucket(url);
+      const object = ResourceUtils.getResourceObject(url);
+      return await this.gcsService.readObject(bucket, object)
+        .then(data => data);
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   private getFileName(filePath: string): string {
