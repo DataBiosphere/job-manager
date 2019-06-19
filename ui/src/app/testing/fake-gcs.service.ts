@@ -13,7 +13,7 @@ export class FakeGcsService extends GcsService {
   }
 
   canReadFiles(): boolean {
-    return false;
+    return true;
   }
 
   getObjectData(bucket: string, object: string): Promise<string> {

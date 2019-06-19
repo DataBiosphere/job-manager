@@ -7,12 +7,11 @@ import {SharedModule} from '../../../shared/shared.module';
 import {JobDebugIconsComponent} from "./debug-icons.component";
 import {AuthService} from "../../../core/auth.service";
 import {FakeCapabilitiesService} from "../../../testing/fake-capabilities.service";
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBarModule} from "@angular/material";
 import {GcsService} from "../../../core/gcs.service";
 
 describe('JobDebugIconsComponent', () => {
   let fixture: ComponentFixture<TestDebugIconsComponent>;
-  let snackBar: MatSnackBar;
   let testComponent: TestDebugIconsComponent;
   let job = {
     failure: 'things went wrong',
@@ -31,12 +30,12 @@ describe('JobDebugIconsComponent', () => {
         BrowserAnimationsModule,
         ClrIconModule,
         ClrTooltipModule,
+        MatSnackBarModule,
         SharedModule
       ],
       providers: [
         {provide: GcsService},
-        {provide: MatSnackBar},
-        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, snackBar)}
+        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, null)}
       ],
     }).compileComponents();
   }));

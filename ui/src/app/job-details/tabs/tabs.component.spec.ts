@@ -5,7 +5,8 @@ import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
   MatButtonModule,
   MatExpansionModule,
-  MatMenuModule, MatSnackBar,
+  MatMenuModule,
+  MatSnackBarModule,
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
@@ -130,7 +131,6 @@ describe('JobTabsComponent', () => {
     submission: new Date('2015-04-20T20:00:00'),
     extensions: { tasks: tasks },
   };
-  let snackBar: MatSnackBar;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -151,6 +151,7 @@ describe('JobTabsComponent', () => {
         MatButtonModule,
         MatExpansionModule,
         MatMenuModule,
+        MatSnackBarModule,
         MatTableModule,
         MatTabsModule,
         MatTooltipModule,
@@ -159,9 +160,8 @@ describe('JobTabsComponent', () => {
       ],
       providers: [
         {provide: GcsService, useValue: new FakeGcsService('test-bucket', null, null)},
-        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, snackBar)},
+        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, null)},
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: MatSnackBar},
       ]
     }).compileComponents();
   }));
