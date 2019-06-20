@@ -1,0 +1,40 @@
+mat-dialog-container.mat-dialog-container {
+  overflow: visible;
+}
+
+.mat-dialog-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1rem;
+  font-weight: 600;
+}
+
+.mat-dialog-content {
+  min-height: 20vh;
+  max-height: 80vh;
+  white-space: pre-line;
+  font-family: 'Consolas', "courier new";
+  font-size: 0.7rem;
+  line-height: 1rem;
+  background-color: #fff;
+  color: #000;
+  border-top: 1px solid #5C912E;
+  border-bottom: 1px solid #5C912E;
+}
+
+mat-dialog-actions.mat-dialog-actions {
+  text-align: right;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  display: block;
+}
+
+.mat-dialog-actions a {
+  text-decoration: none;
+  color: #5C912E;
+  font-weight: 600;
+}
+
+.mat-dialog-actions a:hover {
+  text-decoration: underline;
+}

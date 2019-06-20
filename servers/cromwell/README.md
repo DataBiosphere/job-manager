@@ -187,6 +187,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
   }
 }
 ```
+  - If it isn't something your users will object to, you can add the "https://www.googleapis.com/auth/devstorage.read_only" scope and you will be able to see the contents of log files in Job Manager.
 
 - (Required, CromIAM with automatic signout) Configure fields to display
   - **Note:** If you want to use use Job Manager against CromIAM and you want inactive users to be signed out after a specific interval of time, the `capabilities_config.json` must also include some extra fields, which are shown as below:

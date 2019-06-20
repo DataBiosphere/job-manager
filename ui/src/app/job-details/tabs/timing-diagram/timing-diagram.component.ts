@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {TaskMetadata} from "../../../shared/model/TaskMetadata";
-import { GoogleChartInterface } from 'ng2-google-charts/google-charts-interfaces';
+import {GoogleChartInterface} from 'ng2-google-charts/google-charts-interfaces';
 
 @Component({
   selector: 'jm-timing-diagram',

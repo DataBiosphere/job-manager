@@ -5,7 +5,8 @@ import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
   MatButtonModule,
   MatExpansionModule,
-  MatMenuModule, MatSnackBar,
+  MatMenuModule,
+  MatSnackBarModule,
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
@@ -28,6 +29,8 @@ import {JobTimingDiagramComponent} from './timing-diagram/timing-diagram.compone
 import {JobAttemptComponent} from "../common/attempt/attempt.component";
 import {JobManagerService} from "../../core/job-manager.service";
 import {FakeJobManagerService} from "../../testing/fake-job-manager.service";
+import {GcsService} from "../../core/gcs.service";
+import {FakeGcsService} from "../../testing/fake-gcs.service";
 
 describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;
@@ -128,7 +131,6 @@ describe('JobTabsComponent', () => {
     submission: new Date('2015-04-20T20:00:00'),
     extensions: { tasks: tasks },
   };
-  let snackBar: MatSnackBar;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -149,6 +151,7 @@ describe('JobTabsComponent', () => {
         MatButtonModule,
         MatExpansionModule,
         MatMenuModule,
+        MatSnackBarModule,
         MatTableModule,
         MatTabsModule,
         MatTooltipModule,
@@ -156,9 +159,9 @@ describe('JobTabsComponent', () => {
         SharedModule
       ],
       providers: [
-        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, snackBar)},
+        {provide: GcsService, useValue: new FakeGcsService('test-bucket', null, null)},
+        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, null)},
         {provide: JobManagerService, useValue: fakeJobService},
-
       ]
     }).compileComponents();
   }));
@@ -192,10 +195,6 @@ describe('JobTabsComponent', () => {
       .toEqual('0h 15m');
     expect(de.queryAll(By.css('.task-attempts'))[1].nativeElement.textContent.trim())
       .toEqual('');
-    expect(de.queryAll(By.css('.task-links a.log-item'))[0].properties['href'])
-      .toContain('stdout.txt');
-    expect(de.queryAll(By.css('.task-links a.log-item'))[1].properties['href'])
-      .toContain('stderr.txt');
   }));
 
   it('should display the correct icon if the task was call cached', async(() => {

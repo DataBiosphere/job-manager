@@ -17,6 +17,8 @@ export class AuthService {
   public userId: string;
   public userEmail: string;
   public userDomain: string;
+  public gcsReadAccess = false;
+  public scopes: string;
   public forcedLogoutDomains: string[];
   private logoutTimer: number;
   private warningTimer: number;
@@ -25,14 +27,10 @@ export class AuthService {
 
   private initAuth(scopes: string[]): Promise<any> {
     const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
-
-    return new Promise<void>( (resolve, reject) => {
-      gapi.auth2.init({
-        client_id: clientId,
-        cookiepolicy: 'single_host_origin',
-        scope: scopes.join(" "),
-      }).then(() => resolve())
-        .catch((error) => reject(error))
+    return gapi.auth2.init({
+      client_id: clientId,
+      cookiepolicy: 'single_host_origin',
+      scope: scopes.join(" "),
     });
   }
 
@@ -42,16 +40,17 @@ export class AuthService {
       this.userId = user.getId();
       this.userEmail = user.getBasicProfile().getEmail();
       this.userDomain = user.getHostedDomain();
-      this.authenticated.next(true);
-
+      this.gcsReadAccess = this.scopes.includes('https://www.googleapis.com/auth/devstorage.read_only');
       if (this.logoutInterval && this.forcedLogoutDomains && this.forcedLogoutDomains.includes(this.userDomain)) {
         this.setUpEventListeners();
       }
+      this.authenticated.next(true);
     } else {
       this.authToken = undefined;
       this.userId = undefined;
       this.userEmail = undefined;
       this.userDomain = undefined;
+      this.gcsReadAccess = false;
       this.authenticated.next(false);
     }
   }
@@ -64,16 +63,18 @@ export class AuthService {
         return;
       }
 
-      if (capabilities.authentication.forcedLogoutDomains && capabilities.authentication.forcedLogoutTime && capabilities.authentication.forcedLogoutTime > (this.WARNING_INTERVAL * 2)) {
+      if (capabilities.authentication.forcedLogoutDomains && capabilities.authentication.forcedLogoutTime &&
+        (capabilities.authentication.forcedLogoutTime > (this.WARNING_INTERVAL * 2))) {
         this.forcedLogoutDomains = capabilities.authentication.forcedLogoutDomains;
         this.logoutInterval = capabilities.authentication.forcedLogoutTime;
       }
+      this.scopes = capabilities.authentication.scopes.join(" ");
 
       this.initAuthPromise = new Promise<void>( (resolve, reject) => {
         gapi.load('client:auth2', {
           callback: () => this.initAuth(capabilities.authentication.scopes)
             .then(() => resolve())
-            .catch((message) => { this.handleError(message)}),
+            .catch((message) => this.handleError(message)),
           onerror: () => reject(),
         });
       });
@@ -93,37 +94,21 @@ export class AuthService {
     });
   }
 
-  public isAuthenticated(): Promise<boolean> {
-    return this.initAuthPromise.then( () => {
-      let user = gapi.auth2.getAuthInstance().currentUser.get();
-      // Update the current user to any subscribers and resolve the promise
-      this.updateUser(user);
+  public isAuthenticated(): boolean {
+      const user = gapi.auth2 && gapi.auth2.getAuthInstance().currentUser.get();
       return !!(user && user.isSignedIn());
-    })
   }
 
   public signIn(): Promise<void> {
-    return new Promise<void>( (resolve, reject) => {
-      gapi.auth2.getAuthInstance().signIn()
-        .then(user => resolve(user))
-        .catch(error => reject(error))
-    });
+    return gapi.auth2.getAuthInstance().signIn();
   }
 
   public signOut(): Promise<void> {
-    return new Promise<void>( (resolve, reject) => {
-      gapi.auth2.getAuthInstance().signOut()
-        .then(user => resolve(user))
-        .catch(error => reject(error))
-    });
+    return gapi.auth2.getAuthInstance().signOut();
   }
 
   private revokeToken(): Promise<void> {
-    return new Promise<void>( (resolve, reject) => {
-      gapi.auth2.getAuthInstance().disconnect()
-        .then(user => resolve(user))
-        .catch(error => reject(error))
-    });
+    return gapi.auth2.getAuthInstance().disconnect();
   }
 
   private handleError(error): void {

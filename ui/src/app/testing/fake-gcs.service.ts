@@ -12,6 +12,10 @@ export class FakeGcsService extends GcsService {
     return Promise.resolve();
   }
 
+  canReadFiles(): boolean {
+    return true;
+  }
+
   getObjectData(bucket: string, object: string): Promise<string> {
     if (bucket == this.bucket) {
       const data = this.objectDataMap.get(object);

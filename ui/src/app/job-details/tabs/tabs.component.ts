@@ -104,7 +104,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   getShardCountByStatus(task:TaskMetadata, status:JobStatus): number {
-    let result = 0
+    let result = 0;
     if(task.shards) {
       task.shards.forEach((thisShard) => {
         if (status == JobStatus[thisShard.executionStatus]) {
