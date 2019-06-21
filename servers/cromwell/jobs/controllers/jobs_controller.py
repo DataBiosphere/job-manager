@@ -38,8 +38,7 @@ attempt_include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'end',
 
 job_include_keys = attempt_include_keys + (
     'calls', 'description', 'executionEvents', 'labels', 'parentWorkflowId',
-    'returnCode', 'shardIndex', 'start', 'status', 'submission',
-    'subWorkflowId', 'workflowName')
+    'returnCode', 'status', 'submission', 'subWorkflowId', 'workflowName')
 
 
 @requires_auth
@@ -278,7 +277,7 @@ def format_task(task_name, task_metadata):
         execution_status=task_statuses.cromwell_execution_to_api(
             latest_attempt.get('executionStatus')),
         start=_parse_datetime(latest_attempt.get('start'))
-        or datetime.utcnow(),
+        or _parse_datetime(latest_attempt.get('end')) or datetime.utcnow(),
         end=_parse_datetime(latest_attempt.get('end')),
         stderr=latest_attempt.get('stderr'),
         stdout=latest_attempt.get('stdout'),
