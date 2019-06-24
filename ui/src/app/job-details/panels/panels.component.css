@@ -26,6 +26,13 @@ p {
   height: 2.25rem;
 }
 
+button.mat-raised-button {
+  background-color: #74AE43;
+  color: #fff;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
 .job-id {
   margin-bottom: 0.5rem;
 }
