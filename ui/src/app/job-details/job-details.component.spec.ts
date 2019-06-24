@@ -115,6 +115,7 @@ describe('JobDetailsComponent', () => {
         {provide: SettingsService, useValue: settingsService},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         {provide: AuthService, useValue: authService},
+        {provide: MatSnackBar},
         JobDetailsResolver
       ],
     }).compileComponents();

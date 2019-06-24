@@ -7,8 +7,10 @@ import {
   MatCardModule,
   MatGridListModule,
   MatMenuModule,
+  MatSnackBar,
+  MatSnackBarModule,
   MatTabsModule,
-  MatTableModule
+  MatTableModule,
 } from '@angular/material';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {SharedModule} from '../../shared/shared.module';
@@ -17,6 +19,8 @@ import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobPanelsComponent} from './panels.component';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobDebugIconsComponent} from "../common/debug-icons/debug-icons.component";
+import {JobManagerService} from "../../core/job-manager.service";
+import {FakeJobManagerService} from "../../testing/fake-job-manager.service";
 
 describe('JobPanelsComponent', () => {
 
@@ -43,6 +47,7 @@ describe('JobPanelsComponent', () => {
         statusDetail: 'success',
       }
     };
+  let fakeJobService = new FakeJobManagerService([minimalJob, completeJob]);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -60,10 +65,15 @@ describe('JobPanelsComponent', () => {
         MatCardModule,
         MatGridListModule,
         MatMenuModule,
+        MatSnackBarModule,
         MatTabsModule,
         MatTableModule,
         SharedModule
       ],
+      providers: [
+        {provide: JobManagerService, useValue: fakeJobService},
+        {provide: MatSnackBar},
+      ]
     }).compileComponents();
   }));
 
