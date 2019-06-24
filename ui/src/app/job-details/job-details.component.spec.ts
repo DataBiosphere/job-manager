@@ -49,7 +49,6 @@ describe('JobDetailsComponent', () => {
   let fixture: ComponentFixture<TestJobDetailsComponent>;
   let router: Router;
   let fakeJobService: FakeJobManagerService;
-  let snackBar: MatSnackBar;
 
   const jobId = '123';
   function testJob(): JobMetadataResponse {
@@ -65,7 +64,7 @@ describe('JobDetailsComponent', () => {
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService([testJob()]);
     let fakeCapabilitiesService: FakeCapabilitiesService = new FakeCapabilitiesService({});
-    let authService = new AuthService(null, fakeCapabilitiesService, null, snackBar);
+    let authService = new AuthService(null, fakeCapabilitiesService, null, null);
     let settingsService: SettingsService = new SettingsService(authService, fakeCapabilitiesService, localStorage);
 
     TestBed.configureTestingModule({
