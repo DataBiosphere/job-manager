@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 import {NgModule} from '@angular/core';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
+import {MatIconModule} from "@angular/material/icon";
 import {Ng2GoogleChartsModule} from 'ng2-google-charts';
 
 import {AppRoutingModule} from './app-routing.module';
@@ -27,6 +28,7 @@ import {DashboardModule} from "./dashboard/dashboard.module";
     HttpModule,
     JobDetailsModule,
     JobListModule,
+    MatIconModule,
     SignInModule,
     ProjectsModule,
     DashboardModule,
