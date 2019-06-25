@@ -18,7 +18,7 @@
       </clr-tooltip-content>
     </clr-tooltip>
   </button>
-  <button *ngIf="canAbort(job)" (click)="abortJob(job)" class="close mat-raised-button">Abort job</button>
+  <button *ngIf="canAbort()" (click)="abortJob()" class="close mat-raised-button">Abort job</button>
   <p class="job-id">ID: <b>{{ job.id }}</b></p>
   <div *ngIf="hasPrimaryLabels()" class="job-labels">
     <span class="label" *ngFor="let l of primaryLabels">

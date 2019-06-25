@@ -123,16 +123,16 @@ export class JobPanelsComponent implements OnInit {
     return JobStatusIcon[status];
   }
 
-  abortJob(job: JobMetadataResponse) {
-    this.jobManagerService.abortJob(job.id)
+  abortJob() {
+    this.jobManagerService.abortJob(this.job.id)
       .then(() => {
         window.location.reload();
       })
       .catch((error) => this.handleError(error));
   }
 
-  canAbort(job: JobMetadataResponse): boolean {
-    return job.status == JobStatus.Submitted || job.status == JobStatus.Running;
+  canAbort(): boolean {
+    return !this.hasParent() && (this.job.status == JobStatus.Submitted || this.job.status == JobStatus.Running);
   }
 
   handleError(error: any) {
