@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.2.2 Release Notes
+
+### Added 'Abort Job' button to Job Details page.
+
 ## v1.2.1 Release Notes
 
 ### Added logic to avoid 500 error on Job Details page when a task does not have a start time.

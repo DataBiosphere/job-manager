@@ -12,6 +12,9 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobStatusIcon} from "../../shared/common";
 import {DisplayField} from "../../shared/model/DisplayField";
+import {JobManagerService} from "../../core/job-manager.service";
+import {MatSnackBar} from "@angular/material";
+import {ErrorMessageFormatterPipe} from "../../shared/pipes/error-message-formatter.pipe";
 
 @Component({
   selector: 'jm-panels',
@@ -37,6 +40,10 @@ export class JobPanelsComponent implements OnInit {
   numRunningTasks: number = 0;
   numTasks: number = 0;
   public readonly numOfErrorsToShow = 4;
+
+  constructor(
+    private readonly snackBar: MatSnackBar,
+    private readonly jobManagerService: JobManagerService) { }
 
   ngOnInit() {
     this.setUpExtensions();
@@ -114,5 +121,23 @@ export class JobPanelsComponent implements OnInit {
 
   getStatusIcon(status: JobStatus): string {
     return JobStatusIcon[status];
+  }
+
+  abortJob() {
+    this.jobManagerService.abortJob(this.job.id)
+      .then(() => {
+        window.location.reload();
+      })
+      .catch((error) => this.handleError(error));
+  }
+
+  canAbort(): boolean {
+    return !this.hasParent() && (this.job.status == JobStatus.Submitted || this.job.status == JobStatus.Running);
+  }
+
+  handleError(error: any) {
+    this.snackBar.open(
+      new ErrorMessageFormatterPipe().transform(error),
+      'Dismiss');
   }
 }
