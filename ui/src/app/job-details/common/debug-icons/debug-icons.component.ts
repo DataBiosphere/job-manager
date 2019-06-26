@@ -7,6 +7,7 @@ import {GcsService} from "../../../core/gcs.service";
 import {MatDialog, MatSnackBar} from "@angular/material";
 import {JobLogContentsComponent} from "./log-contents/log-contents.component";
 import {ErrorMessageFormatterPipe} from "../../../shared/pipes/error-message-formatter.pipe";
+import {JsonPipe} from "@angular/common";
 
 @Component({
   selector: 'jm-debug-icons',
@@ -15,6 +16,7 @@ import {ErrorMessageFormatterPipe} from "../../../shared/pipes/error-message-for
 })
 export class JobDebugIconsComponent implements OnInit {
   @Input() displayMessage: boolean;
+  @Input() operationDetails: string;
   @Input() message: string;
   @Input() stdout: string;
   @Input() stderr: string;
@@ -83,6 +85,18 @@ export class JobDebugIconsComponent implements OnInit {
     } else if (url) {
       window.open(this.getResourceUrl(url));
     }
+  }
+
+  showOperationDetails(contents: string): void {
+    this.logContentsDialog.open(JobLogContentsComponent, {
+      disableClose: false,
+      data: {
+        logName: '',
+        logContents: new JsonPipe().transform(JSON.parse(contents)),
+        logLink: ''
+      }
+    });
+
   }
 
   private async getLogContents(url: string): Promise<string> {

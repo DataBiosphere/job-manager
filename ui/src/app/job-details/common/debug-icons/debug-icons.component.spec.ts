@@ -79,6 +79,7 @@ describe('JobDebugIconsComponent', () => {
   @Component({
     selector: 'jm-test-debug-icons-component',
     template: `<jm-debug-icons [displayMessage]="false"
+                               [operationDetails]="false"
                                [message]="job.failure"
                                [stdout]="job.stdout"
                                [stderr]="job.stderr"

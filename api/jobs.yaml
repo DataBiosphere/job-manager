@@ -267,6 +267,10 @@ definitions:
       forcedLogoutTime:
         type: integer
         description: Number of milliseconds for the interval of inactivity.
+      outsideAuth:
+        type: boolean
+        description: Whether or not to use an outside service for some auth-related functionality.
+        default: false
 
   DisplayField:
     description: Description of a display field
@@ -683,6 +687,9 @@ definitions:
       callRoot:
         type: string
         description: The root directory of the task execution
+      operationDetails:
+        type: string
+        description: The latest state of a long-running operation from the Google Pipelines API
       attempts:
         type: integer
         description: Number of times the task was run
@@ -726,6 +733,9 @@ definitions:
       callRoot:
         type: string
         description: The root directory of the task execution
+      operationDetails:
+        type: string
+        description: The latest state of a long-running operation from the Google Pipelines API
       inputs:
         type: object
         description: Mapping of input fully qualified names to stringified values
@@ -778,6 +788,9 @@ definitions:
       callRoot:
         type: string
         description: If from a task, the root directory of the task or shard execution
+      operationDetails:
+        type: string
+        description: The latest state of a long-running operation from the Google Pipelines API
       attempts:
         type: integer
         description: Number of times the task was run

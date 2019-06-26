@@ -52,6 +52,7 @@
       </div>
       <div class="task-links">
         <jm-debug-icons [displayMessage]="hasFailures(attempt)"
+                        [operationDetails]="attempt.operationDetails"
                         [message]="getFailures(attempt)"
                         [stdout]="attempt.stdout"
                         [stderr]="attempt.stderr"

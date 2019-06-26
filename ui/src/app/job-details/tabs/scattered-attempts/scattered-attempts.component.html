@@ -52,6 +52,7 @@
             <div class="task-outputs">&nbsp;</div>
             <div class="task-links">
               <jm-debug-icons [displayMessage]="hasFailures(shard)"
+                              [operationDetails]="shard.operationDetails"
                               [message]="getFailures(shard)"
                               [stdout]="shard.stdout"
                               [stderr]="shard.stderr"

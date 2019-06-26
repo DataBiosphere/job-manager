@@ -104,6 +104,7 @@
                   </div>
                   <div class="task-links">
                     <jm-debug-icons [displayMessage]="hasTaskFailures(t)"
+                                    [operationDetails]="t.operationDetails"
                                     [message]="getTaskFailures(t)"
                                     [stdout]="t.stdout"
                                     [stderr]="t.stderr"

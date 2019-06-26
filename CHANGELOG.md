@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.3.0 Release Notes
+
+### Added icon that, when clicked, will provide operation details. For a Cromwell backend, this requires `outsideAuth` to be set to `true` in the authentication section of the `capabilities_config.json` file.
+
 ## v1.2.2 Release Notes
 
 ### Added 'Abort Job' button to Job Details page.

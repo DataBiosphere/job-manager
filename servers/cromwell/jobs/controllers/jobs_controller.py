@@ -123,7 +123,7 @@ def get_job(id, **kwargs):
         failures = [format_workflow_failure(f) for f in job.get('failures')]
 
     tasks = [
-        format_task(task_name, task_metadata)
+        format_task(id, task_name, task_metadata)
         for task_name, task_metadata in job.get('calls', {}).items()
     ]
 
@@ -179,7 +179,7 @@ def get_task_attempts(id, task, **kwargs):
     job = response.json()
 
     attempts = [
-        _convert_to_attempt(call) for call in job.get('calls').get(task)
+        _convert_to_attempt(id, call) for call in job.get('calls').get(task)
     ]
     return JobAttemptsResponse(attempts=attempts)
 
@@ -215,7 +215,7 @@ def get_shard_attempts(id, task, index, **kwargs):
     job = response.json()
 
     attempts = [
-        _convert_to_attempt(shard) for shard in job.get('calls').get(task)
+        _convert_to_attempt(id, shard) for shard in job.get('calls').get(task)
         if (shard.get('shardIndex') == int(index))
     ]
     return JobAttemptsResponse(attempts=attempts)
@@ -252,10 +252,10 @@ def health(**kwargs):
         raise ServiceUnavailable(HealthResponse(available=False))
 
 
-def format_task(task_name, task_metadata):
+def format_task(job_id, task_name, task_metadata):
     # check to see if task is scattered
     if task_metadata[0].get('shardIndex') != -1:
-        return format_scattered_task(task_name, task_metadata)
+        return format_scattered_task(job_id, task_name, task_metadata)
     latest_attempt = task_metadata[-1]
 
     call_cached = False
@@ -271,6 +271,13 @@ def format_task(task_name, task_metadata):
         failure_messages = [
             f.get('message') for f in latest_attempt.get('failures')
         ]
+    operation_details = None
+    capabilities = current_app.config['capabilities']
+
+    if capabilities.authentication and capabilities.authentication.outside_auth and latest_attempt.get(
+            'jobId'):
+        operation_details = get_operation_details(job_id,
+                                                  latest_attempt.get('jobId'))
 
     return TaskMetadata(
         name=remove_workflow_name(task_name),
@@ -286,6 +293,7 @@ def format_task(task_name, task_metadata):
         return_code=latest_attempt.get('returnCode'),
         attempts=latest_attempt.get('attempt'),
         call_root=latest_attempt.get('callRoot'),
+        operation_details=operation_details,
         job_id=latest_attempt.get('subWorkflowId'),
         shards=None,
         call_cached=call_cached,
@@ -309,7 +317,7 @@ def format_workflow_failure(failures):
                           failure=failures.get('causedBy')[0].get('message'))
 
 
-def format_scattered_task(task_name, task_metadata):
+def format_scattered_task(job_id, task_name, task_metadata):
     filtered_shards = []
     current_shard = ''
     min_start = _parse_datetime(task_metadata[0].get('start'))
@@ -323,6 +331,14 @@ def format_scattered_task(task_name, task_metadata):
                 failure_messages = [
                     f.get('message') for f in shard.get('failures')
                 ]
+            operation_details = None
+            capabilities = current_app.config['capabilities']
+
+            if capabilities.authentication and capabilities.authentication.outside_auth and shard.get(
+                    'jobId'):
+                operation_details = get_operation_details(
+                    job_id, shard.get('jobId'))
+
             filtered_shards.append(
                 Shard(execution_status=task_statuses.cromwell_execution_to_api(
                     shard.get('executionStatus')),
@@ -334,6 +350,7 @@ def format_scattered_task(task_name, task_metadata):
                       stdout=shard.get('stdout'),
                       stderr=shard.get('stderr'),
                       call_root=shard.get('callRoot'),
+                      operation_details=operation_details,
                       attempts=shard.get('attempt'),
                       failure_messages=failure_messages,
                       job_id=shard.get('subWorkflowId')))
@@ -525,6 +542,32 @@ def handle_error(response):
     response.raise_for_status()
 
 
+@requires_auth
+def get_operation_details(job_id, operation_id, **kwargs):
+    """
+    Query for operation details from Google Pipelines API
+
+    :param job_id: Job ID
+    :type id: str
+
+    :param operation_id: Operation ID
+    :type id: str
+
+    :rtype: str
+    """
+
+    url = '{cromwell_url}/{id}/backend/metadata/{backendId}'.format(
+        cromwell_url=_get_base_url(), id=job_id, backendId=operation_id)
+    response = requests.get(url,
+                            auth=kwargs.get('auth'),
+                            headers=kwargs.get('auth_headers'))
+
+    if response.status_code != 200:
+        handle_error(response)
+
+    return response.text
+
+
 def _get_execution_events(events):
     execution_events = None
     if events:
@@ -583,7 +626,13 @@ def _get_scattered_task_status(shards):
             return status
 
 
-def _convert_to_attempt(item):
+def _convert_to_attempt(job_id, item):
+    operation_details = None
+    capabilities = current_app.config['capabilities']
+    if capabilities.authentication and capabilities.authentication.outside_auth and item.get(
+            'jobId'):
+        operation_details = get_operation_details(job_id, item.get('jobId'))
+
     attempt = IndividualAttempt(
         execution_status=task_statuses.cromwell_execution_to_api(
             item.get('executionStatus')),
@@ -592,6 +641,7 @@ def _convert_to_attempt(item):
         stdout=item.get('stdout'),
         stderr=item.get('stderr'),
         call_root=item.get('callRoot'),
+        operation_details=operation_details,
         inputs=item.get('inputs'),
         outputs=item.get('outputs'),
         start=_parse_datetime(item.get('start')),
