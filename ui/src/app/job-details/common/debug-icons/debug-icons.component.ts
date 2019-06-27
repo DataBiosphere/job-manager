@@ -5,7 +5,7 @@ import {AuthService} from '../../../core/auth.service';
 import {ResourceUtils} from "../../../shared/utils/resource-utils";
 import {GcsService} from "../../../core/gcs.service";
 import {MatDialog, MatSnackBar} from "@angular/material";
-import {JobLogContentsComponent} from "./log-contents/log-contents.component";
+import {JobResourceContentsComponent} from "./resource-contents/resource-contents.component";
 import {ErrorMessageFormatterPipe} from "../../../shared/pipes/error-message-formatter.pipe";
 import {JsonPipe} from "@angular/common";
 
@@ -28,7 +28,7 @@ export class JobDebugIconsComponent implements OnInit {
               private readonly gcsService: GcsService,
               private readonly snackBar: MatSnackBar,
               private readonly sanitizer:DomSanitizer,
-              public logContentsDialog: MatDialog) {}
+              public resourceContentsDialog: MatDialog) {}
 
   ngOnInit(): void {
     try {
@@ -75,12 +75,13 @@ export class JobDebugIconsComponent implements OnInit {
   showOrLinkTo(e: MouseEvent, url: string): void {
     e.stopPropagation();
     if (this.hasContents(this.getFileName(url))) {
-      this.logContentsDialog.open(JobLogContentsComponent, {
+      this.resourceContentsDialog.open(JobResourceContentsComponent, {
         disableClose: false,
         data: {
-          logName: this.getFileTitle(url),
-          logContents: this.logFileData[this.getFileName(url)],
-          logLink: this.getResourceUrl(url)
+          resourceName: this.getFileTitle(url),
+          resourceContents: this.logFileData[this.getFileName(url)],
+          resourceLink: this.getResourceUrl(url),
+          resourceType: 'text'
         }
       });
     } else if (url) {
@@ -89,12 +90,13 @@ export class JobDebugIconsComponent implements OnInit {
   }
 
   showOperationDetails(contents: string): void {
-    this.logContentsDialog.open(JobLogContentsComponent, {
+    this.resourceContentsDialog.open(JobResourceContentsComponent, {
       disableClose: false,
       data: {
-        logName: this.operationId,
-        logContents: new JsonPipe().transform(JSON.parse(contents)),
-        logLink: ''
+        resourceName: this.operationId,
+        resourceContents: new JsonPipe().transform(JSON.parse(contents)),
+        resourceLink: '',
+        resourceType: 'json'
       }
     });
   }

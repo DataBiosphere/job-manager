@@ -18,6 +18,7 @@ import {
 import {RouterModule} from '@angular/router';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {Ng2GoogleChartsModule} from 'ng2-google-charts';
+import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {JobDetailsComponent} from './job-details.component';
 import {JobPanelsComponent} from './panels/panels.component';
 import {JobResourcesComponent} from './resources/resources.component';
@@ -30,7 +31,7 @@ import {JobAttemptComponent} from "./common/attempt/attempt.component";
 import {JobTabsComponent} from "./tabs/tabs.component";
 import {JobTimingDiagramComponent} from "./tabs/timing-diagram/timing-diagram.component";
 import {JobScatteredAttemptsComponent} from "./tabs/scattered-attempts/scattered-attempts.component";
-import {JobLogContentsComponent} from "./common/debug-icons/log-contents/log-contents.component";
+import {JobResourceContentsComponent} from "./common/debug-icons/resource-contents/resource-contents.component";
 
 
 @NgModule({
@@ -53,17 +54,18 @@ import {JobLogContentsComponent} from "./common/debug-icons/log-contents/log-con
     MatTooltipModule,
     RouterModule,
     SharedModule,
-    Ng2GoogleChartsModule
+    Ng2GoogleChartsModule,
+    NgxJsonViewerModule
   ],
   entryComponents: [
-    JobLogContentsComponent,
+    JobResourceContentsComponent,
     JobScatteredAttemptsComponent,
   ],
   declarations: [
     JobAttemptComponent,
     JobDebugIconsComponent,
     JobDetailsComponent,
-    JobLogContentsComponent,
+    JobResourceContentsComponent,
     JobPanelsComponent,
     JobResourcesComponent,
     JobResourcesTableComponent,

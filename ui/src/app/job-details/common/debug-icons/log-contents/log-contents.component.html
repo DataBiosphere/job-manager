@@ -1,9 +1,0 @@
-<div class="log-dialog-container">
-  <h2 mat-dialog-title *ngIf="data">{{ data.logName }}</h2>
-  <mat-dialog-content *ngIf="data && data.logContents">
-    {{data.logContents}}
-  </mat-dialog-content>
-  <mat-dialog-actions *ngIf="!!data.logLink">
-    <a [href]="data.logLink" target="_blank">go to file in Google console</a>
-  </mat-dialog-actions>
-</div>

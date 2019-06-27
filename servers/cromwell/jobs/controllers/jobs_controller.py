@@ -317,7 +317,7 @@ def format_task_failure(job_id, task_name, metadata):
                           stdout=metadata.get('stdout'),
                           stderr=metadata.get('stderr'),
                           call_root=metadata.get('callRoot'),
-                          operation_id=job_id,
+                          operation_id= metadata.get('jobId'),
                           operation_details=operation_details,
                           job_id=metadata.get('subWorkflowId'))
 
