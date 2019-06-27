@@ -16,6 +16,7 @@ import {JsonPipe} from "@angular/common";
 })
 export class JobDebugIconsComponent implements OnInit {
   @Input() displayMessage: boolean;
+  @Input() operationId: string;
   @Input() operationDetails: string;
   @Input() message: string;
   @Input() stdout: string;
@@ -91,12 +92,11 @@ export class JobDebugIconsComponent implements OnInit {
     this.logContentsDialog.open(JobLogContentsComponent, {
       disableClose: false,
       data: {
-        logName: '',
+        logName: this.operationId,
         logContents: new JsonPipe().transform(JSON.parse(contents)),
         logLink: ''
       }
     });
-
   }
 
   private async getLogContents(url: string): Promise<string> {

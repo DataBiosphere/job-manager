@@ -687,6 +687,9 @@ definitions:
       callRoot:
         type: string
         description: The root directory of the task execution
+      operationId:
+        type: string
+        description: Operation Id for Google Pipelines API
       operationDetails:
         type: string
         description: The latest state of a long-running operation from the Google Pipelines API
@@ -733,6 +736,9 @@ definitions:
       callRoot:
         type: string
         description: The root directory of the task execution
+      operationId:
+        type: string
+        description: Operation Id for Google Pipelines API
       operationDetails:
         type: string
         description: The latest state of a long-running operation from the Google Pipelines API
@@ -788,6 +794,9 @@ definitions:
       callRoot:
         type: string
         description: If from a task, the root directory of the task or shard execution
+      operationId:
+        type: string
+        description: Operation Id for Google Pipelines API
       operationDetails:
         type: string
         description: The latest state of a long-running operation from the Google Pipelines API
@@ -837,6 +846,12 @@ definitions:
       callRoot:
         type: string
         description: If from a task, the root directory of the task or shard execution
+      operationId:
+        type: string
+        description: Operation Id for Google Pipelines API
+      operationDetails:
+        type: string
+        description: The latest state of a long-running operation from the Google Pipelines API
       jobId:
         type: string
         description: >

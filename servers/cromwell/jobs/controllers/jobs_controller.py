@@ -113,7 +113,7 @@ def get_job(id, **kwargs):
     job = response.json()
 
     failures = [
-        format_task_failure(name, m)
+        format_task_failure(id, name, m)
         for name, metadata in job.get('calls', {}).items() for m in metadata
         if m.get('failures') is not None
     ]
@@ -293,6 +293,7 @@ def format_task(job_id, task_name, task_metadata):
         return_code=latest_attempt.get('returnCode'),
         attempts=latest_attempt.get('attempt'),
         call_root=latest_attempt.get('callRoot'),
+        operation_id=latest_attempt.get('jobId'),
         operation_details=operation_details,
         job_id=latest_attempt.get('subWorkflowId'),
         shards=None,
@@ -301,7 +302,14 @@ def format_task(job_id, task_name, task_metadata):
         failure_messages=failure_messages)
 
 
-def format_task_failure(task_name, metadata):
+def format_task_failure(job_id, task_name, metadata):
+    operation_details = None
+    capabilities = current_app.config['capabilities']
+
+    if capabilities.authentication and capabilities.authentication.outside_auth and metadata.get('jobId'):
+        operation_details = get_operation_details(job_id, metadata.get('jobId'))
+
+
     return FailureMessage(task_name=remove_workflow_name(task_name),
                           failure=get_deepest_message(
                               metadata.get('failures')),
@@ -309,6 +317,8 @@ def format_task_failure(task_name, metadata):
                           stdout=metadata.get('stdout'),
                           stderr=metadata.get('stderr'),
                           call_root=metadata.get('callRoot'),
+                          operation_id=job_id,
+                          operation_details=operation_details,
                           job_id=metadata.get('subWorkflowId'))
 
 
@@ -350,6 +360,7 @@ def format_scattered_task(job_id, task_name, task_metadata):
                       stdout=shard.get('stdout'),
                       stderr=shard.get('stderr'),
                       call_root=shard.get('callRoot'),
+                      operation_id=shard.get('jobId'),
                       operation_details=operation_details,
                       attempts=shard.get('attempt'),
                       failure_messages=failure_messages,
@@ -641,6 +652,7 @@ def _convert_to_attempt(job_id, item):
         stdout=item.get('stdout'),
         stderr=item.get('stderr'),
         call_root=item.get('callRoot'),
+        operation_id=item.get('jobId'),
         operation_details=operation_details,
         inputs=item.get('inputs'),
         outputs=item.get('outputs'),
