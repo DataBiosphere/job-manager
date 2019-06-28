@@ -2,7 +2,7 @@
 
 ## v1.3.0 Release Notes
 
-### Added icon that, when clicked, will provide operation details. For a Cromwell backend, this requires `outsideAuth` to be set to `true` in the authentication section of the `capabilities_config.json` file.
+### Added icon that, when clicked, will provide Google Pipelines operation details. (So far) only implemented for a Cromwell backend, and it requires `outsideAuth` to be set to `true` in the authentication section of the `capabilities_config.json` file.
 
 ## v1.2.2 Release Notes
 
@@ -14,7 +14,7 @@
 
 ## v1.2.0 Release Notes
 
-### Added the ability – with the addition of a specific scope to the capabilities config file – to see the contents of Google Storage log files within the UI.
+### Added the ability -- with the addition of a specific scope to the capabilities config file -- to see the contents of Google Storage log files within the UI.
 
 ## v1.1.1 Release Notes
 

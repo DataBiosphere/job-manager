@@ -27,7 +27,8 @@ class TestJobsController(BaseTestCase):
             'cromwell_url': self.base_url,
             'cromwell_user': 'user',
             'cromwell_password': 'password',
-            'use_caas': False
+            'use_caas': False,
+            'capabilities': {}
         })
 
     @requests_mock.mock()

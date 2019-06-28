@@ -272,10 +272,7 @@ def format_task(job_id, task_name, task_metadata):
             f.get('message') for f in latest_attempt.get('failures')
         ]
     operation_details = None
-    capabilities = current_app.config['capabilities']
-
-    if capabilities.authentication and capabilities.authentication.outside_auth and latest_attempt.get(
-            'jobId'):
+    if _should_get_operation_details(latest_attempt):
         operation_details = get_operation_details(job_id,
                                                   latest_attempt.get('jobId'))
 
@@ -304,11 +301,9 @@ def format_task(job_id, task_name, task_metadata):
 
 def format_task_failure(job_id, task_name, metadata):
     operation_details = None
-    capabilities = current_app.config['capabilities']
-
-    if capabilities.authentication and capabilities.authentication.outside_auth and metadata.get('jobId'):
-        operation_details = get_operation_details(job_id, metadata.get('jobId'))
-
+    if _should_get_operation_details(metadata):
+        operation_details = get_operation_details(job_id,
+                                                  metadata.get('jobId'))
 
     return FailureMessage(task_name=remove_workflow_name(task_name),
                           failure=get_deepest_message(
@@ -317,7 +312,7 @@ def format_task_failure(job_id, task_name, metadata):
                           stdout=metadata.get('stdout'),
                           stderr=metadata.get('stderr'),
                           call_root=metadata.get('callRoot'),
-                          operation_id= metadata.get('jobId'),
+                          operation_id=metadata.get('jobId'),
                           operation_details=operation_details,
                           job_id=metadata.get('subWorkflowId'))
 
@@ -342,10 +337,7 @@ def format_scattered_task(job_id, task_name, task_metadata):
                     f.get('message') for f in shard.get('failures')
                 ]
             operation_details = None
-            capabilities = current_app.config['capabilities']
-
-            if capabilities.authentication and capabilities.authentication.outside_auth and shard.get(
-                    'jobId'):
+            if _should_get_operation_details(shard):
                 operation_details = get_operation_details(
                     job_id, shard.get('jobId'))
 
@@ -639,9 +631,7 @@ def _get_scattered_task_status(shards):
 
 def _convert_to_attempt(job_id, item):
     operation_details = None
-    capabilities = current_app.config['capabilities']
-    if capabilities.authentication and capabilities.authentication.outside_auth and item.get(
-            'jobId'):
+    if _should_get_operation_details(item):
         operation_details = get_operation_details(job_id, item.get('jobId'))
 
     attempt = IndividualAttempt(
@@ -687,3 +677,10 @@ def is_jsonable(x):
         return True
     except:
         return False
+
+
+def _should_get_operation_details(metadata):
+    capabilities = current_app.config['capabilities']
+    return hasattr(capabilities, 'authentication') and hasattr(
+        capabilities.authentication, 'outside_auth'
+    ) and capabilities.authentication.outside_auth and metadata.get('jobId')

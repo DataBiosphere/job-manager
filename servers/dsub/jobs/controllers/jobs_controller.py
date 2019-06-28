@@ -207,6 +207,13 @@ def get_task_attempts(id, task, **kwargs):
     raise NotImplementedError('Tasks not supported by dsub.')
 
 
+def get_operation_details():
+    """
+    Placeholder for query for operation details from Google Pipelines API
+
+    """
+
+
 def _handle_http_error(error, proj_id):
     # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
     # provider-specific error translation down into dstat.
