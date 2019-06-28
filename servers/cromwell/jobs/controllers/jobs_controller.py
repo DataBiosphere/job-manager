@@ -304,9 +304,22 @@ def format_task_failure(task_name, metadata):
                           job_id=metadata.get('subWorkflowId'))
 
 
-def format_workflow_failure(failures):
+def format_workflow_failure(failure):
     return FailureMessage('Workflow Error',
-                          failure=failures.get('causedBy')[0].get('message'))
+                          failure=format_workflow_failure_message(failure))
+
+def format_workflow_failure_message(failure):
+    caused_by_list = failure.get('causedBy')
+
+    message = failure.get('message')
+
+    total_errors = len(caused_by_list)
+    for i in range(total_errors):
+        message += " (Caused by [reason {} of {}]: ".format(i + 1, total_errors)
+        message += format_workflow_failure_message(caused_by_list[i])
+        message += ")"
+
+    return message
 
 
 def format_scattered_task(task_name, task_metadata):
