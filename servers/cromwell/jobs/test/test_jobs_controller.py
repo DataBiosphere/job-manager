@@ -450,7 +450,7 @@ class TestJobsController(BaseTestCase):
         workflow_id = 'id'
         subworkflow_id = 'subworkflow_id'
         workflow_name = 'test'
-        status = 'Succeeded'
+        status = 'Failed'
         timestamp = '2017-11-08T05:06:41.424Z'
         response_timestamp = '2017-11-08T05:06:41.424000+00:00'
         inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
@@ -501,7 +501,7 @@ class TestJobsController(BaseTestCase):
             'labels': labels,
             'extensions':{
                 'tasks': [
-                    {
+                    # {
                         # 'name': 'analysis',
                         # 'executionStatus': 'Succeeded',
                         # 'start': response_timestamp,
@@ -514,7 +514,7 @@ class TestJobsController(BaseTestCase):
                         # 'returnCode': return_code,
                         # 'attempts': attempts,
                         # 'jobId': subworkflow_id
-                    }
+                    # }
                 ]
             },
             'failures': [{
