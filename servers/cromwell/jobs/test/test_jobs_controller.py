@@ -502,18 +502,18 @@ class TestJobsController(BaseTestCase):
             'extensions':{
                 'tasks': [
                     # {
-                        # 'name': 'analysis',
-                        # 'executionStatus': 'Succeeded',
-                        # 'start': response_timestamp,
-                        # 'end': response_timestamp,
-                        # 'stderr': std_err,
-                        # 'stdout': std_out,
-                        # 'callCached': False,
-                        # 'inputs': jobs_controller.update_key_names(inputs),
-                        # 'outputs': jobs_controller.update_key_names(outputs),
-                        # 'returnCode': return_code,
-                        # 'attempts': attempts,
-                        # 'jobId': subworkflow_id
+                    #     'name': 'analysis',
+                    #     'executionStatus': 'Succeeded',
+                    #     'start': response_timestamp,
+                    #     'end': response_timestamp,
+                    #     'stderr': std_err,
+                    #     'stdout': std_out,
+                    #     'callCached': False,
+                    #     'inputs': jobs_controller.update_key_names(inputs),
+                    #     'outputs': jobs_controller.update_key_names(outputs),
+                    #     'returnCode': return_code,
+                    #     'attempts': attempts,
+                    #     'jobId': subworkflow_id
                     # }
                 ]
             },
