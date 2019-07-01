@@ -434,7 +434,7 @@ class TestJobsController(BaseTestCase):
                 }]
             },
             'failures': [{
-                'failure': 'Task test.analysis failed',
+                'failure': 'Workflow failed (Caused by [reason 1 of 1]: Task test.analysis failed)',
                 'taskName': 'Workflow Error'
             }]
         }  # yapf: disable
