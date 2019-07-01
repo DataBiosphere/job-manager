@@ -435,7 +435,76 @@ class TestJobsController(BaseTestCase):
                 }]
             },
             'failures': [{
-                'failure': 'Task test.analysis failed',
+                'failure': 'Workflow failed (Caused by [reason 1 of 1]: Task test.analysis failed)',
+                'taskName': 'Workflow Error'
+            }]
+        }  # yapf: disable
+        self.assertDictEqual(response_data, expected_data)
+
+    @requests_mock.mock()
+    def test_short_workflow_failure_content(self, mock_request):
+        """
+        Test case for get_job
+
+        Parsing should succeed even if the failure content is one-level deep.
+        """
+        workflow_id = 'id'
+        subworkflow_id = 'subworkflow_id'
+        workflow_name = 'test'
+        status = 'Failed'
+        timestamp = '2017-11-08T05:06:41.424Z'
+        response_timestamp = '2017-11-08T05:06:41.424000+00:00'
+        inputs = {'test.inputs': 'gs://project-bucket/test/inputs.txt'}
+        outputs = {
+            'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
+        }
+        labels = {'cromwell-workflow-id': 'cromwell-12345'}
+        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
+        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        attempts = 1
+        return_code = 0
+
+        def _request_callback(request, context):
+            context.status_code = 200
+            return {
+                'workflowName': workflow_name,
+                'id': workflow_id,
+                'status': status,
+                'calls': { },
+                'inputs': inputs,
+                'labels': labels,
+                'outputs': outputs,
+                'submission': timestamp,
+                'end': timestamp,
+                'start': timestamp,
+                'failures': [
+                    {'causedBy': [],
+                     'message': 'Something failed'}
+                ]
+            }  # yapf: disable
+
+        cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
+        mock_request.get(cromwell_url, json=_request_callback)
+
+        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
+                                    method='GET')
+        self.assertStatus(response, 200)
+        response_data = json.loads(response.data)
+        expected_data = {
+            'name': workflow_name,
+            'id': workflow_id,
+            'status': status,
+            'submission': response_timestamp,
+            'start': response_timestamp,
+            'end': response_timestamp,
+            'inputs': jobs_controller.update_key_names(inputs),
+            'outputs': jobs_controller.update_key_names(outputs),
+            'labels': labels,
+            'extensions':{
+                'tasks': []
+            },
+            'failures': [{
+                'failure': 'Something failed',
                 'taskName': 'Workflow Error'
             }]
         }  # yapf: disable

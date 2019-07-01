@@ -11,5 +11,9 @@ else
 	echo "Failed yapf linter, the following commands will lint all python files:"
 	echo "pip install yapf # First-time only"
 	echo "yapf -i \$($python_files_command)"
+  echo
+  echo "Full lint output:"
+  echo "${yapf_out}"
 	exit 1
 fi
+
