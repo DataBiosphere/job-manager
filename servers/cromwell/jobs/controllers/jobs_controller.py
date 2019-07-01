@@ -315,8 +315,7 @@ def format_workflow_failure_message(failure):
     total_errors = len(caused_by_list)
     for i in range(total_errors):
         message += ' (Caused by [reason {} of {}]: '.format(
-            i + 1,
-            total_errors)
+            i + 1, total_errors)
         message += format_workflow_failure_message(caused_by_list[i])
         message += ')'
     return message
