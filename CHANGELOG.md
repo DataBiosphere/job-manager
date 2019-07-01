@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.2.3 Release Notes
+
+### Added logic to avoid 500 error on Job Details page when a workflow failure section does not have a causedBy entry.
+
 ## v1.2.2 Release Notes
 
 ### Added 'Abort Job' button to Job Details page.
