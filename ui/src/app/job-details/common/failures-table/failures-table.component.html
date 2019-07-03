@@ -21,7 +21,7 @@
     <td mat-cell *matCellDef="let f" class="failure-links">
       <jm-debug-icons [displayMessage]="!displayedColumns.includes('message')"
                       [operationId]="f.operationId"
-                      [operationDetails]="f.operationDetails"
+                      [jobId]="jobId"
                       [message]="f.failure"
                       [stdout]="f.stdout"
                       [stderr]="f.stderr"

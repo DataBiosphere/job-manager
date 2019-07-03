@@ -24,6 +24,7 @@ from jobs.models.health_response import HealthResponse
 from jobs.models.execution_event import ExecutionEvent
 from jobs.models.individual_attempt import IndividualAttempt
 from jobs.models.job_attempts_response import JobAttemptsResponse
+from jobs.models.job_operation_response import JobOperationResponse
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
 
@@ -113,7 +114,7 @@ def get_job(id, **kwargs):
     job = response.json()
 
     failures = [
-        format_task_failure(id, name, m)
+        format_task_failure(name, m)
         for name, metadata in job.get('calls', {}).items() for m in metadata
         if m.get('failures') is not None
     ]
@@ -123,7 +124,7 @@ def get_job(id, **kwargs):
         failures = [format_workflow_failure(f) for f in job.get('failures')]
 
     tasks = [
-        format_task(id, task_name, task_metadata)
+        format_task(task_name, task_metadata)
         for task_name, task_metadata in job.get('calls', {}).items()
     ]
 
@@ -179,7 +180,7 @@ def get_task_attempts(id, task, **kwargs):
     job = response.json()
 
     attempts = [
-        _convert_to_attempt(id, call) for call in job.get('calls').get(task)
+        _convert_to_attempt(call) for call in job.get('calls').get(task)
     ]
     return JobAttemptsResponse(attempts=attempts)
 
@@ -215,7 +216,7 @@ def get_shard_attempts(id, task, index, **kwargs):
     job = response.json()
 
     attempts = [
-        _convert_to_attempt(id, shard) for shard in job.get('calls').get(task)
+        _convert_to_attempt(shard) for shard in job.get('calls').get(task)
         if (shard.get('shardIndex') == int(index))
     ]
     return JobAttemptsResponse(attempts=attempts)
@@ -252,10 +253,10 @@ def health(**kwargs):
         raise ServiceUnavailable(HealthResponse(available=False))
 
 
-def format_task(job_id, task_name, task_metadata):
+def format_task(task_name, task_metadata):
     # check to see if task is scattered
     if task_metadata[0].get('shardIndex') != -1:
-        return format_scattered_task(job_id, task_name, task_metadata)
+        return format_scattered_task(task_name, task_metadata)
     latest_attempt = task_metadata[-1]
 
     call_cached = False
@@ -271,10 +272,6 @@ def format_task(job_id, task_name, task_metadata):
         failure_messages = [
             f.get('message') for f in latest_attempt.get('failures')
         ]
-    operation_details = None
-    if _should_get_operation_details(latest_attempt):
-        operation_details = get_operation_details(job_id,
-                                                  latest_attempt.get('jobId'))
 
     return TaskMetadata(
         name=remove_workflow_name(task_name),
@@ -291,7 +288,6 @@ def format_task(job_id, task_name, task_metadata):
         attempts=latest_attempt.get('attempt'),
         call_root=latest_attempt.get('callRoot'),
         operation_id=latest_attempt.get('jobId'),
-        operation_details=operation_details,
         job_id=latest_attempt.get('subWorkflowId'),
         shards=None,
         call_cached=call_cached,
@@ -299,12 +295,7 @@ def format_task(job_id, task_name, task_metadata):
         failure_messages=failure_messages)
 
 
-def format_task_failure(job_id, task_name, metadata):
-    operation_details = None
-    if _should_get_operation_details(metadata):
-        operation_details = get_operation_details(job_id,
-                                                  metadata.get('jobId'))
-
+def format_task_failure(task_name, metadata):
     return FailureMessage(task_name=remove_workflow_name(task_name),
                           failure=get_deepest_message(
                               metadata.get('failures')),
@@ -313,7 +304,6 @@ def format_task_failure(job_id, task_name, metadata):
                           stderr=metadata.get('stderr'),
                           call_root=metadata.get('callRoot'),
                           operation_id=metadata.get('jobId'),
-                          operation_details=operation_details,
                           job_id=metadata.get('subWorkflowId'))
 
 
@@ -334,7 +324,7 @@ def format_workflow_failure_message(failure):
     return message
 
 
-def format_scattered_task(job_id, task_name, task_metadata):
+def format_scattered_task(task_name, task_metadata):
     filtered_shards = []
     current_shard = ''
     min_start = _parse_datetime(task_metadata[0].get('start'))
@@ -348,11 +338,6 @@ def format_scattered_task(job_id, task_name, task_metadata):
                 failure_messages = [
                     f.get('message') for f in shard.get('failures')
                 ]
-            operation_details = None
-            if _should_get_operation_details(shard):
-                operation_details = get_operation_details(
-                    job_id, shard.get('jobId'))
-
             filtered_shards.append(
                 Shard(execution_status=task_statuses.cromwell_execution_to_api(
                     shard.get('executionStatus')),
@@ -365,7 +350,6 @@ def format_scattered_task(job_id, task_name, task_metadata):
                       stderr=shard.get('stderr'),
                       call_root=shard.get('callRoot'),
                       operation_id=shard.get('jobId'),
-                      operation_details=operation_details,
                       attempts=shard.get('attempt'),
                       failure_messages=failure_messages,
                       job_id=shard.get('subWorkflowId')))
@@ -558,11 +542,11 @@ def handle_error(response):
 
 
 @requires_auth
-def get_operation_details(job_id, operation_id, **kwargs):
+def get_operation_details(job, operation, **kwargs):
     """
     Query for operation details from Google Pipelines API
 
-    :param job_id: Job ID
+    :param job: Job ID
     :type id: str
 
     :param operation_id: Operation ID
@@ -571,16 +555,20 @@ def get_operation_details(job_id, operation_id, **kwargs):
     :rtype: str
     """
 
-    url = '{cromwell_url}/{id}/backend/metadata/{backendId}'.format(
-        cromwell_url=_get_base_url(), id=job_id, backendId=operation_id)
-    response = requests.get(url,
-                            auth=kwargs.get('auth'),
-                            headers=kwargs.get('auth_headers'))
+    capabilities = current_app.config['capabilities']
+    if hasattr(capabilities, 'authentication') and hasattr(
+            capabilities.authentication,
+            'outside_auth') and capabilities.authentication.outside_auth:
+        url = '{cromwell_url}/{id}/backend/metadata/{backendId}'.format(
+            cromwell_url=_get_base_url(), id=job, backendId=operation)
+        response = requests.get(url,
+                                auth=kwargs.get('auth'),
+                                headers=kwargs.get('auth_headers'))
 
     if response.status_code != 200:
         handle_error(response)
 
-    return response.text
+    return JobOperationResponse(id=job, details=response.text)
 
 
 def _get_execution_events(events):
@@ -641,11 +629,7 @@ def _get_scattered_task_status(shards):
             return status
 
 
-def _convert_to_attempt(job_id, item):
-    operation_details = None
-    if _should_get_operation_details(item):
-        operation_details = get_operation_details(job_id, item.get('jobId'))
-
+def _convert_to_attempt(item):
     attempt = IndividualAttempt(
         execution_status=task_statuses.cromwell_execution_to_api(
             item.get('executionStatus')),
@@ -655,7 +639,6 @@ def _convert_to_attempt(job_id, item):
         stderr=item.get('stderr'),
         call_root=item.get('callRoot'),
         operation_id=item.get('jobId'),
-        operation_details=operation_details,
         inputs=item.get('inputs'),
         outputs=item.get('outputs'),
         start=_parse_datetime(item.get('start')),
@@ -689,10 +672,3 @@ def is_jsonable(x):
         return True
     except:
         return False
-
-
-def _should_get_operation_details(metadata):
-    capabilities = current_app.config['capabilities']
-    return hasattr(capabilities, 'authentication') and hasattr(
-        capabilities.authentication, 'outside_auth'
-    ) and capabilities.authentication.outside_auth and metadata.get('jobId')

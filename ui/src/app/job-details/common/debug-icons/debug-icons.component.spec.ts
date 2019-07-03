@@ -9,6 +9,9 @@ import {AuthService} from "../../../core/auth.service";
 import {FakeCapabilitiesService} from "../../../testing/fake-capabilities.service";
 import {MatSnackBarModule} from "@angular/material";
 import {GcsService} from "../../../core/gcs.service";
+import {CapabilitiesService} from "../../../core/capabilities.service";
+import {JobManagerService} from "../../../core/job-manager.service";
+import {FakeJobManagerService} from "../../../testing/fake-job-manager.service";
 
 describe('JobDebugIconsComponent', () => {
   let fixture: ComponentFixture<TestDebugIconsComponent>;
@@ -19,6 +22,8 @@ describe('JobDebugIconsComponent', () => {
     stderr: 'gs://test-bucket/test-job/stderr.txt',
     callRoot: 'gs://test-bucket/test-job'
   };
+  let capabilitiesService =  new FakeCapabilitiesService({});
+  let fakeJobService: FakeJobManagerService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -35,7 +40,9 @@ describe('JobDebugIconsComponent', () => {
       ],
       providers: [
         {provide: GcsService},
-        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, null)}
+        {provide: AuthService, useValue: new AuthService(null, capabilitiesService, null, null)},
+        {provide: CapabilitiesService, useValue: capabilitiesService},
+        {provide: JobManagerService, useValue: fakeJobService},
       ],
     }).compileComponents();
   }));
@@ -79,7 +86,7 @@ describe('JobDebugIconsComponent', () => {
   @Component({
     selector: 'jm-test-debug-icons-component',
     template: `<jm-debug-icons [displayMessage]="false"
-                               [operationDetails]="false"
+                               [jobId]=""
                                [message]="job.failure"
                                [stdout]="job.stdout"
                                [stderr]="job.stderr"

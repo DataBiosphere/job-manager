@@ -70,6 +70,7 @@
       <jm-failures-table [failures]="job.failures"
                          [numToShow]="numOfErrorsToShow"
                          [showHeaders]="false"
+                         [jobId]="job.id"
                          [displayedColumns]="['name','links']"
                          [context]="'card'">
       </jm-failures-table>

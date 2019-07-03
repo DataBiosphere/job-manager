@@ -53,7 +53,7 @@
             <div class="task-links">
               <jm-debug-icons [displayMessage]="hasFailures(shard)"
                               [operationId]="shard.operationId"
-                              [operationDetails]="shard.operationDetails"
+                              [jobId]="data.shardsData.taskId"
                               [message]="getFailures(shard)"
                               [stdout]="shard.stdout"
                               [stderr]="shard.stderr"
@@ -63,7 +63,7 @@
             <div class="task-attempts">{{ shard.attempts }}</div>
           </mat-panel-description>
         </mat-expansion-panel-header>
-        <jm-attempt [attempt]="attempt" *ngFor="let attempt of shard.attemptsData"></jm-attempt>
+        <jm-attempt [attempt]="attempt" [jobId]="data.shardsData.taskId" *ngFor="let attempt of shard.attemptsData"></jm-attempt>
       </mat-expansion-panel>
     </ng-container>
   </mat-accordion>

@@ -2,9 +2,11 @@
 
 ## v1.3.0 Release Notes
 
-### Added logic to avoid 500 error on Job Details page when a workflow failure section does not have a causedBy entry.
-
 ### Added icon that, when clicked, will provide Google Pipelines operation details. (So far) only implemented for a Cromwell backend, and it requires `outsideAuth` to be set to `true` in the authentication section of the `capabilities_config.json` file.
+
+## v1.2.3 Release Notes
+
+### Added logic to avoid 500 error on Job Details page when a workflow failure section does not have a causedBy entry.
 
 ## v1.2.2 Release Notes
 

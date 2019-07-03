@@ -37,4 +37,8 @@ export class JobScatteredAttemptsComponent {
       return shard.failureMessages.join('\n');
     }
   }
+
+  getJobId(): string {
+    return this.data.shardsData.taskId;
+  }
 }

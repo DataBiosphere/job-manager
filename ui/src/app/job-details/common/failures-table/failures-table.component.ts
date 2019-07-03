@@ -9,6 +9,7 @@ import {FailureMessage} from "../../../shared/model/FailureMessage";
 })
 export class JobFailuresTableComponent implements OnInit {
   @Input() failures: FailureMessage[];
+  @Input() jobId: string;
   @Input() showHeaders: boolean;
   @Input() numToShow: number;
   @Input() displayedColumns: string[];

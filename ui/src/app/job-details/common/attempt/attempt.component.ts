@@ -11,6 +11,7 @@ import {JobStatusIcon, objectNotEmpty} from "../../../shared/common";
 })
 export class JobAttemptComponent implements OnInit {
   @Input() attempt: IndividualAttempt;
+  @Input() jobId: string;
 
   ngOnInit() {
     if (this.attempt) {
