@@ -9,9 +9,9 @@ import {AuthService} from "../../../core/auth.service";
 import {FakeCapabilitiesService} from "../../../testing/fake-capabilities.service";
 import {MatSnackBarModule} from "@angular/material";
 import {GcsService} from "../../../core/gcs.service";
-import {CapabilitiesService} from "../../../core/capabilities.service";
 import {JobManagerService} from "../../../core/job-manager.service";
 import {FakeJobManagerService} from "../../../testing/fake-job-manager.service";
+import {CapabilitiesService} from "../../../core/capabilities.service";
 
 describe('JobDebugIconsComponent', () => {
   let fixture: ComponentFixture<TestDebugIconsComponent>;
@@ -22,7 +22,7 @@ describe('JobDebugIconsComponent', () => {
     stderr: 'gs://test-bucket/test-job/stderr.txt',
     callRoot: 'gs://test-bucket/test-job'
   };
-  let capabilitiesService =  new FakeCapabilitiesService({});
+  let fakeCapabilitiesService =  new FakeCapabilitiesService({});
   let fakeJobService: FakeJobManagerService;
 
   beforeEach(async(() => {
@@ -40,8 +40,8 @@ describe('JobDebugIconsComponent', () => {
       ],
       providers: [
         {provide: GcsService},
-        {provide: AuthService, useValue: new AuthService(null, capabilitiesService, null, null)},
-        {provide: CapabilitiesService, useValue: capabilitiesService},
+        {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null)},
+        {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         {provide: JobManagerService, useValue: fakeJobService},
       ],
     }).compileComponents();
