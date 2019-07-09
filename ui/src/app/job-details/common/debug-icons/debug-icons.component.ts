@@ -104,15 +104,17 @@ export class JobDebugIconsComponent implements OnInit {
   showOperationDetails(): void {
     this.jobManagerService.getOperationDetails(this.jobId, this.operationId)
       .then((response) => {
-        this.resourceContentsDialog.open(JobResourceContentsComponent, {
-          disableClose: false,
-          data: {
-            resourceName: this.operationId,
-            resourceContents: new JsonPipe().transform(JSON.parse(response.details)),
-            resourceLink: '',
-            resourceType: 'json'
-          }
-        });
+        if (response.details) {
+          this.resourceContentsDialog.open(JobResourceContentsComponent, {
+            disableClose: false,
+            data: {
+              resourceName: this.operationId,
+              resourceContents: new JsonPipe().transform(JSON.parse(response.details)),
+              resourceLink: '',
+              resourceType: 'json'
+            }
+          });
+        }
     });
   }
 

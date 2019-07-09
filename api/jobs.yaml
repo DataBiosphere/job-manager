@@ -418,6 +418,15 @@ definitions:
       extensions:
         $ref: '#/definitions/ExtendedFields'
 
+  JobOperationResponse:
+    description: Google Pipelines API provided details about an operation
+    properties:
+      details:
+        type: string
+      id:
+        type: string
+        description: operation ID
+
   UpdateJobLabelsRequest:
     description: Update labels on a job
     properties:
