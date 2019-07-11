@@ -8,7 +8,7 @@ import {QueryJobsResponse} from '../shared/model/QueryJobsResponse';
 import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
 import {UpdateJobLabelsRequest} from "../shared/model/UpdateJobLabelsRequest";
 import {UpdateJobLabelsResponse} from "../shared/model/UpdateJobLabelsResponse";
-import {TimeFrame, AggregationResponse, JobAttemptsResponse} from '../shared/model/models';
+import {TimeFrame, AggregationResponse, JobAttemptsResponse, JobOperationResponse} from '../shared/model/models';
 
 import {ConfigLoaderService} from "../../environments/config-loader.service";
 
@@ -168,9 +168,8 @@ export class JobManagerService {
       .toPromise()
       .then(response => response.json())
       .catch((e) => this.handleError(e));
-
   }
-  //
+
   getShardAttempts(id:string, task:string, index:number): Promise<JobAttemptsResponse> {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
     return this.http.get(`${apiUrl}/jobs/${id}/${task}/${index}/attempts`,
@@ -178,6 +177,20 @@ export class JobManagerService {
       .toPromise()
       .then(response => response.json())
       .catch((e) => this.handleError(e));
+  }
 
+  getOperationDetails(jobId:string, operationId:string): Promise<JobOperationResponse> {
+    const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
+    return this.http.get(`${apiUrl}/jobs/operationDetails`,
+      new RequestOptions({
+        params: {
+          'job': jobId,
+          'operation' : operationId
+        },
+        headers: this.getHttpHeaders()
+      }))
+      .toPromise()
+      .then(response => response.json())
+      .catch((e) => this.handleError(e));
   }
 }

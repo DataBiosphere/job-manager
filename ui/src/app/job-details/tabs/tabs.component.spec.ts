@@ -31,12 +31,14 @@ import {JobManagerService} from "../../core/job-manager.service";
 import {FakeJobManagerService} from "../../testing/fake-job-manager.service";
 import {GcsService} from "../../core/gcs.service";
 import {FakeGcsService} from "../../testing/fake-gcs.service";
+import {CapabilitiesService} from "../../core/capabilities.service";
 
 describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;
   let fixture: ComponentFixture<TestTasksComponent>;
   let fakeJobService: FakeJobManagerService;
   let tasks: TaskMetadata[] = [];
+  let fakeCapabilitiesService = new FakeCapabilitiesService({});
 
   let task: TaskMetadata = {
     name: 'task1',
@@ -160,8 +162,9 @@ describe('JobTabsComponent', () => {
       ],
       providers: [
         {provide: GcsService, useValue: new FakeGcsService('test-bucket', null, null)},
-        {provide: AuthService, useValue: new AuthService(null, new FakeCapabilitiesService({}), null, null)},
+        {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null)},
         {provide: JobManagerService, useValue: fakeJobService},
+        {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
       ]
     }).compileComponents();
   }));

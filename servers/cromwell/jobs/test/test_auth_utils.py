@@ -15,7 +15,8 @@ class TestAuthUtils(BaseTestCase):
             'cromwell_url': self.base_url,
             'cromwell_user': '',
             'cromwell_password': '',
-            'use_caas': True
+            'use_caas': True,
+            'capabilities': {}
         })
 
         def _request_callback(request, context):
@@ -38,7 +39,8 @@ class TestAuthUtils(BaseTestCase):
             'cromwell_url': self.base_url,
             'cromwell_user': 'user',
             'cromwell_password': 'password',
-            'use_caas': False
+            'use_caas': False,
+            'capabilities': {}
         })
 
         def _request_callback(request, context):
@@ -59,7 +61,8 @@ class TestAuthUtils(BaseTestCase):
             'cromwell_url': self.base_url,
             'cromwell_user': '',
             'cromwell_password': '',
-            'use_caas': True
+            'use_caas': True,
+            'capabilities': {}
         })
         response = self.client.open('/jobs/query',
                                     method='POST',

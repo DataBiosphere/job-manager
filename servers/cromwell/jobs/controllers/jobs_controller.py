@@ -24,6 +24,7 @@ from jobs.models.health_response import HealthResponse
 from jobs.models.execution_event import ExecutionEvent
 from jobs.models.individual_attempt import IndividualAttempt
 from jobs.models.job_attempts_response import JobAttemptsResponse
+from jobs.models.job_operation_response import JobOperationResponse
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
 
@@ -286,6 +287,7 @@ def format_task(task_name, task_metadata):
         return_code=latest_attempt.get('returnCode'),
         attempts=latest_attempt.get('attempt'),
         call_root=latest_attempt.get('callRoot'),
+        operation_id=latest_attempt.get('jobId'),
         job_id=latest_attempt.get('subWorkflowId'),
         shards=None,
         call_cached=call_cached,
@@ -301,6 +303,7 @@ def format_task_failure(task_name, metadata):
                           stdout=metadata.get('stdout'),
                           stderr=metadata.get('stderr'),
                           call_root=metadata.get('callRoot'),
+                          operation_id=metadata.get('jobId'),
                           job_id=metadata.get('subWorkflowId'))
 
 
@@ -346,6 +349,7 @@ def format_scattered_task(task_name, task_metadata):
                       stdout=shard.get('stdout'),
                       stderr=shard.get('stderr'),
                       call_root=shard.get('callRoot'),
+                      operation_id=shard.get('jobId'),
                       attempts=shard.get('attempt'),
                       failure_messages=failure_messages,
                       job_id=shard.get('subWorkflowId')))
@@ -537,6 +541,36 @@ def handle_error(response):
     response.raise_for_status()
 
 
+@requires_auth
+def get_operation_details(job, operation, **kwargs):
+    """
+    Query for operation details from Google Pipelines API
+
+    :param job: Job ID
+    :type id: str
+
+    :param operation_id: Operation ID
+    :type id: str
+
+    :rtype: str
+    """
+
+    capabilities = current_app.config['capabilities']
+    if hasattr(capabilities, 'authentication') and hasattr(
+            capabilities.authentication,
+            'outside_auth') and capabilities.authentication.outside_auth:
+        url = '{cromwell_url}/{id}/backend/metadata/{backendId}'.format(
+            cromwell_url=_get_base_url(), id=job, backendId=operation)
+        response = requests.get(url,
+                                auth=kwargs.get('auth'),
+                                headers=kwargs.get('auth_headers'))
+
+    if response.status_code != 200:
+        handle_error(response)
+
+    return JobOperationResponse(id=job, details=response.text)
+
+
 def _get_execution_events(events):
     execution_events = None
     if events:
@@ -604,6 +638,7 @@ def _convert_to_attempt(item):
         stdout=item.get('stdout'),
         stderr=item.get('stderr'),
         call_root=item.get('callRoot'),
+        operation_id=item.get('jobId'),
         inputs=item.get('inputs'),
         outputs=item.get('outputs'),
         start=_parse_datetime(item.get('start')),

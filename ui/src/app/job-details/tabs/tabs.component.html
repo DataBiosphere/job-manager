@@ -104,6 +104,8 @@
                   </div>
                   <div class="task-links">
                     <jm-debug-icons [displayMessage]="hasTaskFailures(t)"
+                                    [operationId]="t.operationId"
+                                    [jobId]="job.id"
                                     [message]="getTaskFailures(t)"
                                     [stdout]="t.stdout"
                                     [stderr]="t.stderr"
@@ -116,7 +118,7 @@
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <ng-container *ngIf="!hasOnlyOneAttempt(t)">
-                <jm-attempt [attempt]="attempt" *ngFor="let attempt of t.attemptsData"></jm-attempt>
+                <jm-attempt [attempt]="attempt" [jobId]="job.id" *ngFor="let attempt of t.attemptsData"></jm-attempt>
               </ng-container>
             </mat-expansion-panel>
         </ng-container>
@@ -127,6 +129,7 @@
       <jm-failures-table [failures]="job.failures"
                          [numToShow]="job.failures.length"
                          [showHeaders]="true"
+                         [jobId]="job.id"
                          [displayedColumns]="['name','message','links']"
                          [context]="'tab'">
       </jm-failures-table>

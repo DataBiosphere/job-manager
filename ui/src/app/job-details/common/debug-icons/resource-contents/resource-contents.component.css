@@ -12,14 +12,17 @@ mat-dialog-container.mat-dialog-container {
 .mat-dialog-content {
   min-height: 20vh;
   max-height: 80vh;
-  white-space: pre-line;
-  font-family: 'Consolas', "courier new";
-  font-size: 0.7rem;
-  line-height: 1rem;
   background-color: #fff;
   color: #000;
   border-top: 1px solid #5C912E;
   border-bottom: 1px solid #5C912E;
+}
+
+.mat-dialog-content .text {
+  white-space: pre-line;
+  font-family: 'Consolas', "courier new";
+  font-size: 0.7rem;
+  line-height: 1rem;
 }
 
 mat-dialog-actions.mat-dialog-actions {
