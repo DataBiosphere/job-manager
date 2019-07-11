@@ -101,7 +101,8 @@ export class JobDebugIconsComponent implements OnInit {
     }
   }
 
-  showOperationDetails(): void {
+  showOperationDetails(e: MouseEvent): void {
+    e.stopPropagation();
     this.jobManagerService.getOperationDetails(this.jobId, this.operationId)
       .then((response) => {
         if (response.details) {

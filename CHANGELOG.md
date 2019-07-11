@@ -1,5 +1,11 @@
 # Job Manager Change Log
 
+## v1.3.1 Release Notes
+
+### Fixed a bug where clicking on operation details icon will show attempt data.
+
+### Fixed a bug in the handling of scattered task shards with no start date.
+
 ## v1.3.0 Release Notes
 
 ### Added icon that, when clicked, will provide Google Pipelines operation details. (So far) only implemented for a Cromwell backend, and it requires `outsideAuth` to be set to `true` in the authentication section of the `capabilities_config.json` file.
