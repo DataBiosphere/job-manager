@@ -95,8 +95,8 @@ export class AuthService {
   }
 
   public isAuthenticated(): boolean {
-      const user = gapi.auth2 && gapi.auth2.getAuthInstance().currentUser.get();
-      return !!(user && user.isSignedIn());
+    const user = gapi.auth2 && gapi.auth2.getAuthInstance().currentUser.get();
+    return !!(user && user.isSignedIn());
   }
 
   public signIn(): Promise<void> {
@@ -112,7 +112,7 @@ export class AuthService {
   }
 
   private handleError(error): void {
-      this.snackBar.open('An error occurred: ' + error);
+    this.snackBar.open('An error occurred: ' + error);
   }
 
   private setUpEventListeners(): void {
