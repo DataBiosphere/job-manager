@@ -18,34 +18,35 @@ export class CapabilitiesActivator implements CanActivate {
     private readonly capabilitiesService: CapabilitiesService,
     private readonly router: Router) {}
 
-  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    try {
-      const cap = this.handleAuthCapabilities(await this.capabilitiesService.getCapabilities(), route.routeConfig.path, state.url);
-      return this.handleProjectCapabilities(cap, route);
-    } catch (error) {
-      // Handle all not-activated errors by just returning false for
-      // this promise. All others, re-throw.
-      if (error == CapabilitiesActivator.notActivatedError) {
-        return false;
-      }
-      throw error;
-    }
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+    return this.capabilitiesService.getCapabilities()
+      .then(cap => this.handleAuthCapabilities(cap, route.routeConfig.path, state.url))
+      .then(cap => this.handleProjectCapabilities(cap, route))
+      .catch(error => {
+        // Handle all not-activated errors by just returning false for
+        // this promise. All others, re-throw.
+        if (error == CapabilitiesActivator.notActivatedError) {
+          return false;
+        }
+        throw error;
+      });
   }
 
-  private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): CapabilitiesResponse {
+  private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): Promise<CapabilitiesResponse>|CapabilitiesResponse {
     if (capabilities.authentication && capabilities.authentication.isRequired) {
       if (this.authService.authenticated.getValue() || path == 'sign_in') {
         return capabilities;
       }
 
-      const authenticated = this.authService.isAuthenticated();
-      if (!authenticated) {
-        this.router.navigate(['sign_in'], {
-          queryParams: { returnUrl: url }
-        });
-        throw CapabilitiesActivator.notActivatedError;
-      }
-      return capabilities;
+      return this.authService.initAuthPromise.then( () => {
+        if (!this.authService.isAuthenticated()) {
+          this.router.navigate(['sign_in'], {
+            queryParams: { returnUrl: url }
+          });
+          throw CapabilitiesActivator.notActivatedError;
+        }
+        return capabilities;
+      })
     } else if (path == 'sign_in') {
       // Do not allow navigation to the sign in page when authentication is
       // not required.

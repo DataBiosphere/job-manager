@@ -11,7 +11,7 @@ declare const gapi: any;
 /** Service wrapper for google oauth2 state and starting sign-in flow. */
 @Injectable()
 export class AuthService {
-  private initAuthPromise: Promise<void>;
+  public initAuthPromise: Promise<void>;
   public authenticated = new BehaviorSubject<boolean>(false);
   public authToken: string;
   public userId: string;
