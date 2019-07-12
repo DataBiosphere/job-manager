@@ -4,7 +4,7 @@
 
 ### Fixed a bug where clicking on operation details icon will show attempt data.
 
-### Fixed a bug in the handling of scattered task shards with no start date.
+### Fixed a bug that caused Job Manager to throw a 500 error when it attempted to process a scattered task shard with no start time.
 
 ## v1.3.0 Release Notes
 
