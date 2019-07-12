@@ -327,7 +327,9 @@ def format_workflow_failure_message(failure):
 def format_scattered_task(task_name, task_metadata):
     filtered_shards = []
     current_shard = ''
-    min_start = _parse_datetime(task_metadata[0].get('start'))
+    min_start = _parse_datetime(
+        task_metadata[0].get('start')) or _parse_datetime(
+            task_metadata[0].get('end')) or datetime.utcnow()
     max_end = _parse_datetime(task_metadata[-1].get('end'))
 
     # go through calls in reverse to grab the latest attempt if there are multiple
@@ -341,7 +343,9 @@ def format_scattered_task(task_name, task_metadata):
             filtered_shards.append(
                 Shard(execution_status=task_statuses.cromwell_execution_to_api(
                     shard.get('executionStatus')),
-                      start=_parse_datetime(shard.get('start')),
+                      start=_parse_datetime(shard.get('start'))
+                      or _parse_datetime(shard.get('end'))
+                      or datetime.utcnow(),
                       end=_parse_datetime(shard.get('end')),
                       shard_index=shard.get('shardIndex'),
                       execution_events=_get_execution_events(
@@ -353,7 +357,8 @@ def format_scattered_task(task_name, task_metadata):
                       attempts=shard.get('attempt'),
                       failure_messages=failure_messages,
                       job_id=shard.get('subWorkflowId')))
-            if min_start > _parse_datetime(shard.get('start')):
+            if shard.get('start') and min_start > _parse_datetime(
+                    shard.get('start')):
                 min_start = _parse_datetime(shard.get('start'))
             if shard.get('executionStatus') not in ['Failed', 'Done']:
                 max_end = None
@@ -641,8 +646,9 @@ def _convert_to_attempt(item):
         operation_id=item.get('jobId'),
         inputs=item.get('inputs'),
         outputs=item.get('outputs'),
-        start=_parse_datetime(item.get('start')),
-        end=_parse_datetime(item.get('end')))
+        start=_parse_datetime(item.get('start'))
+        or _parse_datetime(item.get('end')) or datetime.utcnow(),
+        end=_parse_datetime(item.get('end')) or datetime.utcnow())
 
     if item.get('failures'):
         attempt.failure_messages = [

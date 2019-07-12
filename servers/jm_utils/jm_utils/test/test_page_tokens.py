@@ -11,7 +11,6 @@ from .. import page_tokens
 
 class TestJmUtils(unittest.TestCase):
     """ jm_utils unit tests """
-
     def test_encode_decode_offset(self):
         encoded = page_tokens.encode_offset(12)
         decoded = page_tokens.decode_offset(encoded)

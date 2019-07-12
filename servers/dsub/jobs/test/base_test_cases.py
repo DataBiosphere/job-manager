@@ -201,15 +201,15 @@ class BaseTestCases:
                     }, job_model.Resources())
                 ]
 
-            return execute_redirect_stdout(lambda: dsub.run(self.provider,
-                                                            resources,
-                                                            job_params,
-                                                            task_descriptors,
-                                                            name=name,
-                                                            command=command,
-                                                            wait=wait,
-                                                            disable_warning=
-                                                            True))
+            return execute_redirect_stdout(
+                lambda: dsub.run(self.provider,
+                                 resources,
+                                 job_params,
+                                 task_descriptors,
+                                 name=name,
+                                 command=command,
+                                 wait=wait,
+                                 disable_warning=True))
 
         def must_abort_job(self, job_id):
             resp = self.client.open('/jobs/{}/abort'.format(job_id),
