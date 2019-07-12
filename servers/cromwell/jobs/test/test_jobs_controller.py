@@ -1000,7 +1000,6 @@ class TestJobsController(BaseTestCase):
 
         Query jobs by various filter criteria. Returned jobs are ordered from newest to oldest submission time.
         """
-
         def _request_callback(request, context):
             context.status_code = 200
             return {'results': [], 'totalResultsCount': 0}
