@@ -18,24 +18,24 @@ export class CapabilitiesActivator implements CanActivate {
     private readonly capabilitiesService: CapabilitiesService,
     private readonly router: Router) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-    return this.capabilitiesService.getCapabilities()
-      .then(cap => this.handleAuthCapabilities(cap, route.routeConfig.path, state.url))
-      .then(cap => this.handleProjectCapabilities(cap, route))
-      .catch(error => {
-        // Handle all not-activated errors by just returning false for
-        // this promise. All others, re-throw.
-        if (error == CapabilitiesActivator.notActivatedError) {
-          return false;
-        }
-        throw error;
-      });
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+    try {
+      const cap = await this.handleAuthCapabilities(await this.capabilitiesService.getCapabilities(), route.routeConfig.path, state.url);
+      return this.handleProjectCapabilities(cap, route);
+    } catch (error) {
+      // Handle all not-activated errors by just returning false for
+      // this promise. All others, re-throw.
+      if (error == CapabilitiesActivator.notActivatedError) {
+        return false;
+      }
+      throw error;
+    }
   }
 
-  private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): Promise<CapabilitiesResponse>|CapabilitiesResponse {
+  private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): Promise<CapabilitiesResponse> {
     if (capabilities.authentication && capabilities.authentication.isRequired) {
       if (this.authService.authenticated.getValue() || path == 'sign_in') {
-        return capabilities;
+        return Promise.resolve(capabilities);
       }
 
       return this.authService.initAuthPromise.then( () => {
@@ -53,7 +53,7 @@ export class CapabilitiesActivator implements CanActivate {
       this.router.navigate(['']);
       throw CapabilitiesActivator.notActivatedError;
     }
-    return capabilities;
+    return Promise.resolve(capabilities);
   }
 
   private handleProjectCapabilities(capabilities: CapabilitiesResponse, route: ActivatedRouteSnapshot): boolean {
