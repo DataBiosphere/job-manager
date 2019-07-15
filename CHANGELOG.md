@@ -1,5 +1,19 @@
 # Job Manager Change Log
 
+## v1.3.1 Release Notes
+
+### Fixed a bug where clicking on operation details icon will show attempt data.
+
+### Fixed a bug that caused Job Manager to throw a 500 error when it attempted to process a scattered task shard with no start time.
+
+## v1.3.0 Release Notes
+
+### Added icon that, when clicked, will provide Google Pipelines operation details. (So far) only implemented for a Cromwell backend, and it requires `outsideAuth` to be set to `true` in the authentication section of the `capabilities_config.json` file.
+
+## v1.2.3 Release Notes
+
+### Added logic to avoid 500 error on Job Details page when a workflow failure section does not have a causedBy entry.
+
 ## v1.2.2 Release Notes
 
 ### Added 'Abort Job' button to Job Details page.
@@ -10,7 +24,7 @@
 
 ## v1.2.0 Release Notes
 
-### Added the ability – with the addition of a specific scope to the capabilities config file – to see the contents of Google Storage log files within the UI.
+### Added the ability -- with the addition of a specific scope to the capabilities config file -- to see the contents of Google Storage log files within the UI.
 
 ## v1.1.1 Release Notes
 

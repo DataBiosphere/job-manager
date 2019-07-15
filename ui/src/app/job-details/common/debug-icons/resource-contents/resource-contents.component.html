@@ -1,0 +1,10 @@
+<div class="log-dialog-container">
+  <h2 mat-dialog-title *ngIf="data">{{ data.resourceName }}</h2>
+  <mat-dialog-content *ngIf="data && data.resourceContents">
+    <span *ngIf="data.resourceType != 'json'" class="text">{{data.resourceContents}}</span>
+    <span *ngIf="data.resourceType == 'json'" class="json"><ngx-json-viewer [json]="resourceJson" [expanded]="false"></ngx-json-viewer></span>
+  </mat-dialog-content>
+  <mat-dialog-actions *ngIf="!!data.resourceLink">
+    <a [href]="data.resourceLink" target="_blank">go to file in Google console</a>
+  </mat-dialog-actions>
+</div>

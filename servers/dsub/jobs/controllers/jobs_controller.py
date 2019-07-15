@@ -47,10 +47,10 @@ def abort_job(id):
 
     # TODO(https://github.com/googlegenomics/dsub/issues/92): Remove this
     # hacky re-routing of stdout once dsub removes it from the python API
-    deleted = execute_redirect_stdout(lambda: ddel.ddel_tasks(
-        provider=provider,
-        job_ids={job_id},
-        task_ids={task_id} if task_id else None))
+    deleted = execute_redirect_stdout(
+        lambda: ddel.ddel_tasks(provider=provider,
+                                job_ids={job_id},
+                                task_ids={task_id} if task_id else None))
     if len(deleted) != 1:
         raise InternalServerError('Failed to abort dsub job')
 
@@ -205,6 +205,14 @@ def get_task_attempts(id, task, **kwargs):
     :rtype: JobAttemptsResponse - never actually returned
     """
     raise NotImplementedError('Tasks not supported by dsub.')
+
+
+def get_operation_details(job, operation, **kwargs):
+    """
+    Placeholder for query for operation details from Google Pipelines API
+
+    """
+    raise NotImplementedError('Operation details not supported by dsub.')
 
 
 def _handle_http_error(error, proj_id):

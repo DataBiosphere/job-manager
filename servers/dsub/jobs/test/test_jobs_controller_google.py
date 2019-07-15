@@ -5,7 +5,6 @@ from jobs.test.base_google_test_cases import BaseGoogleTestCases
 
 class TestJobsControllerGoogle(BaseGoogleTestCases.BaseGoogleTestCase):
     """ JobsController integration tests for the google provider """
-
     def create_app(self):
         app = super(TestJobsControllerGoogle, self).create_app()
         app.config.update({

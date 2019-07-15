@@ -24,6 +24,7 @@ from jobs.models.health_response import HealthResponse
 from jobs.models.execution_event import ExecutionEvent
 from jobs.models.individual_attempt import IndividualAttempt
 from jobs.models.job_attempts_response import JobAttemptsResponse
+from jobs.models.job_operation_response import JobOperationResponse
 from jobs.controllers.utils import job_statuses
 from jobs.controllers.utils import task_statuses
 
@@ -286,6 +287,7 @@ def format_task(task_name, task_metadata):
         return_code=latest_attempt.get('returnCode'),
         attempts=latest_attempt.get('attempt'),
         call_root=latest_attempt.get('callRoot'),
+        operation_id=latest_attempt.get('jobId'),
         job_id=latest_attempt.get('subWorkflowId'),
         shards=None,
         call_cached=call_cached,
@@ -301,18 +303,33 @@ def format_task_failure(task_name, metadata):
                           stdout=metadata.get('stdout'),
                           stderr=metadata.get('stderr'),
                           call_root=metadata.get('callRoot'),
+                          operation_id=metadata.get('jobId'),
                           job_id=metadata.get('subWorkflowId'))
 
 
-def format_workflow_failure(failures):
+def format_workflow_failure(failure):
     return FailureMessage('Workflow Error',
-                          failure=failures.get('causedBy')[0].get('message'))
+                          failure=format_workflow_failure_message(failure))
+
+
+def format_workflow_failure_message(failure):
+    caused_by_list = failure.get('causedBy')
+    message = failure.get('message')
+    total_errors = len(caused_by_list)
+    for i in range(total_errors):
+        message += ' (Caused by [reason {} of {}]: '.format(
+            i + 1, total_errors)
+        message += format_workflow_failure_message(caused_by_list[i])
+        message += ')'
+    return message
 
 
 def format_scattered_task(task_name, task_metadata):
     filtered_shards = []
     current_shard = ''
-    min_start = _parse_datetime(task_metadata[0].get('start'))
+    min_start = _parse_datetime(
+        task_metadata[0].get('start')) or _parse_datetime(
+            task_metadata[0].get('end')) or datetime.utcnow()
     max_end = _parse_datetime(task_metadata[-1].get('end'))
 
     # go through calls in reverse to grab the latest attempt if there are multiple
@@ -326,7 +343,9 @@ def format_scattered_task(task_name, task_metadata):
             filtered_shards.append(
                 Shard(execution_status=task_statuses.cromwell_execution_to_api(
                     shard.get('executionStatus')),
-                      start=_parse_datetime(shard.get('start')),
+                      start=_parse_datetime(shard.get('start'))
+                      or _parse_datetime(shard.get('end'))
+                      or datetime.utcnow(),
                       end=_parse_datetime(shard.get('end')),
                       shard_index=shard.get('shardIndex'),
                       execution_events=_get_execution_events(
@@ -334,10 +353,12 @@ def format_scattered_task(task_name, task_metadata):
                       stdout=shard.get('stdout'),
                       stderr=shard.get('stderr'),
                       call_root=shard.get('callRoot'),
+                      operation_id=shard.get('jobId'),
                       attempts=shard.get('attempt'),
                       failure_messages=failure_messages,
                       job_id=shard.get('subWorkflowId')))
-            if min_start > _parse_datetime(shard.get('start')):
+            if shard.get('start') and min_start > _parse_datetime(
+                    shard.get('start')):
                 min_start = _parse_datetime(shard.get('start'))
             if shard.get('executionStatus') not in ['Failed', 'Done']:
                 max_end = None
@@ -525,6 +546,36 @@ def handle_error(response):
     response.raise_for_status()
 
 
+@requires_auth
+def get_operation_details(job, operation, **kwargs):
+    """
+    Query for operation details from Google Pipelines API
+
+    :param job: Job ID
+    :type id: str
+
+    :param operation_id: Operation ID
+    :type id: str
+
+    :rtype: str
+    """
+
+    capabilities = current_app.config['capabilities']
+    if hasattr(capabilities, 'authentication') and hasattr(
+            capabilities.authentication,
+            'outside_auth') and capabilities.authentication.outside_auth:
+        url = '{cromwell_url}/{id}/backend/metadata/{backendId}'.format(
+            cromwell_url=_get_base_url(), id=job, backendId=operation)
+        response = requests.get(url,
+                                auth=kwargs.get('auth'),
+                                headers=kwargs.get('auth_headers'))
+
+    if response.status_code != 200:
+        handle_error(response)
+
+    return JobOperationResponse(id=job, details=response.text)
+
+
 def _get_execution_events(events):
     execution_events = None
     if events:
@@ -592,10 +643,12 @@ def _convert_to_attempt(item):
         stdout=item.get('stdout'),
         stderr=item.get('stderr'),
         call_root=item.get('callRoot'),
+        operation_id=item.get('jobId'),
         inputs=item.get('inputs'),
         outputs=item.get('outputs'),
-        start=_parse_datetime(item.get('start')),
-        end=_parse_datetime(item.get('end')))
+        start=_parse_datetime(item.get('start'))
+        or _parse_datetime(item.get('end')) or datetime.utcnow(),
+        end=_parse_datetime(item.get('end')) or datetime.utcnow())
 
     if item.get('failures'):
         attempt.failure_messages = [

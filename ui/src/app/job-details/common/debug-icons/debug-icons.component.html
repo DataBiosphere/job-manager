@@ -34,4 +34,12 @@
       </clr-tooltip-content>
     </a>
   </clr-tooltip>
+  <clr-tooltip *ngIf="!!hasOperationalDetails()">
+    <button class="log-item" (click)="showOperationDetails($event)">
+      <clr-icon clrTooltipTrigger shape="info-standard"></clr-icon>
+      <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+        <span>compute details</span>
+      </clr-tooltip-content>
+    </button>
+  </clr-tooltip>
 </div>

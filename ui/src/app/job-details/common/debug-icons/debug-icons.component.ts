@@ -1,12 +1,16 @@
-import {Component, Input, OnInit, ViewContainerRef} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {DomSanitizer, SafeUrl} from '@angular/platform-browser';
 
 import {AuthService} from '../../../core/auth.service';
 import {ResourceUtils} from "../../../shared/utils/resource-utils";
 import {GcsService} from "../../../core/gcs.service";
 import {MatDialog, MatSnackBar} from "@angular/material";
-import {JobLogContentsComponent} from "./log-contents/log-contents.component";
+import {JobResourceContentsComponent} from "./resource-contents/resource-contents.component";
 import {ErrorMessageFormatterPipe} from "../../../shared/pipes/error-message-formatter.pipe";
+import {JsonPipe} from "@angular/common";
+import {CapabilitiesResponse} from "../../../shared/model/CapabilitiesResponse";
+import {CapabilitiesService} from "../../../core/capabilities.service";
+import {JobManagerService} from "../../../core/job-manager.service";
 
 @Component({
   selector: 'jm-debug-icons',
@@ -15,17 +19,24 @@ import {ErrorMessageFormatterPipe} from "../../../shared/pipes/error-message-for
 })
 export class JobDebugIconsComponent implements OnInit {
   @Input() displayMessage: boolean;
+  @Input() operationId: string;
+  @Input() jobId: string;
   @Input() message: string;
   @Input() stdout: string;
   @Input() stderr: string;
   @Input() directory: string;
   logFileData: Map<string, string> = new Map();
+  private readonly capabilities: CapabilitiesResponse;
 
   constructor(private readonly authService: AuthService,
               private readonly gcsService: GcsService,
               private readonly snackBar: MatSnackBar,
               private readonly sanitizer:DomSanitizer,
-              public logContentsDialog: MatDialog) {}
+              public resourceContentsDialog: MatDialog,
+              private readonly capabilitiesService: CapabilitiesService,
+              private readonly jobManagerService: JobManagerService) {
+    this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
+  }
 
   ngOnInit(): void {
     try {
@@ -69,20 +80,43 @@ export class JobDebugIconsComponent implements OnInit {
     return Object.keys(this.logFileData).includes(fileName) && this.logFileData[fileName] != '';
   }
 
+  hasOperationalDetails(): boolean {
+    return this.capabilities.authentication && this.capabilities.authentication.outsideAuth && !!this.operationId;
+  }
+
   showOrLinkTo(e: MouseEvent, url: string): void {
     e.stopPropagation();
     if (this.hasContents(this.getFileName(url))) {
-      this.logContentsDialog.open(JobLogContentsComponent, {
+      this.resourceContentsDialog.open(JobResourceContentsComponent, {
         disableClose: false,
         data: {
-          logName: this.getFileTitle(url),
-          logContents: this.logFileData[this.getFileName(url)],
-          logLink: this.getResourceUrl(url)
+          resourceName: this.getFileTitle(url),
+          resourceContents: this.logFileData[this.getFileName(url)],
+          resourceLink: this.getResourceUrl(url),
+          resourceType: 'text'
         }
       });
     } else if (url) {
       window.open(this.getResourceUrl(url));
     }
+  }
+
+  showOperationDetails(e: MouseEvent): void {
+    e.stopPropagation();
+    this.jobManagerService.getOperationDetails(this.jobId, this.operationId)
+      .then((response) => {
+        if (response.details) {
+          this.resourceContentsDialog.open(JobResourceContentsComponent, {
+            disableClose: false,
+            data: {
+              resourceName: this.operationId,
+              resourceContents: new JsonPipe().transform(JSON.parse(response.details)),
+              resourceLink: '',
+              resourceType: 'json'
+            }
+          });
+        }
+    });
   }
 
   private async getLogContents(url: string): Promise<string> {

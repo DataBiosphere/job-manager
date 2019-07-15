@@ -15,6 +15,7 @@ enum: &TIMEFRAME
   - DAYS_7
   - DAYS_30
   - ALL_TIME
+
 paths:
   '/capabilities':
     get:
@@ -31,6 +32,7 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Capabilities
+
   '/jobs/{id}/abort':
     post:
       operationId: AbortJob
@@ -56,6 +58,7 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
+
   '/jobs/{id}/updateLabels':
     post:
       operationId: UpdateJobLabels
@@ -86,6 +89,7 @@ paths:
           description: Server does not implement this method.
       tags:
         - Jobs
+
   '/jobs/query':
     post:
       # TODO(calbach): Parameterize sort ordering.
@@ -112,6 +116,7 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
+
   '/jobs/{id}':
     get:
       operationId: GetJob
@@ -137,6 +142,7 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
+
   '/jobs/{id}/{task}/attempts':
     get:
       operationId: GetTaskAttempts
@@ -167,6 +173,7 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
+
   '/jobs/{id}/{task}/{index}/attempts':
     get:
       operationId: GetShardAttempts
@@ -202,6 +209,33 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Jobs
+
+  '/jobs/operationDetails':
+    get:
+      operationId: GetOperationDetails
+      summary: Call for operation details from the Google Pipelines API
+      parameters:
+        - name: job
+          description: job ID
+          required: true
+          in: query
+          type: string
+        - name: operation
+          description: operation ID
+          type: string
+          in: query
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/JobOperationResponse'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
+
   '/aggregations':
     get:
       operationId: GetJobAggregations
@@ -232,6 +266,7 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Aggregation
+
   '/health':
     get:
       operationId: Health
@@ -267,6 +302,10 @@ definitions:
       forcedLogoutTime:
         type: integer
         description: Number of milliseconds for the interval of inactivity.
+      outsideAuth:
+        type: boolean
+        description: Whether or not to use an outside service for some auth-related functionality.
+        default: false
 
   DisplayField:
     description: Description of a display field
@@ -378,6 +417,15 @@ definitions:
           $ref: '#/definitions/FailureMessage'
       extensions:
         $ref: '#/definitions/ExtendedFields'
+
+  JobOperationResponse:
+    description: Google Pipelines API provided details about an operation
+    properties:
+      details:
+        type: string
+      id:
+        type: string
+        description: operation ID
 
   UpdateJobLabelsRequest:
     description: Update labels on a job
@@ -683,6 +731,9 @@ definitions:
       callRoot:
         type: string
         description: The root directory of the task execution
+      operationId:
+        type: string
+        description: Operation Id for Google Pipelines API
       attempts:
         type: integer
         description: Number of times the task was run
@@ -726,6 +777,9 @@ definitions:
       callRoot:
         type: string
         description: The root directory of the task execution
+      operationId:
+        type: string
+        description: Operation Id for Google Pipelines API
       inputs:
         type: object
         description: Mapping of input fully qualified names to stringified values
@@ -778,6 +832,9 @@ definitions:
       callRoot:
         type: string
         description: If from a task, the root directory of the task or shard execution
+      operationId:
+        type: string
+        description: Operation Id for Google Pipelines API
       attempts:
         type: integer
         description: Number of times the task was run
@@ -824,6 +881,9 @@ definitions:
       callRoot:
         type: string
         description: If from a task, the root directory of the task or shard execution
+      operationId:
+        type: string
+        description: Operation Id for Google Pipelines API
       jobId:
         type: string
         description: >

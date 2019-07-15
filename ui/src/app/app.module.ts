@@ -6,7 +6,7 @@ import {NgModule} from '@angular/core';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {MatIconModule} from "@angular/material/icon";
 import {Ng2GoogleChartsModule} from 'ng2-google-charts';
-
+import {NgxJsonViewerModule} from 'ngx-json-viewer';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {CoreModule} from './core/core.module';
@@ -32,7 +32,8 @@ import {DashboardModule} from "./dashboard/dashboard.module";
     SignInModule,
     ProjectsModule,
     DashboardModule,
-    Ng2GoogleChartsModule
+    Ng2GoogleChartsModule,
+    NgxJsonViewerModule
   ],
   declarations: [AppComponent],
   // This specifies the top-level component, to load first.
