@@ -14,6 +14,7 @@ import {
   MatTableModule,
   MatTabsModule,
   MatTooltipModule,
+  MatIconModule,
 } from '@angular/material';
 import {RouterModule} from '@angular/router';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
@@ -45,6 +46,7 @@ import {JobResourceContentsComponent} from "./common/debug-icons/resource-conten
     MatDividerModule,
     MatExpansionModule,
     MatGridListModule,
+    MatIconModule,
     MatListModule,
     MatMenuModule,
     MatSnackBarModule,

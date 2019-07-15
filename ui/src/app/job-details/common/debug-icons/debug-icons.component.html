@@ -25,6 +25,7 @@
       </clr-tooltip-content>
     </button>
   </clr-tooltip>
+  <mat-icon svgIcon="cloud-file"></mat-icon>
   <clr-icon *ngIf="!getDirectoryUrl(directory)" shape="folder" class="is-solid disabled"></clr-icon>
   <clr-tooltip *ngIf="getDirectoryUrl(directory)">
     <a class="log-item" [href]="getDirectoryUrl(directory)" target="_blank" (click)="$event.stopPropagation()">

@@ -21,7 +21,7 @@ venv/
 /ui/dist
 /ui/tmp
 /ui/out-tsc
-/ui/src/assets
+/ui/src/assets/environments
 # Compiled Swagger output
 /ui/src/app/shared/model
 /servers/dsub/jobs/models

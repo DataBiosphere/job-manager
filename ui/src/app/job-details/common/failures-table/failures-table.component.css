@@ -58,7 +58,7 @@ td.failure-message {
 
 th.failure-links,
 td.failure-links {
-  min-width: 6.625rem;
+  min-width: 8.25rem;
 }
 
 .log-item {
@@ -92,7 +92,7 @@ td.failure-links {
 }
 
 :host-context(mat-card.card) td.failure-links {
-  min-width: 8.25rem;
+  min-width: 10rem;
   padding-right: 0px;
 }
 

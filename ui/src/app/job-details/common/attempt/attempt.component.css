@@ -79,7 +79,7 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-inputs,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-outputs,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-attempts {
-  width: 6.25rem;
+  width: 5.9375rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-links,
@@ -87,8 +87,11 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
   text-align: right;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-links {
+mat-expansion-panel.mat-expansion-panel .task-links,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links {
+  display: flex;
   overflow: visible !important;
+  width: 10.25rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-header[aria-disabled='true'] {

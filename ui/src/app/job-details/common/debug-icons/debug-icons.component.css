@@ -25,14 +25,24 @@ clr-tooltip a {
 }
 
 clr-icon,
-clr-icon.is-solid {
+clr-icon.is-solid,
+mat-icon {
   color: #5C912E;
   width: 1.5rem;
   height: 1.5rem;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.debug-icons {
+  flex-flow: row;
+  overflow: hidden;
 }
 
 clr-icon.disabled {
   color: #ccc;
+  display: inline-flex;
+  vertical-align: middle;
 }
 
 /* override default color of alert triangle for clarity icon */
@@ -46,6 +56,8 @@ clr-icon.disabled {
 
 :host-context(.mat-expansion-panel-header.mat-expanded .task-links) clr-icon {
   color: #ccc;
+  display: inline-flex;
+  vertical-align: middle;
 }
 
 ::ng-deep clr-icon.log-error.disabled .clr-i-alert.clr-i-outline--alerted {
