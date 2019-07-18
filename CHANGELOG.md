@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.3.2 Release Notes
+
+### Fixed a bug that needlessly redirected a user to the Sign In page before every page load.
+
 ## v1.3.1 Release Notes
 
 ### Fixed a bug where clicking on operation details icon will show attempt data.
