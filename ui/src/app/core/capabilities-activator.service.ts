@@ -20,7 +20,7 @@ export class CapabilitiesActivator implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     try {
-      const cap = this.handleAuthCapabilities(await this.capabilitiesService.getCapabilities(), route.routeConfig.path, state.url);
+      const cap = await this.handleAuthCapabilities(await this.capabilitiesService.getCapabilities(), route.routeConfig.path, state.url);
       return this.handleProjectCapabilities(cap, route);
     } catch (error) {
       // Handle all not-activated errors by just returning false for
@@ -32,27 +32,28 @@ export class CapabilitiesActivator implements CanActivate {
     }
   }
 
-  private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): CapabilitiesResponse {
+  private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): Promise<CapabilitiesResponse> {
     if (capabilities.authentication && capabilities.authentication.isRequired) {
       if (this.authService.authenticated.getValue() || path == 'sign_in') {
-        return capabilities;
+        return Promise.resolve(capabilities);
       }
 
-      const authenticated = this.authService.isAuthenticated();
-      if (!authenticated) {
-        this.router.navigate(['sign_in'], {
-          queryParams: { returnUrl: url }
-        });
-        throw CapabilitiesActivator.notActivatedError;
-      }
-      return capabilities;
+      return this.authService.initAuthPromise.then( () => {
+        if (!this.authService.isAuthenticated()) {
+          this.router.navigate(['sign_in'], {
+            queryParams: { returnUrl: url }
+          });
+          throw CapabilitiesActivator.notActivatedError;
+        }
+        return capabilities;
+      })
     } else if (path == 'sign_in') {
       // Do not allow navigation to the sign in page when authentication is
       // not required.
       this.router.navigate(['']);
       throw CapabilitiesActivator.notActivatedError;
     }
-    return capabilities;
+    return Promise.resolve(capabilities);
   }
 
   private handleProjectCapabilities(capabilities: CapabilitiesResponse, route: ActivatedRouteSnapshot): boolean {

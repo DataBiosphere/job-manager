@@ -40,7 +40,7 @@ export class JobDebugIconsComponent implements OnInit {
 
   ngOnInit(): void {
     try {
-      const authenticated = this.authService.isAuthenticated()
+      const authenticated = this.authService.isAuthenticated();
       if (authenticated && this.authService.gcsReadAccess) {
         if (this.stdout) {
           this.getLogContents(this.stdout).then((value) => {
