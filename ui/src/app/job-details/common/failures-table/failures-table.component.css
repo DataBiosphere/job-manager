@@ -67,8 +67,8 @@ td.failure-links {
   text-decoration: none;
 }
 
-.failure-links clr-icon:last-child {
-  margin-right: 0;
+.failure-links clr-icon {
+  margin: 0;
 }
 
 :host-context(mat-card.card) .mat-header-row {

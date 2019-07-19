@@ -34,6 +34,10 @@ mat-icon {
   vertical-align: middle;
 }
 
+.mat-icon {
+  margin-left: 0.0625rem;
+}
+
 .debug-icons {
   flex-flow: row;
   overflow: hidden;
