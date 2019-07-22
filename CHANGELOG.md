@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.4.0 Release Notes
+
+### Added a button to the Job Details page that copies the current job ID to the user's clipboard.
+
 ## v1.3.2 Release Notes
 
 ### Fixed a bug that needlessly redirected a user to the Sign In page before every page load.

@@ -111,3 +111,15 @@ clr-tooltip-content {
   font-size: 0.8rem;
   line-height: 1.25rem;
 }
+
+.copy-button {
+  width: auto;
+  height: auto;
+  line-height: 1.25rem;
+  top: -0.125rem;
+}
+
+.copy-button clr-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+}

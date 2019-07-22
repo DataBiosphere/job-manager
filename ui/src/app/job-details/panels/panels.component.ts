@@ -135,6 +135,14 @@ export class JobPanelsComponent implements OnInit {
     return !this.hasParent() && (this.job.status == JobStatus.Submitted || this.job.status == JobStatus.Running);
   }
 
+  copyJobIdToClipboard(): void {
+    navigator.clipboard.writeText(this.job.id);
+  }
+
+  isCopySupported(): boolean {
+    return !!navigator.clipboard;
+  }
+
   handleError(error: any) {
     this.snackBar.open(
       new ErrorMessageFormatterPipe().transform(error),
