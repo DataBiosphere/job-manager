@@ -33,6 +33,7 @@ export class JobPanelsComponent implements OnInit {
   @Output() close: EventEmitter<any> = new EventEmitter();
   @Output() navUp: EventEmitter<any> = new EventEmitter();
   @ViewChild(JobFailuresTableComponent) jobFailures;
+
   labels: Array<string> = [];
   displayedExtensions: Array<string> = [];
   numSucceededTasks: number = 0;
@@ -136,11 +137,13 @@ export class JobPanelsComponent implements OnInit {
   }
 
   copyJobIdToClipboard(): void {
-    navigator.clipboard.writeText(this.job.id);
-  }
-
-  isCopySupported(): boolean {
-    return !!navigator.clipboard;
+    try {
+      const jobIdInput = document.querySelector('#job-id') as HTMLInputElement;
+      jobIdInput.select();
+      document.execCommand('copy');
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   handleError(error: any) {

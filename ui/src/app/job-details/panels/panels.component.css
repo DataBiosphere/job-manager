@@ -112,6 +112,10 @@ clr-tooltip-content {
   line-height: 1.25rem;
 }
 
+.job-id {
+  display: flex;
+}
+
 .copy-button {
   width: auto;
   height: auto;
@@ -122,4 +126,14 @@ clr-tooltip-content {
 .copy-button clr-icon {
   width: 1.125rem;
   height: 1.125rem;
+}
+
+#job-id {
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  width: 21rem;
+  display: block;
+  cursor: default;
+  margin: 0 0.25rem;
 }
