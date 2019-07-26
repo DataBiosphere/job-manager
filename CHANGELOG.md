@@ -4,6 +4,8 @@
 
 ### Added a button to the Job Details page that copies the current job ID to the user's clipboard.
 
+### Made some security-related updates to the package versions for the UI.
+
 ## v1.3.2 Release Notes
 
 ### Fixed a bug that needlessly redirected a user to the Sign In page before every page load.
