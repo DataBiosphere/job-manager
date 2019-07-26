@@ -23,7 +23,7 @@
     ID: <input matInput id="job-id" value="{{ job.id }}" readonly="readonly" type="text">
     <button mat-icon-button (click)="copyJobIdToClipboard()" class="copy-button">
       <clr-tooltip>
-        <clr-icon clrTooltipTrigger shape="copy-to-clipboard"></clr-icon>
+        <clr-icon clrTooltipTrigger [attr.shape]="copyIcon"></clr-icon>
         <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
           <span>copy job id to clipboard</span>
         </clr-tooltip-content>

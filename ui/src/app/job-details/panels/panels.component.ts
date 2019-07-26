@@ -41,6 +41,7 @@ export class JobPanelsComponent implements OnInit {
   numRunningTasks: number = 0;
   numTasks: number = 0;
   public readonly numOfErrorsToShow = 4;
+  copyIcon = 'copy-to-clipboard';
 
   constructor(
     private readonly snackBar: MatSnackBar,
@@ -141,9 +142,18 @@ export class JobPanelsComponent implements OnInit {
       const jobIdInput = document.querySelector('#job-id') as HTMLInputElement;
       jobIdInput.select();
       document.execCommand('copy');
-    } catch (err) {
-      console.log(err);
+      this.changeCopyIcon('check');
+    } catch (error) {
+      this.changeCopyIcon('times');
+      console.log(error);
     }
+  }
+
+  changeCopyIcon(newIcon: string): void {
+    this.copyIcon = newIcon;
+    setTimeout(() => {
+      this.copyIcon ='copy-to-clipboard';
+    }, 1500);
   }
 
   handleError(error: any) {
