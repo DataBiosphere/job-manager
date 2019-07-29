@@ -33,7 +33,7 @@ _DEFAULT_PAGE_SIZE = 64
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
-attempt_include_keys = ('attempt', 'callCaching:hit', 'callRoot', 'end',
+attempt_include_keys = ('attempt', 'backendLogs:log', 'callCaching:hit', 'callRoot', 'end',
                         'executionStatus', 'failures', 'inputs', 'jobId',
                         'outputs', 'shardIndex', 'start', 'stderr', 'stdout')
 
@@ -282,6 +282,7 @@ def format_task(task_name, task_metadata):
         end=_parse_datetime(latest_attempt.get('end')),
         stderr=latest_attempt.get('stderr'),
         stdout=latest_attempt.get('stdout'),
+        backend_log=latest_attempt.get('backendLogs').get('log'),
         inputs=update_key_names(latest_attempt.get('inputs', {})),
         outputs=update_key_names(latest_attempt.get('outputs', {})),
         return_code=latest_attempt.get('returnCode'),
@@ -302,6 +303,7 @@ def format_task_failure(task_name, metadata):
                           timestamp=_parse_datetime(metadata.get('end')),
                           stdout=metadata.get('stdout'),
                           stderr=metadata.get('stderr'),
+                          backend_log=metadata.get('backendLogs').get('log'),
                           call_root=metadata.get('callRoot'),
                           operation_id=metadata.get('jobId'),
                           job_id=metadata.get('subWorkflowId'))
@@ -352,6 +354,7 @@ def format_scattered_task(task_name, task_metadata):
                           shard.get('executionEvents')),
                       stdout=shard.get('stdout'),
                       stderr=shard.get('stderr'),
+                      backend_log=shard.get('backendLogs').get('log'),
                       call_root=shard.get('callRoot'),
                       operation_id=shard.get('jobId'),
                       attempts=shard.get('attempt'),
@@ -642,6 +645,7 @@ def _convert_to_attempt(item):
         call_cached=_is_call_cached(item.get('callCaching')),
         stdout=item.get('stdout'),
         stderr=item.get('stderr'),
+        backend_log=item.get('backendLogs').get('log'),
         call_root=item.get('callRoot'),
         operation_id=item.get('jobId'),
         inputs=item.get('inputs'),

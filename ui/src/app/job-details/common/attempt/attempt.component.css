@@ -109,18 +109,6 @@ mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
   padding-left: 0.3125rem;
 }
 
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem 0.5rem;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.65rem;
-  line-height: 0.65rem;
-  color: #fff;
-  display: block;
-  margin: 0 0.5rem 0 0;
-  height: auto;
-}
-
 .task-status clr-icon,
 .task-inputs clr-icon,
 .task-outputs clr-icon {

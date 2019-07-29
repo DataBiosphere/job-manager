@@ -25,28 +25,24 @@ clr-tooltip a {
 }
 
 clr-icon,
-clr-icon.is-solid,
-mat-icon {
+clr-icon.is-solid {
   color: #5C912E;
   width: 1.5rem;
   height: 1.5rem;
-  display: inline-flex;
+}
+
+mat-icon.mat-icon,
+mat-icon.disabled {
+  margin: 0 0 0 0.0625rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-block;
   vertical-align: middle;
-}
-
-.mat-icon {
-  margin-left: 0.0625rem;
-}
-
-.debug-icons {
-  flex-flow: row;
-  overflow: hidden;
+  line-height: 1.5rem;
 }
 
 clr-icon.disabled {
   color: #ccc;
-  display: inline-flex;
-  vertical-align: middle;
 }
 
 /* override default color of alert triangle for clarity icon */
@@ -56,12 +52,6 @@ clr-icon.disabled {
 
 ::ng-deep .mat-expansion-panel-header.mat-expanded .task-links clr-icon.log-error .clr-i-alert.clr-i-outline--alerted {
   fill: #ccc;
-}
-
-:host-context(.mat-expansion-panel-header.mat-expanded .task-links) clr-icon {
-  color: #ccc;
-  display: inline-flex;
-  vertical-align: middle;
 }
 
 ::ng-deep clr-icon.log-error.disabled .clr-i-alert.clr-i-outline--alerted {

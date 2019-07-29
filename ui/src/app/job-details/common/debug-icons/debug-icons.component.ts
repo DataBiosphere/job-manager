@@ -24,6 +24,7 @@ export class JobDebugIconsComponent implements OnInit {
   @Input() message: string;
   @Input() stdout: string;
   @Input() stderr: string;
+  @Input() backendLog: string;
   @Input() directory: string;
   logFileData: Map<string, string> = new Map();
   private readonly capabilities: CapabilitiesResponse;
@@ -52,6 +53,13 @@ export class JobDebugIconsComponent implements OnInit {
         if (this.stderr) {
           this.getLogContents(this.stderr).then((value) => {
             this.logFileData[this.getFileName(this.stderr)] = value;
+          }).catch(error => {
+            this.handleError(error);
+          });
+        }
+        if (this.backendLog) {
+          this.getLogContents(this.backendLog).then((value) => {
+            this.logFileData[this.getFileName(this.backendLog)] = value;
           }).catch(error => {
             this.handleError(error);
           });

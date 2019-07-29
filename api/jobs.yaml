@@ -728,6 +728,9 @@ definitions:
       stderr:
         type: string
         description: Path to the standard error file for this task
+      backendLog:
+        type: string
+        description: Path to the backend log file for this task
       callRoot:
         type: string
         description: The root directory of the task execution
@@ -774,6 +777,9 @@ definitions:
       stderr:
         type: string
         description: Path to the standard error file for this task
+      backendLog:
+        type: string
+        description: Path to the backend log file for this task
       callRoot:
         type: string
         description: The root directory of the task execution
@@ -829,6 +835,9 @@ definitions:
       stderr:
         type: string
         description: If from a task, path to the standard error file for this task or shard
+      backendLog:
+        type: string
+        description: If from a task, path to the backend log file for this task or shard
       callRoot:
         type: string
         description: If from a task, the root directory of the task or shard execution
@@ -878,6 +887,9 @@ definitions:
       stderr:
         type: string
         description: If from a task, path to the standard error file for this task or shard
+      backendLog:
+        type: string
+        description: If from a task, path to the backend log file for this task or shard
       callRoot:
         type: string
         description: If from a task, the root directory of the task or shard execution
