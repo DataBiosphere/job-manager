@@ -56,30 +56,42 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
   text-align: left;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-start,
-mat-expansion-panel.mat-expansion-panel .task-links {
+mat-expansion-panel.mat-expansion-panel .task-start {
   width: 9.375rem;
 }
 
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-start,
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links {
+mat-expansion-panel.mat-expansion-panel .task-links {
+  width: 11.25rem;
+}
+
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-start {
   width: 8.75rem;
+}
+
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links {
+  width: 10.625rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-status,
 mat-expansion-panel.mat-expansion-panel .task-duration,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
-mat-expansion-panel.mat-expansion-panel .task-outputs,
+mat-expansion-panel.mat-expansion-panel .task-outputs {
+  width: 5rem;
+}
+
 mat-expansion-panel.mat-expansion-panel .task-attempts {
-  width: 6.875rem;
+  width: 5rem;
 }
 
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-status,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-duration,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-inputs,
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-outputs,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-outputs {
+  width: 5rem;
+}
+
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-attempts {
-  width: 5.9375rem;
+  width: 4.375rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-links,
@@ -89,9 +101,7 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
 
 mat-expansion-panel.mat-expansion-panel .task-links,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links {
-  display: flex;
   overflow: visible !important;
-  width: 10.25rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-header[aria-disabled='true'] {
@@ -119,20 +129,4 @@ mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
 .task-duration clr-icon {
   width: 0.875rem;
   height: 0.875rem;
-}
-
-.operation-id-container {
-  display: block;
-  float: right;
-}
-
-.operation-id {
-  display: block;
-  max-width: 15.625rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-  text-decoration: underline;
-  color: rgba(0, 0, 0, 0.54);
 }

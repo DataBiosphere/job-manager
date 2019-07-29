@@ -50,6 +50,12 @@ clr-icon.disabled {
   fill: #e62700;
 }
 
+::ng-deep .mat-expansion-panel-header.mat-expanded .task-links mat-icon .st0,
+::ng-deep .mat-expansion-panel-header.mat-expanded .task-links mat-icon .st4,
+::ng-deep .mat-expansion-panel-header.mat-expanded .task-links clr-icon {
+  fill: #ccc;
+}
+
 ::ng-deep .mat-expansion-panel-header.mat-expanded .task-links clr-icon.log-error .clr-i-alert.clr-i-outline--alerted {
   fill: #ccc;
 }
