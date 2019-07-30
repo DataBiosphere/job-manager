@@ -4,7 +4,7 @@
           (click)="handleClose()">
     <clr-tooltip>
       <clr-icon clrTooltipTrigger shape="times" style="color:#74AE43"></clr-icon>
-      <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+      <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
         <span>go back to list view</span>
       </clr-tooltip-content>
     </clr-tooltip>
@@ -13,13 +13,23 @@
           *ngIf="hasParent()" (click)="handleNavUp()">
     <clr-tooltip>
       <clr-icon clrTooltipTrigger shape="arrow" style="color:#74AE43"></clr-icon>
-      <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
+      <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
         <span>go back to parent job</span>
       </clr-tooltip-content>
     </clr-tooltip>
   </button>
   <button *ngIf="canAbort()" (click)="abortJob()" class="close mat-raised-button">Abort job</button>
-  <p class="job-id">ID: <b>{{ job.id }}</b></p>
+  <p class="job-id">
+    ID: <input matInput id="job-id" value="{{ job.id }}" readonly="readonly" type="text">
+    <button mat-icon-button (click)="copyJobIdToClipboard()" class="copy-button">
+      <clr-tooltip>
+        <clr-icon clrTooltipTrigger [attr.shape]="copyIcon"></clr-icon>
+        <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
+          <span>copy job id to clipboard</span>
+        </clr-tooltip-content>
+      </clr-tooltip>
+    </button>
+  </p>
   <div *ngIf="hasPrimaryLabels()" class="job-labels">
     <span class="label" *ngFor="let l of primaryLabels">
       <span *ngIf="job.labels[l]">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>

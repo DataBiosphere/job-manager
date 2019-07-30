@@ -136,7 +136,7 @@ describe('JobDetailsComponent', () => {
 
   it('renders details', fakeAsync(() => {
     const de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.job-id')).nativeElement.textContent).toContain(jobId);
+    expect(de.query(By.css('#job-id')).nativeElement.value).toContain(jobId);
   }));
 
   it('navigates to jobs table on close', fakeAsync(() => {
