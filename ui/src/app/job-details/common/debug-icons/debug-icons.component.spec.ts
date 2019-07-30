@@ -7,7 +7,7 @@ import {SharedModule} from '../../../shared/shared.module';
 import {JobDebugIconsComponent} from "./debug-icons.component";
 import {AuthService} from "../../../core/auth.service";
 import {FakeCapabilitiesService} from "../../../testing/fake-capabilities.service";
-import {MatSnackBarModule} from "@angular/material";
+import {MatSnackBarModule, MatIconModule} from "@angular/material";
 import {GcsService} from "../../../core/gcs.service";
 import {JobManagerService} from "../../../core/job-manager.service";
 import {FakeJobManagerService} from "../../../testing/fake-job-manager.service";
@@ -35,6 +35,7 @@ describe('JobDebugIconsComponent', () => {
         BrowserAnimationsModule,
         ClrIconModule,
         ClrTooltipModule,
+        MatIconModule,
         MatSnackBarModule,
         SharedModule
       ],

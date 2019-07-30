@@ -5,6 +5,7 @@ import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
   MatButtonModule,
   MatExpansionModule,
+  MatIconModule,
   MatMenuModule,
   MatSnackBarModule,
   MatTableModule,
@@ -152,6 +153,7 @@ describe('JobTabsComponent', () => {
         CommonModule,
         MatButtonModule,
         MatExpansionModule,
+        MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
         MatTableModule,

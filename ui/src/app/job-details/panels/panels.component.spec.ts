@@ -6,10 +6,11 @@ import {
   MatButtonModule,
   MatCardModule,
   MatGridListModule,
+  MatIconModule,
   MatMenuModule,
   MatSnackBar,
   MatTabsModule,
-  MatTableModule
+  MatTableModule,
 } from '@angular/material';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {SharedModule} from '../../shared/shared.module';
@@ -63,6 +64,7 @@ describe('JobPanelsComponent', () => {
         MatButtonModule,
         MatCardModule,
         MatGridListModule,
+        MatIconModule,
         MatMenuModule,
         MatTabsModule,
         MatTableModule,
