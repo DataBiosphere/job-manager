@@ -86,7 +86,7 @@ describe('JobPanelsComponent', () => {
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.card')).length).toEqual(1);
     expect(de.query(By.css('.header')).nativeElement.textContent).toEqual('');
-    expect(de.query(By.css('.job-id')).nativeElement.textContent)
+    expect(de.query(By.css('#job-id')).nativeElement.value)
       .toContain(minimalJob.id);
   }));
 

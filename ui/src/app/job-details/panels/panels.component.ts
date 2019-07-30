@@ -33,6 +33,7 @@ export class JobPanelsComponent implements OnInit {
   @Output() close: EventEmitter<any> = new EventEmitter();
   @Output() navUp: EventEmitter<any> = new EventEmitter();
   @ViewChild(JobFailuresTableComponent) jobFailures;
+
   labels: Array<string> = [];
   displayedExtensions: Array<string> = [];
   numSucceededTasks: number = 0;
@@ -40,6 +41,7 @@ export class JobPanelsComponent implements OnInit {
   numRunningTasks: number = 0;
   numTasks: number = 0;
   public readonly numOfErrorsToShow = 4;
+  copyIcon = 'copy-to-clipboard';
 
   constructor(
     private readonly snackBar: MatSnackBar,
@@ -133,6 +135,25 @@ export class JobPanelsComponent implements OnInit {
 
   canAbort(): boolean {
     return !this.hasParent() && (this.job.status == JobStatus.Submitted || this.job.status == JobStatus.Running);
+  }
+
+  copyJobIdToClipboard(): void {
+    try {
+      const jobIdInput = document.querySelector('#job-id') as HTMLInputElement;
+      jobIdInput.select();
+      document.execCommand('copy');
+      this.changeCopyIcon('check');
+    } catch (error) {
+      this.changeCopyIcon('times');
+      console.log(error);
+    }
+  }
+
+  changeCopyIcon(newIcon: string): void {
+    this.copyIcon = newIcon;
+    setTimeout(() => {
+      this.copyIcon ='copy-to-clipboard';
+    }, 1500);
   }
 
   handleError(error: any) {
