@@ -11,7 +11,8 @@ export class CustomIconService {
     this.matIconRegistry.addSvgIcon(
       'cloud-file',
       this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/icon-cloud-file.svg')
-    ).addSvgIcon(
+    );
+    this.matIconRegistry.addSvgIcon(
       'cloud-file-disabled',
       this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/icon-cloud-file-disabled.svg')
     );
