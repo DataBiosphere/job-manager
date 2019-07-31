@@ -45,6 +45,11 @@ clr-icon.disabled {
   color: #ccc;
 }
 
+::ng-deep .task-links mat-icon.disabled .st0,
+::ng-deep .task-links mat-icon.disabled .st4 {
+  fill: #ccc;
+}
+
 /* override default color of alert triangle for clarity icon */
 ::ng-deep clr-icon.log-error .clr-i-alert.clr-i-outline--alerted {
   fill: #e62700;

@@ -12,9 +12,5 @@ export class CustomIconService {
       'cloud-file',
       this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/icon-cloud-file.svg')
     );
-    this.matIconRegistry.addSvgIcon(
-      'cloud-file-disabled',
-      this.domSanitizer.bypassSecurityTrustResourceUrl('/assets/images/icon-cloud-file-disabled.svg')
-    );
   }
 }

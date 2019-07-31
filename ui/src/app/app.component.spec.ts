@@ -5,7 +5,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {By, DomSanitizer} from '@angular/platform-browser';
+import {By} from '@angular/platform-browser';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Injectable} from '@angular/core';
 import {Location} from '@angular/common';
@@ -26,7 +26,6 @@ import {CustomIconService} from "./core/custom-icon.service";
 
 describe('AppComponent', () => {
   let customIconService;
-  let sanitizer;
   let fixture: ComponentFixture<AppComponent>;
   let testComponent: AppComponent;
 
@@ -66,7 +65,6 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     customIconService = TestBed.get(CustomIconService);
-    sanitizer = TestBed.get(DomSanitizer);
     fixture = TestBed.createComponent(AppComponent);
     testComponent = fixture.componentInstance;
   });

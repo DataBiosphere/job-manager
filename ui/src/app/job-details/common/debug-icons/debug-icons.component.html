@@ -24,7 +24,7 @@
       </clr-tooltip-content>
     </button>
   </clr-tooltip>
-  <mat-icon  *ngIf="!getResourceUrl(backendLog)" svgIcon="cloud-file-disabled"></mat-icon>
+  <mat-icon *ngIf="!getResourceUrl(backendLog)" svgIcon="cloud-file" class="disabled"></mat-icon>
   <clr-tooltip *ngIf="getResourceUrl(backendLog)">
     <button class="log-item" (click)="showOrLinkTo($event, backendLog)">
       <mat-icon clrTooltipTrigger svgIcon="cloud-file"></mat-icon>
