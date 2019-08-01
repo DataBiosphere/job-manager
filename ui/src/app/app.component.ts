@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AuthService} from "./core/auth.service";
 import {Router} from "@angular/router";
 import {CustomIconService} from './core/custom-icon.service';
@@ -8,16 +8,13 @@ import {CustomIconService} from './core/custom-icon.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
   constructor(
     private readonly router: Router,
     private readonly authService: AuthService,
     private customIconService: CustomIconService
   ) { }
-
-  ngOnInit() {
-  }
 
   isSignedIn(): boolean {
     return !!this.authService.userId;
