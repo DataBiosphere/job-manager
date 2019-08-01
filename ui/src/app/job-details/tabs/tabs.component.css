@@ -80,9 +80,12 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
   text-transform: uppercase;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-start,
+mat-expansion-panel.mat-expansion-panel .task-start {
+  width: 9.375rem;
+}
+
 mat-expansion-panel.mat-expansion-panel .task-links {
-  width: 150px;
+  width: 11.25rem;
 }
 
 mat-expansion-panel.mat-expansion-panel.list-header .task-links {
@@ -94,7 +97,7 @@ mat-expansion-panel.mat-expansion-panel .task-duration,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
 mat-expansion-panel.mat-expansion-panel .task-outputs,
 mat-expansion-panel.mat-expansion-panel .task-attempts {
-  width: 110px;
+  width: 5rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-attempts {

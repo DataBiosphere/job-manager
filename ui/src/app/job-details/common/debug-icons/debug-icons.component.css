@@ -31,8 +31,23 @@ clr-icon.is-solid {
   height: 1.5rem;
 }
 
+mat-icon.mat-icon,
+mat-icon.disabled {
+  margin: 0 0 0 0.0625rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1.5rem;
+}
+
 clr-icon.disabled {
   color: #ccc;
+}
+
+::ng-deep .task-links mat-icon.disabled .st0,
+::ng-deep .task-links mat-icon.disabled .st4 {
+  fill: #ccc;
 }
 
 /* override default color of alert triangle for clarity icon */
@@ -40,12 +55,14 @@ clr-icon.disabled {
   fill: #e62700;
 }
 
-::ng-deep .mat-expansion-panel-header.mat-expanded .task-links clr-icon.log-error .clr-i-alert.clr-i-outline--alerted {
+::ng-deep .mat-expansion-panel-header.mat-expanded .task-links mat-icon .st0,
+::ng-deep .mat-expansion-panel-header.mat-expanded .task-links mat-icon .st4,
+::ng-deep .mat-expansion-panel-header.mat-expanded .task-links clr-icon {
   fill: #ccc;
 }
 
-:host-context(.mat-expansion-panel-header.mat-expanded .task-links) clr-icon {
-  color: #ccc;
+::ng-deep .mat-expansion-panel-header.mat-expanded .task-links clr-icon.log-error .clr-i-alert.clr-i-outline--alerted {
+  fill: #ccc;
 }
 
 ::ng-deep clr-icon.log-error.disabled .clr-i-alert.clr-i-outline--alerted {

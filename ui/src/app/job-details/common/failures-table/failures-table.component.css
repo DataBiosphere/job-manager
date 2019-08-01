@@ -58,17 +58,16 @@ td.failure-message {
 
 th.failure-links,
 td.failure-links {
-  min-width: 6.625rem;
+  min-width: 11.875em;
 }
 
 .log-item {
-  color: black;
   cursor: pointer;
   text-decoration: none;
 }
 
-.failure-links clr-icon:last-child {
-  margin-right: 0;
+.failure-links clr-icon {
+  margin: 0;
 }
 
 :host-context(mat-card.card) .mat-header-row {
@@ -86,13 +85,13 @@ td.failure-links {
 }
 
 :host-context(mat-card.card) td.failure-task {
-  min-width: 7.8125rem;
-  max-width: 7.8125rem;
+  min-width: 6.25rem;
+  max-width: 6.25rem;
   font-size: 0.7rem;
 }
 
 :host-context(mat-card.card) td.failure-links {
-  min-width: 8.25rem;
+  min-width: 10rem;
   padding-right: 0px;
 }
 

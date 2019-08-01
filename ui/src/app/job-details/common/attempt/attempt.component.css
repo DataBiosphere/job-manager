@@ -1,3 +1,14 @@
+clr-tooltip-content {
+  background-color: rgba(0, 0, 0, 0.65);
+  text-align: left;
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  max-width: 29.25rem;
+  z-index: 999;
+  font-size: 0.65rem;
+  line-height: 0.8rem;
+}
+
 mat-expansion-panel.mat-expansion-panel {
   padding: 0;
   margin: 0;
@@ -56,30 +67,42 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
   text-align: left;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-start,
-mat-expansion-panel.mat-expansion-panel .task-links {
+mat-expansion-panel.mat-expansion-panel .task-start {
   width: 9.375rem;
 }
 
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-start,
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links {
+mat-expansion-panel.mat-expansion-panel .task-links {
+  width: 11.25rem;
+}
+
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-start {
   width: 8.75rem;
+}
+
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links {
+  width: 10.625rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-status,
 mat-expansion-panel.mat-expansion-panel .task-duration,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
-mat-expansion-panel.mat-expansion-panel .task-outputs,
+mat-expansion-panel.mat-expansion-panel .task-outputs {
+  width: 5rem;
+}
+
 mat-expansion-panel.mat-expansion-panel .task-attempts {
-  width: 6.875rem;
+  width: 5rem;
 }
 
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-status,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-duration,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-inputs,
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-outputs,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-outputs {
+  width: 5rem;
+}
+
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-attempts {
-  width: 6.25rem;
+  width: 4.375rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-links,
@@ -87,7 +110,8 @@ mat-expansion-panel.mat-expansion-panel .task-attempts {
   text-align: right;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-links {
+mat-expansion-panel.mat-expansion-panel .task-links,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links {
   overflow: visible !important;
 }
 
@@ -106,18 +130,6 @@ mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
   padding-left: 0.3125rem;
 }
 
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem 0.5rem;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.65rem;
-  line-height: 0.65rem;
-  color: #fff;
-  display: block;
-  margin: 0 0.5rem 0 0;
-  height: auto;
-}
-
 .task-status clr-icon,
 .task-inputs clr-icon,
 .task-outputs clr-icon {
@@ -128,20 +140,4 @@ clr-tooltip-content {
 .task-duration clr-icon {
   width: 0.875rem;
   height: 0.875rem;
-}
-
-.operation-id-container {
-  display: block;
-  float: right;
-}
-
-.operation-id {
-  display: block;
-  max-width: 15.625rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-  text-decoration: underline;
-  color: rgba(0, 0, 0, 0.54);
 }

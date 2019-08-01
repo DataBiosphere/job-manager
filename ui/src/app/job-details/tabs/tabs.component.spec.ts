@@ -1,10 +1,12 @@
+import {HttpClientModule} from "@angular/common/http";
 import {TestBed, async, ComponentFixture} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
+import {By, DomSanitizer} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement, ViewChild} from '@angular/core';
 import {
   MatButtonModule,
   MatExpansionModule,
+  MatIconModule, MatIconRegistry,
   MatMenuModule,
   MatSnackBarModule,
   MatTableModule,
@@ -36,6 +38,8 @@ import {CapabilitiesService} from "../../core/capabilities.service";
 describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;
   let fixture: ComponentFixture<TestTasksComponent>;
+  let iconRegistry;
+  let sanitizer;
   let fakeJobService: FakeJobManagerService;
   let tasks: TaskMetadata[] = [];
   let fakeCapabilitiesService = new FakeCapabilitiesService({});
@@ -150,8 +154,10 @@ describe('JobTabsComponent', () => {
         ClrIconModule,
         ClrTooltipModule,
         CommonModule,
+        HttpClientModule,
         MatButtonModule,
         MatExpansionModule,
+        MatIconModule,
         MatMenuModule,
         MatSnackBarModule,
         MatTableModule,
@@ -170,6 +176,9 @@ describe('JobTabsComponent', () => {
   }));
 
   beforeEach(() => {
+    iconRegistry = TestBed.get(MatIconRegistry);
+    sanitizer = TestBed.get(DomSanitizer);
+    iconRegistry.addSvgIcon('cloud-file', sanitizer.bypassSecurityTrustResourceUrl('/assets/images/icon-cloud-file.svg'));
     fixture = TestBed.createComponent(TestTasksComponent);
     testComponent = fixture.componentInstance;
   });

@@ -1,4 +1,3 @@
-<div class="debug-icons">
   <clr-tooltip *ngIf="displayMessage">
     <a class="log-item">
       <clr-icon clrTooltipTrigger shape="exclamation-triangle" style="color:#DB3214"></clr-icon>
@@ -25,6 +24,15 @@
       </clr-tooltip-content>
     </button>
   </clr-tooltip>
+  <mat-icon *ngIf="!getResourceUrl(backendLog)" svgIcon="cloud-file" class="disabled"></mat-icon>
+  <clr-tooltip *ngIf="getResourceUrl(backendLog)">
+    <button class="log-item" (click)="showOrLinkTo($event, backendLog)">
+      <mat-icon clrTooltipTrigger svgIcon="cloud-file"></mat-icon>
+      <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+        <span>backend log</span>
+      </clr-tooltip-content>
+    </button>
+  </clr-tooltip>
   <clr-icon *ngIf="!getDirectoryUrl(directory)" shape="folder" class="is-solid disabled"></clr-icon>
   <clr-tooltip *ngIf="getDirectoryUrl(directory)">
     <a class="log-item" [href]="getDirectoryUrl(directory)" target="_blank" (click)="$event.stopPropagation()">
@@ -42,4 +50,4 @@
       </clr-tooltip-content>
     </button>
   </clr-tooltip>
-</div>
+

@@ -1,5 +1,6 @@
+import {HttpClientModule} from "@angular/common/http";
 import {TestBed, async, ComponentFixture} from '@angular/core/testing';
-import {By} from '@angular/platform-browser';
+import {By, DomSanitizer} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {Component, DebugElement, ViewChild} from '@angular/core';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
@@ -7,7 +8,7 @@ import {SharedModule} from '../../../shared/shared.module';
 import {JobDebugIconsComponent} from "./debug-icons.component";
 import {AuthService} from "../../../core/auth.service";
 import {FakeCapabilitiesService} from "../../../testing/fake-capabilities.service";
-import {MatSnackBarModule} from "@angular/material";
+import {MatSnackBarModule, MatIconModule, MatIconRegistry} from "@angular/material";
 import {GcsService} from "../../../core/gcs.service";
 import {JobManagerService} from "../../../core/job-manager.service";
 import {FakeJobManagerService} from "../../../testing/fake-job-manager.service";
@@ -16,6 +17,8 @@ import {CapabilitiesService} from "../../../core/capabilities.service";
 describe('JobDebugIconsComponent', () => {
   let fixture: ComponentFixture<TestDebugIconsComponent>;
   let testComponent: TestDebugIconsComponent;
+  let iconRegistry;
+  let sanitizer;
   let job = {
     failure: 'things went wrong',
     stdout : 'gs://test-bucket/test-job/stdout.txt',
@@ -35,6 +38,8 @@ describe('JobDebugIconsComponent', () => {
         BrowserAnimationsModule,
         ClrIconModule,
         ClrTooltipModule,
+        HttpClientModule,
+        MatIconModule,
         MatSnackBarModule,
         SharedModule
       ],
@@ -48,6 +53,9 @@ describe('JobDebugIconsComponent', () => {
   }));
 
   beforeEach(() => {
+    iconRegistry = TestBed.get(MatIconRegistry);
+    sanitizer = TestBed.get(DomSanitizer);
+    iconRegistry.addSvgIcon('cloud-file', sanitizer.bypassSecurityTrustResourceUrl('/assets/images/icon-cloud-file.svg'));
     fixture = TestBed.createComponent(TestDebugIconsComponent);
     testComponent = fixture.componentInstance;
   });
