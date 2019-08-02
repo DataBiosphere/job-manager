@@ -45,6 +45,7 @@ job_include_keys = attempt_include_keys + (
 
 offset_aware_now = datetime.utcnow().replace(tzinfo=pytz.utc)
 
+
 @requires_auth
 def abort_job(id, **kwargs):
     """
@@ -351,8 +352,7 @@ def format_scattered_task(task_name, task_metadata):
                 Shard(execution_status=task_statuses.cromwell_execution_to_api(
                     shard.get('executionStatus')),
                       start=_parse_datetime(shard.get('start'))
-                      or _parse_datetime(shard.get('end'))
-                      or offset_aware_now,
+                      or _parse_datetime(shard.get('end')) or offset_aware_now,
                       end=_parse_datetime(shard.get('end')),
                       shard_index=shard.get('shardIndex'),
                       execution_events=_get_execution_events(
@@ -366,7 +366,8 @@ def format_scattered_task(task_name, task_metadata):
                       attempts=shard.get('attempt'),
                       failure_messages=failure_messages,
                       job_id=shard.get('subWorkflowId')))
-            if shard.get('start') and min_start > _parse_datetime(shard.get('start')):
+            if shard.get('start') and min_start > _parse_datetime(
+                    shard.get('start')):
                 min_start = _parse_datetime(shard.get('start'))
             if shard.get('executionStatus') not in ['Failed', 'Done']:
                 max_end = None
@@ -450,8 +451,7 @@ def query_jobs(body, **kwargs):
     last_page = get_last_page(total_results, query_page_size)
 
     jobs_list = [
-        format_job(job, offset_aware_now)
-        for job in response.json()['results']
+        format_job(job, offset_aware_now) for job in response.json()['results']
     ]
     if page >= last_page:
         return QueryJobsResponse(results=jobs_list, total_size=total_results)
