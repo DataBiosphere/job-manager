@@ -561,7 +561,7 @@ def get_operation_details(job, operation, **kwargs):
     :param job: Job ID
     :type id: str
 
-    :param operation_id: Operation ID
+    :param operation: Operation ID
     :type id: str
 
     :rtype: str
@@ -581,6 +581,58 @@ def get_operation_details(job, operation, **kwargs):
         handle_error(response)
 
     return JobOperationResponse(id=job, details=response.text)
+
+
+@requires_auth
+def tail_file_contents(bucket, object):
+    """
+    Query for operation details from Google Pipelines API
+
+    :param bucket: the ID of the Google Storage bucket where the file is
+    :type id: str
+
+    :param object: the ID of the file
+    :type id: str
+
+    :rtype: str
+    """
+    if not _get_sam_url():
+        logger.warning(
+            'Tried to get file contents using pet service account, but no SAM URL is configured.'
+        )
+        return ''
+
+    token = get_pet_token()
+    url = 'https://{bucket}.storage.googleapis.com/{object}'.format(
+        bucket=bucket, object=object)
+    headers = {
+        'Content-Type': 'text/xml',
+        'Authorization': 'Bearer ' + token,
+        'Range': 'bytes=-20000'
+    }
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        return ''
+    return response.content
+
+
+@requires_auth
+def get_pet_token(**kwargs):
+    headers = kwargs.get('auth_headers')
+    headers['Content-Type'] = 'application/json'
+    response = requests.post(
+        '{sam_url}/user/petServiceAccount/token'.format(
+            sam_url=_get_sam_url()),
+        data=json.dumps(
+            ['https://www.googleapis.com/auth/devstorage.read_only']),
+        headers=headers)
+    if response.status_code != 200:
+        handle_error(response)
+
+    logger.warning('token: {}'.format(response.content))
+
+    return response.content
 
 
 def _get_execution_events(events):
@@ -615,6 +667,10 @@ def _parse_datetime(date_string):
 
 def _get_base_url():
     return current_app.config['cromwell_url']
+
+
+def _get_sam_url():
+    return current_app.config['sam_url']
 
 
 def _format_query_labels(orig_query_labels):
@@ -676,6 +732,7 @@ def _is_call_cached(metadata):
 
 
 def _get_response_message(response):
+    logger.error('{}'.format(response.content))
     if is_jsonable(response) and response.json().get('message'):
         return response.json().get('message')
     return str(response)
