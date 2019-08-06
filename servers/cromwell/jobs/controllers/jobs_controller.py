@@ -6,6 +6,7 @@ from dateutil.tz import *
 import dateutil.parser
 import json
 import logging
+import pytz
 import urllib
 
 from jm_utils import page_tokens
@@ -41,6 +42,8 @@ attempt_include_keys = ('attempt', 'backendLogs:log', 'callCaching:hit',
 job_include_keys = attempt_include_keys + (
     'calls', 'description', 'executionEvents', 'labels', 'parentWorkflowId',
     'returnCode', 'status', 'submission', 'subWorkflowId', 'workflowName')
+
+offset_aware_now = datetime.utcnow().replace(tzinfo=pytz.utc)
 
 
 @requires_auth
@@ -137,7 +140,7 @@ def get_job(id, **kwargs):
         # for subworkflows in which case we fallback to the workflow start time
         # or, if not started, the current time. This fallback logic may be
         # removed if/when Cromwell changes behavior per https://github.com/broadinstitute/cromwell/issues/2968.
-        submission = start or datetime.utcnow()
+        submission = start or offset_aware_now
     return JobMetadataResponse(
         id=id,
         name=job.get('workflowName'),
@@ -279,7 +282,7 @@ def format_task(task_name, task_metadata):
         execution_status=task_statuses.cromwell_execution_to_api(
             latest_attempt.get('executionStatus')),
         start=_parse_datetime(latest_attempt.get('start'))
-        or _parse_datetime(latest_attempt.get('end')) or datetime.utcnow(),
+        or _parse_datetime(latest_attempt.get('end')) or offset_aware_now,
         end=_parse_datetime(latest_attempt.get('end')),
         stderr=latest_attempt.get('stderr'),
         stdout=latest_attempt.get('stdout'),
@@ -334,7 +337,7 @@ def format_scattered_task(task_name, task_metadata):
     current_shard = ''
     min_start = _parse_datetime(
         task_metadata[0].get('start')) or _parse_datetime(
-            task_metadata[0].get('end')) or datetime.utcnow()
+            task_metadata[0].get('end')) or offset_aware_now
     max_end = _parse_datetime(task_metadata[-1].get('end'))
 
     # go through calls in reverse to grab the latest attempt if there are multiple
@@ -349,8 +352,7 @@ def format_scattered_task(task_name, task_metadata):
                 Shard(execution_status=task_statuses.cromwell_execution_to_api(
                     shard.get('executionStatus')),
                       start=_parse_datetime(shard.get('start'))
-                      or _parse_datetime(shard.get('end'))
-                      or datetime.utcnow(),
+                      or _parse_datetime(shard.get('end')) or offset_aware_now,
                       end=_parse_datetime(shard.get('end')),
                       shard_index=shard.get('shardIndex'),
                       execution_events=_get_execution_events(
@@ -449,8 +451,7 @@ def query_jobs(body, **kwargs):
     last_page = get_last_page(total_results, query_page_size)
 
     jobs_list = [
-        format_job(job, datetime.utcnow())
-        for job in response.json()['results']
+        format_job(job, offset_aware_now) for job in response.json()['results']
     ]
     if page >= last_page:
         return QueryJobsResponse(results=jobs_list, total_size=total_results)
@@ -656,8 +657,8 @@ def _convert_to_attempt(item):
         inputs=item.get('inputs'),
         outputs=item.get('outputs'),
         start=_parse_datetime(item.get('start'))
-        or _parse_datetime(item.get('end')) or datetime.utcnow(),
-        end=_parse_datetime(item.get('end')) or datetime.utcnow())
+        or _parse_datetime(item.get('end')) or offset_aware_now,
+        end=_parse_datetime(item.get('end')) or offset_aware_now)
 
     if item.get('failures'):
         attempt.failure_messages = [

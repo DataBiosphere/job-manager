@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.4.1 Release Notes
+
+### Fixed a bug that caused Job Manager to throw a 500 error when it attempted to process a scattered task shard with no end time.
+
 ## v1.4.0 Release Notes
 
 ### Added an additional log to the job details page, which provides details from the Google Pipelines backend.
