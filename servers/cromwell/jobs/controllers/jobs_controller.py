@@ -559,28 +559,25 @@ def get_operation_details(job, operation, **kwargs):
     Query for operation details from Google Pipelines API
 
     :param job: Job ID
-    :type id: str
+    :type job: str
 
     :param operation: Operation ID
-    :type id: str
+    :type operation: str
 
     :rtype: str
     """
 
-    capabilities = current_app.config['capabilities']
-    if hasattr(capabilities, 'authentication') and hasattr(
-            capabilities.authentication,
-            'outside_auth') and capabilities.authentication.outside_auth:
+    if _get_sam_url():
         url = '{cromwell_url}/{id}/backend/metadata/{backendId}'.format(
             cromwell_url=_get_base_url(), id=job, backendId=operation)
         response = requests.get(url,
                                 auth=kwargs.get('auth'),
                                 headers=kwargs.get('auth_headers'))
 
-    if response.status_code != 200:
-        handle_error(response)
+        if response.status_code != 200:
+            handle_error(response)
 
-    return JobOperationResponse(id=job, details=response.text)
+        return JobOperationResponse(id=job, details=response.text)
 
 
 @requires_auth
@@ -589,10 +586,10 @@ def tail_file_contents(bucket, object):
     Query for operation details from Google Pipelines API
 
     :param bucket: the ID of the Google Storage bucket where the file is
-    :type id: str
+    :type bucket: str
 
     :param object: the ID of the file
-    :type id: str
+    :type object: str
 
     :rtype: str
     """

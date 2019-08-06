@@ -2,9 +2,6 @@ from flask import current_app
 from jobs.models.capabilities_response import CapabilitiesResponse
 from jobs.models.authentication_capability import AuthenticationCapability
 from jobs.models.display_field import DisplayField
-import logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
 
 def get_capabilities():
@@ -17,7 +14,6 @@ def get_capabilities():
     # Set outside_auth to True if a SAM server is going to be used
     if 'capabilities' in current_app.config:
         config_capabilities = current_app.config['capabilities']
-        logger.warning('sam_url: {}'.format(current_app.config['sam_url']))
         if current_app.config['sam_url'] and config_capabilities.authentication:
             config_capabilities.authentication = AuthenticationCapability(
                 is_required=config_capabilities.authentication.is_required,
