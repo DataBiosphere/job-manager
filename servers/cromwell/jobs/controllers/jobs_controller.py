@@ -17,6 +17,7 @@ from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
+from jobs.models.file_contents import FileContents
 from jobs.models.shard import Shard
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
@@ -581,7 +582,7 @@ def get_operation_details(job, operation, **kwargs):
 
 
 @requires_auth
-def tail_file_contents(bucket, object):
+def tail_file_contents(bucket, object, **kwargs):
     """
     Query for operation details from Google Pipelines API
 
@@ -597,7 +598,7 @@ def tail_file_contents(bucket, object):
         logger.warning(
             'Tried to get file contents using pet service account, but no SAM URL is configured.'
         )
-        return ''
+        return None
 
     token = get_pet_token()
     url = 'https://{bucket}.storage.googleapis.com/{object}'.format(
@@ -610,8 +611,10 @@ def tail_file_contents(bucket, object):
     response = requests.get(url, headers=headers)
 
     if response.status_code != 200:
-        return ''
-    return response.content
+        handle_error(response)
+    return FileContents(
+        contents=response.content,
+        truncated=True if len(response.content) == 20000 else False)
 
 
 @requires_auth
@@ -626,9 +629,6 @@ def get_pet_token(**kwargs):
         headers=headers)
     if response.status_code != 200:
         handle_error(response)
-
-    logger.warning('token: {}'.format(response.content))
-
     return response.content
 
 
@@ -729,7 +729,7 @@ def _is_call_cached(metadata):
 
 
 def _get_response_message(response):
-    logger.error('{}'.format(response.content))
+    logger.error('Response error: {}'.format(response.content))
     if is_jsonable(response) and response.json().get('message'):
         return response.json().get('message')
     return str(response)

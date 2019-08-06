@@ -215,7 +215,7 @@ def get_operation_details(job, operation, **kwargs):
     raise NotImplementedError('Operation details not supported by dsub.')
 
 
-def tail_file_contents(bucket, object):
+def tail_file_contents(bucket, object, **kwargs):
     """
     Placeholder for request for file contents from the Google Storage API
 

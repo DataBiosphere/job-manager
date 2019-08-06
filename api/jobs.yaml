@@ -976,11 +976,17 @@ definitions:
         type: boolean
 
   FileContents:
-    description: response from the health endpoint
+    description: The contents of a file in Google Storage
+    required:
+      - contents
+      - truncated
     properties:
-      text:
-        description: the contents of the file
+      contents:
         type: string
+      truncated:
+        description: Whether or not the file was truncated because of size
+        type: string
+
 
 responses:
   BadRequest:
