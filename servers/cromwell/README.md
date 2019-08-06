@@ -11,7 +11,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     ```
 
     - **Note:** If you want to setup this API Server against a locally hosted Cromwell instance, you cannot just use `localhost` or `127.0.0.1` because the docker compose image will try to connect back to itself rather than to your local host.
-    - Instead, provide the ip address (inet if the Cromwell is hosted on the same machine) to the Cromwell with port numbers. for example:
+    - Instead, provide the IP address (inet if the Cromwell is hosted on the same machine) to the Cromwell with port numbers. for example:
     ```
     export CROMWELL_URL=http://192.168.0.106:8000/api/workflows/v1
     ```
@@ -263,6 +263,78 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 ```
   - The `forcedLogoutDomains` setting is an array of user domains where this should apply.
   - The `forcedLogoutTime` is the amount of inactive time (in milliseconds) that will trigger an automatic sign-out.
+
+
+- (Optional, CromIAM and SAM) Configure fields to display
+  - **Note:** If you want to use use Job Manager against CromIAM and you also have access to a SAM server to handle authentication, the `capabilities_config.json` can be set up with the `outsideAuth` setting in the `authentication` section, which will allow job manager to get Google Pipelines operation details and the contents of log files stored in the job's execution directory:
+```json
+{
+  "displayFields": [
+    {
+      "field": "id",
+      "display": "Workflow ID"
+    },
+    {
+      "field": "name",
+      "display": "Name",
+      "filterable": true
+    },
+    {
+      "field": "status",
+      "display": "Status"
+    },
+    {
+      "field": "submission",
+      "display": "Submitted",
+      "fieldType": "date"
+    },
+    {
+      "field": "labels.label",
+      "display": "Label",
+      "fieldType": "text",
+      "editable": true,
+      "bulkEditable": true
+    },
+    {
+      "field": "labels.flag",
+      "display": "Flag",
+      "editable": true,
+      "bulkEditable": true,
+      "fieldType": "list",
+      "validFieldValues": [
+        "archive",
+        "follow-up"
+      ]
+    },
+    {
+      "field": "labels.comment",
+      "display": "Comment",
+      "fieldType": "text",
+      "editable": true
+    }
+  ],
+  "commonLabels": [
+    "id",
+    "name",
+    "label",
+    "comment",
+    "flag"
+  ],
+  "queryExtensions": [
+    "hideArchived"
+  ],
+  "authentication": {
+    "isRequired": true,
+    "scopes": [
+      "openid",
+      "email",
+      "profile"
+    ],
+    "outsideAuth": true
+  }
+}
+```
+  - For this to function, you will also need to set `SAM_URL` in `cromwell-caas-compose.yaml`.
 
 - Link docker compose
   - **Note:** You may have completed this already if following the Job Manager [Development instructions](../../README.md#Development)
