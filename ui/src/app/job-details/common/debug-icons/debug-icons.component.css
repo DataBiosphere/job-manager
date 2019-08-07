@@ -46,7 +46,9 @@ clr-icon.disabled {
 }
 
 ::ng-deep .task-links mat-icon.disabled .st0,
-::ng-deep .task-links mat-icon.disabled .st4 {
+::ng-deep .task-links mat-icon.disabled .st4,
+::ng-deep .failure-links mat-icon.disabled .st0,
+::ng-deep .failure-links mat-icon.disabled .st4 {
   fill: #ccc;
 }
 
