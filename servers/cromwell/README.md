@@ -334,7 +334,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
   }
 }
 ```
-  - For this to function, you will also need to set `SAM_URL` in `cromwell-caas-compose.yaml`.
+  - For this to function, you will also need to set `SAM_URL` in `cromwell-caas-compose.yaml` and, **just as importantly** have a way to give pet accounts access to their associated bucket/execution directory.
 
 - Link docker compose
   - **Note:** You may have completed this already if following the Job Manager [Development instructions](../../README.md#Development)

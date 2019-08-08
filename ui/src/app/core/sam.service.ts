@@ -41,7 +41,6 @@ export class SamService {
   }
 
   async getFileTail(bucket: string, object: string): Promise<FileContents> {
-    console.log(object);
     return this.http.get(`${this.apiUrl}/jobs/tailFile`,
       new RequestOptions({
         params: {
@@ -52,7 +51,6 @@ export class SamService {
       }))
       .toPromise()
       .then(response => {
-        console.log(response.json());
         return response.json();
       })
       .catch((error) => this.handleError(error));
