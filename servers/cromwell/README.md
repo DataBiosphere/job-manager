@@ -266,7 +266,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 
 
 - (Optional, CromIAM and SAM) Configure fields to display
-  - **Note:** If you want to use Job Manager against CromIAM and you also have access to a SAM server to handle authentication, the `capabilities_config.json` can be set up with the `outsideAuth` setting in the `authentication` section, which will allow job manager to get Google Pipelines operation details and the contents of log files stored in the job's execution directory:
+  - **Note:** If you want to use Job Manager against CromIAM and you also have access to a SAM server to handle authentication, the `capabilities_config.json` can be set up with the `outsideAuth` setting in the `authentication` section, which will allow Job Manager to get Google Pipelines operation details and the contents of log files stored in the job's execution directory:
 ```json
 {
   "displayFields": [
