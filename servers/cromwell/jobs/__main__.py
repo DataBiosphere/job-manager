@@ -22,6 +22,10 @@ parser.add_argument('--cromwell_url',
                     type=str,
                     help='Url for fetching data from cromwell',
                     default=os.environ.get('CROMWELL_URL'))
+parser.add_argument('--sam_url',
+                    type=str,
+                    help='Url for fetching authentication from SAM',
+                    default=os.environ.get('SAM_URL'))
 parser.add_argument(
     '--use_caas',
     type=str,
@@ -83,6 +87,7 @@ except (IOError, TypeError):
         'Failed to load capabilities config, using default display fields.')
 
 app.app.config['cromwell_url'] = args.cromwell_url
+app.app.config['sam_url'] = args.sam_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'
 app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)

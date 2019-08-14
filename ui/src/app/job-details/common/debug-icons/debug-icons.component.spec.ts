@@ -13,6 +13,7 @@ import {GcsService} from "../../../core/gcs.service";
 import {JobManagerService} from "../../../core/job-manager.service";
 import {FakeJobManagerService} from "../../../testing/fake-job-manager.service";
 import {CapabilitiesService} from "../../../core/capabilities.service";
+import { SamService } from "../../../core/sam.service";
 
 describe('JobDebugIconsComponent', () => {
   let fixture: ComponentFixture<TestDebugIconsComponent>;
@@ -48,6 +49,7 @@ describe('JobDebugIconsComponent', () => {
         {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null)},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         {provide: JobManagerService, useValue: fakeJobService},
+        {provide: SamService}
       ],
     }).compileComponents();
   }));

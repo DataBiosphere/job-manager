@@ -20,6 +20,7 @@ services:
       service: cromwell
     environment:
       - CROMWELL_URL=${CROMWELL_URL:-https://cromwell.caas-dev.broadinstitute.org/api/workflows/v1}
+      - SAM_URL=${SAM_URL}
       - USE_CAAS=True
   jobs-proxy:
     extends:

@@ -215,6 +215,16 @@ def get_operation_details(job, operation, **kwargs):
     raise NotImplementedError('Operation details not supported by dsub.')
 
 
+def tail_file_contents(bucket, object, **kwargs):
+    """
+    Placeholder for request for file contents from the Google Storage API
+
+    """
+    raise NotImplementedError(
+        'Getting the file contents for dsub jobs does not need to involve the shim layer.'
+    )
+
+
 def _handle_http_error(error, proj_id):
     # TODO(https://github.com/googlegenomics/dsub/issues/79): Push this
     # provider-specific error translation down into dstat.

@@ -11,7 +11,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
     ```
 
     - **Note:** If you want to setup this API Server against a locally hosted Cromwell instance, you cannot just use `localhost` or `127.0.0.1` because the docker compose image will try to connect back to itself rather than to your local host.
-    - Instead, provide the ip address (inet if the Cromwell is hosted on the same machine) to the Cromwell with port numbers. for example:
+    - Instead, provide the IP address (inet if the Cromwell is hosted on the same machine) to the Cromwell with port numbers. for example:
     ```
     export CROMWELL_URL=http://192.168.0.106:8000/api/workflows/v1
     ```
@@ -120,7 +120,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
         - If the field is `editable`, then `filterable` will be ignored.
 
 - (Required, CromIAM only) Configure fields to display
-  - **Note:** If you want to use use Job Manager against CromIAM, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
+  - **Note:** If you want to use Job Manager against CromIAM, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
 ```json
 {
   "displayFields": [
@@ -190,7 +190,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
   - If it isn't something your users will object to, you can add the "https://www.googleapis.com/auth/devstorage.read_only" scope and you will be able to see the contents of log files in Job Manager.
 
 - (Required, CromIAM with automatic signout) Configure fields to display
-  - **Note:** If you want to use use Job Manager against CromIAM and you want inactive users to be signed out after a specific interval of time, the `capabilities_config.json` must also include some extra fields, which are shown as below:
+  - **Note:** If you want to use Job Manager against CromIAM and you want inactive users to be signed out after a specific interval of time, the `capabilities_config.json` must also include some extra fields, which are shown as below:
 ```json
 {
   "displayFields": [
@@ -263,6 +263,78 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 ```
   - The `forcedLogoutDomains` setting is an array of user domains where this should apply.
   - The `forcedLogoutTime` is the amount of inactive time (in milliseconds) that will trigger an automatic sign-out.
+
+
+- (Optional, CromIAM and SAM) Configure fields to display
+  - **Note:** If you want to use Job Manager against CromIAM and you also have access to a SAM server to handle authentication, the `capabilities_config.json` can be set up with the `outsideAuth` setting in the `authentication` section, which will allow Job Manager to get Google Pipelines operation details and the contents of log files stored in the job's execution directory:
+```json
+{
+  "displayFields": [
+    {
+      "field": "id",
+      "display": "Workflow ID"
+    },
+    {
+      "field": "name",
+      "display": "Name",
+      "filterable": true
+    },
+    {
+      "field": "status",
+      "display": "Status"
+    },
+    {
+      "field": "submission",
+      "display": "Submitted",
+      "fieldType": "date"
+    },
+    {
+      "field": "labels.label",
+      "display": "Label",
+      "fieldType": "text",
+      "editable": true,
+      "bulkEditable": true
+    },
+    {
+      "field": "labels.flag",
+      "display": "Flag",
+      "editable": true,
+      "bulkEditable": true,
+      "fieldType": "list",
+      "validFieldValues": [
+        "archive",
+        "follow-up"
+      ]
+    },
+    {
+      "field": "labels.comment",
+      "display": "Comment",
+      "fieldType": "text",
+      "editable": true
+    }
+  ],
+  "commonLabels": [
+    "id",
+    "name",
+    "label",
+    "comment",
+    "flag"
+  ],
+  "queryExtensions": [
+    "hideArchived"
+  ],
+  "authentication": {
+    "isRequired": true,
+    "scopes": [
+      "openid",
+      "email",
+      "profile"
+    ],
+    "outsideAuth": true
+  }
+}
+```
+  - For this to function, you will also need to set `SAM_URL` in `cromwell-caas-compose.yaml`, e.g. `https://sam.caas-dev.broadinstitute.org/api/google/v1`, and, **just as importantly** have a way to give pet accounts access to their associated bucket/execution directory.
 
 - Link docker compose
   - **Note:** You may have completed this already if following the Job Manager [Development instructions](../../README.md#Development)

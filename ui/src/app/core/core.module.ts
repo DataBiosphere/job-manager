@@ -9,6 +9,7 @@ import {AuthService} from "./auth.service";
 import {JobManagerService} from './job-manager.service';
 import {NotifyLoadingService} from './notify-loading.service';
 import {SettingsService} from "./settings.service";
+import {SamService} from "./sam.service";
 import {InitialErrorComponent} from "./initial-error/initial-error.component";
 import {JobListResolver} from '../job-list/job-list-resolver.service';
 import {JobDetailsResolver} from '../job-details/job-details-resolver.service';
@@ -36,6 +37,7 @@ import {STORAGE_REF} from "../shared/common";
     NotifyLoadingService,
     JobListResolver,
     JobDetailsResolver,
+    SamService,
     SettingsService,
     {
       provide: STORAGE_REF,

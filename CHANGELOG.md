@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.5.0 Release Notes
+
+### Added the ability -- if Job Manager is being run with access to a SAM server -- to see the contents of Google Storage log files within the UI.
+
 ## v1.4.1 Release Notes
 
 ### Fixed a bug that caused Job Manager to throw a 500 error when it attempted to process a scattered task shard with no end time.

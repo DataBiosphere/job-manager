@@ -178,19 +178,4 @@ export class JobManagerService {
       .then(response => response.json())
       .catch((e) => this.handleError(e));
   }
-
-  getOperationDetails(jobId:string, operationId:string): Promise<JobOperationResponse> {
-    const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
-    return this.http.get(`${apiUrl}/jobs/operationDetails`,
-      new RequestOptions({
-        params: {
-          'job': jobId,
-          'operation' : operationId
-        },
-        headers: this.getHttpHeaders()
-      }))
-      .toPromise()
-      .then(response => response.json())
-      .catch((e) => this.handleError(e));
-  }
 }

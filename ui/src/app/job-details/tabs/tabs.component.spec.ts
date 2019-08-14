@@ -34,6 +34,7 @@ import {FakeJobManagerService} from "../../testing/fake-job-manager.service";
 import {GcsService} from "../../core/gcs.service";
 import {FakeGcsService} from "../../testing/fake-gcs.service";
 import {CapabilitiesService} from "../../core/capabilities.service";
+import {SamService} from "../../core/sam.service";
 
 describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;
@@ -171,6 +172,7 @@ describe('JobTabsComponent', () => {
         {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null)},
         {provide: JobManagerService, useValue: fakeJobService},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
+        {provide: SamService}
       ]
     }).compileComponents();
   }));
