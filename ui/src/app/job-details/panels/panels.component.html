@@ -1,5 +1,15 @@
 <div class="content">
-  <p class="header">{{ job.name }}</p>
+  <p class="header">
+    {{ job.name }}
+    <clr-tooltip *ngIf="!hasParent() && getTopLevelDirectory()">
+      <a class="log-item" [href]="getTopLevelDirectory()" target="_blank" (click)="$event.stopPropagation()">
+        <clr-icon clrTooltipTrigger shape="folder" class="is-solid"></clr-icon>
+        <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
+          <span>top-level execution directory</span>
+        </clr-tooltip-content>
+      </a>
+    </clr-tooltip>
+  </p>
   <button mat-icon-button class="close"
           (click)="handleClose()">
     <clr-tooltip>

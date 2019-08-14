@@ -10,7 +10,6 @@ import {ErrorMessageFormatterPipe} from "../../../shared/pipes/error-message-for
 import {JsonPipe} from "@angular/common";
 import {CapabilitiesResponse} from "../../../shared/model/CapabilitiesResponse";
 import {CapabilitiesService} from "../../../core/capabilities.service";
-import {JobManagerService} from "../../../core/job-manager.service";
 import {SamService} from "../../../core/sam.service";
 import {FileContents} from "../../../shared/model/FileContents";
 
