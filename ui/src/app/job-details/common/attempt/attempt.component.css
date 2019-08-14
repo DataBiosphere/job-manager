@@ -84,25 +84,25 @@ mat-expansion-panel.mat-expansion-panel .task-links {
 }
 
 mat-expansion-panel.mat-expansion-panel .task-status,
-mat-expansion-panel.mat-expansion-panel .task-duration,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
-mat-expansion-panel.mat-expansion-panel .task-outputs {
-  width: 5rem;
+mat-expansion-panel.mat-expansion-panel .task-outputs,
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  width: 4.875rem;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-attempts {
-  width: 5rem;
+mat-expansion-panel.mat-expansion-panel .task-duration {
+  width: 5.875rem;
 }
 
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-status,
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-duration,
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-inputs,
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-outputs {
-  width: 5rem;
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-outputs,
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-attempts {
+  width: 4.875rem;
 }
 
-:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-attempts {
-  width: 4.375rem;
+:host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-duration {
+  width: 5.875rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-links,
