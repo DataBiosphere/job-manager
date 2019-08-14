@@ -18,6 +18,7 @@ from jobs.models.query_jobs_response import QueryJobsResponse
 from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
+from jobs.models.file_contents import FileContents
 from jobs.models.shard import Shard
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
@@ -560,28 +561,76 @@ def get_operation_details(job, operation, **kwargs):
     Query for operation details from Google Pipelines API
 
     :param job: Job ID
-    :type id: str
+    :type job: str
 
-    :param operation_id: Operation ID
-    :type id: str
+    :param operation: Operation ID
+    :type operation: str
 
     :rtype: str
     """
 
-    capabilities = current_app.config['capabilities']
-    if hasattr(capabilities, 'authentication') and hasattr(
-            capabilities.authentication,
-            'outside_auth') and capabilities.authentication.outside_auth:
+    if _get_sam_url():
         url = '{cromwell_url}/{id}/backend/metadata/{backendId}'.format(
             cromwell_url=_get_base_url(), id=job, backendId=operation)
         response = requests.get(url,
                                 auth=kwargs.get('auth'),
                                 headers=kwargs.get('auth_headers'))
 
+        if response.status_code != 200:
+            handle_error(response)
+
+        return JobOperationResponse(id=job, details=response.text)
+
+
+@requires_auth
+def tail_file_contents(bucket, object, **kwargs):
+    """
+    Query for operation details from Google Pipelines API
+
+    :param bucket: the ID of the Google Storage bucket where the file is
+    :type bucket: str
+
+    :param object: the ID of the file
+    :type object: str
+
+    :rtype: str
+    """
+    if not _get_sam_url():
+        logger.warning(
+            'Tried to get file contents using pet service account, but no SAM URL is configured.'
+        )
+        return None
+
+    token = get_pet_token()
+    url = 'https://{bucket}.storage.googleapis.com/{object}'.format(
+        bucket=bucket, object=object)
+    headers = {
+        'Content-Type': 'text/xml',
+        'Authorization': 'Bearer ' + token,
+        'Range': 'bytes=-20000'
+    }
+    response = requests.get(url, headers=headers)
+
     if response.status_code != 200:
         handle_error(response)
+    return FileContents(
+        contents=response.content,
+        truncated=True if len(response.content) == 20000 else False)
 
-    return JobOperationResponse(id=job, details=response.text)
+
+@requires_auth
+def get_pet_token(**kwargs):
+    headers = kwargs.get('auth_headers')
+    headers['Content-Type'] = 'application/json'
+    response = requests.post(
+        '{sam_url}/user/petServiceAccount/token'.format(
+            sam_url=_get_sam_url()),
+        data=json.dumps(
+            ['https://www.googleapis.com/auth/devstorage.read_only']),
+        headers=headers)
+    if response.status_code != 200:
+        handle_error(response)
+    return response.content
 
 
 def _get_execution_events(events):
@@ -616,6 +665,10 @@ def _parse_datetime(date_string):
 
 def _get_base_url():
     return current_app.config['cromwell_url']
+
+
+def _get_sam_url():
+    return current_app.config['sam_url']
 
 
 def _format_query_labels(orig_query_labels):
@@ -677,6 +730,7 @@ def _is_call_cached(metadata):
 
 
 def _get_response_message(response):
+    logger.error('Response error: {}'.format(response.content))
     if is_jsonable(response) and response.json().get('message'):
         return response.json().get('message')
     return str(response)

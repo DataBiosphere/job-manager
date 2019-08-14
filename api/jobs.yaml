@@ -236,6 +236,33 @@ paths:
       tags:
         - Jobs
 
+  '/jobs/tailFile':
+    get:
+      operationId: TailFileContents
+      summary: Get up to a certain amount (from the end) of content from the Google Storage API
+      parameters:
+        - name: bucket
+          description: Google bucket ID
+          required: true
+          in: query
+          type: string
+        - name: object
+          description: ID of the file stored in the Google bucket
+          required: true
+          in: query
+          type: string
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/FileContents'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
+
   '/aggregations':
     get:
       operationId: GetJobAggregations
@@ -947,6 +974,19 @@ definitions:
       available:
         description: Whether or not this service is available
         type: boolean
+
+  FileContents:
+    description: The contents of a file in Google Storage
+    required:
+      - contents
+      - truncated
+    properties:
+      contents:
+        type: string
+      truncated:
+        description: Whether or not the file was truncated because of size
+        type: string
+
 
 responses:
   BadRequest:

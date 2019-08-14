@@ -11,6 +11,8 @@ import {JsonPipe} from "@angular/common";
 import {CapabilitiesResponse} from "../../../shared/model/CapabilitiesResponse";
 import {CapabilitiesService} from "../../../core/capabilities.service";
 import {JobManagerService} from "../../../core/job-manager.service";
+import {SamService} from "../../../core/sam.service";
+import {FileContents} from "../../../shared/model/FileContents";
 
 @Component({
   selector: 'jm-debug-icons',
@@ -27,6 +29,7 @@ export class JobDebugIconsComponent implements OnInit {
   @Input() backendLog: string;
   @Input() directory: string;
   logFileData: Map<string, string> = new Map();
+  private readonly canGetFileContents:boolean;
   private readonly capabilities: CapabilitiesResponse;
 
   constructor(private readonly authService: AuthService,
@@ -35,14 +38,15 @@ export class JobDebugIconsComponent implements OnInit {
               private readonly sanitizer:DomSanitizer,
               public resourceContentsDialog: MatDialog,
               private readonly capabilitiesService: CapabilitiesService,
-              private readonly jobManagerService: JobManagerService) {
+              private readonly samService: SamService) {
     this.capabilities = capabilitiesService.getCapabilitiesSynchronous();
+    this.canGetFileContents = this.authService.gcsReadAccess ||
+      (this.capabilities.authentication && this.capabilities.authentication.outsideAuth);
   }
 
   ngOnInit(): void {
     try {
-      const authenticated = this.authService.isAuthenticated();
-      if (authenticated && this.authService.gcsReadAccess) {
+      if (this.authService.isAuthenticated() && this.canGetFileContents) {
         if (this.stdout) {
           this.getLogContents(this.stdout).then((value) => {
             this.logFileData[this.getFileName(this.stdout)] = value;
@@ -71,7 +75,7 @@ export class JobDebugIconsComponent implements OnInit {
   }
 
   getResourceUrl(url: string): string {
-    if (!url || !ResourceUtils.isResourceURL(url) || (this.authService.gcsReadAccess && !this.hasContents(this.getFileName(url)))) {
+    if (!url || !ResourceUtils.isResourceURL(url) || (this.canGetFileContents && !this.hasContents(this.getFileName(url)))) {
       return '';
     }
     return ResourceUtils.getResourceBrowserURL(url, this.authService.userEmail);
@@ -111,9 +115,9 @@ export class JobDebugIconsComponent implements OnInit {
 
   showOperationDetails(e: MouseEvent): void {
     e.stopPropagation();
-    this.jobManagerService.getOperationDetails(this.jobId, this.operationId)
+    this.samService.getOperationDetails(this.jobId, this.operationId)
       .then((response) => {
-        if (response.details) {
+        if (response && response.details) {
           this.resourceContentsDialog.open(JobResourceContentsComponent, {
             disableClose: false,
             data: {
@@ -128,13 +132,32 @@ export class JobDebugIconsComponent implements OnInit {
   }
 
   private async getLogContents(url: string): Promise<string> {
-    try {
-      const bucket = ResourceUtils.getResourceBucket(url);
-      const object = ResourceUtils.getResourceObject(url);
-      return await this.gcsService.readObject(bucket, object)
-        .then(data => data);
-    } catch (error) {
-      this.handleError(error);
+    const bucket = ResourceUtils.getResourceBucket(url);
+    const object = ResourceUtils.getResourceObject(url);
+    if (this.authService.gcsReadAccess) {
+      try {
+        return await this.gcsService.readObject(bucket, object)
+          .then(data => data);
+      } catch (error) {
+        this.handleError(error);
+      }
+    }
+    else if (this.capabilities.authentication.outsideAuth) {
+      try {
+        return await this.samService.getFileTail(bucket, object)
+          .then((data: FileContents) => {
+            if (data && data.contents) {
+              if (data.truncated) {
+                return '...\n\n' + data.contents;
+              }
+              return data.contents;
+            } else {
+              return '';
+            }
+          });
+      } catch (error) {
+        this.handleError(error);
+      }
     }
   }
 
