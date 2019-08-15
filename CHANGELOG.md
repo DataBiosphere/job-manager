@@ -6,6 +6,8 @@
 
 ### Added a link to the top-level execution directory for the job.
 
+### If a job has finished running and there are errors, default to the "Errors" tab on the Job Details page.
+
 ## v1.4.1 Release Notes
 
 ### Fixed a bug that caused Job Manager to throw a 500 error when it attempted to process a scattered task shard with no end time.
