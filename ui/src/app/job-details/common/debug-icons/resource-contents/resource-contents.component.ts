@@ -28,6 +28,6 @@ export class JobResourceContentsComponent implements OnInit{
   }
 
   isExpanded(): boolean {
-    return  this.jsonViewer && this.jsonViewer.expanded;
+    return this.jsonViewer && this.jsonViewer.expanded;
   }
 }
