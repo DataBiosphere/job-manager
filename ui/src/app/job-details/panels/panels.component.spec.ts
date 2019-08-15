@@ -19,13 +19,16 @@ import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobPanelsComponent} from './panels.component';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobDebugIconsComponent} from "../common/debug-icons/debug-icons.component";
+import {AuthService} from "../../core/auth.service";
 import {JobManagerService} from "../../core/job-manager.service";
 import {FakeJobManagerService} from "../../testing/fake-job-manager.service";
+import {FakeCapabilitiesService} from "../../testing/fake-capabilities.service";
 
 describe('JobPanelsComponent', () => {
 
   let testComponent: TestPanelsComponent;
   let fixture: ComponentFixture<TestPanelsComponent>;
+  let fakeCapabilitiesService =  new FakeCapabilitiesService({});
   let minimalJob: JobMetadataResponse =
     {
       id: 'JOB1',
@@ -72,6 +75,7 @@ describe('JobPanelsComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
+        {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null)},
         {provide: MatSnackBar},
       ]
     }).compileComponents();
@@ -87,7 +91,7 @@ describe('JobPanelsComponent', () => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.card')).length).toEqual(1);
-    expect(de.query(By.css('.header')).nativeElement.textContent).toEqual('');
+    expect(de.query(By.css('.header')).nativeElement.textContent.replace(/\s/g, '')).toEqual('');
     expect(de.query(By.css('#job-id')).nativeElement.value)
       .toContain(minimalJob.id);
   }));
