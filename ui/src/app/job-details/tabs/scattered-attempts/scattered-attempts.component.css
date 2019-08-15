@@ -78,15 +78,14 @@ mat-expansion-panel.mat-expansion-panel.list-header .task-links {
 }
 
 mat-expansion-panel.mat-expansion-panel .task-status,
-mat-expansion-panel.mat-expansion-panel .task-duration,
 mat-expansion-panel.mat-expansion-panel .task-inputs,
-mat-expansion-panel.mat-expansion-panel .task-outputs {
-  width: 5rem;
+mat-expansion-panel.mat-expansion-panel .task-outputs,
+mat-expansion-panel.mat-expansion-panel .task-attempts {
+  width: 4.875rem;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-attempts {
-  width: 4.375rem;
-  text-align: right;
+mat-expansion-panel.mat-expansion-panel .task-duration {
+  width: 5.875rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-header[aria-disabled='true'] {
