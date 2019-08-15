@@ -3,8 +3,9 @@
 ## v1.5.0 Release Notes
 
 ### Added the ability -- if Job Manager is being run with access to a SAM server -- to see the contents of Google Storage log files within the UI.
-
 ### Added the ability to completely expand the operation details with one click.
+
+### If a job has finished running and there are errors, default to the "Errors" tab on the Job Details page.
 
 ## v1.4.1 Release Notes
 

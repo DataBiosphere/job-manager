@@ -1,28 +1,18 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild
-} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
 import {DataSource} from '@angular/cdk/collections';
 import {MatDialog} from "@angular/material";
 import {Observable} from 'rxjs/Observable';
 
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
-import {JobStatusIcon} from '../../shared/common';
+import {JobStatusIcon, objectNotEmpty} from '../../shared/common';
 import {TaskMetadata} from '../../shared/model/TaskMetadata';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
 import {JobManagerService} from "../../core/job-manager.service";
 import {Shard} from "../../shared/model/Shard";
 import {JobScatteredAttemptsComponent} from "./scattered-attempts/scattered-attempts.component";
-import {objectNotEmpty} from '../../shared/common';
 
 @Component({
   selector: 'jm-tabs',
@@ -50,6 +40,10 @@ export class JobTabsComponent implements OnInit, OnChanges {
     this.dataSource = new TasksDataSource(this.database);
     if (this.tabsPanel) {
       this.tabWidth = this.tabsPanel._viewContainerRef.element.nativeElement.clientWidth;
+    }
+    // select the 'Errors' tab to be the default if the job has finished, failed and has errors
+    if ((this.job.status == JobStatus.Failed || this.job.status == JobStatus.Aborted) && this.hasFailures() && this.hasTasks()) {
+      this.selectedTab = 1;
     }
   }
 
