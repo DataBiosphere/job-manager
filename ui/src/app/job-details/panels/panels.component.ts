@@ -164,7 +164,7 @@ export class JobPanelsComponent implements OnInit {
     if (this.job.extensions && this.job.extensions.tasks) {
       this.job.extensions.tasks.forEach((task) => {
         if (this.topLevelExecutionDirectory) return;
-        if (task.callRoot) {
+        if (task.callRoot && task.callRoot.includes(this.job.id)) {
           const urlParts = task.callRoot.split(this.job.id);
           this.topLevelExecutionDirectory = urlParts[0] + this.job.id;
           return;
