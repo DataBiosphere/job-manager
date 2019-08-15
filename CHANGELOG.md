@@ -1,10 +1,12 @@
 # Job Manager Change Log
 
+## v1.5.1 Release Notes
+
+### Added a link to the top-level execution directory for the job.
+
 ## v1.5.0 Release Notes
 
 ### Added the ability -- if Job Manager is being run with access to a SAM server -- to see the contents of Google Storage log files within the UI.
-
-### Added a link to the top-level execution directory for the job.
 
 ### If a job has finished running and there are errors, default to the "Errors" tab on the Job Details page.
 
