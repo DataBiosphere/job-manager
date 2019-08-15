@@ -16,6 +16,12 @@ p {
   margin: 0;
 }
 
+.header clr-icon {
+  color: #74AE43;
+  width: 0.875em;
+  height: 0.875em;
+}
+
 .close {
   float: right;
   margin-right: 1rem;

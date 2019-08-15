@@ -12,9 +12,11 @@ import {JobStatus} from '../../shared/model/JobStatus';
 import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
 import {JobStatusIcon} from "../../shared/common";
 import {DisplayField} from "../../shared/model/DisplayField";
+import {ResourceUtils} from "../../shared/utils/resource-utils";
 import {JobManagerService} from "../../core/job-manager.service";
 import {MatSnackBar} from "@angular/material";
 import {ErrorMessageFormatterPipe} from "../../shared/pipes/error-message-formatter.pipe";
+import {AuthService} from "../../core/auth.service";
 
 @Component({
   selector: 'jm-panels',
@@ -42,8 +44,10 @@ export class JobPanelsComponent implements OnInit {
   numTasks: number = 0;
   public readonly numOfErrorsToShow = 4;
   copyIcon = 'copy-to-clipboard';
+  topLevelExecutionDirectory: string;
 
   constructor(
+    private readonly authService: AuthService,
     private readonly snackBar: MatSnackBar,
     private readonly jobManagerService: JobManagerService) { }
 
@@ -154,6 +158,20 @@ export class JobPanelsComponent implements OnInit {
     setTimeout(() => {
       this.copyIcon ='copy-to-clipboard';
     }, 1500);
+  }
+
+  getTopLevelDirectory(): string {
+    if (this.job.extensions && this.job.extensions.tasks) {
+      this.job.extensions.tasks.forEach((task) => {
+        if (this.topLevelExecutionDirectory) return;
+        if (task.callRoot && task.callRoot.includes(this.job.id)) {
+          const urlParts = task.callRoot.split(this.job.id);
+          this.topLevelExecutionDirectory = urlParts[0] + this.job.id;
+          return;
+        }
+      });
+    }
+    return ResourceUtils.getDirectoryBrowserURL(this.topLevelExecutionDirectory, this.authService.userEmail);
   }
 
   handleError(error: any) {
