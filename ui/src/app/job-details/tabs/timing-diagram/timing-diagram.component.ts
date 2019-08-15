@@ -44,7 +44,7 @@ export class JobTimingDiagramComponent implements OnInit {
       } else if (task.name && task.start) {
         if (task.executionEvents) {
           task.executionEvents.forEach((event) => {
-            this.timelineChart.dataTable.push(this.formatRow(task.name, event.name, event));
+            this.timelineChart.dataTable.push(this.formatRow(task.name + ' attempt ' + event.attemptNumber, event.name, event));
           });
         } else {
           this.timelineChart.dataTable.push(this.formatRow(task.name, task.name, task));

@@ -269,8 +269,7 @@ def format_task(task_name, task_metadata):
         call_cached = latest_attempt.get('callCaching') and (_is_call_cached(
             latest_attempt.get('callCaching')))
 
-    execution_events = _get_execution_events(
-        latest_attempt.get('executionEvents'))
+    execution_events = _get_execution_events(task_metadata)
 
     failure_messages = None
     if latest_attempt.get('failures'):
@@ -356,8 +355,7 @@ def format_scattered_task(task_name, task_metadata):
                       or _parse_datetime(shard.get('end')) or offset_aware_now,
                       end=_parse_datetime(shard.get('end')),
                       shard_index=shard.get('shardIndex'),
-                      execution_events=_get_execution_events(
-                          shard.get('executionEvents')),
+                      execution_events=_get_execution_events([shard]),
                       stdout=shard.get('stdout'),
                       stderr=shard.get('stderr'),
                       backend_log=shard.get('backendLogs').get('log')
@@ -633,14 +631,22 @@ def get_pet_token(**kwargs):
     return response.content
 
 
-def _get_execution_events(events):
+    #
+    # tasks = [
+    #     format_task(task_name, task_metadata)
+    #     for task_name, task_metadata in job.get('calls', {}).items()
+    # ]
+
+
+def _get_execution_events(metadata):
     execution_events = None
-    if events:
+    if metadata:
         execution_events = [
             ExecutionEvent(name=event.get('description'),
                            start=_parse_datetime(event.get('startTime')),
-                           end=_parse_datetime(event.get('endTime')))
-            for event in events
+                           end=_parse_datetime(event.get('endTime')),
+                           attempt_number=attempt.get('attempt'))
+            for attempt in metadata for event in attempt.get('executionEvents')
         ]
     return execution_events
 

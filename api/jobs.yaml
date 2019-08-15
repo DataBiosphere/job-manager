@@ -967,6 +967,8 @@ definitions:
         type: string
         format: date-time
         description: End datetime of the event in ISO8601 format
+      attemptNumber:
+        type: integer
 
   HealthResponse:
     description: response from the health endpoint
