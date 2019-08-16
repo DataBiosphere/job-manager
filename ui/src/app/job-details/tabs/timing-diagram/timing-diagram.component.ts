@@ -43,8 +43,6 @@ export class JobTimingDiagramComponent implements OnInit {
       }
     });
 
-    console.log('rows: ' + chartRows);
-
     this.timelineChart.options = {
       timeline: {
         showRowLabels: false,
