@@ -22,8 +22,7 @@ describe('JobDebugIconsComponent', () => {
   let sanitizer;
   let job = {
     failure: 'things went wrong',
-    stdout : 'gs://test-bucket/test-job/stdout.txt',
-    stderr: 'gs://test-bucket/test-job/stderr.txt',
+    backendLog: 'gs://test-bucket/test-log.txt',
     callRoot: 'gs://test-bucket/test-job'
   };
   let fakeCapabilitiesService =  new FakeCapabilitiesService({});
@@ -76,15 +75,9 @@ describe('JobDebugIconsComponent', () => {
     expect(de.queryAll(By.css('clr-icon[shape=exclamation-triangle]')).length).toEqual(1);
   }));
 
-  it('should calculate the right location for stdout', async(() => {
+  it('should calculate the right location for backend log', async(() => {
     fixture.detectChanges();
-    expect(testComponent.jobDebugIconsComponent.getResourceUrl(job.stdout) == 'https://console.cloud.google.com/storage/browser/test-bucket/test-job?prefix=stdout.txt');
-  }));
-
-  it('should calculate the right location for stderr', async(() => {
-    fixture.detectChanges();
-    let de: DebugElement = fixture.debugElement;
-    expect(testComponent.jobDebugIconsComponent.getResourceUrl(job.stderr) == 'https://console.cloud.google.com/storage/browser/test-bucket/test-job?prefix=stderr.txt');
+    expect(testComponent.jobDebugIconsComponent.getResourceUrl(job.backendLog) == 'https://console.cloud.google.com/storage/browser/test-bucket/test-job?prefix=test-log.txt');
   }));
 
   it('should link to the right location for execution directory', async(() => {
@@ -98,8 +91,7 @@ describe('JobDebugIconsComponent', () => {
     template: `<jm-debug-icons [displayMessage]="false"
                                [jobId]=""
                                [message]="job.failure"
-                               [stdout]="job.stdout"
-                               [stderr]="job.stderr"
+                               [backendLog]="job.backendLog"
                                [directory]="job.callRoot"></jm-debug-icons>`
   })
   class TestDebugIconsComponent {
