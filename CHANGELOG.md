@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.5.2 Release Notes
+
+### No longer treat failures due to an attempt being preempted in Cromwell as failures.
+
 ## v1.5.1 Release Notes
 
 ### Added a link to the top-level execution directory for the job.
