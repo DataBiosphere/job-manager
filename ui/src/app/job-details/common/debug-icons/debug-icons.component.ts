@@ -23,8 +23,6 @@ export class JobDebugIconsComponent implements OnInit {
   @Input() operationId: string;
   @Input() jobId: string;
   @Input() message: string;
-  @Input() stdout: string;
-  @Input() stderr: string;
   @Input() backendLog: string;
   @Input() directory: string;
   logFileData: Map<string, string> = new Map();
@@ -46,20 +44,6 @@ export class JobDebugIconsComponent implements OnInit {
   ngOnInit(): void {
     try {
       if (this.authService.isAuthenticated() && this.canGetFileContents) {
-        if (this.stdout) {
-          this.getLogContents(this.stdout).then((value) => {
-            this.logFileData[this.getFileName(this.stdout)] = value;
-          }).catch(error => {
-            this.handleError(error);
-          });
-        }
-        if (this.stderr) {
-          this.getLogContents(this.stderr).then((value) => {
-            this.logFileData[this.getFileName(this.stderr)] = value;
-          }).catch(error => {
-            this.handleError(error);
-          });
-        }
         if (this.backendLog) {
           this.getLogContents(this.backendLog).then((value) => {
             this.logFileData[this.getFileName(this.backendLog)] = value;

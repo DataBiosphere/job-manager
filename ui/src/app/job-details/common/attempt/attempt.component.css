@@ -72,7 +72,7 @@ mat-expansion-panel.mat-expansion-panel .task-start {
 }
 
 mat-expansion-panel.mat-expansion-panel .task-links {
-  width: 11.25rem;
+  width: 9.25rem;
 }
 
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-start {
@@ -80,7 +80,7 @@ mat-expansion-panel.mat-expansion-panel .task-links {
 }
 
 :host-context(mat-accordion.mat-accordion.content) mat-expansion-panel.mat-expansion-panel .task-links {
-  width: 10.625rem;
+  width: 8.625rem;
 }
 
 mat-expansion-panel.mat-expansion-panel .task-status,

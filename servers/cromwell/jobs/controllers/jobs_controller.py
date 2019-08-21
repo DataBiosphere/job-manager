@@ -37,8 +37,7 @@ logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
 attempt_include_keys = ('attempt', 'backendLogs:log', 'callCaching:hit',
                         'callRoot', 'end', 'executionStatus', 'failures',
-                        'inputs', 'jobId', 'outputs', 'shardIndex', 'start',
-                        'stderr', 'stdout')
+                        'inputs', 'jobId', 'outputs', 'shardIndex', 'start')
 
 job_include_keys = attempt_include_keys + (
     'calls', 'description', 'executionEvents', 'labels', 'parentWorkflowId',
@@ -285,8 +284,6 @@ def format_task(task_name, task_metadata):
         start=_parse_datetime(latest_attempt.get('start'))
         or _parse_datetime(latest_attempt.get('end')) or offset_aware_now,
         end=_parse_datetime(latest_attempt.get('end')),
-        stderr=latest_attempt.get('stderr'),
-        stdout=latest_attempt.get('stdout'),
         backend_log=latest_attempt.get('backendLogs').get('log')
         if latest_attempt.get('backendLogs') else None,
         inputs=update_key_names(latest_attempt.get('inputs', {})),
@@ -307,8 +304,6 @@ def format_task_failure(task_name, metadata):
                           failure=get_deepest_message(
                               metadata.get('failures')),
                           timestamp=_parse_datetime(metadata.get('end')),
-                          stdout=metadata.get('stdout'),
-                          stderr=metadata.get('stderr'),
                           backend_log=metadata.get('backendLogs').get('log')
                           if metadata.get('backendLogs') else None,
                           call_root=metadata.get('callRoot'),
@@ -358,8 +353,6 @@ def format_scattered_task(task_name, task_metadata):
                       shard_index=shard.get('shardIndex'),
                       execution_events=_get_execution_events(
                           shard.get('executionEvents')),
-                      stdout=shard.get('stdout'),
-                      stderr=shard.get('stderr'),
                       backend_log=shard.get('backendLogs').get('log')
                       if shard.get('backendLogs') else None,
                       call_root=shard.get('callRoot'),
@@ -607,7 +600,7 @@ def tail_file_contents(bucket, object, **kwargs):
     headers = {
         'Content-Type': 'text/xml',
         'Authorization': 'Bearer ' + token,
-        'Range': 'bytes=-20000'
+        'Range': 'bytes=-500000'
     }
     response = requests.get(url, headers=headers)
 
@@ -615,7 +608,7 @@ def tail_file_contents(bucket, object, **kwargs):
         handle_error(response)
     return FileContents(
         contents=response.content,
-        truncated=True if len(response.content) == 20000 else False)
+        truncated=True if len(response.content) == 500000 else False)
 
 
 @requires_auth
@@ -701,8 +694,6 @@ def _convert_to_attempt(item):
             item.get('executionStatus')),
         attempt_number=item.get('attempt'),
         call_cached=_is_call_cached(item.get('callCaching')),
-        stdout=item.get('stdout'),
-        stderr=item.get('stderr'),
         backend_log=item.get('backendLogs').get('log')
         if item.get('backendLogs') else None,
         call_root=item.get('callRoot'),
