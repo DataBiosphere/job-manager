@@ -270,8 +270,7 @@ def format_task(task_name, task_metadata):
         call_cached = latest_attempt.get('callCaching') and (_is_call_cached(
             latest_attempt.get('callCaching')))
 
-    execution_events = _get_execution_events(
-        latest_attempt.get('executionEvents'))
+    execution_events = _get_execution_events(task_metadata)
 
     failure_messages = None
     if latest_attempt.get('failures'):
@@ -341,6 +340,7 @@ def format_scattered_task(task_name, task_metadata):
         task_metadata[0].get('start')) or _parse_datetime(
             task_metadata[0].get('end')) or offset_aware_now
     max_end = _parse_datetime(task_metadata[-1].get('end'))
+    execution_events = _get_execution_events(task_metadata)
 
     # go through calls in reverse to grab the latest attempt if there are multiple
     for shard in task_metadata[::-1]:
@@ -357,8 +357,6 @@ def format_scattered_task(task_name, task_metadata):
                       or _parse_datetime(shard.get('end')) or offset_aware_now,
                       end=_parse_datetime(shard.get('end')),
                       shard_index=shard.get('shardIndex'),
-                      execution_events=_get_execution_events(
-                          shard.get('executionEvents')),
                       stdout=shard.get('stdout'),
                       stderr=shard.get('stderr'),
                       backend_log=shard.get('backendLogs').get('log')
@@ -388,6 +386,7 @@ def format_scattered_task(task_name, task_metadata):
         end=max_end,
         call_root=remove_shard_path(task_metadata[-1].get('callRoot')),
         shards=sorted_shards,
+        execution_events=execution_events,
         call_cached=False)
 
 
@@ -634,14 +633,18 @@ def get_pet_token(**kwargs):
     return response.content
 
 
-def _get_execution_events(events):
+def _get_execution_events(metadata):
     execution_events = None
-    if events:
+    if metadata:
         execution_events = [
             ExecutionEvent(name=event.get('description'),
                            start=_parse_datetime(event.get('startTime')),
-                           end=_parse_datetime(event.get('endTime')))
-            for event in events
+                           end=_parse_datetime(event.get('endTime')),
+                           attempt_number=attempt.get('attempt'),
+                           shard_index=attempt.get('shardIndex'))
+            for attempt in metadata
+            if attempt.get('executionEvents') is not None
+            for event in attempt.get('executionEvents')
         ]
     return execution_events
 

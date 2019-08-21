@@ -422,6 +422,7 @@ class TestJobsController(BaseTestCase):
                 'tasks': [{
                     'name': 'analysis',
                     'executionStatus': 'Succeeded',
+                    'executionEvents': [],
                     'start': response_timestamp,
                     'end': response_timestamp,
                     'stderr': std_err,
@@ -634,6 +635,7 @@ class TestJobsController(BaseTestCase):
                 'tasks': [{
                     'name': 'analysis',
                     'executionStatus': 'Failed',
+                    'executionEvents': [],
                     'callRoot': call_root,
                     'callCached': False,
                     'attempts': attempts,

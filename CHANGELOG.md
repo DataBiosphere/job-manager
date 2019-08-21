@@ -6,6 +6,8 @@
 
 ## v1.5.1 Release Notes
 
+### All attempts (not just the latest) are now included in the timing diagram tab on the Job Details page.
+
 ### Added a link to the top-level execution directory for the job.
 
 ### Added the ability to completely expand the operation details with one click.
