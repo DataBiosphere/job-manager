@@ -26,6 +26,8 @@ export class JobFailuresTableComponent implements OnInit {
   }
 
   getQueryString(): string {
-    return '?q=' + encodeURIComponent(this.route.snapshot.queryParams.q);
+    if (this.route.snapshot.queryParams.q) {
+      return '?q=' + encodeURIComponent(this.route.snapshot.queryParams.q);
+    }
   }
 }
