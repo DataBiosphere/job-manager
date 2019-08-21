@@ -899,6 +899,8 @@ definitions:
       operationId:
         type: string
         description: Operation Id for Google Pipelines API
+      shardIndex:
+        type: integer
       jobId:
         type: string
         description: >
