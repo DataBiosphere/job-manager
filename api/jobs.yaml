@@ -882,10 +882,6 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/IndividualAttempt'
-      executionEvents:
-        type: array
-        items:
-          $ref: '#/definitions/ExecutionEvent'
       jobId:
         type: string
         description: >
@@ -946,6 +942,7 @@ definitions:
         type: string
       displayField:
         $ref: '#/definitions/DisplayField'
+
   ShardStatusCount:
     description: a total of the number of shards for a task with a certain status
     properties:
@@ -953,6 +950,7 @@ definitions:
         $ref: '#/definitions/JobStatus'
       count:
         type: integer
+
   ExecutionEvent:
     description:
     properties:
@@ -967,6 +965,10 @@ definitions:
         type: string
         format: date-time
         description: End datetime of the event in ISO8601 format
+      attemptNumber:
+        type: integer
+      shardIndex:
+        type: integer
 
   HealthResponse:
     description: response from the health endpoint
