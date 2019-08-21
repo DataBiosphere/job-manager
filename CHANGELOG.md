@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.5.2 Release Notes
+
+### Removed `stdout` and `stderr` logs for Cromwell, since their contents are included in the `backend log`.  Also increased the maximum amount of content for the `backend log` to 500KB.
+
 ## v1.5.1 Release Notes
 
 ### Added a link to the top-level execution directory for the job.
