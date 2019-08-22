@@ -120,7 +120,8 @@ def get_job(id, **kwargs):
     failures = [
         format_task_failure(name, m)
         for name, metadata in job.get('calls', {}).items() for m in metadata
-        if m.get('failures') is not None
+        if m.get('failures') is not None and (
+            m.get('executionStatus') != 'RetryableFailure')
     ]
 
     # if there are no tasks/subworkflows but there are errors, get them
