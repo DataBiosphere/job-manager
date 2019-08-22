@@ -53,8 +53,7 @@ describe('JobTabsComponent', () => {
     attempts: 1,
     returnCode: 0,
     callCached: false,
-    stderr: 'gs://test-bucket/stderr.txt',
-    stdout: 'gs://test-bucket/stdout.txt',
+    backendLog: 'gs://test-bucket/test-log.txt',
     callRoot: 'gs://test-bucket',
     inputs: {},
     outputs: {},
@@ -71,8 +70,7 @@ describe('JobTabsComponent', () => {
     attempts: 1,
     returnCode: 0,
     callCached: true,
-    stderr: 'gs://test-bucket/stderr.txt',
-    stdout: 'gs://test-bucket/stdout.txt',
+    backendLog: 'gs://test-bucket/test-log.txt',
     callRoot: 'gs://test-bucket',
     inputs: {},
     outputs: {},
@@ -88,8 +86,7 @@ describe('JobTabsComponent', () => {
     attempts: 1,
     returnCode: 0,
     callCached: false,
-    stderr: 'gs://test-bucket/stderr.txt',
-    stdout: 'gs://test-bucket/stdout.txt',
+    backendLog: 'gs://test-bucket/test-log.txt',
     callRoot: 'gs://test-bucket',
     inputs: {'string': 'hello world'},
     outputs: {},
@@ -105,8 +102,7 @@ describe('JobTabsComponent', () => {
     attempts: 1,
     returnCode: 0,
     callCached: false,
-    stderr: 'gs://test-bucket/stderr.txt',
-    stdout: 'gs://test-bucket/stdout.txt',
+    backendLog: 'gs://test-bucket/test-log.txt',
     callRoot: 'gs://test-bucket',
     inputs: {},
     outputs: {'string': 'hello world'},
@@ -122,8 +118,7 @@ describe('JobTabsComponent', () => {
     attempts: 2,
     returnCode: 0,
     callCached: false,
-    stderr: 'gs://test-bucket/stderr.txt',
-    stdout: 'gs://test-bucket/stdout.txt',
+    backendLog: 'gs://test-bucket/test-log.txt',
     callRoot: 'gs://test-bucket',
     inputs: {},
     outputs: {},
@@ -248,8 +243,7 @@ describe('JobTabsComponent', () => {
           'Task failed.'
         ],
         inputs: {},
-        stderr: 'gs://test-bucket/stderr.txt',
-        stdout: 'gs://test-bucket/stdout.txt',
+        backendLog: 'gs://test-bucket/test-log.txt'
       },{
         attemptNumber: 2,
         callRoot: 'gs://test-bucket/attempt-2',
@@ -258,8 +252,7 @@ describe('JobTabsComponent', () => {
         executionStatus: 'Succeeded',
         inputs: {},
         outputs: {},
-        stderr: 'gs://test-bucket/attempt-2/stderr.txt',
-        stdout: 'gs://test-bucket/attempt-2/stdout.txt',
+        backendLog: 'gs://test-bucket/attempt-2/test-log.txt'
       }
     ];
     taskWithTwoAttempts.attemptsData = attempts;

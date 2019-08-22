@@ -749,12 +749,6 @@ definitions:
       returnCode:
         type: integer
         description: Task execution return code
-      stdout:
-        type: string
-        description: Path to the standard output file for this task
-      stderr:
-        type: string
-        description: Path to the standard error file for this task
       backendLog:
         type: string
         description: Path to the backend log file for this task
@@ -798,12 +792,6 @@ definitions:
         type: boolean
         description: A flag to indicate if task was call-cached.
         default: false
-      stdout:
-        type: string
-        description: Path to the standard output file for this task
-      stderr:
-        type: string
-        description: Path to the standard error file for this task
       backendLog:
         type: string
         description: Path to the backend log file for this task
@@ -856,12 +844,6 @@ definitions:
         description: End datetime of the task execution in ISO8601 format with milliseconds
       shardIndex:
         type: integer
-      stdout:
-        type: string
-        description: If from a task, path to the standard output file for this task or shard
-      stderr:
-        type: string
-        description: If from a task, path to the standard error file for this task or shard
       backendLog:
         type: string
         description: If from a task, path to the backend log file for this task or shard
@@ -904,12 +886,6 @@ definitions:
         type: string
         format: date-time
         description: The time at which this failure occurred
-      stdout:
-        type: string
-        description: If from a task, path to the standard output file for this task or shard
-      stderr:
-        type: string
-        description: If from a task, path to the standard error file for this task or shard
       backendLog:
         type: string
         description: If from a task, path to the backend log file for this task or shard

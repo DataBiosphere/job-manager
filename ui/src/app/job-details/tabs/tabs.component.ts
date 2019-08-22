@@ -146,8 +146,6 @@ export class JobTabsComponent implements OnInit, OnChanges {
       let newShard: Shard = {};
       newShard.start = new Date(shard.start);
       newShard.end = new Date(shard.end);
-      newShard.stdout = shard.stdout;
-      newShard.stderr = shard.stderr;
       newShard.backendLog = shard.backendLog;
       newShard.callRoot = shard.callRoot;
       newShard.attempts = shard.attempts;

@@ -89,8 +89,7 @@ class TestJobsController(BaseTestCase):
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
         }
         labels = {}
-        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
-        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        backend_log = '/cromwell/cromwell-executions/id/call-analysis/call-analysis-log'
         attempts = 1
         return_code = 0
 
@@ -109,8 +108,7 @@ class TestJobsController(BaseTestCase):
                         'executionStatus': 'Done',
                         'start': timestamp,
                         'end': timestamp,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLog': backend_log,
                         'returnCode': return_code,
                         'inputs': inputs,
                         'outputs': outputs,
@@ -169,8 +167,7 @@ class TestJobsController(BaseTestCase):
             "existing_test_label1": "existing_test_label_value1",
             "existing_test_label2": "existing_test_label_value2"
         }
-        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
-        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        backend_log = '/cromwell/cromwell-executions/id/call-analysis/call-analysis-log'
         attempts = 1
         return_code = 0
 
@@ -195,8 +192,7 @@ class TestJobsController(BaseTestCase):
                         'executionStatus': 'Done',
                         'start': timestamp,
                         'end': timestamp,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLog': backend_log,
                         'returnCode': return_code,
                         'inputs': inputs,
                         'attempt': attempts
@@ -358,8 +354,7 @@ class TestJobsController(BaseTestCase):
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
         }
         labels = {'cromwell-workflow-id': 'cromwell-12345'}
-        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
-        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        backend_log = '/cromwell/cromwell-executions/id/call-analysis/call-analysis-log'
         attempts = 1
         return_code = 0
 
@@ -375,8 +370,8 @@ class TestJobsController(BaseTestCase):
                         'shardIndex': -1,
                         'start': timestamp,
                         'end': timestamp,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLogs': {
+                            'log': backend_log},
                         'returnCode': return_code,
                         'inputs': inputs,
                         'outputs': outputs,
@@ -425,8 +420,7 @@ class TestJobsController(BaseTestCase):
                     'executionEvents': [],
                     'start': response_timestamp,
                     'end': response_timestamp,
-                    'stderr': std_err,
-                    'stdout': std_out,
+                    'backendLog': backend_log,
                     'callCached': False,
                     'inputs': jobs_controller.update_key_names(inputs),
                     'outputs': jobs_controller.update_key_names(outputs),
@@ -460,8 +454,7 @@ class TestJobsController(BaseTestCase):
             'test.analysis.outputs': 'gs://project-bucket/test/outputs.txt'
         }
         labels = {'cromwell-workflow-id': 'cromwell-12345'}
-        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
-        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        backend_log = '/cromwell/cromwell-executions/id/call-analysis/call-analysis-log'
         attempts = 1
         return_code = 0
 
@@ -529,8 +522,7 @@ class TestJobsController(BaseTestCase):
         }
         labels = {'cromwell-workflow-id': 'cromwell-12345'}
         call_root = '/cromwell/cromwell-executions/id/call-analysis'
-        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
-        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        backend_log = '/cromwell/cromwell-executions/id/call-analysis/call-analysis-log'
         attempts = 2
         return_code = 0
 
@@ -546,8 +538,8 @@ class TestJobsController(BaseTestCase):
                         'shardIndex': 0,
                         'start': timestamp,
                         'end': timestamp,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLogs': {
+                            'log': backend_log},
                         'callRoot': call_root,
                         'returnCode': return_code,
                         'inputs': inputs,
@@ -563,8 +555,8 @@ class TestJobsController(BaseTestCase):
                         'shardIndex': 1,
                         'start': timestamp,
                         'end': timestamp,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLogs': {
+                            'log': backend_log},
                         'callRoot': call_root,
                         'returnCode': return_code,
                         'inputs': inputs,
@@ -619,15 +611,13 @@ class TestJobsController(BaseTestCase):
             'failures': [{
                 'callRoot': call_root,
                 'failure': 'test.analysis shard 0 failed',
-                'stderr': std_err,
-                'stdout': std_out,
+                'backendLog': backend_log,
                 'taskName': 'analysis',
                 'timestamp': response_timestamp
             },{
                 'callRoot': call_root,
                 'failure': 'test.analysis shard 1 failed',
-                'stderr': std_err,
-                'stdout': std_out,
+                'backendLog': backend_log,
                 'taskName': 'analysis',
                 'timestamp': response_timestamp
             }],
@@ -645,8 +635,7 @@ class TestJobsController(BaseTestCase):
                         'attempts': attempts,
                         'end': response_timestamp,
                         'callRoot': call_root,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLog': backend_log,
                         'executionStatus': 'Failed',
                         'failureMessages': ['test.analysis shard 0 failed'],
                         'shardIndex': 0,
@@ -655,8 +644,7 @@ class TestJobsController(BaseTestCase):
                         'attempts': attempts,
                         'end': response_timestamp,
                         'callRoot': call_root,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLog': backend_log,
                         'executionStatus': 'Failed',
                         'failureMessages': ['test.analysis shard 1 failed'],
                         'shardIndex': 1,
@@ -686,8 +674,7 @@ class TestJobsController(BaseTestCase):
         }
         labels = {'cromwell-workflow-id': 'cromwell-12345'}
         call_root = '/cromwell/cromwell-executions/id/call-analysis'
-        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
-        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        backend_log = '/cromwell/cromwell-executions/id/call-analysis/call-analysis-log'
         return_code = 0
 
         def _request_callback(request, context):
@@ -702,8 +689,8 @@ class TestJobsController(BaseTestCase):
                         'shardIndex': -1,
                         'start': timestamp,
                         'end': timestamp,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLogs': {
+                            'log': backend_log},
                         'returnCode': return_code,
                         'inputs': inputs,
                         'outputs': outputs,
@@ -718,8 +705,8 @@ class TestJobsController(BaseTestCase):
                         'shardIndex': -1,
                         'start': timestamp,
                         'end': timestamp,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLogs': {
+                            'log': backend_log},
                         'returnCode': return_code,
                         'inputs': inputs,
                         'outputs': outputs,
@@ -766,8 +753,7 @@ class TestJobsController(BaseTestCase):
                 'executionStatus': 'Failed',
                 'inputs': inputs,
                 'outputs': outputs,
-                'stderr': std_err,
-                'stdout': std_out
+                'backendLog': backend_log
             },{
                 'attemptNumber': 2,
                 'callCached': 'False',
@@ -777,8 +763,7 @@ class TestJobsController(BaseTestCase):
                 'executionStatus': 'Succeeded',
                 'inputs': inputs,
                 'outputs': outputs,
-                'stderr': std_err,
-                'stdout': std_out
+                'backendLog': backend_log
             }]
         }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)
@@ -802,8 +787,7 @@ class TestJobsController(BaseTestCase):
         }
         labels = {'cromwell-workflow-id': 'cromwell-12345'}
         call_root = '/cromwell/cromwell-executions/id/call-analysis'
-        std_err = '/cromwell/cromwell-executions/id/call-analysis/stderr'
-        std_out = '/cromwell/cromwell-executions/id/call-analysis/stdout'
+        backend_log = '/cromwell/cromwell-executions/id/call-analysis/call-analysis-log'
         return_code = 0
 
         def _request_callback(request, context):
@@ -818,8 +802,8 @@ class TestJobsController(BaseTestCase):
                         'shardIndex': 0,
                         'start': timestamp,
                         'end': timestamp,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLogs': {
+                            'log': backend_log},
                         'returnCode': return_code,
                         'inputs': inputs,
                         'outputs': outputs,
@@ -834,8 +818,8 @@ class TestJobsController(BaseTestCase):
                         'shardIndex': 0,
                         'start': timestamp,
                         'end': timestamp,
-                        'stderr': std_err,
-                        'stdout': std_out,
+                        'backendLogs': {
+                            'log': backend_log},
                         'returnCode': return_code,
                         'inputs': inputs,
                         'outputs': outputs,
@@ -884,8 +868,7 @@ class TestJobsController(BaseTestCase):
                 'executionStatus': 'Failed',
                 'inputs': inputs,
                 'outputs': outputs,
-                'stderr': std_err,
-                'stdout': std_out
+                'backendLog': backend_log
             },{
                 'attemptNumber': 2,
                 'callCached': 'False',
@@ -895,8 +878,7 @@ class TestJobsController(BaseTestCase):
                 'executionStatus': 'Succeeded',
                 'inputs': inputs,
                 'outputs': outputs,
-                'stderr': std_err,
-                'stdout': std_out
+                'backendLog': backend_log
             }]
         }  # yapf: disable
         self.assertDictEqual(response_data, expected_data)
