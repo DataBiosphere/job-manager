@@ -30,25 +30,15 @@ export class JobTimingDiagramComponent implements OnInit {
     let chartRows = 1;
 
     metadata.forEach((task) => {
-      if (task.shards) {
-        task.shards.forEach((shard) => {
-          if (shard.executionEvents) {
-            shard.executionEvents.forEach((event) => {
-              this.timelineChart.dataTable.push(this.formatRow(task.name + ' shard ' + shard.shardIndex, event.name, event));
-            });
-          } else {
-            this.timelineChart.dataTable.push(this.formatRow(task.name + ' shard ' + shard.shardIndex, task.name, shard));
-          }
-          chartRows++;
-        });
-      } else if (task.name && task.start) {
-        if (task.executionEvents) {
-          task.executionEvents.forEach((event) => {
-            this.timelineChart.dataTable.push(this.formatRow(task.name, event.name, event));
+      if (task.shards && task.executionEvents) {
+        task.executionEvents.forEach((event) => {
+              this.timelineChart.dataTable.push(this.formatRow(task.name + ' shard ' + event.shardIndex + ' attempt ' + event.attemptNumber, event.name, event));
           });
-        } else {
-          this.timelineChart.dataTable.push(this.formatRow(task.name, task.name, task));
-        }
+        chartRows = chartRows + task.shards.length;
+      } else if (task.name && task.start && task.executionEvents) {
+          task.executionEvents.forEach((event) => {
+            this.timelineChart.dataTable.push(this.formatRow(task.name + ' attempt ' + event.attemptNumber, event.name, event));
+          });
         chartRows++;
       }
     });
@@ -59,7 +49,7 @@ export class JobTimingDiagramComponent implements OnInit {
         showBarLabels: false
       },
       width: this.tabWidth - 65,
-      height: (chartRows * 41) + 58,
+      height: (chartRows * 42) + 120,
       avoidOverlappingGridLines: false
     };
   }
