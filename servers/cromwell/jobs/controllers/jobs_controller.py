@@ -351,8 +351,6 @@ def format_scattered_task(task_name, task_metadata):
                       or _parse_datetime(shard.get('end')) or offset_aware_now,
                       end=_parse_datetime(shard.get('end')),
                       shard_index=shard.get('shardIndex'),
-                      execution_events=_get_execution_events(
-                          shard.get('executionEvents')),
                       backend_log=shard.get('backendLogs').get('log')
                       if shard.get('backendLogs') else None,
                       call_root=shard.get('callRoot'),
