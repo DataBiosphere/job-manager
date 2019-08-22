@@ -4,8 +4,16 @@
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef class="failure-task"> Task Name </th>
     <td mat-cell *matCellDef="let f" class="failure-task">
-      <a class="title-link" *ngIf="f.jobId" href="/jobs/{{f.jobId}}">{{ f.taskName }}</a>
+      <a class="title-link" *ngIf="f.jobId" href="/jobs/{{f.jobId}}{{getQueryString()}}">{{ f.taskName }}</a>
       <span *ngIf="!f.jobId">{{ f.taskName }}</span>
+    </td>
+  </ng-container>
+
+  <!-- Failure shard index column -->
+  <ng-container matColumnDef="shardIndex">
+    <th mat-header-cell *matHeaderCellDef class="failure-shard"> Shard </th>
+    <td mat-cell *matCellDef="let f" class="failure-shard">
+      <span *ngIf="f.shardIndex != '-1'"><span *ngIf="!displayedColumns.includes('message')">shard </span>{{ f.shardIndex }}</span>
     </td>
   </ng-container>
 

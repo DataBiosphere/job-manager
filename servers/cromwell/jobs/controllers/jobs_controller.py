@@ -308,6 +308,7 @@ def format_task_failure(task_name, metadata):
                           if metadata.get('backendLogs') else None,
                           call_root=metadata.get('callRoot'),
                           operation_id=metadata.get('jobId'),
+                          shard_index=metadata.get('shardIndex'),
                           job_id=metadata.get('subWorkflowId'))
 
 

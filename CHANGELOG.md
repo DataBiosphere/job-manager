@@ -2,6 +2,8 @@
 
 ## v1.5.2 Release Notes
 
+### Added the shard index to the failure card and tab.
+
 ### Removed `stdout` and `stderr` logs for Cromwell, since their contents are included in the `backend log`.  Also increased the maximum amount of content for the `backend log` to 500KB.
 
 ### No longer treat failures due to an attempt being preempted in Cromwell as failures.

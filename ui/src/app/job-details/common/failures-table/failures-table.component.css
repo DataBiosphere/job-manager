@@ -43,8 +43,8 @@ td {
 
 th.failure-task,
 td.failure-task {
-  min-width: 9.375rem;
-  max-width: 18.75rem;
+  min-width: 5.375rem;
+  max-width: 14.75rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -54,6 +54,14 @@ th.failure-message,
 td.failure-message {
   line-height: 1.25rem;
   word-wrap: break-word;
+}
+
+th.failure-shard,
+td.failure-shard {
+  max-width: 3.5rem;
+  min-width: 3.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 th.failure-links,
@@ -86,8 +94,8 @@ td.failure-links {
 }
 
 :host-context(mat-card.card) td.failure-task {
-  min-width: 9.75rem;
-  max-width: 9.75rem;
+  min-width: 5.25rem;
+  max-width: 5.25rem;
   font-size: 0.7rem;
 }
 

@@ -612,12 +612,14 @@ class TestJobsController(BaseTestCase):
                 'callRoot': call_root,
                 'failure': 'test.analysis shard 0 failed',
                 'backendLog': backend_log,
+                'shardIndex': 0,
                 'taskName': 'analysis',
                 'timestamp': response_timestamp
             },{
                 'callRoot': call_root,
                 'failure': 'test.analysis shard 1 failed',
                 'backendLog': backend_log,
+                'shardIndex': 1,
                 'taskName': 'analysis',
                 'timestamp': response_timestamp
             }],

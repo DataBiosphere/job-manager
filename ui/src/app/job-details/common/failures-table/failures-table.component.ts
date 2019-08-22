@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 
 import {FailureMessage} from "../../../shared/model/FailureMessage";
+import {ActivatedRoute, Params} from "@angular/router";
 
 @Component({
   selector: 'jm-failures-table',
@@ -17,7 +18,16 @@ export class JobFailuresTableComponent implements OnInit {
 
   dataSource: FailureMessage[];
 
+  constructor(
+    private readonly route: ActivatedRoute) { }
+
   ngOnInit() {
     this.dataSource = this.failures.slice(0, this.numToShow);
+  }
+
+  getQueryString(): string {
+    if (this.route.snapshot.queryParams.q) {
+      return '?q=' + encodeURIComponent(this.route.snapshot.queryParams.q);
+    }
   }
 }
