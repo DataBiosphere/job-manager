@@ -94,13 +94,8 @@ td.failure-links {
 }
 
 :host-context(mat-card.card) td.failure-task {
-<<<<<<< HEAD
   min-width: 5.25rem;
   max-width: 5.25rem;
-=======
-  min-width: 9.75rem;
-  max-width: 9.75rem;
->>>>>>> master
   font-size: 0.7rem;
 }
 
