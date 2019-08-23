@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.5.3 Release Notes
+
+### Leveraged `excludeKey` along with `includeKey` in Cromwell's metadata endpoint to remove extra information. This requires a version of Cromwell 43 or higher. 
+
 ## v1.5.2 Release Notes
 
 ### Added the shard index to the failure card and tab.

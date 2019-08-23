@@ -43,6 +43,8 @@ job_include_keys = attempt_include_keys + (
     'calls', 'description', 'executionEvents', 'labels', 'parentWorkflowId',
     'returnCode', 'status', 'submission', 'subWorkflowId', 'workflowName')
 
+job_exclude_key = 'callCaching:hitFailures'
+
 offset_aware_now = datetime.utcnow().replace(tzinfo=pytz.utc)
 
 
@@ -107,7 +109,8 @@ def get_job(id, **kwargs):
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
         id=id,
-        query='includeKey=' + '&includeKey='.join(job_include_keys))
+        query='includeKey=' + '&includeKey='.join(job_include_keys) +
+        '&excludeKey=' + job_exclude_key)
     response = requests.get(url,
                             auth=kwargs.get('auth'),
                             headers=kwargs.get('auth_headers'))
@@ -174,7 +177,8 @@ def get_task_attempts(id, task, **kwargs):
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
         id=id,
-        query='includeKey=' + '&includeKey='.join(attempt_include_keys))
+        query='includeKey=' + '&includeKey='.join(attempt_include_keys) +
+        '&excludeKey=' + job_exclude_key)
     response = requests.get(url,
                             auth=kwargs.get('auth'),
                             headers=kwargs.get('auth_headers'))
@@ -210,7 +214,8 @@ def get_shard_attempts(id, task, index, **kwargs):
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
         id=id,
-        query='includeKey=' + '&includeKey='.join(attempt_include_keys))
+        query='includeKey=' + '&includeKey='.join(attempt_include_keys) +
+        '&excludeKey=' + job_exclude_key)
     response = requests.get(url,
                             auth=kwargs.get('auth'),
                             headers=kwargs.get('auth_headers'))
