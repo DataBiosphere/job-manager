@@ -23,9 +23,7 @@ mkdir /tmp/dsub-local
 
 ## Running Tests
 To run unit and integration tests on the python-flask app, install
-[`tox`](https://github.com/tox-dev/tox) or
-[`detox`](https://github.com/tox-dev/detox) (recommended for `dsub`
-integration tests with the Google provider). Integration tests with the google
+[`tox`](https://github.com/tox-dev/tox). Integration tests with the google
 provider also require access to the [bvdp-jmui-testing](https://console.cloud.google.com/home/dashboard?project=bvdp-jmui-testing)
 Google Cloud project. File a Github issue assigned to
 [@bfcrampton](https://github.com/bfcrampton) to gain access.
@@ -33,15 +31,15 @@ Google Cloud project. File a Github issue assigned to
 ```
 cd servers/dsub
 # Run all the tests
-detox -- -s
+tox -- -s
 # Run all local provider tests
-detox jobs/test/test_jobs_controller_local.py
+tox jobs/test/test_jobs_controller_local.py
 # Run specific local provider test
-detox jobs/test/test_jobs_controller_local.py:TestJobsControllerLocal.test_abort_job
+tox jobs/test/test_jobs_controller_local.py:TestJobsControllerLocal.test_abort_job
 # Run only google provider tests
-detox jobs/test/test_jobs_controller_local.py
+tox jobs/test/test_jobs_controller_local.py
 # Run specific google provider test
-detox jobs/test/test_jobs_controller_local.py:TestJobsControllerLocal.test_abort_job
+tox jobs/test/test_jobs_controller_local.py:TestJobsControllerLocal.test_abort_job
 ```
 
 ## Generating `requirements.txt`

@@ -68,10 +68,11 @@ jobs:
           command: |
             /bin/bash ./scripts/rebuild_swagger.sh
       - run:
-          name: Install detox and yapf
-          # detox fails with newer versions of tox: https://github.com/tox-dev/detox/issues/33
+          name: Install tox and yapf
+          # tox (and detox) fail with older versions of more-itertools: https://github.com/pytest-dev/pytest/issues/4770
           command: |
-            pip install detox tox==3.5.0 yapf
+            pip install --upgrade pip
+            pip install tox>=3.13.2 pytest>=4.6.5 yapf
       - run:
           name: Lint python code with yapf
           command: |
@@ -80,22 +81,22 @@ jobs:
           name: Run dsub server tests
           command: |
             if [[ -z "$GCLOUD_SERVICE_KEY" || "${CIRCLE_BRANCH}" != "master" ]]; then
-              detox -n 8 -c ./servers/dsub -- \
+              tox -p 8 -c ./servers/dsub -- \
                 --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle \
                 --exclude-test=jobs.test.test_jobs_controller_google_v2.TestJobsControllerGoogleV2
             else
               echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > /home/circleci/gcloud-service-key.json
-              detox -n 8 -c ./servers/dsub
+              tox -p 8 -c ./servers/dsub
               rm /home/circleci/gcloud-service-key.json
             fi
       - run:
           name: Run cromwell server tests
           command: |
-            detox -c ./servers/cromwell
+            tox -c ./servers/cromwell
       - run:
           name: Run jm_utils server tests
           command: |
-            detox -c ./servers/jm_utils
+            tox -c ./servers/jm_utils
       - save_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "servers/dsub/requirements.txt" }}
           paths:
