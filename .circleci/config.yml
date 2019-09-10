@@ -3,12 +3,35 @@
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
 version: 2
+
+job_defaults: &job_defaults
+  machine:
+    image: circleci/classic:latest
+  working_directory: ~/job-manager
+
+run_env_setup: &run_env_setup
+  run:
+    name: Setup Environment Variables
+    command: |
+      echo 'export PATH="${PATH}:${HOME}/job-manager/git-secrets"' >> $BASH_ENV
+
+run_secret_setup: &run_secret_setup
+  run:
+    name: Install git secrets and configure minnie-kenny.sh
+    command: |
+      git clone https://github.com/awslabs/git-secrets.git
+      pushd git-secrets >/dev/null
+      git checkout ad82d68ee924906a0401dfd48de5057731a9bc84
+      popd >/dev/null
+      ./minnie-kenny.sh -f
+
 jobs:
   ui:
-    machine:
-      image: circleci/classic:latest
+    <<: *job_defaults
     steps:
       - checkout
+      - <<: *run_env_setup
+      - <<: *run_secret_setup
       - restore_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
       - run:
@@ -49,14 +72,14 @@ jobs:
             ng build --target=production --environment=dev
 
   backends:
+    <<: *job_defaults
     environment:
       - KEEP_TEST_DSUB_FILES: true
       - GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
-    machine:
-      image: circleci/classic:latest
-    working_directory: ~/job-manager
     steps:
       - checkout
+      - <<: *run_env_setup
+      - <<: *run_secret_setup
       - restore_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "servers/dsub/requirements.txt" }}
       - restore_cache:
@@ -109,9 +132,22 @@ jobs:
           key: node-modules-{{ .Branch }}--{{ checksum "servers/jm_utils/requirements.txt" }}
           paths:
             - "servers/jm_utils/.tox"
+
+  secrets:
+    <<: *job_defaults
+    steps:
+      - checkout
+      - <<: *run_env_setup
+      - <<: *run_secret_setup
+      - run:
+          name: Check for git secrets
+          command: |
+            git secrets --scan-history
+
 workflows:
   version: 2
-  ui_and_backends:
+  ui_and_backends_and_secrets:
     jobs:
       - ui
       - backends
+      - secrets
