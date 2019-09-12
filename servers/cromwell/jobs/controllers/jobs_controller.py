@@ -189,9 +189,16 @@ def get_task_attempts(id, task, **kwargs):
     job = response.json()
 
     attempts = [
-        _convert_to_attempt(call) for call in job.get('calls').get(task)
+        _convert_to_attempt(call)
+        for call in _get_calls_for_task(task, job.get('calls'))
     ]
     return JobAttemptsResponse(attempts=attempts)
+
+
+def _get_calls_for_task(task_name, calls):
+    for key, value in calls.items():
+        if key.endswith('.' + task_name):
+            return value
 
 
 @requires_auth
@@ -226,7 +233,8 @@ def get_shard_attempts(id, task, index, **kwargs):
     job = response.json()
 
     attempts = [
-        _convert_to_attempt(shard) for shard in job.get('calls').get(task)
+        _convert_to_attempt(shard)
+        for shard in _get_calls_for_task(task, job.get('calls'))
         if (shard.get('shardIndex') == int(index))
     ]
     return JobAttemptsResponse(attempts=attempts)

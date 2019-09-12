@@ -121,7 +121,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
   }
 
   populateTaskAttempts(task: TaskMetadata) {
-    this.jobManagerService.getTaskAttempts(this.job.id, this.getJobTaskName(task.name)).then((response) => {
+    this.jobManagerService.getTaskAttempts(this.job.id, task.name).then((response) => {
       task.attemptsData = response.attempts;
     })
   }
