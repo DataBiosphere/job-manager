@@ -1,6 +1,9 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 
+const { exitIfFailMinnieKenny } = require( './minnie-kenny.js' );
+exitIfFailMinnieKenny();
+
 module.exports = function (config) {
   config.set({
     customLaunchers: {
