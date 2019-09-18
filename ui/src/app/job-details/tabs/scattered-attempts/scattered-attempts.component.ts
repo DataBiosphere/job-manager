@@ -19,7 +19,8 @@ export class JobScatteredAttemptsComponent {
   }
 
   getShardAttempts(shard: Shard) {
-    this.jobManagerService.getShardAttempts(this.data.shardsData.taskId, this.data.shardsData.taskName, shard.shardIndex).then((response) => {
+    const simpleTaskName = this.data.shardsData.taskName.split('.')[1]
+    this.jobManagerService.getShardAttempts(this.data.shardsData.taskId, simpleTaskName, shard.shardIndex).then((response) => {
       shard.attemptsData = response.attempts;
     });
   }

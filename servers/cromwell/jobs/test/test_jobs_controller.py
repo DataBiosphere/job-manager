@@ -666,7 +666,6 @@ class TestJobsController(BaseTestCase):
         """
         workflow_id = 'id'
         workflow_name = 'test'
-        task_name = 'test.task'
         status = 'Failed'
         timestamp = '2017-11-08T05:06:41.424Z'
         response_timestamp = '2017-11-08T05:06:41.424000+00:00'
@@ -686,7 +685,7 @@ class TestJobsController(BaseTestCase):
                 'id': workflow_id,
                 'status': status,
                 'calls': {
-                    task_name: [{
+                    'test.task': [{
                         'executionStatus': 'RetryableFailure',
                         'shardIndex': -1,
                         'start': timestamp,
@@ -741,7 +740,7 @@ class TestJobsController(BaseTestCase):
         mock_request.get(cromwell_url, json=_request_callback)
 
         response = self.client.open('/jobs/{id}/{task}/attempts'.format(
-            id=workflow_id, task=task_name),
+            id=workflow_id, task='task'),
                                     method='GET')
         self.assertStatus(response, 200)
         response_data = json.loads(response.data)
@@ -779,7 +778,6 @@ class TestJobsController(BaseTestCase):
         """
         workflow_id = 'id'
         workflow_name = 'test'
-        task_name = 'test.task'
         status = 'Failed'
         timestamp = '2017-11-08T05:06:41.424Z'
         response_timestamp = '2017-11-08T05:06:41.424000+00:00'
@@ -799,7 +797,7 @@ class TestJobsController(BaseTestCase):
                 'id': workflow_id,
                 'status': status,
                 'calls': {
-                    task_name: [{
+                    'test.task': [{
                         'executionStatus': 'RetryableFailure',
                         'shardIndex': 0,
                         'start': timestamp,
@@ -855,7 +853,7 @@ class TestJobsController(BaseTestCase):
 
         response = self.client.open(
             '/jobs/{id}/{task}/{index}/attempts'.format(id=workflow_id,
-                                                        task=task_name,
+                                                        task='task',
                                                         index=0),
             method='GET')
         self.assertStatus(response, 200)
