@@ -2,6 +2,10 @@
 
 ## v1.5.3 Release Notes
 
+### Fixed a bug where workflow-level errors are not displayed correctly in the Errors Card on the Job Details page.
+
+### Fixed a bug where certain task/sub-workflow attempts are not parsed correctly for the Job Details page.
+
 ### Leveraged `excludeKey` along with `includeKey` in Cromwell's metadata endpoint to remove extra information. This requires a version of Cromwell 43 or higher. 
 
 ## v1.5.2 Release Notes
