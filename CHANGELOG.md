@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.5.4 Release Notes
+
+### Fixed a bug where workflow inputs/outputs were not always displayed correctly without browser reload.
+
 ## v1.5.3 Release Notes
 
 ### Fixed a bug where workflow-level errors are not displayed correctly in the Errors Card on the Job Details page.

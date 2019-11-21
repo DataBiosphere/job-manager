@@ -28,6 +28,8 @@ export class JobTabsComponent implements OnInit, OnChanges {
   @ViewChild(JobFailuresTableComponent) failuresTable: JobFailuresTableComponent;
   @ViewChild(JobTimingDiagramComponent) timingDiagram: JobTimingDiagramComponent;
   @ViewChild('tabsPanel') tabsPanel;
+  @ViewChild('inputsTab') inputsTab;
+  @ViewChild('outputsTab') outputsTab;
 
   database = new TasksDatabase(this.tasks);
   dataSource: TasksDataSource | null;

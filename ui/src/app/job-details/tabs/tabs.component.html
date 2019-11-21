@@ -135,11 +135,11 @@
     </mat-tab>
     <!-- Task inputs tab -->
     <mat-tab *ngIf="hasInputs(job)" label="Inputs">
-      <jm-resources-table [entries]="job.inputs"></jm-resources-table>
+      <jm-resources-table #inputsTab [entries]="job.inputs"></jm-resources-table>
     </mat-tab>
     <!-- Task outputs tab -->
     <mat-tab *ngIf="hasOutputs(job)" label="Outputs">
-      <jm-resources-table [entries]="job.outputs"></jm-resources-table>
+      <jm-resources-table #outputsTab [entries]="job.outputs"></jm-resources-table>
     </mat-tab>
     <!-- Secondary Labels tab -->
     <mat-tab *ngIf="job.labels" label="Labels">

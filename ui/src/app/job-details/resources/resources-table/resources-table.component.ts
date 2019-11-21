@@ -20,7 +20,7 @@ export class JobResourcesTableComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    this.entryKeys = Object.keys(this.entries || {}).sort();
+    this.populateEntryKeys(this.entries);
   }
 
   getResourceURL(key: string): string {
@@ -29,5 +29,9 @@ export class JobResourcesTableComponent implements OnInit {
 
   isResourceURL(key: string): boolean {
     return ResourceUtils.isResourceURL(this.entries[key]);
+  }
+
+  populateEntryKeys(entries) {
+    this.entryKeys = Object.keys(entries || {}).sort();
   }
 }

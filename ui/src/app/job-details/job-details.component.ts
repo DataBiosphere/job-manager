@@ -112,5 +112,11 @@ export class JobDetailsComponent implements OnInit {
     if (this.job.extensions.tasks) {
       this.taskTabs.timingDiagram.buildTimelineData(this.job.extensions.tasks);
     }
+    if (objectNotEmpty(this.job.inputs)) {
+      this.taskTabs.inputsTab.populateEntryKeys(this.job.inputs);
+    }
+    if (objectNotEmpty(this.job.outputs)) {
+      this.taskTabs.outputsTab.populateEntryKeys(this.job.outputs);
+    }
   }
 }
