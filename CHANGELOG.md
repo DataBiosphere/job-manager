@@ -1,5 +1,9 @@
 # Job Manager Change Log
 
+## v1.5.5 Release Notes
+
+### Fixed a bug where aborted scattered tasks were displaying the incorrect duration in the Job Details page.
+
 ## v1.5.4 Release Notes
 
 ### Fixed a bug where workflow inputs/outputs were not always displayed correctly without browser reload.
