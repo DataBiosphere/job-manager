@@ -21,7 +21,7 @@ RUN npm install
 
 RUN /ui/node_modules/.bin/ng build --prod
 
-FROM nginx
+FROM nginx:1.19.0
 
 COPY --from=1 /ui/dist /ui/dist
 ADD ./ui/nginx.prod.conf /etc/nginx/nginx.conf
