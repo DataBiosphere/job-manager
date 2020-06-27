@@ -20,11 +20,11 @@ function download_codegen() {
     if [[ ! -e "swagger-codegen-cli.jar" ]]
     then
       if [[ -e "$(command -v wget)" ]]; then
-        wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
+        wget https://repo1.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O swagger-codegen-cli.jar
       elif [[ -e "$(command -v curl)" ]]; then
-        curl http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar > swagger-codegen-cli.jar
+        curl https://repo1.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar > swagger-codegen-cli.jar
       else
-        "Cannot download 'http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar' automatically (no curl or wget found on PATH)"
+        "Cannot download 'https://repo1.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar' automatically (no curl or wget found on PATH)"
         "You can download it manually into this directory to continue"
         exit 1
       fi
