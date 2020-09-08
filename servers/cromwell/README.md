@@ -5,7 +5,7 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
 ## Development
 
 - Set the `CROMWELL_URL` environment variable to specify which cromwell instance to use, for example:
-    
+
     ```
     export CROMWELL_URL=https://example-cromwell.broadinstitute.org/api/workflows/v1
     ```
@@ -120,7 +120,10 @@ Thin shim around [`cromwell`](https://github.com/broadinstitute/cromwell).
         - If the field is `editable`, then `filterable` will be ignored.
 
 - (Required, CromIAM only) Configure fields to display
-  - **Note:** If you want to use Job Manager against CromIAM, which is using SAM/Google OAuth for authZ/authN, the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
+  - **Note:** If you want to use Job Manager against CromIAM, which is using SAM/Google OAuth for authZ/authN:
+
+    1. you need to set the environment variable `IS_CROMIAM` to `True`, i.e. `export IS_CROMIAM=True` for the API, which speeds up the processing by omitting redundant subworkflows query in Cromwell. See details [here](https://github.com/DataBiosphere/job-manager/pull/576/files#diff-7c1402d297121c5f41a8bb4659a55271R391)
+    2. the `capabilities_config.json` must also include some extra fields, as well as proper scopes, which are shown as below:
 ```json
 {
   "displayFields": [
