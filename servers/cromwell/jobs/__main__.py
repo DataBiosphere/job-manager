@@ -22,6 +22,10 @@ parser.add_argument('--cromwell_url',
                     type=str,
                     help='Url for fetching data from cromwell',
                     default=os.environ.get('CROMWELL_URL'))
+parser.add_argument('--is_cromiam',
+                    type=bool,
+                    help='Whether if the cromwell backend is CromIAM',
+                    default=os.environ.get('IS_CROMIAM', False))
 parser.add_argument('--sam_url',
                     type=str,
                     help='Url for fetching authentication from SAM',
@@ -89,6 +93,7 @@ except (IOError, TypeError):
 app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['sam_url'] = args.sam_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'
+app.app.config['is_cromiam'] = args.is_cromiam
 app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)
 
