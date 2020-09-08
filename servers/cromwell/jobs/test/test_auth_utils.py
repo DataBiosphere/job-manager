@@ -16,7 +16,8 @@ class TestAuthUtils(BaseTestCase):
             'cromwell_user': '',
             'cromwell_password': '',
             'use_caas': True,
-            'capabilities': {}
+            'capabilities': {},
+            'is_cromiam': False
         })
 
         def _request_callback(request, context):
