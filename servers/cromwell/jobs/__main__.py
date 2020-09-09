@@ -9,6 +9,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 import logging
 from .models.capabilities_response import CapabilitiesResponse
+from distutils.util import strtobool
 
 CROMWELL_LABEL_MIN_LENGTH = 1
 CROMWELL_LABEL_MAX_LENGTH = 256
@@ -22,6 +23,11 @@ parser.add_argument('--cromwell_url',
                     type=str,
                     help='Url for fetching data from cromwell',
                     default=os.environ.get('CROMWELL_URL'))
+parser.add_argument(
+    '--include_subworkflows',
+    type=bool,
+    help='Whether to include subworkflows if the Cromwell is using OAuth',
+    default=strtobool(os.getenv('INCLUDE_SUBWORKFLOWS', "True")))
 parser.add_argument('--sam_url',
                     type=str,
                     help='Url for fetching authentication from SAM',
@@ -89,6 +95,7 @@ except (IOError, TypeError):
 app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['sam_url'] = args.sam_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'
+app.app.config['include_subworkflows'] = args.include_subworkflows
 app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)
 
