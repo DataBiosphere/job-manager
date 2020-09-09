@@ -23,10 +23,11 @@ parser.add_argument('--cromwell_url',
                     type=str,
                     help='Url for fetching data from cromwell',
                     default=os.environ.get('CROMWELL_URL'))
-parser.add_argument('--include_subworkflows',
-                    type=bool,
-                    help='Whether to include subworkflows if the Cromwell is using OAuth',
-                    default=strtobool(os.getenv('INCLUDE_SUBWORKFLOWS', "True")))
+parser.add_argument(
+    '--include_subworkflows',
+    type=bool,
+    help='Whether to include subworkflows if the Cromwell is using OAuth',
+    default=strtobool(os.getenv('INCLUDE_SUBWORKFLOWS', "True")))
 parser.add_argument('--sam_url',
                     type=str,
                     help='Url for fetching authentication from SAM',
