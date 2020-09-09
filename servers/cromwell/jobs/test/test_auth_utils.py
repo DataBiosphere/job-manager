@@ -17,7 +17,7 @@ class TestAuthUtils(BaseTestCase):
             'cromwell_password': '',
             'use_caas': True,
             'capabilities': {},
-            'is_cromiam': False
+            'include_subworkflows': True
         })
 
         def _request_callback(request, context):

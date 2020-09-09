@@ -519,7 +519,7 @@ def cromwell_query_params(query, page, page_size, has_auth):
     # is sending requests to a CromIAM, not a Cromwell.  CromIAM can't retrieve
     # subworkflows, so it's not necessary to the query (and slows things down
     # significantly)
-    if not has_auth or not _is_iam():
+    if not has_auth or not _include_subworkflows():
         query_params.append({'includeSubworkflows': 'false'})
     if query.extensions and query.extensions.hide_archived:
         query_params.append({'excludeLabelAnd': 'flag:archive'})
@@ -684,8 +684,8 @@ def _get_sam_url():
     return current_app.config['sam_url']
 
 
-def _is_iam():
-    return current_app.config['is_cromiam']
+def _include_subworkflows():
+    return current_app.config['include_subworkflows']
 
 
 def _format_query_labels(orig_query_labels):
