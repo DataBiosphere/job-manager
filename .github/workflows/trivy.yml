@@ -19,4 +19,4 @@ jobs:
 
       - uses: broadinstitute/dsp-appsec-trivy-action@v1
         with:
-          context: ${{ matrix.workdir }}
+          dockerfile: ./${{ matrix.workdir }}/Dockerfile
