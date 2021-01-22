@@ -17,7 +17,7 @@ httplib2==0.11.3
 idna==2.7
 inflection==0.3.1
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2==2.10.1
 ../jm_utils
 jsonschema==2.6.0
 MarkupSafe==1.0
