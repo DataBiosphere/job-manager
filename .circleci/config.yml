@@ -60,7 +60,7 @@ jobs:
           command: |
             nvm use 8.5.0
             cd ui
-            ng test --single-run -sm=false --browsers=ChromeHeadless
+            CHROME_BIN=/usr/bin/google-chrome ng test --single-run -sm=false --browsers=ChromeHeadless
       - run:
           name: Ensure the UI builds for prod
           # Target production to emulate deployment, but a dev environment
