@@ -37,7 +37,7 @@ jobs:
       - run:
           name: nvm install node and UI dependencies
           command: |
-            nvm install 8.5.0
+            nvm install --lts
             cd ui
             npm install
             npm install -g @angular/cli@1.7.4
