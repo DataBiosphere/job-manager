@@ -6,7 +6,7 @@ version: 2
 
 job_defaults: &job_defaults
   machine:
-    image: circleci/classic:latest
+    image: circleci/ubuntu-2004:202104-01
   working_directory: ~/job-manager
 
 run_env_setup: &run_env_setup
