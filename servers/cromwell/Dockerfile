@@ -1,4 +1,4 @@
-FROM openjdk
+FROM us.gcr.io/broad-dsp-gcr-public/base/jre:11-debian
 
 WORKDIR /job-manager
 
