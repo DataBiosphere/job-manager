@@ -19,7 +19,7 @@ itsdangerous==0.24
 Jinja2==2.10
 ../jm_utils
 jsonschema==2.6.0
-MarkupSafe==1.0
+MarkupSafe==1.1
 oauth2client==3.0.0
 parameterized==0.6.1
 pathlib==1.0.1

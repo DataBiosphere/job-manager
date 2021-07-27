@@ -13,7 +13,7 @@ itsdangerous==0.24
 Jinja2==2.10
 ../jm_utils
 jsonschema==2.6.0
-MarkupSafe==1.0
+MarkupSafe==1.1
 pathlib==1.0.1
 python-dateutil==2.6.0
 pytz==2018.5
