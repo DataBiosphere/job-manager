@@ -5,8 +5,6 @@
 version: 2
 
 job_defaults: &job_defaults
-  machine:
-    image: circleci/classic:latest
   working_directory: ~/job-manager
 
 run_env_setup: &run_env_setup
@@ -28,6 +26,8 @@ run_secret_setup: &run_secret_setup
 jobs:
   ui:
     <<: *job_defaults
+    machine:
+      image: circleci/classic:latest
     steps:
       - checkout
       - <<: *run_env_setup
@@ -73,6 +73,8 @@ jobs:
 
   backends:
     <<: *job_defaults
+    machine:
+      image: ubuntu-2004:202104-01
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
     steps:
@@ -90,8 +92,8 @@ jobs:
       - run:
           name: Install Python 3
           command: |
-            pyenv install 3.6.3
-            pyenv global 3.6.3
+#            pyenv install 3.6.3
+#            pyenv global 3.6.3
             python --version
             which python
       - run:
@@ -123,6 +125,8 @@ jobs:
 
   secrets:
     <<: *job_defaults
+    machine:
+      image: ubuntu-2004:202104-01
     steps:
       - checkout
       - <<: *run_env_setup
