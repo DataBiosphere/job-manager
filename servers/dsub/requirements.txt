@@ -4,7 +4,7 @@ chardet==3.0.4
 click==6.7
 clickclick==1.2.2
 connexion==1.1.13
-dsub==0.4.4
+dsub==0.3.10
 Flask==1.0.2
 Flask-Cors==3.0.3
 functools32==3.2.3.post2
