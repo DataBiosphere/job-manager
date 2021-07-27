@@ -90,9 +90,8 @@ jobs:
           command: |
             /bin/bash ./scripts/rebuild_swagger.sh
       - run:
-          name: Install Python 3
+          name: Set Python 3
           command: |
-            pyenv install 3.9.4
             pyenv global 3.9.4
             python --version
             which python
