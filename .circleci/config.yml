@@ -37,7 +37,7 @@ jobs:
       - run:
           name: nvm install node and UI dependencies
           command: |
-            nvm install --lts
+            /opt/circleci/.nvm/nvm.sh install --lts
             cd ui
             npm install
             npm install -g @angular/cli@1.7.4
@@ -52,13 +52,13 @@ jobs:
       - run:
           name: Lint angular code with ng lint
           command: |
-            nvm use --lts
+            /opt/circleci/.nvm/nvm.sh install --lts
             cd ui
             ng lint --type-check
       - run:
           name: Run UI unit tests
           command: |
-            nvm use --lts
+            /opt/circleci/.nvm/nvm.sh install --lts
             cd ui
             ng test --single-run -sm=false --browsers=ChromeHeadless
       - run:
@@ -67,7 +67,7 @@ jobs:
           # because we do not have a prod environment file.
           # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
           command: |
-            nvm use --lts
+            /opt/circleci/.nvm/nvm.sh install --lts
             cd ui
             ng build --target=production --environment=dev
 
