@@ -94,6 +94,7 @@ jobs:
           name: Install tox and yapf
           # tox (and detox) fail with older versions of more-itertools: https://github.com/pytest-dev/pytest/issues/4770
           command: |
+            pyenv install --list
             pyenv install 3.9.6
             pyenv global 3.9.6
             python --version
