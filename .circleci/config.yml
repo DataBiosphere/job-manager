@@ -6,7 +6,7 @@ version: 2
 
 job_defaults: &job_defaults
   machine:
-    image: ubuntu-2004:202104-01
+    image: circleci/classic:latest
   working_directory: ~/job-manager
 
 run_env_setup: &run_env_setup
@@ -24,9 +24,6 @@ run_secret_setup: &run_secret_setup
       git checkout ad82d68ee924906a0401dfd48de5057731a9bc84
       popd >/dev/null
       ./minnie-kenny.sh -f
-
-orbs:
-  browser-tools: circleci/browser-tools@1.1.3
 
 jobs:
   ui:
@@ -63,7 +60,7 @@ jobs:
           command: |
             nvm use --lts
             cd ui
-            CHROME_BIN=/usr/bin/google-chrome ng test --single-run -sm=false --browsers=ChromeHeadless
+            ng test --single-run -sm=false --browsers=ChromeHeadless
       - run:
           name: Ensure the UI builds for prod
           # Target production to emulate deployment, but a dev environment
