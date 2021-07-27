@@ -91,12 +91,16 @@ jobs:
           command: |
             /bin/bash ./scripts/rebuild_swagger.sh
       - run:
-          name: Install tox and yapf
-          # tox (and detox) fail with older versions of more-itertools: https://github.com/pytest-dev/pytest/issues/4770
+          name: Install Python 3
           command: |
             pyenv install 3.6.3
             pyenv global 3.6.3
             python --version
+            which python
+      - run:
+          name: Install tox and yapf
+          # tox (and detox) fail with older versions of more-itertools: https://github.com/pytest-dev/pytest/issues/4770
+          command: |
             pip install --upgrade pip
             pip install tox>=3.13.2 pytest>=4.6.5 yapf
       - run:
