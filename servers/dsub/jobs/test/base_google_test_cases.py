@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from dsub.providers import google-v2
+from dsub.providers import google
 import flask
 import operator
 import unittest
