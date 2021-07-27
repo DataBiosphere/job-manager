@@ -90,10 +90,8 @@ jobs:
           command: |
             /bin/bash ./scripts/rebuild_swagger.sh
       - run:
-          name: Set Python 3
+          name: Check Python version
           command: |
-            exit 0
-            pyenv global 3.9.4
             python --version
             which python
       - run:
