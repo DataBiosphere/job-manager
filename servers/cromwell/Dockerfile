@@ -6,7 +6,7 @@ ADD ./ /job-manager
 
 RUN /bin/bash -c scripts/rebuild_swagger.sh
 
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:debian
+FROM gcr.io/google-appengine/python
 
 WORKDIR /app
 
