@@ -8,6 +8,14 @@
 [![Github](https://img.shields.io/badge/Docker%20Image-dsub%20shim%20API-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-api-dsub)
 [![Github](https://img.shields.io/badge/Docker%20Image-cromwell%20shim%20API-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-api-cromwell)
 
+## Lifecycle notice
+
+Job Manager is in maintenance mode and is not recommended for new projects.
+
+dsub support is deprecated and will be removed in a future release.
+
+The last release of Job Manager to support dsub without compromise is [1.5.7](https://github.com/DataBiosphere/job-manager/releases/tag/v1.5.7).
+
 ## User facing documentation
 
 Welcome to the Job Manager repository! If you're a developer you're in the right place.
@@ -15,10 +23,6 @@ Welcome to the Job Manager repository! If you're a developer you're in the right
 However, if you just want to try out or deploy Job Manager, you will probably find our user and deployment focused content in
 our ReadTheDocs pages: https://data-biosphere-job-manager.readthedocs.io/en/latest/
 
-### Try it out, NOW!
-
-The easiest way to try out Job Manager is to use the [getting started script](https://data-biosphere-job-manager.readthedocs.io/en/stable/GettingStarted/QuickStart)
- 
 ## Welcome
 
 See the [development guide](#development) below.
@@ -35,20 +39,6 @@ The Job Manager aspires to bring ease and efficiency to developing and debugging
 * Rich search capabilities across current and historic workflows
 * Aborting workflows
 * Clean, intuitive UX based on material design principles
-
-### Future Features
-* Dynamic grouping, filtering, and drill-down
-* Re-launching workflows
-* Simplified troubleshooting of failed workflows
-* Improved UI design
-
-## Roadmap
-
-The current code is a work in progress towards an alpha release and as such has started with core features: connecting to both backends, visualizing workflow and task status and metadata, quick access to log files, and simple filtering.
-
-The near-term roadmap includes improvements to failure troubleshooting, creating a robust dashboard for grouping jobs and seeing status overviews, and improving handling of widely scattered workflows.
-
-We envision a product with user-customizable views of jobs running, insights into workflow compute cost, the ability to re-launch jobs, and the potential to make custom reports about the jobs that have been run.
 
 ## Architecture Overview
 
