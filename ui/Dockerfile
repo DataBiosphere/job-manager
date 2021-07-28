@@ -1,4 +1,4 @@
-FROM openjdk
+FROM us.gcr.io/broad-dsp-gcr-public/base/jre:11-debian
 
 WORKDIR /job-manager
 
@@ -6,7 +6,7 @@ ADD ./ /job-manager
 
 RUN /bin/bash -c scripts/rebuild_swagger.sh
 
-FROM node
+FROM node:lts
 
 WORKDIR /ui
 
@@ -21,7 +21,7 @@ RUN npm install
 
 RUN /ui/node_modules/.bin/ng build --prod
 
-FROM nginx:1.19.6
+FROM nginx:stable
 
 COPY --from=1 /ui/dist /ui/dist
 ADD ./ui/nginx.prod.conf /etc/nginx/nginx.conf
