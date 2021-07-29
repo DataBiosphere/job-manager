@@ -165,31 +165,31 @@ For `cromwell` server documentation, see [servers/cromwell](servers/cromwell/REA
 
 ### How to build
 
-From v0.2.0, Job Manager starts to release stock docker images on [DockerHub](https://hub.docker.com/u/databiosphere)
+Starting with release v1.6.0, Job Manager docker images are on [GCR](https://console.cloud.google.com/gcr/images/broad-dsp-gcr-public).
 
-- Setting the docker tag first in bash, e.g. `TAG="v0.1.0"`
-
-- To build the `job-manager-ui` image with `$TAG` from the root of this Github repository:
+- Configure Docker to authenticate with GCR
     ```
-    docker build -t job-manager-ui:$TAG . -f ui/Dockerfile
+    gcloud config set account username@broadinstitute.org
+    gcloud auth configure-docker us.gcr.io
+    ```
+
+- Set the Docker tag first in bash, e.g. `TAG="v0.1.0"`
+
+- To publish the `job-manager-ui` image with `$TAG` from the root of this Github repository:
+    ```
+    docker build -t us.gcr.io/broad-dsp-gcr-public/job-manager-ui:$TAG . -f ui/Dockerfile
+    docker push us.gcr.io/broad-dsp-gcr-public/job-manager-ui:$TAG
     ```
     
-- **Cromwell:** To build the `job-manager-api-cromwell` image with `$TAG` from the root of this Github repository:
+- To publish the `job-manager-api-cromwell` image with `$TAG` from the root of this Github repository:
     ```
-    docker build -t job-manager-api-cromwell:$TAG . -f servers/cromwell/Dockerfile
-    ```
-    
-- **dsub:** To build the `job-manager-api-dsub` image with `$TAG` from the root of this Github repository:
-    ```
-    docker build -t job-manager-api-dsub:$TAG . -f servers/dsub/Dockerfile
+    docker build -t us.gcr.io/broad-dsp-gcr-public/job-manager-api-cromwell:$TAG . -f servers/cromwell/Dockerfile
+    docker push us.gcr.io/broad-dsp-gcr-public/job-manager-api-cromwell:$TAG
     ```
 
-### Add a github release pointing to the dockerhub images
+### Add a Github release pointing to the GCR images
 
-From v0.2.0, each release in Github will also release 3 corresponding docker images on Docker Hub:
+From v1.6.0, each release in Github will also release 2 corresponding Docker images on GCR:
 
-- [job-manager-ui](https://hub.docker.com/r/databiosphere/job-manager-ui/)
-- [job-manager-api-cromwell](https://hub.docker.com/r/databiosphere/job-manager-api-cromwell/)
-- [job-manager-api-dsub](https://hub.docker.com/r/databiosphere/job-manager-api-dsub/)
-
-For a long-term plan, we will set up a docker build hook so the release process can be more automated.
+- [job-manager-ui](https://console.cloud.google.com/gcr/images/broad-dsp-gcr-public/US/job-manager-ui)
+- [job-manager-api-cromwell](https://console.cloud.google.com/gcr/images/broad-dsp-gcr-public/US/job-manager-api-cromwell)
