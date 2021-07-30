@@ -6,6 +6,7 @@ ADD ./ /job-manager
 
 RUN /bin/bash -c scripts/rebuild_swagger.sh
 
+# We cannot yet adopt a blessed Python image because Job Manager uses python2 and blessed only has 3
 FROM gcr.io/google-appengine/python
 
 WORKDIR /app
