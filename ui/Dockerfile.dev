@@ -1,6 +1,8 @@
 # Note: This is the dockerfile for development purposes
 
-FROM node
+FROM node:14
+
+RUN apt-get update && apt-get -y install python
 
 WORKDIR /ui
 ADD package-lock.json package.json /ui/
