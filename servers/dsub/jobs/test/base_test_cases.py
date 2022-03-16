@@ -25,7 +25,7 @@ from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.aggregation_response import AggregationResponse
 from jobs.models.status_counts import StatusCounts
 
-DOCKER_IMAGE = 'ubuntu:14.04'
+DOCKER_IMAGE = 'ubuntu:20.04'
 
 
 class BaseTestCases:
