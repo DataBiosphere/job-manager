@@ -27,7 +27,7 @@ jobs:
   ui:
     <<: *job_defaults
     machine:
-      image: circleci/classic:latest
+      image: ubuntu-2004:202104-01
     steps:
       - checkout
       - <<: *run_env_setup
