@@ -27,7 +27,7 @@ jobs:
   ui:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:202111-02
+      image: circleci/classic:latest
     steps:
       - checkout
       - <<: *run_env_setup
@@ -74,7 +74,7 @@ jobs:
   backends:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:202111-02
+      image: ubuntu-2004:202104-01
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
     steps:
@@ -124,7 +124,7 @@ jobs:
   secrets:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:202111-02
+      image: ubuntu-2004:202104-01
     steps:
       - checkout
       - <<: *run_env_setup
