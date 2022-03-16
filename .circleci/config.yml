@@ -37,7 +37,11 @@ jobs:
       - run:
           name: nvm install node and UI dependencies
           command: |
-            /opt/circleci/.nvm/nvm.sh install --lts
+            apt update && apt -y upgrade && apt -y install curl
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            nvm install --lts
             cd ui
             npm install
             npm install -g @angular/cli@1.7.4
