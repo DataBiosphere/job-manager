@@ -50,7 +50,7 @@
     "karma-coverage-istanbul-reporter": "^1.4.1",
     "karma-jasmine": "^1.1.1",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "ng2-google-charts": "^4.0.0",
     "protractor": "~5.1.2",
     "sshpk": "^1.16.1",
