@@ -37,6 +37,7 @@ jobs:
       - run:
           name: nvm install node and UI dependencies
           command: |
+            cat /opt/circleci/.nvm/nvm.sh
             /opt/circleci/.nvm/nvm.sh install --lts
             cd ui
             npm install
