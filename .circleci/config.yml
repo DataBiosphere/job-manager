@@ -27,6 +27,7 @@ jobs:
   ui:
     <<: *job_defaults
     machine:
+      # latest pinned 20.04 version https://circleci.com/developer/machine/image/ubuntu-2004
       image: ubuntu-2004:202201-02
     steps:
       - checkout
@@ -36,12 +37,14 @@ jobs:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
       - run:
           name: nvm install node and UI dependencies
+          # The Circle Ubuntu machine images of yore apparently installed nvm by default, but the current images require
+          # us to install a bunch of packages before installing nvm ourselves.
           command: |
-            apt update && apt -y upgrade && apt -y install curl python2 make g++
+            apt update && apt -y upgrade && apt -y install curl
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            # nvm install --lts
+            # Current LTS is 16 but some dependencies warn they will break on node 14
             nvm install 12
             cd ui
             npm install
@@ -60,7 +63,6 @@ jobs:
           command: |
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 12
             cd ui
             ng lint --type-check
       - run:
@@ -68,7 +70,6 @@ jobs:
           command: |
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 12
             cd ui
             ng test --single-run -sm=false --browsers=ChromeHeadless
       - run:
@@ -79,7 +80,6 @@ jobs:
           command: |
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 12
             cd ui
             ng build --target=production --environment=dev
 
