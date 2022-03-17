@@ -18,6 +18,7 @@ PROCESS_NOT_FOUND_MESSAGE = 'Process not found yet'
 
 class TestJobsControllerLocal(BaseTestCases.JobsControllerTestCase):
     """ JobsController integration tests for local provider """
+
     @classmethod
     def setUpClass(cls):
         super(TestJobsControllerLocal, cls).setUpClass()

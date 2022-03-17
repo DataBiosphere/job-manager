@@ -13,7 +13,9 @@ from jobs.models.query_jobs_request import QueryJobsRequest
 
 
 class BaseGoogleTestCases:
+
     class BaseGoogleTestCase(BaseTestCases.JobsControllerTestCase):
+
         @classmethod
         def setUpClass(cls):
             super(BaseGoogleTestCases.BaseGoogleTestCase, cls).setUpClass()
