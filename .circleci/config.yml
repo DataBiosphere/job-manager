@@ -38,7 +38,7 @@ jobs:
           name: nvm install node and UI dependencies
           command: |
             echo "npm version is $(npm --version)"
-            echo "nvm version is $(nvm --version)"
+            echo "nvm version is $(/opt/circleci/.nvm/nvm.sh --version)"
             /opt/circleci/.nvm/nvm.sh install --lts
             cd ui
             npm install
