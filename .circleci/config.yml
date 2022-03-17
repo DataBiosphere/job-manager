@@ -55,7 +55,7 @@ jobs:
             # is now 16 and some of JMUI's dependencies break with Node 14+, so install Node 12 explicitly.
             #
             # npm WARN deprecated chokidar@1.7.0: Chokidar 2 will break on node v14+. Upgrade to chokidar 3 with 15x less dependencies.
-            nvm install 6.1
+            nvm install 12
             
             cd ui
             npm install
