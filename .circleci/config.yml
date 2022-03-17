@@ -45,6 +45,7 @@ jobs:
             nvm install 12
             cd ui
             npm install
+            npm rebuild node-sass            
             npm install -g @angular/cli@1.7.4
       - save_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
@@ -79,7 +80,6 @@ jobs:
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
             nvm install 12
-            npm rebuild node-sass
             cd ui
             ng build --target=production --environment=dev
 
