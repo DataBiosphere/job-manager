@@ -61,19 +61,18 @@ jobs:
       - run:
           name: Lint angular code with ng lint
           command: |
-            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
             cd ui
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm            
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
             nvm install 12
             ng lint --type-check
       - run:
           name: Run UI unit tests
           command: |
+            cd ui
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            cd ui
+            nvm install 12
             ng test --single-run -sm=false --browsers=ChromeHeadless
       - run:
           name: Ensure the UI builds for prod
@@ -81,9 +80,10 @@ jobs:
           # because we do not have a prod environment file.
           # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
           command: |
+            cd ui
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            cd ui
+            nvm install 12
             ng build --target=production --environment=dev
 
   backends:
