@@ -37,11 +37,12 @@ jobs:
       - run:
           name: nvm install node and UI dependencies
           command: |
-            apt update && apt -y upgrade && apt -y install curl
+            apt update && apt -y upgrade && apt -y install curl python2 make g++
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install --lts
+            # nvm install --lts
+            nvm install 12
             cd ui
             npm install
             npm install -g @angular/cli@1.7.4
@@ -56,13 +57,17 @@ jobs:
       - run:
           name: Lint angular code with ng lint
           command: |
-            /opt/circleci/.nvm/nvm.sh install --lts
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            nvm install 12
             cd ui
             ng lint --type-check
       - run:
           name: Run UI unit tests
           command: |
-            /opt/circleci/.nvm/nvm.sh install --lts
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            nvm install 12
             cd ui
             ng test --single-run -sm=false --browsers=ChromeHeadless
       - run:
@@ -71,7 +76,9 @@ jobs:
           # because we do not have a prod environment file.
           # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
           command: |
-            /opt/circleci/.nvm/nvm.sh install --lts
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            nvm install 12
             cd ui
             ng build --target=production --environment=dev
 
