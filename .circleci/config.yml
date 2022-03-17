@@ -37,18 +37,30 @@ jobs:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
       - run:
           name: nvm install node and UI dependencies
-          # The Circle Ubuntu machine images of yore apparently installed nvm by default, but the current images require
-          # us to install a bunch of packages before installing nvm ourselves.
+          # The Circle Ubuntu machine images of yore apparently came with nvm installed, but the current images require
+          # us to install it ourselves.
           command: |
+            # Install curl
             apt update && apt -y upgrade && apt -y install curl
+            
+            # Use curl to download nvm and run its installer
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+            
+            # nvm setup commands
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            # Current LTS is 16 but some dependencies warn they will break on node 14
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            # The CI code that ran on the previous "latest" Circle machine image used the nvm included on that image
+            # to install what that version of nvm considered to be the LTS version of Node. However the current Node LTS
+            # is now 16 and some of JMUI's dependencies break with Node 14+, so install Node 12 explicitly.
             nvm install 12
+            
             cd ui
             npm install
-            npm rebuild node-sass            
+            
+            # node-sass was apparently built for Node 6 and requires this extra step for Node 12.
+            npm rebuild node-sass
+            
             npm install -g @angular/cli@1.7.4
       - save_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
@@ -62,6 +74,7 @@ jobs:
           name: Lint angular code with ng lint
           command: |
             cd ui
+            # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
             nvm install 12
@@ -70,6 +83,7 @@ jobs:
           name: Run UI unit tests
           command: |
             cd ui
+            # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
             nvm install 12
@@ -81,6 +95,7 @@ jobs:
           # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
           command: |
             cd ui
+            # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
             nvm install 12
