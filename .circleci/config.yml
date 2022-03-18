@@ -27,7 +27,8 @@ jobs:
   ui:
     <<: *job_defaults
     machine:
-      image: circleci/classic:latest
+      # latest pinned 20.04 version https://circleci.com/developer/machine/image/ubuntu-2004
+      image: ubuntu-2004:202201-02
     steps:
       - checkout
       - <<: *run_env_setup
@@ -36,10 +37,32 @@ jobs:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
       - run:
           name: nvm install node and UI dependencies
+          # The Circle Ubuntu machine images of yore apparently came with nvm installed, but the current images require
+          # us to install it ourselves.
           command: |
-            /opt/circleci/.nvm/nvm.sh install --lts
+            # Install curl
+            apt update && apt -y upgrade && apt -y install curl
+            
+            # Use curl to download nvm and run its installer
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+            
+            # nvm setup commands
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            # The CI code that ran on the previous "latest" Circle machine image used the nvm included on that image
+            # to install what that version of nvm considered to be the LTS version of Node. However the current Node LTS
+            # is now 16 and some of JMUI's dependencies break with Node 14+, so install Node 12 explicitly.
+            #
+            # npm WARN deprecated chokidar@1.7.0: Chokidar 2 will break on node v14+. Upgrade to chokidar 3 with 15x less dependencies.
+            nvm install 12
+            
             cd ui
             npm install
+            
+            # node-sass was apparently built for Node 6 and requires this extra step for Node 12.
+            npm rebuild node-sass
+            
             npm install -g @angular/cli@1.7.4
       - save_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
@@ -52,14 +75,20 @@ jobs:
       - run:
           name: Lint angular code with ng lint
           command: |
-            /opt/circleci/.nvm/nvm.sh install --lts
             cd ui
+            # nvm setup commands and Node install reprised
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            nvm install 12
             ng lint --type-check
       - run:
           name: Run UI unit tests
           command: |
-            /opt/circleci/.nvm/nvm.sh install --lts
             cd ui
+            # nvm setup commands and Node install reprised
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            nvm install 12
             ng test --single-run -sm=false --browsers=ChromeHeadless
       - run:
           name: Ensure the UI builds for prod
@@ -67,14 +96,17 @@ jobs:
           # because we do not have a prod environment file.
           # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
           command: |
-            /opt/circleci/.nvm/nvm.sh install --lts
             cd ui
+            # nvm setup commands and Node install reprised
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            nvm install 12
             ng build --target=production --environment=dev
 
   backends:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:202104-01
+      image: ubuntu-2004:202201-02
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
     steps:
@@ -124,7 +156,7 @@ jobs:
   secrets:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:202104-01
+      image: ubuntu-2004:202201-02
     steps:
       - checkout
       - <<: *run_env_setup

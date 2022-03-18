@@ -33,6 +33,7 @@ class TestTaskStatuses(BaseTestCase):
             task_statuses.cromwell_execution_to_api('Not a valid task status')
 
     def test_scattered_task_status(self):
+
         def failed_scattered_task():
             return [
                 Shard(execution_status='Failed'),

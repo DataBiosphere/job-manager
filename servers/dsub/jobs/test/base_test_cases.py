@@ -25,11 +25,13 @@ from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.aggregation_response import AggregationResponse
 from jobs.models.status_counts import StatusCounts
 
-DOCKER_IMAGE = 'ubuntu:14.04'
+DOCKER_IMAGE = 'ubuntu:20.04'
 
 
 class BaseTestCases:
+
     class BaseTestCase(flask_testing.TestCase):
+
         def assert_status(self, response, want, desc=None):
             if not desc:
                 desc = 'Response body is : ' + response.data.decode('utf-8')
@@ -37,6 +39,7 @@ class BaseTestCases:
                   self).assertStatus(response, want, desc)
 
     class JobsControllerTestCase(BaseTestCase):
+
         @classmethod
         def setUpClass(cls):
             cls.testing_root = None
