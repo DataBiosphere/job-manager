@@ -1,5 +1,7 @@
 # Job Manager
 
+If you're looking for basics for Terra developers, see [here](TERRA_QUICKSTART.md).
+
 [![CircleCI branch](https://img.shields.io/circleci/project/github/DataBiosphere/job-manager/master.svg?label=Tests%20on%20Circle%20CI&style=flat-square)](https://circleci.com/gh/DataBiosphere/job-manager/tree/master)
 ![Github](https://img.shields.io/badge/Supported%20Backends-cromwell-blue.svg?&style=flat-square)
 ![GitHub](https://img.shields.io/github/license/DataBiosphere/job-manager.svg?color=orange&style=flat-square)
