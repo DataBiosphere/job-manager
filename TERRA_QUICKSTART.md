@@ -21,7 +21,7 @@ $ ln -sf cromwell-instance-compose.yml docker-compose.yml
 
 JobManager relies on a `CROMWELL_URL` environment variable to find Cromwell.
 Set this to `http://IP_ADDR:8000/api/workflows/v1` where `IP_ADDR` is your machine's 
-IP address. We need the broadcast address, if we use `0.0.0.0` or `localhost` Docker
+IP address. We need the broadcast address, because if we use `0.0.0.0` or `localhost` Docker
 will try to connect to itself.
 
 For example:
