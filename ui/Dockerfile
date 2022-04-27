@@ -6,7 +6,7 @@ ADD ./ /job-manager
 
 RUN /bin/bash -c scripts/rebuild_swagger.sh
 
-FROM us.gcr.io/broad-dsp-gcr-public/base/nodejs:12-debian
+FROM us.gcr.io/broad-dsp-gcr-public/base/nodejs:14-debian
 
 WORKDIR /ui
 
