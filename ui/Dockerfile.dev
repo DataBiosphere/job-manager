@@ -1,5 +1,7 @@
 # Note: This is the dockerfile for development purposes
 
+# We are aware that some dev dependencies are broken in node 14, for example chokidar
+# npm WARN deprecated chokidar@1.7.0: Chokidar 2 will break on node v14+. 
 FROM node:14
 
 # Install python 2, needed for npm packages

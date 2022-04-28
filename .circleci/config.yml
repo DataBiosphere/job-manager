@@ -50,17 +50,12 @@ jobs:
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
-            # The CI code that ran on the previous "latest" Circle machine image used the nvm included on that image
-            # to install what that version of nvm considered to be the LTS version of Node. However the current Node LTS
-            # is now 16 and some of JMUI's dependencies break with Node 14+, so install Node 12 explicitly.
-            #
-            # npm WARN deprecated chokidar@1.7.0: Chokidar 2 will break on node v14+. Upgrade to chokidar 3 with 15x less dependencies.
-            nvm install 12
+            nvm install 14
             
             cd ui
             npm install
             
-            # node-sass was apparently built for Node 6 and requires this extra step for Node 12.
+            # node-sass was apparently built for Node 6 and requires this extra step for Node 14.
             npm rebuild node-sass
             
             npm install -g @angular/cli@1.7.4
@@ -79,7 +74,7 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 12
+            nvm install 14
             ng lint --type-check
       - run:
           name: Run UI unit tests
@@ -88,7 +83,7 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 12
+            nvm install 14
             ng test --single-run -sm=false --browsers=ChromeHeadless
       - run:
           name: Ensure the UI builds for prod
@@ -100,7 +95,7 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 12
+            nvm install 14
             ng build --target=production --environment=dev
 
   backends:
