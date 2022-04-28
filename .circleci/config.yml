@@ -50,11 +50,6 @@ jobs:
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             
-            # The CI code that ran on the previous "latest" Circle machine image used the nvm included on that image
-            # to install what that version of nvm considered to be the LTS version of Node. However the current Node LTS
-            # is now 16 and some of JMUI's dependencies break with Node 14+, so install Node 12 explicitly.
-            #
-            # npm WARN deprecated chokidar@1.7.0: Chokidar 2 will break on node v14+. Upgrade to chokidar 3 with 15x less dependencies.
             nvm install 14
             
             cd ui
