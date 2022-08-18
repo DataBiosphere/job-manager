@@ -8,6 +8,7 @@ FROM node:14
 RUN apt-get update && apt-get -y install python
 
 WORKDIR /ui
-ADD package-lock.json package.json /ui/
-RUN npm install
+ADD .yarnrc.yml package.json yarn.lock /ui/
+ADD .yarn/releases/* /ui/.yarn/releases/
+RUN yarn install
 ENTRYPOINT [ "/scripts/await_md5_match.sh", "/ui/src/app/shared/model/.jobs.yaml.md5", "--" ]
