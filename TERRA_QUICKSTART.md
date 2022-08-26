@@ -30,6 +30,10 @@ $ ifconfig | grep inet | grep broadcast
     inet 192.XXX.Y.ZZZ netmask 0xffffff00 broadcast 192.XXX.Y.255
 $ export CROMWELL_URL="http://192.XXX.Y.ZZZ:8000/api/workflows/v1"
 ```
+or the one-liner:
+```
+$ export CROMWELL_URL="http://$(ifconfig | grep inet | grep broadcast | cut -d ' ' -f 2):8000/api/workflows/v1"
+```
 
 ### Start JobManager
 
@@ -38,6 +42,16 @@ $ docker-compose up
 ```
 Once you see `webpack: Compiled successfully.` you should be able to access JobManager
 at http://localhost:4200, and state of your local Cromwell should be reflected there.
+
+To also rebuild the docker images:
+```
+$ docker-compose --build
+```
+Building the Job Manager UI docker image will invoke `yarn install` to generate a fresh
+`node_modules` from `yarn.lock` (see `ui/Dockerfile.dev`). This may seem redundant if you have a
+`node_modules` from running `yarn install` yourself. However, it better mimics what happens in
+`ui/Dockerfile` for production builds and is therefore a better check that production builds will
+work the same as local testing.
 
 ## Releasing JobManager in Terra
 

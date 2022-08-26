@@ -8,7 +8,7 @@ services:
     extends:
       file: common-compose.yml
       service: jmui
-    command: ["npm", "run-script", "ng", "--", "serve", "--host", "jmui"]
+    command: ["yarn", "run", "ng", "serve", "--host", "jmui"]
     volumes:
       - /ui/src/assets/environments/
       - ${PWD}/ui/assets/environments/environment.cromwell.instance.json:/ui/src/assets/environments/environment.json
