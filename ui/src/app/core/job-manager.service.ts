@@ -1,6 +1,5 @@
 import {Headers, Http, RequestOptions, Response} from '@angular/http';
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/toPromise';
 
 import {AuthService} from './auth.service';
 import {QueryJobsRequest} from '../shared/model/QueryJobsRequest';

@@ -1,6 +1,5 @@
 import {Headers, Http, RequestOptions} from '@angular/http';
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/toPromise';
 
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {ConfigLoaderService} from "../../environments/config-loader.service";
