@@ -8,7 +8,7 @@ import {
 import {FormControl} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar'
 import {Router, NavigationError} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
+import {Observable} from 'rxjs';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';

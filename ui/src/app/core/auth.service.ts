@@ -1,10 +1,9 @@
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Injectable, NgZone} from '@angular/core';
 import {MatSnackBar} from "@angular/material/snack-bar";
 
 import {CapabilitiesService} from './capabilities.service';
 import {ConfigLoaderService} from "../../environments/config-loader.service";
-import {Observable} from "rxjs";
 
 declare const gapi: any;
 
