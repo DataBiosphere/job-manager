@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Injectable, Input, OnInit, Output, ViewContainerRef} from '@angular/core';
 import {DataSource, SelectionModel} from '@angular/cdk/collections';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';

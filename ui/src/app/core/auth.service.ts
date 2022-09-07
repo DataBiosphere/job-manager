@@ -1,6 +1,6 @@
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Injectable, NgZone} from '@angular/core';
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 import {CapabilitiesService} from './capabilities.service';
 import {ConfigLoaderService} from "../../environments/config-loader.service";

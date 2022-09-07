@@ -5,22 +5,20 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement, ViewChild} from '@angular/core';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatDialogModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatSelectModule,
-  MatSortModule,
-  MatTableModule,
-  MatTabsModule,
-  MatPaginatorModule,
-  MatSnackBarModule,
-  MatTooltipModule,
-  MatCheckboxModule
-} from '@angular/material';
+import {MatButtonModule} from "@angular/material/button";
+import {MatCardModule} from "@angular/material/card";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatInputModule} from "@angular/material/input";
+import {MatListModule} from "@angular/material/list";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSelectBarModule} from "@angular/material/select";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatSortBarModule} from "@angular/material/sort";
+import {MatTableModule} from "@angular/material/table";
+import {MatTabsModule} from "@angular/material/tabs";
+import {MatTooltipModule} from "@angular/material/tooltip";
 import {DataSource} from '@angular/cdk/collections';
 import {RouterTestingModule} from '@angular/router/testing';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';

@@ -1,11 +1,9 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatSelectModule,
-  MatSortModule,
-  MatTableModule
-} from "@angular/material";
+import {MatButtonModule} from "@angular/material/button";
+import {MatCardModule} from "@angular/material/card";
+import {MatSelectModule} from "@angular/material/select";
+import {MatSortModule} from "@angular/material/sort";
+import {MatTableModule} from "@angular/material/table";
 import {CommonModule} from "@angular/common";
 import {By} from "@angular/platform-browser";
 import {Component, DebugElement} from "@angular/core";
