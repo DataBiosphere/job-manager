@@ -1,5 +1,5 @@
 import {Component, Inject} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {BulkLabelField} from '../../../shared/model/BulkLabelField';
 import {DisplayField} from "../../../shared/model/DisplayField";
 

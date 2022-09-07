@@ -3,16 +3,15 @@ import {TestBed, async, ComponentFixture} from '@angular/core/testing';
 import {By, DomSanitizer} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement, ViewChild} from '@angular/core';
-import {
-  MatButtonModule,
-  MatExpansionModule,
-  MatIconModule, MatIconRegistry,
-  MatMenuModule,
-  MatSnackBarModule,
-  MatTableModule,
-  MatTabsModule,
-  MatTooltipModule,
-} from '@angular/material';
+import {MatButtonModule} from "@angular/material/button";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatTabsModule} from "@angular/material/tabs";
+import {MatTableModule} from "@angular/material/table";
+import {MatTooltipModule} from "@angular/material/tooltip";
+
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {Ng2GoogleChartsModule} from 'ng2-google-charts';
 

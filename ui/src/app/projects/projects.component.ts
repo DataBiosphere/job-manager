@@ -6,9 +6,7 @@ import {
   ViewContainerRef
 } from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {
-  MatSnackBar,
-} from '@angular/material'
+import {MatSnackBar} from '@angular/material/snack-bar'
 import {Router, NavigationError} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/fromPromise';

@@ -19,13 +19,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {TitleCasePipe} from '@angular/common';
-import {
-  MatAutocompleteTrigger,
-  MatPaginator,
-  MatPaginatorIntl,
-  PageEvent,
-} from '@angular/material';
-
+import {MatAutocompleteTrigger} from "@angular/material/autocomplete";
+import {MatPaginator, MatPaginatorIntl, PageEvent} from "@angular/material/paginator";
 import {AuthService} from '../../core/auth.service';
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
