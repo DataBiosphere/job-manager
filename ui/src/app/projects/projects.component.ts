@@ -8,11 +8,8 @@ import {
 import {FormControl} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar'
 import {Router, NavigationError} from '@angular/router';
-import {Observable} from 'rxjs';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/filter';
-
+import {Observable, from} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
 import {AuthService} from '../core/auth.service';
 import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
 import {ProjectsService} from './projects.service'
@@ -76,7 +73,7 @@ export class ProjectsComponent implements OnInit {
   updateProjects(filter: string) {
     filter = filter ? filter + '*' : '.*';
     this.viewJobsEnabled = true;
-    this.projectsObservable = Observable.fromPromise(
+    this.projectsObservable = from(
       this.projectsService.listProjects(filter)
         .then(listView => {
           // Sort projects alphabetically so that the shorter, matching project

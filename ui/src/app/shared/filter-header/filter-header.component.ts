@@ -1,5 +1,4 @@
-import {BehaviorSubject, Observable} from 'rxjs';
-import {Subject} from 'rxjs/Subject';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {
   AfterViewChecked,
   AfterViewInit,

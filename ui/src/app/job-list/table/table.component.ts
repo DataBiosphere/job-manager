@@ -2,12 +2,8 @@ import {Component, EventEmitter, Injectable, Input, OnInit, Output, ViewContaine
 import {DataSource, SelectionModel} from '@angular/cdk/collections';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/observable/fromEvent';
+import {fromEvent, merge} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators';
 
 import {CapabilitiesService} from '../../core/capabilities.service';
 import {DisplayField} from '../../shared/model/DisplayField';
