@@ -1,4 +1,4 @@
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {BehaviorSubject, Observable} from 'rxjs';
 import {Subject} from 'rxjs/Subject';
 import {
   AfterViewChecked,
@@ -16,7 +16,6 @@ import {
 import {ENTER} from '@angular/cdk/keycodes';
 import {FormControl} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 import {TitleCasePipe} from '@angular/common';
 import {MatAutocompleteTrigger} from "@angular/material/autocomplete";
