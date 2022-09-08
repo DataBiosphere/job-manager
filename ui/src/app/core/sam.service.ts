@@ -1,10 +1,9 @@
-import {Headers, Http} from '@angular/http';
+import {HttpHeaders, HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {AuthService} from './auth.service';
 import {CapabilitiesService} from "./capabilities.service";
 import {CapabilitiesResponse} from "../shared/model/CapabilitiesResponse";
 import {ConfigLoaderService} from "../../environments/config-loader.service";
-import {RequestOptions} from "@angular/http";
 import {JobOperationResponse} from "../shared/model/JobOperationResponse";
 import {FileContents} from "../shared/model/FileContents";
 
@@ -17,15 +16,15 @@ export class SamService {
   constructor(private readonly authService: AuthService,
               private readonly capabilitiesService: CapabilitiesService,
               private readonly configLoader: ConfigLoaderService,
-              private http: Http,) {
+              private http: HttpClient,) {
     capabilitiesService.getCapabilities().then(capabilities => {
       this.capabilities = capabilities;
     });
     this.apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
   }
 
-  private getHttpHeaders(): Headers {
-    let headers = new Headers({'Content-Type': 'application/json'});
+  private getHttpHeaders(): HttpHeaders {
+    let headers = new HttpHeaders({'Content-Type': 'application/json'});
     if (this.authService.authToken) {
       headers.set('Authentication', `Bearer ${this.authService.authToken}`);
     }
@@ -42,31 +41,31 @@ export class SamService {
 
   async getFileTail(bucket: string, object: string): Promise<FileContents> {
     return this.http.get(`${this.apiUrl}/jobs/tailFile`,
-      new RequestOptions({
+      {
         params: {
           'bucket': bucket,
           'object': object
         },
         headers: this.getHttpHeaders()
-      }))
+      })
       .toPromise()
       .then(response => {
-        return response.json();
+        return response;
       })
       .catch((error) => this.handleError(error));
   }
 
   getOperationDetails(jobId:string, operationId:string): Promise<JobOperationResponse> {
     return this.http.get(`${this.apiUrl}/jobs/operationDetails`,
-      new RequestOptions({
+      {
         params: {
           'job': jobId,
           'operation' : operationId
         },
         headers: this.getHttpHeaders()
-      }))
+      })
       .toPromise()
-      .then(response => response.json())
+      .then(response => response)
       .catch((error) => this.handleError(error));
   }
 
