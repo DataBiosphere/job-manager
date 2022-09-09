@@ -112,7 +112,6 @@ export class JobManagerService {
       req,
       {headers: this.getHttpHeaders()})
       .toPromise()
-      .then(response => response)
       .catch((e) => this.handleError(e));
   }
 
@@ -158,7 +157,6 @@ export class JobManagerService {
     return this.http.get(`${apiUrl}/jobs/${id}/${task}/attempts`,
       {headers: this.getHttpHeaders()})
       .toPromise()
-      .then(response => response)
       .catch((e) => this.handleError(e));
   }
 
@@ -167,7 +165,6 @@ export class JobManagerService {
     return this.http.get(`${apiUrl}/jobs/${id}/${task}/${index}/attempts`,
       {headers: this.getHttpHeaders()})
       .toPromise()
-      .then(response => response)
       .catch((e) => this.handleError(e));
   }
 }
