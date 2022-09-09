@@ -1,17 +1,17 @@
-import {BehaviorSubject, Observable} from 'rxjs';
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
-import {DataSource} from '@angular/cdk/collections';
-import {MatDialog} from "@angular/material/dialog";
+import { DataSource } from '@angular/cdk/collections';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { MatDialog } from "@angular/material/dialog";
+import { BehaviorSubject, map, merge, Observable } from 'rxjs';
+import { JobManagerService } from "../../core/job-manager.service";
+import { JobStatusIcon, objectNotEmpty } from '../../shared/common';
+import { JobMetadataResponse } from '../../shared/model/JobMetadataResponse';
+import { JobStatus } from '../../shared/model/JobStatus';
+import { Shard } from "../../shared/model/Shard";
+import { TaskMetadata } from '../../shared/model/TaskMetadata';
+import { JobFailuresTableComponent } from "../common/failures-table/failures-table.component";
+import { JobScatteredAttemptsComponent } from "./scattered-attempts/scattered-attempts.component";
+import { JobTimingDiagramComponent } from "./timing-diagram/timing-diagram.component";
 
-import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
-import {JobStatus} from '../../shared/model/JobStatus';
-import {JobStatusIcon, objectNotEmpty} from '../../shared/common';
-import {TaskMetadata} from '../../shared/model/TaskMetadata';
-import {JobFailuresTableComponent} from "../common/failures-table/failures-table.component";
-import {JobTimingDiagramComponent} from "./timing-diagram/timing-diagram.component";
-import {JobManagerService} from "../../core/job-manager.service";
-import {Shard} from "../../shared/model/Shard";
-import {JobScatteredAttemptsComponent} from "./scattered-attempts/scattered-attempts.component";
 
 @Component({
   selector: 'jm-tabs',
@@ -175,7 +175,7 @@ export class JobTabsComponent implements OnInit, OnChanges {
 /** Simple database with an observable list of jobs to be subscribed to by the
  *  DataSource. */
 export class TasksDatabase {
-  private tasks: TaskMetadata[];
+  private tasks: TaskMetadata[] = [];
   /** Stream that emits whenever the data has been modified. */
   dataChange: BehaviorSubject<TaskMetadata[]> =
     new BehaviorSubject<TaskMetadata[]>(this.tasks);
@@ -200,11 +200,11 @@ export class TasksDataSource extends DataSource<any> {
       this._db.dataChange,
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return merge(...displayDataChanges).pipe(map(() => {
       if (this._db.data) {
         return this._db.data.slice();
       }
-    });
+    }));
   }
 
   disconnect() {}

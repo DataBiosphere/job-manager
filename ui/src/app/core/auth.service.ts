@@ -1,9 +1,9 @@
-import {BehaviorSubject, Observable} from 'rxjs';
-import {Injectable, NgZone} from '@angular/core';
-import {MatSnackBar} from "@angular/material/snack-bar";
+import { Injectable, NgZone } from '@angular/core';
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { BehaviorSubject, fromEvent } from 'rxjs';
+import { ConfigLoaderService } from "../../environments/config-loader.service";
+import { CapabilitiesService } from './capabilities.service';
 
-import {CapabilitiesService} from './capabilities.service';
-import {ConfigLoaderService} from "../../environments/config-loader.service";
 
 declare const gapi: any;
 
@@ -115,19 +115,19 @@ export class AuthService {
   }
 
   private setUpEventListeners(): void {
-    const mouseWheelStream = Observable.fromEvent(window, "mousewheel");
+    const mouseWheelStream = fromEvent(window, "mousewheel");
     mouseWheelStream.subscribe(() => this.resetTimers());
 
-    const mouseDownStream = Observable.fromEvent(window, "mousedown");
+    const mouseDownStream = fromEvent(window, "mousedown");
     mouseDownStream.subscribe(() => this.resetTimers());
 
-    const mouseMoveStream = Observable.fromEvent(window, "mousemove");
+    const mouseMoveStream = fromEvent(window, "mousemove");
     mouseMoveStream.subscribe(() => this.resetTimers());
 
-    const keyDownStream = Observable.fromEvent(window, "keydown");
+    const keyDownStream = fromEvent(window, "keydown");
     keyDownStream.subscribe(() => this.resetTimers());
 
-    const keyUpStream = Observable.fromEvent(window, "keyup");
+    const keyUpStream = fromEvent(window, "keyup");
     keyUpStream.subscribe(() => this.resetTimers());
 
     this.resetTimers();
