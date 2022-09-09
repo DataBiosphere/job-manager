@@ -1,4 +1,4 @@
-import {HttpHeaders, HttpClient} from '@angular/common/http';
+import {HttpHeaders, HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 
 import {AuthService} from './auth.service';
@@ -66,15 +66,15 @@ export class JobManagerService {
     return response;
   }
 
-  private getErrorTitle(response: object): string {
-    if (response["title"]) {
-      return response["title"];
+  private getErrorTitle(response: HttpErrorResponse): string {
+    if (response.name) {
+      return response.name;
     }
     return response.statusText ? response.statusText : JobManagerService.defaultErrorTitle;
   }
 
-  private getErrorDetail(response: object): string {
-    return response["detail"] ? response["detail"] : JobManagerService.defaultErrorDetail;
+  private getErrorDetail(response: HttpErrorResponse): string {
+    return response.message ? response.message : JobManagerService.defaultErrorDetail;
   }
 
   private getHttpHeaders(): HttpHeaders {
@@ -85,9 +85,9 @@ export class JobManagerService {
     return headers;
   }
 
-  private handleError(response: object): Promise<any> {
+  private handleError(response: HttpErrorResponse): Promise<any> {
     return Promise.reject({
-      status: response["status"],
+      status: response.status,
       title: this.getErrorTitle(response),
       message: this.getErrorDetail(response),
     });
@@ -97,9 +97,12 @@ export class JobManagerService {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
     return this.http.post(`${apiUrl}/jobs/${id}/abort`,
       {},
-      {headers: this.getHttpHeaders()})
+      {
+        headers: this.getHttpHeaders(), 
+        observe: 'response'
+      })
+      .subscribe(response => response.status == 200)
       .toPromise()
-      .then(response => response.status == 200)
       .catch((e) => this.handleError(e));
   }
 
@@ -109,7 +112,7 @@ export class JobManagerService {
       req,
       {headers: this.getHttpHeaders()})
       .toPromise()
-      .then(response => response
+      .then(response => response)
       .catch((e) => this.handleError(e));
   }
 
@@ -118,7 +121,7 @@ export class JobManagerService {
     return this.http.get(`${apiUrl}/jobs/${id}`,
       {headers: this.getHttpHeaders()})
       .toPromise()
-      .then(response => this.convertToJobMetadataResponse(response)
+      .then(response => this.convertToJobMetadataResponse(response))
       .catch((e) => this.handleError(e));
   }
 
