@@ -101,8 +101,8 @@ export class JobManagerService {
         headers: this.getHttpHeaders(), 
         observe: 'response'
       })
-      .subscribe(response => response.status == 200)
       .toPromise()
+      .then(response => response.status == 200)
       .catch((e) => this.handleError(e));
   }
 
