@@ -1,24 +1,22 @@
-import {BehaviorSubject, Observable} from 'rxjs';
-import {Subject} from 'rxjs/Subject';
-import {Subscription} from 'rxjs/Subscription';
-import {DataSource} from '@angular/cdk/collections';
-import {Component, Input, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import {PageEvent} from "@angular/material/paginator";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {ActivatedRoute, NavigationError, Router} from '@angular/router';
+import { DataSource } from '@angular/cdk/collections';
+import { Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { PageEvent } from "@angular/material/paginator";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { ActivatedRoute, NavigationError, Router } from '@angular/router';
+import { BehaviorSubject, map, merge, Observable, Subject, Subscription } from 'rxjs';
+import { CapabilitiesService } from '../core/capabilities.service';
+import { JobManagerService } from '../core/job-manager.service';
+import { SettingsService } from '../core/settings.service';
+import { initialBackendPageSize } from "../shared/common";
+import { FilterHeaderComponent } from '../shared/filter-header/filter-header.component';
+import { JobListView, JobStream } from '../shared/job-stream';
+import { CapabilitiesResponse } from '../shared/model/CapabilitiesResponse';
+import { DisplayField } from "../shared/model/DisplayField";
+import { QueryJobsResult } from '../shared/model/QueryJobsResult';
+import { ErrorMessageFormatterPipe } from '../shared/pipes/error-message-formatter.pipe';
+import { URLSearchParamsUtils } from "../shared/utils/url-search-params.utils";
+import { JobsTableComponent } from "./table/table.component";
 
-import {JobManagerService} from '../core/job-manager.service';
-import {SettingsService} from '../core/settings.service';
-import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
-import {JobListView, JobStream} from '../shared/job-stream';
-import {FilterHeaderComponent} from '../shared/filter-header/filter-header.component';
-import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
-import {initialBackendPageSize} from "../shared/common";
-import {QueryJobsResult} from '../shared/model/QueryJobsResult';
-import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
-import {CapabilitiesService} from '../core/capabilities.service';
-import {DisplayField} from "../shared/model/DisplayField";
-import {JobsTableComponent} from "./table/table.component";
 
 @Component({
   selector: 'jm-job-list',
@@ -226,14 +224,14 @@ export class JobsDataSource extends DataSource<QueryJobsResult> {
   }
 
   connect(): Observable<QueryJobsResult[]> {
-    const p = this.pageSubject.map((e) => this.lastPageEvent = e);
-    return Observable.merge(this.backendJobs, p).map(() => {
+    const p = this.pageSubject.pipe(map((e) => this.lastPageEvent = e));
+    return merge(this.backendJobs, p).pipe(map(() => {
       const data = this.backendJobs.value.results.slice();
 
       // Get only the requested page
       const startIndex = this.lastPageEvent.pageIndex * this.lastPageEvent.pageSize;
       return data.splice(startIndex, this.lastPageEvent.pageSize);
-    });
+    }));
   }
 
   disconnect() {}

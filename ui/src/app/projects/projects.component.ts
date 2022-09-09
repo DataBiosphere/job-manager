@@ -1,21 +1,16 @@
 import {
-  Component,
-  ElementRef,
-  ViewChild,
-  OnInit,
+  Component, OnInit,
   ViewContainerRef
 } from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {MatSnackBar} from '@angular/material/snack-bar'
-import {Router, NavigationError} from '@angular/router';
-import {Observable, from} from 'rxjs';
-import {filter, map} from 'rxjs/operators';
-import {AuthService} from '../core/auth.service';
-import {ErrorMessageFormatterPipe} from '../shared/pipes/error-message-formatter.pipe';
-import {ProjectsService} from './projects.service'
-import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
-import {ConfigLoaderService} from "../../environments/config-loader.service";
-import {defaultTimeFrame} from "../shared/common";
+import { FormControl } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NavigationError, Router } from '@angular/router';
+import { debounceTime, from, Observable } from 'rxjs';
+import { ConfigLoaderService } from "../../environments/config-loader.service";
+import { AuthService } from '../core/auth.service';
+import { ErrorMessageFormatterPipe } from '../shared/pipes/error-message-formatter.pipe';
+import { URLSearchParamsUtils } from "../shared/utils/url-search-params.utils";
+import { ProjectsService } from './projects.service';
 
 @Component({
   selector: 'jm-projects',
@@ -49,8 +44,8 @@ export class ProjectsComponent implements OnInit {
 
   ngOnInit() {
     this.projectsControl = new FormControl();
-    this.projectsControl.valueChanges
-      .debounceTime(100)
+    this.projectsControl.valueChanges.pipe(
+      debounceTime(100))
       .subscribe(filter => this.updateProjects(filter));
     // Handle navigation errors raised in JobListResolver
     this.router.events.subscribe(event => {
