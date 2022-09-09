@@ -15,7 +15,7 @@ COPY --from=0 /job-manager/ui/src /ui/src
 ADD ./ui/package.json /ui/
 ADD ./ui/tsconfig.json /ui/
 ADD ./ui/yarn.lock /ui/
-ADD ./ui/.angular-cli.json /ui/
+ADD ./ui/angular.json /ui/
 ADD ./ui/.yarnrc.yml /ui/
 ADD ./ui/.yarn/releases/* /ui/.yarn/releases/
 
