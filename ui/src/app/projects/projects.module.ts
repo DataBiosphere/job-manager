@@ -1,18 +1,17 @@
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms'
-import {RouterModule} from '@angular/router';
-import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import {MatButtonModule} from "@angular/material/button";
-import {MatCardModule} from "@angular/material/card";
-import {MatInputModule} from "@angular/material/input";
-import {MatOptionModule} from "@angular/material/select";
-import {MatSnackBarModule} from "@angular/material/snack-bar";
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatOptionModule } from "@angular/material/core";
+import { MatInputModule } from "@angular/material/input";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { RouterModule } from '@angular/router';
+import { SharedModule } from '../shared/shared.module';
+import { ProjectsComponent } from './projects.component';
+import { ProjectsService } from './projects.service';
 
-import {JobListResolver} from '../job-list/job-list-resolver.service';
-import {ProjectsComponent} from './projects.component';
-import {ProjectsService} from './projects.service'
-import {SharedModule} from '../shared/shared.module';
 
 @NgModule({
   imports: [
