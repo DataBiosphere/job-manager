@@ -1,24 +1,23 @@
-import {Component, EventEmitter, Injectable, Input, OnInit, Output, ViewContainerRef} from '@angular/core';
-import {DataSource, SelectionModel} from '@angular/cdk/collections';
-import {MatDialog} from '@angular/material/dialog';
-import {MatSnackBar} from '@angular/material/snack-bar';
-import {fromEvent, merge} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, startWith} from 'rxjs/operators';
+import { DataSource, SelectionModel } from '@angular/cdk/collections';
+import { DatePipe } from '@angular/common';
+import { Component, EventEmitter, Injectable, Input, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Params } from '@angular/router';
+import { CapabilitiesService } from '../../core/capabilities.service';
+import { JobManagerService } from '../../core/job-manager.service';
+import { JobStatusIcon, objectNotEmpty } from '../../shared/common';
+import { BulkLabelField } from '../../shared/model/BulkLabelField';
+import { DisplayField } from '../../shared/model/DisplayField';
+import { FieldType } from "../../shared/model/FieldType";
+import { JobStatus } from '../../shared/model/JobStatus';
+import { QueryJobsResult } from '../../shared/model/QueryJobsResult';
+import { UpdateJobLabelsRequest } from '../../shared/model/UpdateJobLabelsRequest';
+import { UpdateJobLabelsResponse } from "../../shared/model/UpdateJobLabelsResponse";
+import { ErrorMessageFormatterPipe } from '../../shared/pipes/error-message-formatter.pipe';
+import { ShortDateTimePipe } from '../../shared/pipes/short-date-time.pipe';
+import { JobsBulkEditComponent } from "./bulk-edit/bulk-edit.component";
 
-import {CapabilitiesService} from '../../core/capabilities.service';
-import {DisplayField} from '../../shared/model/DisplayField';
-import {JobManagerService} from '../../core/job-manager.service';
-import {JobsBulkEditComponent} from "./bulk-edit/bulk-edit.component";
-import {JobStatus} from '../../shared/model/JobStatus';
-import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
-import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
-import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
-import {JobStatusIcon, objectNotEmpty} from '../../shared/common';
-import {ActivatedRoute, Params} from '@angular/router';
-import {BulkLabelField} from '../../shared/model/BulkLabelField';
-import {UpdateJobLabelsRequest} from '../../shared/model/UpdateJobLabelsRequest';
-import {UpdateJobLabelsResponse} from "../../shared/model/UpdateJobLabelsResponse";
-import {FieldType} from "../../shared/model/FieldType";
 
 @Component({
   selector: 'jm-job-list-table',
@@ -177,7 +176,7 @@ export class JobsTableComponent implements OnInit {
 
     if (value instanceof Date) {
       // TODO(bryancrampton): Use the current locale
-      return (new ShortDateTimePipe("en-US")).transform(value);
+      return (new ShortDateTimePipe(new DatePipe("en-US"))).transform(value);
     }
 
     return value;
