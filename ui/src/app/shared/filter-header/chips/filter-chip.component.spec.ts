@@ -4,7 +4,7 @@ import {FilterChipComponent} from "./filter-chip.component";
 import {RouterTestingModule} from "@angular/router/testing";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatChipsModule} from "@angular/material/chips";
-import {MatDatepicker} from "@angular/material/datepicker";
+import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {MatListModule} from "@angular/material/list";

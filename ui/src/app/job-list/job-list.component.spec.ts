@@ -31,7 +31,7 @@ import {FakeJobManagerService} from '../testing/fake-job-manager.service';
 import {FakeCapabilitiesService} from '../testing/fake-capabilities.service';
 import {SharedModule} from '../shared/shared.module';
 import {Router} from "@angular/router";
-import 'rxjs/add/observable/of';
+import {of} from 'rxjs';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {JobStatus} from '../shared/model/JobStatus';
