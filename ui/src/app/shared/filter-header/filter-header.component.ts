@@ -315,7 +315,8 @@ export class JobsPaginatorIntl extends MatPaginatorIntl {
       const endIndex = startIndex < length ?
           Math.min(startIndex + pageSize, length) :
           startIndex + pageSize;
-      return `${startIndex + 1} - ${endIndex} of many`;
+      // Using an en-dash here to be consistent with MatPaginatorIntl
+      return `${startIndex + 1} – ${endIndex} of many`;
     }
   }
 }

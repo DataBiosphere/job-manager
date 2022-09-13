@@ -161,7 +161,7 @@ describe('JobListComponent', () => {
 
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.mat-simple-snackbar')).nativeElement.textContent)
-      .toEqual("Bad Request (400): Missing required field `parentId` Dismiss");
+      .toEqual("Bad Request (400): Missing required field `parentId`Dismiss");
   }));
 
   // Note: Unfortunately many of the following fakeAsync() usages require
