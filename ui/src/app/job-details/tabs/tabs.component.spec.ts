@@ -1,39 +1,41 @@
-import {HttpClientModule} from "@angular/common/http";
-import {TestBed, async, ComponentFixture} from '@angular/core/testing';
-import {By, DomSanitizer} from '@angular/platform-browser';
-import {CommonModule} from '@angular/common';
-import {Component, DebugElement, ViewChild} from '@angular/core';
-import {MatButtonModule} from "@angular/material/button";
-import {MatExpansionModule} from "@angular/material/expansion";
-import {MatIconModule, MatIconRegistry} from "@angular/material/icon";
-import {MatMenuModule} from "@angular/material/menu";
-import {MatSnackBarModule} from "@angular/material/snack-bar";
-import {MatTabsModule} from "@angular/material/tabs";
-import {MatTableModule} from "@angular/material/table";
-import {MatTooltipModule} from "@angular/material/tooltip";
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from "@angular/common/http";
+import { Component, DebugElement, ViewChild } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatButtonModule } from "@angular/material/button";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatIconModule, MatIconRegistry } from "@angular/material/icon";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTableModule } from "@angular/material/table";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { By, DomSanitizer } from '@angular/platform-browser';
 
-import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
-import {Ng2GoogleChartsModule} from 'ng2-google-charts';
+import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
+import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {JobFailuresTableComponent} from '../common/failures-table/failures-table.component';
-import {JobDebugIconsComponent} from "../common/debug-icons/debug-icons.component";
-import {AuthService} from '../../core/auth.service';
-import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
-import {JobStatus} from '../../shared/model/JobStatus';
-import {SharedModule} from '../../shared/shared.module';
-import {JobTabsComponent} from './tabs.component';
-import {FakeCapabilitiesService} from '../../testing/fake-capabilities.service';
-import {TaskMetadata} from '../../shared/model/TaskMetadata';
-import {JobResourcesTableComponent} from '../resources/resources-table/resources-table.component';
-import {JobTimingDiagramComponent} from './timing-diagram/timing-diagram.component';
-import {JobAttemptComponent} from "../common/attempt/attempt.component";
-import {JobManagerService} from "../../core/job-manager.service";
-import {FakeJobManagerService} from "../../testing/fake-job-manager.service";
-import {GcsService} from "../../core/gcs.service";
-import {FakeGcsService} from "../../testing/fake-gcs.service";
-import {CapabilitiesService} from "../../core/capabilities.service";
-import {SamService} from "../../core/sam.service";
+import { MatDialogModule } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ConfigLoaderService } from '../../../environments/config-loader.service';
+import { AuthService } from '../../core/auth.service';
+import { CapabilitiesService } from "../../core/capabilities.service";
+import { GcsService } from "../../core/gcs.service";
+import { JobManagerService } from "../../core/job-manager.service";
+import { SamService } from "../../core/sam.service";
+import { JobMetadataResponse } from '../../shared/model/JobMetadataResponse';
+import { JobStatus } from '../../shared/model/JobStatus';
+import { TaskMetadata } from '../../shared/model/TaskMetadata';
+import { SharedModule } from '../../shared/shared.module';
+import { FakeCapabilitiesService } from '../../testing/fake-capabilities.service';
+import { FakeGcsService } from "../../testing/fake-gcs.service";
+import { FakeJobManagerService } from "../../testing/fake-job-manager.service";
+import { JobAttemptComponent } from "../common/attempt/attempt.component";
+import { JobDebugIconsComponent } from "../common/debug-icons/debug-icons.component";
+import { JobFailuresTableComponent } from '../common/failures-table/failures-table.component';
+import { JobResourcesTableComponent } from '../resources/resources-table/resources-table.component';
+import { JobTabsComponent } from './tabs.component';
+import { JobTimingDiagramComponent } from './timing-diagram/timing-diagram.component';
 
 describe('JobTabsComponent', () => {
   let testComponent: TestTasksComponent;
@@ -151,6 +153,7 @@ describe('JobTabsComponent', () => {
         CommonModule,
         HttpClientModule,
         MatButtonModule,
+        MatDialogModule,
         MatExpansionModule,
         MatIconModule,
         MatMenuModule,
@@ -166,7 +169,8 @@ describe('JobTabsComponent', () => {
         {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null)},
         {provide: JobManagerService, useValue: fakeJobService},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
-        {provide: SamService}
+        {provide: SamService},
+        ConfigLoaderService
       ]
     }).compileComponents();
   }));
