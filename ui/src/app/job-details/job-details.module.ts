@@ -18,7 +18,6 @@ import { RouterModule } from '@angular/router';
 import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
-import { ConfigLoaderService } from '../../environments/config-loader.service';
 import { GcsService } from '../core/gcs.service';
 import { SharedModule } from '../shared/shared.module';
 import { JobAttemptComponent } from "./common/attempt/attempt.component";
@@ -76,8 +75,7 @@ import { JobTimingDiagramComponent } from "./tabs/timing-diagram/timing-diagram.
     JobTimingDiagramComponent
   ],
   providers: [
-    GcsService,
-    ConfigLoaderService
+    GcsService
   ],
   exports: []
 })
