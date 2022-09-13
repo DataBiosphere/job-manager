@@ -55,10 +55,7 @@ jobs:
             cd ui
             npm install
             
-            # node-sass was apparently built for Node 6 and requires this extra step for Node 14.
-            npm rebuild node-sass
-            
-            npm install -g @angular/cli@1.7.4
+            npm install -g @angular/cli@14.2.1
       - save_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
           paths:
