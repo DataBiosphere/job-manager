@@ -285,14 +285,14 @@ describe('JobsTableComponent', () => {
     expect(isBulkLabelEditIsEnabled()).toBeTruthy();
   }))
 
-  it('displays error message bar', async(() => { // <------ this fails
+  it('displays error message bar', async(() => {
     let error = {
       status: 412,
       title: 'Precondition Failed',
       message: 'Job already in terminal status `FAILED`'
     }
     fixture.detectChanges();
-    testComponent.jobsTableComponent.handleError(error); // undefined jobsTableComponent
+    testComponent.jobsTableComponent.handleError(error);
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.mat-simple-snackbar')).nativeElement.textContent)
