@@ -66,8 +66,8 @@ describe('FilterChipComponent', () => {
 
   beforeEach(async(() => {
     fixture = TestBed.createComponent(TestFilterChipComponent);
-    testComponent = fixture.componentInstance.filterChipComponent;
     fixture.detectChanges();
+    testComponent = fixture.componentInstance.filterChipComponent;
   }));
 
   it('should display default chip value', async(() => {

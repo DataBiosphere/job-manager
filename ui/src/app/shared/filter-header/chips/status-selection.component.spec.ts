@@ -34,8 +34,8 @@ describe('StatusSelectionComponent', () => {
   beforeEach(async(() => {
     fixture = TestBed.createComponent(TestStatusSelectionComponent);
     parentComponent = fixture.componentInstance;
-    testComponent = parentComponent.statusSelectionComponent;
     fixture.detectChanges();
+    testComponent = parentComponent.statusSelectionComponent;
   }));
 
   it('should set up status list', async(() => {

@@ -99,12 +99,12 @@ describe('FilterHeaderComponent', () => {
 
   beforeEach(async(() => {
     fixture = TestBed.createComponent(TestHeaderComponent);
+    fixture.detectChanges();
     testComponent = fixture.componentInstance.headerComponent;
     testComponent.chips = new Map()
       .set('projectId', 'Project ID')
       .set('name', 'Job Name')
       .set('status', 'Running');
-    fixture.detectChanges();
   }));
 
   it('should display a chip for each query filter', async(() => {
