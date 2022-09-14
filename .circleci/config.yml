@@ -67,15 +67,16 @@ jobs:
           name: Rebuild swagger
           command: |
             /bin/bash ./scripts/rebuild_swagger.sh
-      - run:
-          name: Lint angular code with ng lint
-          command: |
-            cd ui
-            # nvm setup commands and Node install reprised
-            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 14
-            ng lint --type-check
+      # BT-629 Temporarily (?) disable linter. At this stage in Job Manager Modernization it's not working yet.
+      # - run:
+      #     name: Lint angular code with ng lint
+      #     command: |
+      #       cd ui
+      #       # nvm setup commands and Node install reprised
+      #       export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+      #       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+      #       nvm install 14
+      #       ng lint --type-check
       - run:
           name: Run UI unit tests
           command: |

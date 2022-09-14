@@ -2,16 +2,14 @@ import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {Component, Input, ViewChild} from "@angular/core";
 import {FilterChipComponent} from "./filter-chip.component";
 import {RouterTestingModule} from "@angular/router/testing";
-import {
-  MatCheckboxModule,
-  MatChipsModule,
-  MatDatepickerModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatRadioModule
-} from "@angular/material";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatChipsModule} from "@angular/material/chips";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {MatListModule} from "@angular/material/list";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatRadioModule} from "@angular/material/radio";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {CapabilitiesResponse} from "../../model/CapabilitiesResponse";

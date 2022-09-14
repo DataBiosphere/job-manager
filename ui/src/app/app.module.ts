@@ -1,7 +1,6 @@
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
-import {HttpModule} from '@angular/http';
 import { HttpClientModule } from "@angular/common/http";
 import {NgModule} from '@angular/core';
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
@@ -28,7 +27,6 @@ import {CustomIconService} from "./core/custom-icon.service";
     CoreModule,
     FormsModule,
     HttpClientModule,
-    HttpModule,
     JobDetailsModule,
     JobListModule,
     MatIconModule,

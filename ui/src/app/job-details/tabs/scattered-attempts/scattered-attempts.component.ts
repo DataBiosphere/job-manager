@@ -1,5 +1,5 @@
 import {Component, Inject, ViewChild} from "@angular/core";
-import {MAT_DIALOG_DATA} from "@angular/material";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {JobManagerService} from "../../../core/job-manager.service";
 import {Shard} from "../../../shared/model/Shard";
 import {JobStatus} from "../../../shared/model/JobStatus";

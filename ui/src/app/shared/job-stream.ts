@@ -1,4 +1,4 @@
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {BehaviorSubject} from 'rxjs';
 
 import {JobManagerService} from '../core/job-manager.service';
 import {QueryJobsResponse, QueryJobsResult} from './model/models';

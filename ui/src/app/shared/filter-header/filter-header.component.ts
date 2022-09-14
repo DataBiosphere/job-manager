@@ -1,5 +1,5 @@
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Subject} from 'rxjs/Subject';
+import { ENTER } from '@angular/cdk/keycodes';
+import { TitleCasePipe } from '@angular/common';
 import {
   AfterViewChecked,
   AfterViewInit,
@@ -13,29 +13,21 @@ import {
   ViewChild,
   ViewChildren
 } from '@angular/core';
-import {ENTER} from '@angular/cdk/keycodes';
-import {FormControl} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
-import {Subscription} from 'rxjs/Subscription';
-import {TitleCasePipe} from '@angular/common';
-import {
-  MatAutocompleteTrigger,
-  MatPaginator,
-  MatPaginatorIntl,
-  PageEvent,
-} from '@angular/material';
-
-import {AuthService} from '../../core/auth.service';
-import {CapabilitiesService} from '../../core/capabilities.service';
-import {URLSearchParamsUtils} from '../utils/url-search-params.utils';
-import {JobStatus} from '../model/JobStatus';
-import {FieldDataType, JobStatusIcon} from '../common';
-import {JobListView} from '../job-stream';
-import {FilterChipComponent} from "./chips/filter-chip.component";
-import {CapabilitiesResponse} from "../model/CapabilitiesResponse";
-import {DisplayField} from "../model/DisplayField";
-import {SettingsService} from "../../core/settings.service";
+import { FormControl } from '@angular/forms';
+import { MatAutocompleteTrigger } from "@angular/material/autocomplete";
+import { MatPaginator, MatPaginatorIntl, PageEvent } from "@angular/material/paginator";
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subject, Subscription } from 'rxjs';
+import { AuthService } from '../../core/auth.service';
+import { CapabilitiesService } from '../../core/capabilities.service';
+import { SettingsService } from "../../core/settings.service";
+import { FieldDataType, JobStatusIcon } from '../common';
+import { JobListView } from '../job-stream';
+import { CapabilitiesResponse } from "../model/CapabilitiesResponse";
+import { DisplayField } from "../model/DisplayField";
+import { JobStatus } from '../model/JobStatus';
+import { URLSearchParamsUtils } from '../utils/url-search-params.utils';
+import { FilterChipComponent } from "./chips/filter-chip.component";
 
 @Component({
   selector: 'jm-filter-header',

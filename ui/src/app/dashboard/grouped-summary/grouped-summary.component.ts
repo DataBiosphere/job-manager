@@ -5,7 +5,7 @@ import {Aggregation} from "../../shared/model/Aggregation";
 import {ActivatedRoute} from "@angular/router";
 import {URLSearchParamsUtils} from "../../shared/utils/url-search-params.utils";
 import {JobStatusIcon} from "../../shared/common";
-import {Sort} from "@angular/material";
+import {Sort} from "@angular/material/sort";
 import {TimeFrame} from "../../shared/model/TimeFrame";
 
 const LABEL_KEY = 'label';

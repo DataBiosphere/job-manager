@@ -1,44 +1,41 @@
-import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import {Observable} from 'rxjs/Observable';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {By} from '@angular/platform-browser';
-import {CommonModule} from '@angular/common';
-import {Component, DebugElement, ViewChild} from '@angular/core';
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatDialogModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatSelectModule,
-  MatSortModule,
-  MatTableModule,
-  MatTabsModule,
-  MatPaginatorModule,
-  MatSnackBarModule,
-  MatTooltipModule,
-  MatCheckboxModule
-} from '@angular/material';
-import {DataSource} from '@angular/cdk/collections';
-import {RouterTestingModule} from '@angular/router/testing';
-import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
+import { DataSource } from '@angular/cdk/collections';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, DebugElement, ViewChild } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatCheckboxModule } from "@angular/material/checkbox";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatInputModule } from "@angular/material/input";
+import { MatListModule } from "@angular/material/list";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatSelectModule } from "@angular/material/select";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatSortModule } from "@angular/material/sort";
+import { MatTableModule } from "@angular/material/table";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
+import { BehaviorSubject, Observable } from 'rxjs';
 
-import {ShortDateTimePipe} from '../../shared/pipes/short-date-time.pipe'
-import {CapabilitiesService} from '../../core/capabilities.service';
-import {JobManagerService} from '../../core/job-manager.service';
-import {JobsBulkEditComponent} from "./bulk-edit/bulk-edit.component";
-import {JobsTableComponent} from './table.component';
-import {CapabilitiesResponse} from '../../shared/model/CapabilitiesResponse';
-import {JobStatus} from '../../shared/model/JobStatus';
-import {FakeJobManagerService} from '../../testing/fake-job-manager.service';
-import {FakeCapabilitiesService} from '../../testing/fake-capabilities.service';
-import {FieldType} from "../../shared/model/FieldType";
-import {QueryJobsResult} from '../../shared/model/QueryJobsResult';
-import {SharedModule} from '../../shared/shared.module';
-import {JobStatusIcon} from "../../shared/common";
-import {DisplayField} from "../../shared/model/DisplayField";
+import { CapabilitiesService } from '../../core/capabilities.service';
+import { JobManagerService } from '../../core/job-manager.service';
+import { JobStatusIcon } from "../../shared/common";
+import { CapabilitiesResponse } from '../../shared/model/CapabilitiesResponse';
+import { DisplayField } from "../../shared/model/DisplayField";
+import { FieldType } from "../../shared/model/FieldType";
+import { JobStatus } from '../../shared/model/JobStatus';
+import { QueryJobsResult } from '../../shared/model/QueryJobsResult';
+import { ShortDateTimePipe } from '../../shared/pipes/short-date-time.pipe';
+import { SharedModule } from '../../shared/shared.module';
+import { FakeCapabilitiesService } from '../../testing/fake-capabilities.service';
+import { FakeJobManagerService } from '../../testing/fake-job-manager.service';
+import { JobsBulkEditComponent } from "./bulk-edit/bulk-edit.component";
+import { JobsTableComponent } from './table.component';
 
 describe('JobsTableComponent', () => {
 
@@ -215,7 +212,7 @@ describe('JobsTableComponent', () => {
     expect((dsubColumns[1].children[0].childNodes[2]['attributes']['shape']))
       .toEqual(JobStatusIcon[jobs[0].status]);
     expect(dsubColumns[2].nativeElement.textContent.trim())
-      .toEqual((new ShortDateTimePipe("en-US")).transform(jobs[0].submission));
+      .toEqual((new ShortDateTimePipe(new DatePipe("en-US"))).transform(jobs[0].submission));
     expect(dsubColumns[3].nativeElement.textContent.trim())
       .toEqual(jobs[0].extensions.userId);
     expect(dsubColumns[4].nativeElement.textContent.trim())
