@@ -108,6 +108,7 @@ describe('FilterHeaderComponent', () => {
   }));
 
   it('should display a chip for each query filter', async(() => {
+    fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.chipShell')).length).toEqual(3);
   }));
