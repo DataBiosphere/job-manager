@@ -144,7 +144,14 @@ export class URLSearchParamsUtils {
     let chips: Map<string, string> = new Map();
     urlSearchParams.forEach((value: string, key: string, parent: URLSearchParams) => {
       if (value && key) {
-        chips.set(decodeURIComponent(key), decodeURIComponent(value));
+        const decodedKey = decodeURIComponent(key);
+        const decodedValue = decodeURIComponent(value);
+        if (!chips.has(decodedKey)) {
+          chips.set(decodedKey, decodedValue);
+        }
+        else {
+          chips.set(decodedKey, chips.get(decodedKey)+","+decodedValue);
+        }
       }
     });
     return chips;
