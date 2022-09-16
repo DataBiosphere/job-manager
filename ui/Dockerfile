@@ -21,7 +21,7 @@ ADD ./ui/.yarn/releases/* /ui/.yarn/releases/
 
 RUN yarn install
 
-RUN /ui/node_modules/.bin/ng build --prod
+RUN /ui/node_modules/.bin/ng build --configuration=production
 
 FROM us.gcr.io/broad-dsp-gcr-public/base/nginx:mainline-alpine
 
