@@ -26,7 +26,7 @@ export class SamService {
   private getHttpHeaders(): HttpHeaders {
     let headers = new HttpHeaders({'Content-Type': 'application/json'});
     if (this.authService.authToken) {
-      headers.set('Authentication', `Bearer ${this.authService.authToken}`);
+      headers = headers.set('Authentication', `Bearer ${this.authService.authToken}`);
     }
     return headers;
   }
