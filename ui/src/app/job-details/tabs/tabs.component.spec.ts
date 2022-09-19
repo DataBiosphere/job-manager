@@ -112,6 +112,31 @@ describe('JobTabsComponent', () => {
   };
   tasks.push(taskWithOutput);
 
+  let attempts = [
+    {
+      attemptNumber: 1,
+      callCached: false,
+      callRoot: 'gs://test-bucket',
+      start: new Date('2017-11-14T13:00:00'),
+      end: new Date('2017-11-14T13:15:00'),
+      executionStatus: 'Failed',
+      failureMessages: [
+        'Task failed.'
+      ],
+      inputs: {},
+      backendLog: 'gs://test-bucket/test-log.txt'
+    },{
+      attemptNumber: 2,
+      callRoot: 'gs://test-bucket/attempt-2',
+      start: new Date('2017-11-14T13:00:00'),
+      end: new Date('2017-11-14T13:15:00'),
+      executionStatus: 'Succeeded',
+      inputs: {},
+      outputs: {},
+      backendLog: 'gs://test-bucket/attempt-2/test-log.txt'
+    }
+  ]
+
   let taskWithTwoAttempts: TaskMetadata = {
     name: 'task5',
     executionStatus: 'Succeeded',
@@ -124,7 +149,7 @@ describe('JobTabsComponent', () => {
     callRoot: 'gs://test-bucket',
     inputs: {},
     outputs: {},
-    attemptsData: []
+    attemptsData: attempts
   };
   tasks.push(taskWithTwoAttempts);
 
@@ -195,7 +220,7 @@ describe('JobTabsComponent', () => {
     let de: DebugElement = fixture.debugElement;
 
     expect(de.queryAll(By.css('mat-expansion-panel.list-row div.task-name')).length)
-      .toEqual(tasks.length);
+      .toEqual(tasks.length + attempts.length);
     expect(de.queryAll(By.css('.task-name'))[1].nativeElement.textContent)
       .toContain(task.name);
     expect(de.queryAll(By.css('a.title-link')).length)
@@ -235,32 +260,6 @@ describe('JobTabsComponent', () => {
   }));
 
   it('should display attempt rows for each task attempt if there was more than one', async(() => {
-    const attempts = [
-      {
-        attemptNumber: 1,
-        callCached: false,
-        callRoot: 'gs://test-bucket',
-        start: new Date('2017-11-14T13:00:00'),
-        end: new Date('2017-11-14T13:15:00'),
-        executionStatus: 'Failed',
-        failureMessages: [
-          'Task failed.'
-        ],
-        inputs: {},
-        backendLog: 'gs://test-bucket/test-log.txt'
-      },{
-        attemptNumber: 2,
-        callRoot: 'gs://test-bucket/attempt-2',
-        start: new Date('2017-11-14T13:00:00'),
-        end: new Date('2017-11-14T13:15:00'),
-        executionStatus: 'Succeeded',
-        inputs: {},
-        outputs: {},
-        backendLog: 'gs://test-bucket/attempt-2/test-log.txt'
-      }
-    ];
-    taskWithTwoAttempts.attemptsData = attempts;
-
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('mat-expansion-panel.list-row div.task-name')).length)
