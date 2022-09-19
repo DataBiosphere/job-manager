@@ -15,6 +15,7 @@ import { JobManagerService } from "../../../core/job-manager.service";
 import { SamService } from "../../../core/sam.service";
 import { SharedModule } from '../../../shared/shared.module';
 import { FakeCapabilitiesService } from "../../../testing/fake-capabilities.service";
+import { FakeConfigLoaderService } from "../../../testing/fake-config-loader.service";
 import { FakeJobManagerService } from "../../../testing/fake-job-manager.service";
 import { JobDebugIconsComponent } from "./debug-icons.component";
 
@@ -53,7 +54,7 @@ describe('JobDebugIconsComponent', () => {
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         {provide: JobManagerService, useValue: fakeJobService},
         {provide: SamService},
-        ConfigLoaderService
+        {provide: ConfigLoaderService, useValue: new FakeConfigLoaderService()}
       ],
     }).compileComponents();
   }));

@@ -28,6 +28,7 @@ import { JobStatus } from '../../shared/model/JobStatus';
 import { TaskMetadata } from '../../shared/model/TaskMetadata';
 import { SharedModule } from '../../shared/shared.module';
 import { FakeCapabilitiesService } from '../../testing/fake-capabilities.service';
+import { FakeConfigLoaderService } from '../../testing/fake-config-loader.service';
 import { FakeGcsService } from "../../testing/fake-gcs.service";
 import { FakeJobManagerService } from "../../testing/fake-job-manager.service";
 import { JobAttemptComponent } from "../common/attempt/attempt.component";
@@ -170,7 +171,7 @@ describe('JobTabsComponent', () => {
         {provide: JobManagerService, useValue: fakeJobService},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         {provide: SamService},
-        ConfigLoaderService
+        {provide: ConfigLoaderService, useValue: new FakeConfigLoaderService()}
       ]
     }).compileComponents();
   }));
