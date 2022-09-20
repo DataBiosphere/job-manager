@@ -29,6 +29,7 @@ export class JobListComponent implements OnInit {
   @ViewChild(FilterHeaderComponent) header: FilterHeaderComponent;
   @ViewChild(JobsTableComponent) jobTable: JobsTableComponent;
   dataSource: DataSource<QueryJobsResult>;
+  pageSubject: Subject<PageEvent> = new Subject<PageEvent>();
 
   // This Subject is synchronized to a JobStream, which we destroy and recreate
   // whenever we change query parameters, via a subscription.
@@ -67,13 +68,13 @@ export class JobListComponent implements OnInit {
     });
     const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
     this.projectId = req.extensions.projectId || '';
-    this.header.projectId = this.projectId;
-
-    this.header.pageSubject.subscribe(resp => this.onClientPaginate(resp));
+    
+    this.pageSubject.subscribe(resp => this.onClientPaginate(resp));
+    
     if (this.settingsService.getSavedSettingValue('pageSize', this.projectId)) {
       this.pageSize = this.settingsService.getSavedSettingValue('pageSize', this.projectId);
     }
-    this.dataSource = new JobsDataSource(this.jobs, this.header.pageSubject, {
+    this.dataSource = new JobsDataSource(this.jobs, this.pageSubject, {
       pageSize: this.pageSize,
       pageIndex: 0,
       length: 0,
@@ -96,7 +97,6 @@ export class JobListComponent implements OnInit {
     this.displayFields.forEach((df) => {
       df.primary = (savedColumnSettings == null) || savedColumnSettings.includes(df.field);
     });
-    this.header.displayFields = this.displayFields;
   }
 
   reloadJobs(query: string, lazy = false): void {

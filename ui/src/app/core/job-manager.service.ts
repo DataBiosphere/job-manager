@@ -80,7 +80,7 @@ export class JobManagerService {
   private getHttpHeaders(): HttpHeaders {
     var headers = new HttpHeaders({'Content-Type': 'application/json'});
     if (this.authService.authToken) {
-      headers.set('Authentication', `Bearer ${this.authService.authToken}`);
+      headers = headers.set('Authentication', `Bearer ${this.authService.authToken}`);
     }
     return headers;
   }

@@ -37,13 +37,15 @@ import { FilterChipComponent } from "./chips/filter-chip.component";
 export class FilterHeaderComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @Input() jobs: BehaviorSubject<JobListView>;
   @Input() pageSize: number;
+  @Input() pageSubject: Subject<PageEvent>;
+  @Input() displayFields: DisplayField[] = [];
+  @Input() projectId: string;
   @Input() showControls: boolean = true;
   @Output() onDisplayFieldsChanged: EventEmitter<DisplayField[]> = new EventEmitter();
   @ViewChildren(FilterChipComponent) chipElements: QueryList<FilterChipComponent>;
   @ViewChild('hideArchivedToggle') hideArchivedToggle: HTMLInputElement;
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  public pageSubject: Subject<PageEvent> = new Subject<PageEvent>();
   private pageSubscription: Subscription;
 
   chipToExpand: string;
@@ -54,11 +56,9 @@ export class FilterHeaderComponent implements OnInit, AfterViewInit, AfterViewCh
   inputValue: string = '';
 
   filteredOptions: Observable<string[]>;
-  displayFields: DisplayField[] = [];
 
   readonly buttonStatuses = ['Running', 'Succeeded', 'Failed', 'Aborted', 'OnHold'];
   private readonly capabilities: CapabilitiesResponse;
-  projectId: string;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -315,7 +315,8 @@ export class JobsPaginatorIntl extends MatPaginatorIntl {
       const endIndex = startIndex < length ?
           Math.min(startIndex + pageSize, length) :
           startIndex + pageSize;
-      return `${startIndex + 1} - ${endIndex} of many`;
+      // Using an en-dash here to be consistent with MatPaginatorIntl
+      return `${startIndex + 1} – ${endIndex} of many`;
     }
   }
 }

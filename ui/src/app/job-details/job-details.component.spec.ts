@@ -1,46 +1,47 @@
-import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {By} from '@angular/platform-browser';
-import {CommonModule} from '@angular/common';
-import {Component, DebugElement} from '@angular/core';
-import {MatButtonModule} from "@angular/material/button";
-import {MatCardModule} from "@angular/material/card";
-import {MatDialogModule} from "@angular/material/dialog";
-import {MatDividerModule} from "@angular/material/divider";
-import {MatExpansionModule} from "@angular/material/expansion";
-import {MatIconModule} from "@angular/material/icon";
-import {MatListModule} from "@angular/material/list";
-import {MatMenuModule} from "@angular/material/menu";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {MatTableModule} from "@angular/material/table";
-import {MatTabsModule} from "@angular/material/tabs";
-import {MatTooltipModule} from "@angular/material/tooltip";
-import {RouterTestingModule} from '@angular/router/testing';
-import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
-import {Ng2GoogleChartsModule} from 'ng2-google-charts';
+import { CommonModule } from '@angular/common';
+import { Component, DebugElement } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { MatButtonModule } from "@angular/material/button";
+import { MatCardModule } from "@angular/material/card";
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { MatTableModule } from "@angular/material/table";
+import { MatTabsModule } from "@angular/material/tabs";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
+import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
-import {JobDebugIconsComponent} from "./common/debug-icons/debug-icons.component";
-import {JobDetailsComponent} from "./job-details.component"
-import {JobPanelsComponent} from './panels/panels.component';
-import {JobResourcesComponent} from './resources/resources.component';
-import {JobResourcesTableComponent} from './resources/resources-table/resources-table.component';
-import {JobTabsComponent} from "./tabs/tabs.component";
-import {JobManagerService} from '../core/job-manager.service';
-import {JobDetailsResolver} from './job-details-resolver.service';
-import {FakeJobManagerService} from '../testing/fake-job-manager.service';
-import {SharedModule} from '../shared/shared.module';
-import {ActivatedRoute, Router} from '@angular/router';
-import {URLSearchParamsUtils} from '../shared/utils/url-search-params.utils';
-import {JobStatus} from "../shared/model/JobStatus";
-import {JobMetadataResponse} from '../shared/model/JobMetadataResponse';
-import {JobFailuresTableComponent} from "./common/failures-table/failures-table.component";
-import {JobTimingDiagramComponent} from "./tabs/timing-diagram/timing-diagram.component";
-import {JobScatteredAttemptsComponent} from "./tabs/scattered-attempts/scattered-attempts.component";
-import {JobAttemptComponent} from "./common/attempt/attempt.component";
-import {FakeCapabilitiesService} from "../testing/fake-capabilities.service";
-import {SettingsService} from "../core/settings.service";
-import {AuthService} from "../core/auth.service";
-import {CapabilitiesService} from "../core/capabilities.service";
+import { ActivatedRoute, Router } from '@angular/router';
+import { ConfigLoaderService } from '../../environments/config-loader.service';
+import { AuthService } from "../core/auth.service";
+import { CapabilitiesService } from "../core/capabilities.service";
+import { JobManagerService } from '../core/job-manager.service';
+import { SettingsService } from "../core/settings.service";
+import { JobMetadataResponse } from '../shared/model/JobMetadataResponse';
+import { JobStatus } from "../shared/model/JobStatus";
+import { SharedModule } from '../shared/shared.module';
+import { URLSearchParamsUtils } from '../shared/utils/url-search-params.utils';
+import { FakeCapabilitiesService } from "../testing/fake-capabilities.service";
+import { FakeJobManagerService } from '../testing/fake-job-manager.service';
+import { JobAttemptComponent } from "./common/attempt/attempt.component";
+import { JobDebugIconsComponent } from "./common/debug-icons/debug-icons.component";
+import { JobFailuresTableComponent } from "./common/failures-table/failures-table.component";
+import { JobDetailsResolver } from './job-details-resolver.service';
+import { JobDetailsComponent } from "./job-details.component";
+import { JobPanelsComponent } from './panels/panels.component';
+import { JobResourcesTableComponent } from './resources/resources-table/resources-table.component';
+import { JobResourcesComponent } from './resources/resources.component';
+import { JobScatteredAttemptsComponent } from "./tabs/scattered-attempts/scattered-attempts.component";
+import { JobTabsComponent } from "./tabs/tabs.component";
+import { JobTimingDiagramComponent } from "./tabs/timing-diagram/timing-diagram.component";
 
 describe('JobDetailsComponent', () => {
 
@@ -115,7 +116,8 @@ describe('JobDetailsComponent', () => {
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         {provide: AuthService, useValue: authService},
         {provide: MatSnackBar},
-        JobDetailsResolver
+        JobDetailsResolver,
+        ConfigLoaderService
       ],
     }).compileComponents();
   }));
@@ -137,27 +139,6 @@ describe('JobDetailsComponent', () => {
   it('renders details', fakeAsync(() => {
     const de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('#job-id')).nativeElement.value).toContain(jobId);
-  }));
-
-  it('navigates to jobs table on close', fakeAsync(() => {
-    const q = URLSearchParamsUtils.encodeURLSearchParams({
-      'extensions': {'projectId': 'foo'}
-    })
-    router.navigate(['jobs/' + jobId], {queryParams: {q}});
-    tick();
-
-    fixture.detectChanges();
-    tick();
-
-    const de: DebugElement = fixture.debugElement;
-    de.query(By.css('.close')).nativeElement.click();
-    fixture.detectChanges();
-    tick();
-
-    const fakeJobs = fixture.debugElement.query(By.css('.fake-jobs'));
-    expect(fakeJobs).toBeTruthy();
-    const fakeJobsRoute = fakeJobs.componentInstance.route;
-    expect(fakeJobsRoute.snapshot.queryParams['q']).toEqual(q);
   }));
 
   @Component({
