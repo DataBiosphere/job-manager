@@ -2,7 +2,7 @@ import { ConfigLoaderService } from "../../environments/config-loader.service";
 
 export class FakeConfigLoaderService extends ConfigLoaderService {
     private testEnvironmentConfig: object = {
-        apiUrl : "https://go.to.here.com"
+        apiUrl : "https://sam.service.example.com"
     }
 
     getEnvironmentConfig(): Promise<any> {
