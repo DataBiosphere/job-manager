@@ -51,39 +51,40 @@
             }
           },
           "defaultConfiguration": "development"
-      },
-      "serve": {
-        "builder": "@angular-devkit/build-angular:dev-server",
-        "configurations": {
-          "production": {
-            "browserTarget": "ui:build:production"
-          },
-          "development": {
-            "browserTarget": "ui:build:development"
-          }
         },
-        "defaultConfiguration": "development"
-      },
-      "test": {
-        "builder": "@angular-devkit/build-angular:karma",
-        "options": {
-          "main": "src/test.ts",
-          "polyfills": "src/polyfills.ts",
-          "tsConfig": "src/tsconfig.spec.json",
-          "karmaConfig": "karma.conf.js",
-          "assets": [
-            "src/favicon.ico",
-            "src/assets"
-          ],
-          "styles": [
-            "src/styles.scss"
-          ],
-          "scripts": []
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "ui:build:production"
+            },
+            "development": {
+              "browserTarget": "ui:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.scss"
+            ],
+            "scripts": []
+          }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
-},
-"cli": {
-  "analytics": false
 }
