@@ -30,3 +30,5 @@ services:
     links:
       - jmui
       - cromwell:jmapi
+    depends_on:
+      - jmui

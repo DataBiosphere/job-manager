@@ -1,10 +1,11 @@
-import {DatePipe} from '@angular/common';
-import {Pipe, PipeTransform} from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'jmShortDateTime'
 })
-export class ShortDateTimePipe extends DatePipe implements PipeTransform {
+export class ShortDateTimePipe implements PipeTransform {
+  constructor(private datePipe: DatePipe) {}
 
   isToday(date: Date): boolean {
     if (date) {
@@ -27,13 +28,13 @@ export class ShortDateTimePipe extends DatePipe implements PipeTransform {
   transform(date: Date): string {
     if (date) {
       if (this.isToday(date)) {
-        return 'Today, ' + super.transform(date, 'shortTime');
+        return 'Today, ' + this.datePipe.transform(date, 'shortTime');
       } else if (this.isThisYear(date)) {
-        return super.transform(date, 'MMM dd') +
+        return this.datePipe.transform(date, 'MMM dd') +
           ', ' +
-          super.transform(date, 'shortTime');
+          this.datePipe.transform(date, 'shortTime');
       } else {
-        return super.transform(date, 'MMM dd, yyyy');
+        return this.datePipe.transform(date, 'MMM dd, yyyy');
       }
     }
   }

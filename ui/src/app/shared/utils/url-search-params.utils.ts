@@ -1,5 +1,3 @@
-import {URLSearchParams} from '@angular/http';
-
 import {CapabilitiesResponse} from "../model/CapabilitiesResponse";
 import {QueryJobsRequest} from "../model/QueryJobsRequest";
 import {JobStatus} from "../model/JobStatus";
@@ -74,7 +72,7 @@ export class URLSearchParamsUtils {
       extensions: {}
     };
 
-    urlSearchParams.paramsMap.forEach((values: string[], key: string) => {
+    for (const key of urlSearchParams.keys()) {
       if (queryDataTypes.has(key) || queryExtensionsDataTypes.has(key)) {
         // If this is a known field, handle the data type explicitly
         var value: any;
@@ -110,7 +108,7 @@ export class URLSearchParamsUtils {
         // interpreted as a text label.
         queryRequest.labels[key] = urlSearchParams.get(key);
       }
-    });
+    }
 
     return queryRequest;
   }
@@ -144,9 +142,16 @@ export class URLSearchParamsUtils {
   public static getChips(query: string): Map<string, string> {
     let urlSearchParams = new URLSearchParams(query);
     let chips: Map<string, string> = new Map();
-    urlSearchParams.paramsMap.forEach((values: string[], key: string) => {
-      if (values && key) {
-        chips.set(decodeURIComponent(key), decodeURIComponent(values.toString()));
+    urlSearchParams.forEach((value: string, key: string, parent: URLSearchParams) => {
+      if (value && key) {
+        const decodedKey = decodeURIComponent(key);
+        const decodedValue = decodeURIComponent(value);
+        if (!chips.has(decodedKey)) {
+          chips.set(decodedKey, decodedValue);
+        }
+        else {
+          chips.set(decodedKey, chips.get(decodedKey)+","+decodedValue);
+        }
       }
     });
     return chips;

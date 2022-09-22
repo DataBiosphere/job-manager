@@ -56,3 +56,10 @@ venv/
 
 # OS generated files
 .DS_Store
+
+# Yarn
+/ui/.yarn/*
+!/ui/.yarn/releases/*
+
+# Angular
+/ui/.angular/*

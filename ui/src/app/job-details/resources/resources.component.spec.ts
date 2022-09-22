@@ -2,13 +2,11 @@ import {TestBed, async, ComponentFixture, fakeAsync, tick} from '@angular/core/t
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {Component, ViewChild} from '@angular/core';
-import {
-  MatDividerModule,
-  MatExpansionModule,
-  MatSnackBarModule,
-  MatTabsModule,
-  MatTableModule
-} from '@angular/material';
+import {MatDividerModule} from "@angular/material/divider";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatTabsModule} from "@angular/material/tabs";
+import {MatTableModule} from "@angular/material/table";
 import {SharedModule} from '../../shared/shared.module';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';

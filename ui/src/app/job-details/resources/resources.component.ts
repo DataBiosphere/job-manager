@@ -4,12 +4,9 @@ import {
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
-import {
-  MatExpansionPanel,
-  MatSnackBar,
-  MatTabChangeEvent
-} from '@angular/material'
-
+import {MatExpansionPanel} from "@angular/material/expansion";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatTabChangeEvent} from "@angular/material/tabs";
 import {ErrorMessageFormatterPipe} from '../../shared/pipes/error-message-formatter.pipe';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {ResourceUtils} from '../../shared/utils/resource-utils';

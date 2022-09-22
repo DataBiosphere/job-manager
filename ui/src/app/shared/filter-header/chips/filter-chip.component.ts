@@ -5,7 +5,7 @@ import {
 import {FieldDataType} from "../../common";
 import {URLSearchParamsUtils} from "../../utils/url-search-params.utils";
 import {CapabilitiesService} from "../../../core/capabilities.service";
-import {MatMenuTrigger} from "@angular/material";
+import {MatMenuTrigger} from "@angular/material/menu";
 import {DatepickerInputComponent} from "./datepicker-input.component";
 
 @Component({

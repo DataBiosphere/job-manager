@@ -19,7 +19,7 @@ services:
       - ./ui/src:/ui/src
       - ./ui/tsconfig.json:/ui/tsconfig.json
       - ./ui/tslint.json:/ui/tslint.json
-      - ./ui/.angular-cli.json:/ui/.angular-cli.json
+      - ./ui/angular.json:/ui/angular.json
       - ./api:/ui/api
   dsub:
     # Flags to gunicorn:

@@ -12,14 +12,16 @@ WORKDIR /ui
 
 COPY --from=0 /job-manager/ui/src /ui/src
 
-ADD ./ui/package-lock.json /ui/
 ADD ./ui/package.json /ui/
 ADD ./ui/tsconfig.json /ui/
-ADD ./ui/.angular-cli.json /ui/
+ADD ./ui/yarn.lock /ui/
+ADD ./ui/angular.json /ui/
+ADD ./ui/.yarnrc.yml /ui/
+ADD ./ui/.yarn/releases/* /ui/.yarn/releases/
 
-RUN npm install
+RUN yarn install
 
-RUN /ui/node_modules/.bin/ng build --prod
+RUN /ui/node_modules/.bin/ng build --configuration=production
 
 FROM us.gcr.io/broad-dsp-gcr-public/base/nginx:mainline-alpine
 
