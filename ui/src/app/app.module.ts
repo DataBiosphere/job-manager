@@ -16,6 +16,7 @@ import { JobDetailsModule } from './job-details/job-details.module';
 import { JobListModule } from './job-list/job-list.module';
 import { ProjectsModule } from './projects/projects.module';
 import { SignInModule } from './sign-in/sign-in.module';
+import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 
 @NgModule({
   imports: [
@@ -37,7 +38,7 @@ import { SignInModule } from './sign-in/sign-in.module';
     NgxJsonViewerModule
   ],
   providers: [CustomIconService],
-  declarations: [AppComponent],
+  declarations: [AppComponent, PagenotfoundComponent],
   // This specifies the top-level component, to load first.
   bootstrap: [AppComponent]
 })
