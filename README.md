@@ -13,7 +13,7 @@ If you're looking for basics for Terra developers, see [here](TERRA_QUICKSTART.m
 
 Job Manager is in maintenance mode and is not recommended for new projects.
 
-dsub support is deprecated and will be removed in a future release.
+dsub support is deprecated and has been removed.
 
 The last release of Job Manager to support dsub without compromise is [1.5.7](https://github.com/DataBiosphere/job-manager/releases/tag/v1.5.7).
 
@@ -35,7 +35,7 @@ The Broad, Verily, and many other organizations in the life sciences execute eno
 The Job Manager aspires to bring ease and efficiency to developing and debugging workflows while seamlessly scaling to production operations management.
 
 ## Key Features
-* Supports visualization over [Cromwell](https://github.com/broadinstitute/cromwell) or [dsub](https://github.com/googlegenomics/dsub) backends
+* Supports visualization over [Cromwell](https://github.com/broadinstitute/cromwell) backend
 * Service provider interface can be extended to support other engines
 * Rich search capabilities across current and historic workflows
 * Aborting workflows
@@ -49,12 +49,6 @@ The UI must be deployed along with a backend implementation of the API, two such
 
 ### Cromwell
 Monitors jobs launched by the [Cromwell workflow engine](https://github.com/broadinstitute/cromwell). The Python Flask wrapper was created using Swagger Codegen and can be configured to pull data from a specific Cromwell instance. _At this time, to utilize all job manager features, please consider using Cromwell v32 or newer._
-
-### dsub
-
-Monitors jobs that were launched via the [dsub](https://github.com/googlegenomics/dsub) CLI. Thin stateless wrapper around the dsub Python library. Authorization is required for deploying the UI, which is used to communicate with the [Google Genomics Pipelines API](https://cloud.google.com/genomics/pipelines). The wrapper itself is implemented in Python Flask using Swagger codegen models. A Dockerfile is provided which serves for production deployment using gunicorn.
-
-Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s “job”.
 
 ## Development
 
@@ -89,9 +83,6 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
 
 ### Server Setup
 
-- Choose your own adventure: `cromwell` (local or CaaS) or `dsub`!
-
-
 #### Cromwell
 
 - Link your preferred backend docker compose file as `docker-compose.yml`:
@@ -99,18 +90,6 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
   - Cromwell (local): `ln -sf cromwell-instance-compose.yml docker-compose.yml`
   - Cromwell (CaaS): `ln -sf cromwell-caas-compose.yml docker-compose.yml`
 - Follow [servers/cromwell](servers/cromwell/README.md#Development) for Cromwell server setup then return here to continue.
-
-#### dsub
-
-- Link the dsub docker compose file as `docker-compose.yml`:
-```sh
-ln -sf dsub-local-compose.yml docker-compose.yml
-```
-  - If you prefer not to create a symbolic link, use:
-```sh
-docker-compose -f dsub-google-compose.yml CMD
-```
-- Set up the server for development with [`dsub`](https://github.com/googlegenomics/dsub): details in [servers/dsub](servers/dsub/README.md#Development).
 
 
 ### Run Locally
@@ -120,7 +99,7 @@ docker-compose -f dsub-google-compose.yml CMD
   ```
   jmui_1        | webpack: Compiled successfully.
   ```
-- Make sure that your backend (eg the Cromwell service or dsub) is ready to receive query requests. 
+- Make sure that your Cromwell backend is ready to receive query requests. 
 - Navigate to http://localhost:4200.
 
 #### Notes
@@ -155,9 +134,6 @@ resolve any broken dependencies on old API definitions or implement additional f
 
 ## Job Manager UI Server
 For UI server documentation, see [ui](ui/).
-
-## Job Manager `dsub` Server
-For `dsub` server documentation, see [servers/dsub](servers/dsub/README.md).
 
 ## Job Manager `cromwell` Server
 For `cromwell` server documentation, see [servers/cromwell](servers/cromwell/README.md).

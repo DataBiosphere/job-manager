@@ -50,24 +50,6 @@ then
   echo $MD5 > ui/src/app/shared/model/.jobs.yaml.md5
 fi
 
-if [[ "$FORCE" = "true" ]] || ! md5sum -c servers/dsub/jobs/models/.jobs.yaml.md5 &>/dev/null
-then
-  if [[ -d servers/dsub/jobs/models ]]
-  then
-    rm -r servers/dsub/jobs/models
-  fi
-
-  download_codegen
-
-  java -jar swagger-codegen-cli.jar generate \
-    -i api/jobs.yaml \
-    -l python-flask \
-    -o servers/dsub \
-    -DsupportPython2=true,packageName=jobs
-
-  echo $MD5 > servers/dsub/jobs/models/.jobs.yaml.md5
-fi
-
 if [[ "$FORCE" = "true" ]] || ! md5sum -c servers/cromwell/jobs/models/.jobs.yaml.md5 &>/dev/null
 then
   if [[ -d servers/cromwell/jobs/models ]]
