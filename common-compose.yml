@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   rebuild-swagger:
-    image: openjdk
+    image: eclipse-temurin:latest
     volumes:
       - ./:/base
     entrypoint: ["/bin/bash", "-c", "cd base && /base/scripts/rebuild_swagger.sh"]
