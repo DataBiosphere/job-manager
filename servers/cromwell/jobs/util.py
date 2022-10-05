@@ -6,6 +6,7 @@ from six import integer_types, iteritems
 class GenericMeta(type):
     pass
 
+
 def _deserialize(data, klass):
     """
     Deserializes dict, list, str into an object.
