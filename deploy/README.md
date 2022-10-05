@@ -14,17 +14,13 @@ deploy/
 │   ├── app-engine/
 │   ├── docker-compose/
 │   └── kubernetes/
-├── dsub/
-│   ├── app-engine/
-│   ├── docker-compose/
-│   └── kubernetes/
 └── ui-config.json
 
 ```
 
-The above structure shows how the deployment instructions are organized, Cromwell and dsub have their own set of
-deployment instructions and configurations respectively. From v0.2.0, each Job Manager's release contains 2 docker images, 
-e.g. UI and API(shim), once you pick a proper version(v0.2.0+), you could deploy the 2 images either on the same server
+The above structure shows how the deployment instructions are organized; Cromwell has its own set of deployment
+instructions and configurations. From v0.2.0, each Job Manager's release contains 2 docker images, e.g. UI and
+API(shim), once you pick a proper version(v0.2.0+), you could deploy the 2 images either on the same server
 or different servers, depends on your preferred infrastructure.
 
 
@@ -111,55 +107,6 @@ following values:
 }
 ```
 
-#### dsub
-dsub is using hard-coded predefined capabilities configuration for now, so this file is only configurable for Cromwell.
-To provide a better visibility of the default values, depends on the value of the environment variable `PROVIDER_TYPE`, 
-the full version default config can be translated into the following JSON format:
-```JSON
-{
-  "displayFields": [
-    {
-      "field": "status",
-      "display": "Status"
-    },
-    {
-      "field": "submission",
-      "display": "Submitted",
-      "fieldType": "date"
-    },
-    {
-      "field": "labels.job-id",
-      "display": "Job ID"
-    },
-    {
-      "field": "labels.task-id",
-      "display": "Task ID"
-    },
-    {
-      "field": "extensions.userId",
-      "display": "User ID"
-    },
-    {
-      "field": "extensions.statusDetail",
-      "display": "Status Detail"
-    }
-  ],
-  "commonLabels": [
-    "job-id",
-    "task-id"
-  ],
-  "queryExtensions": ["userId", "submission", "projectId"],
-  "authentication": {
-      "isRequired": true,
-      "scopes": [
-        "https://www.googleapis.com/auth/genomics",
-        "https://www.googleapis.com/auth/cloudplatformprojects.readonly",
-        "https://www.googleapis.com/auth/devstorage.read_only"
-      ]
-    }
-}
-```
-
 **Note:** no matter where you want to mount this file to, the path to this file has to be provided by the environment
 variable `CAPABILITIES_CONFIG`, otherwise Job Manager will try to use the default capabilities config, which might not
 be able to handle all of your use cases, so we don't recommend you use the default capabilities configuration.
@@ -218,10 +165,3 @@ Job Manager cannot work without setting this properly.
 - `USE_CAAS` controls whether the cromwell backend is using cromwell-as-a-service. Besides, this should also be set to
  true if the Cromwell instance is using OAuth 2, which requires Bearer token in the header for each request to Cromwell.
  By default this value is set to false.
-
-### dsub
-
-- `PROVIDER_TYPE` specifies the dsub provider type to use for managing jobs, the provider choices are: `google`,
- `local`, or `stub`.
-
-- `REQUIRES_AUTH` is a boolean indicating if authentication is required. 

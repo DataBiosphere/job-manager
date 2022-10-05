@@ -20,7 +20,7 @@ import {JobDetailsResolver} from './job-details/job-details-resolver.service';
 import {JobListModule} from './job-list/job-list.module';
 import {JobDetailsModule} from './job-details/job-details.module';
 import {AuthService} from "./core/auth.service";
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {FakeCapabilitiesService} from "./testing/fake-capabilities.service";
 import {CustomIconService} from "./core/custom-icon.service";
 

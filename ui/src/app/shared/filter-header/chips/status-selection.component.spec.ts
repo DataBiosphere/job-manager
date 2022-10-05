@@ -1,5 +1,6 @@
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
-import {MatCheckboxModule, MatListModule} from "@angular/material";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatListModule} from "@angular/material/list";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
@@ -33,8 +34,8 @@ describe('StatusSelectionComponent', () => {
   beforeEach(async(() => {
     fixture = TestBed.createComponent(TestStatusSelectionComponent);
     parentComponent = fixture.componentInstance;
-    testComponent = parentComponent.statusSelectionComponent;
     fixture.detectChanges();
+    testComponent = parentComponent.statusSelectionComponent;
   }));
 
   it('should set up status list', async(() => {

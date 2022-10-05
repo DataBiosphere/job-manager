@@ -10,7 +10,7 @@ pages are intended to help you to:
 
 # Quickest Start
 
-- Already have a Cromwell or dsub installation?
+- Already have a Cromwell installation?
 - Want to set up and try JMUI immediately? 
 
 Good news!

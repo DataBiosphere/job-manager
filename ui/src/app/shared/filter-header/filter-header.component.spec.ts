@@ -1,24 +1,24 @@
 import {async, ComponentFixture, fakeAsync, TestBed, tick} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 import {Component, DebugElement, Input, ViewChild} from "@angular/core";
-import {
-  MatAutocompleteModule,
-  MatButtonModule,
-  MatCheckboxModule,
-  MatChipsModule,
-  MatDatepickerModule,
-  MatIconModule,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatNativeDateModule,
-  MatPaginatorModule, MatSlideToggleModule, MatSnackBar,
-} from "@angular/material";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatButtonModule} from "@angular/material/button";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatChipsModule} from "@angular/material/chips";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatIconModule} from "@angular/material/icon";
+import {MatInputModule} from "@angular/material/input";
+import {MatListModule} from "@angular/material/list";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatNativeDateModule} from "@angular/material/core";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
+import {BehaviorSubject} from 'rxjs';
 
 import {CapabilitiesService} from "../../core/capabilities.service"
 import {SettingsService} from "../../core/settings.service"
@@ -99,15 +99,16 @@ describe('FilterHeaderComponent', () => {
 
   beforeEach(async(() => {
     fixture = TestBed.createComponent(TestHeaderComponent);
+    fixture.detectChanges();
     testComponent = fixture.componentInstance.headerComponent;
     testComponent.chips = new Map()
       .set('projectId', 'Project ID')
       .set('name', 'Job Name')
       .set('status', 'Running');
-    fixture.detectChanges();
   }));
 
   it('should display a chip for each query filter', async(() => {
+    fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.chipShell')).length).toEqual(3);
   }));
@@ -190,7 +191,7 @@ describe('FilterHeaderComponent', () => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
-      .toContain('1 - 1 of many');
+      .toContain(' 1 – 1 of many '); // <-- this is an en-dash, not a hyphen
 
     // Transition to exhaustive, "of X" should now display length (even though totalSize is still null).
     testComponent.jobs.next({
@@ -201,7 +202,7 @@ describe('FilterHeaderComponent', () => {
     });
     fixture.detectChanges();
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
-      .toContain('1 - 2 of 2');
+      .toContain(' 1 – 2 of 2 '); // <-- this is an en-dash, not a hyphen
   }));
 
   it('should show length of inexhaustive job streams of known length', async(() => {
@@ -214,7 +215,7 @@ describe('FilterHeaderComponent', () => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
-      .toContain('1 - 2 of 25');
+      .toContain(' 1 – 2 of 25 '); // <-- this is an en-dash, not a hyphen
   }));
 
   it('should maintain chip ordering', fakeAsync(() => {
