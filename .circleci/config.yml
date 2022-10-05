@@ -5,8 +5,6 @@
 version: 2
 
 job_defaults: &job_defaults
-  machine:
-    image: circleci/classic:latest
   working_directory: ~/job-manager
 
 run_env_setup: &run_env_setup
@@ -28,6 +26,9 @@ run_secret_setup: &run_secret_setup
 jobs:
   ui:
     <<: *job_defaults
+    machine:
+      # latest pinned 20.04 version https://circleci.com/developer/machine/image/ubuntu-2004
+      image: ubuntu-2004:202201-02
     steps:
       - checkout
       - <<: *run_env_setup
@@ -36,11 +37,25 @@ jobs:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
       - run:
           name: nvm install node and UI dependencies
+          # The Circle Ubuntu machine images of yore apparently came with nvm installed, but the current images require
+          # us to install it ourselves.
           command: |
-            /opt/circleci/.nvm/nvm.sh install 8.5.0
+            # Install curl
+            apt update && apt -y upgrade && apt -y install curl
+            
+            # Use curl to download nvm and run its installer
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+            
+            # nvm setup commands
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            nvm install 14
+            
             cd ui
             npm install
-            npm install -g @angular/cli@1.7.4
+            
+            npm install -g @angular/cli@14.2.1
       - save_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
           paths:
@@ -49,39 +64,48 @@ jobs:
           name: Rebuild swagger
           command: |
             /bin/bash ./scripts/rebuild_swagger.sh
-      - run:
-          name: Lint angular code with ng lint
-          command: |
-            /opt/circleci/.nvm/nvm.sh use 8.5.0
-            cd ui
-            ng lint --type-check
+      # BT-629 Temporarily (?) disable linter. At this stage in Job Manager Modernization it's not working yet.
+      # - run:
+      #     name: Lint angular code with ng lint
+      #     command: |
+      #       cd ui
+      #       # nvm setup commands and Node install reprised
+      #       export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+      #       [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+      #       nvm install 14
+      #       ng lint --type-check
       - run:
           name: Run UI unit tests
           command: |
-            /opt/circleci/.nvm/nvm.sh use 8.5.0
             cd ui
-            ng test --single-run -sm=false --browsers=ChromeHeadless
+            # nvm setup commands and Node install reprised
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            nvm install 14
+            ng test --watch=false --source-map=false --browsers=ChromeHeadless
       - run:
           name: Ensure the UI builds for prod
           # Target production to emulate deployment, but a dev environment
           # because we do not have a prod environment file.
           # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
           command: |
-            /opt/circleci/.nvm/nvm.sh use 8.5.0
             cd ui
-            ng build --target=production --environment=dev
+            # nvm setup commands and Node install reprised
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            nvm install 14
+            ng build --configuration=production
 
   backends:
     <<: *job_defaults
+    machine:
+      image: ubuntu-2004:202201-02
     environment:
-      - KEEP_TEST_DSUB_FILES: true
       - GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
     steps:
       - checkout
       - <<: *run_env_setup
       - <<: *run_secret_setup
-      - restore_cache:
-          key: node-modules-{{ .Branch }}--{{ checksum "servers/dsub/requirements.txt" }}
       - restore_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "servers/cromwell/requirements.txt" }}
       - restore_cache:
@@ -90,6 +114,11 @@ jobs:
           name: Rebuild swagger
           command: |
             /bin/bash ./scripts/rebuild_swagger.sh
+      - run:
+          name: Check Python version
+          command: |
+            python --version
+            which python
       - run:
           name: Install tox and yapf
           # tox (and detox) fail with older versions of more-itertools: https://github.com/pytest-dev/pytest/issues/4770
@@ -101,18 +130,6 @@ jobs:
           command: |
             sh ./scripts/yapf_lint.sh
       - run:
-          name: Run dsub server tests
-          command: |
-            if [[ -z "$GCLOUD_SERVICE_KEY" || "${CIRCLE_BRANCH}" != "master" ]]; then
-              tox -p 8 -c ./servers/dsub -- \
-                --exclude-test=jobs.test.test_jobs_controller_google.TestJobsControllerGoogle \
-                --exclude-test=jobs.test.test_jobs_controller_google_v2.TestJobsControllerGoogleV2
-            else
-              echo $GCLOUD_SERVICE_KEY | base64 --decode --ignore-garbage > /home/circleci/gcloud-service-key.json
-              tox -p 8 -c ./servers/dsub
-              rm /home/circleci/gcloud-service-key.json
-            fi
-      - run:
           name: Run cromwell server tests
           command: |
             tox -c ./servers/cromwell
@@ -120,10 +137,6 @@ jobs:
           name: Run jm_utils server tests
           command: |
             tox -c ./servers/jm_utils
-      - save_cache:
-          key: node-modules-{{ .Branch }}--{{ checksum "servers/dsub/requirements.txt" }}
-          paths:
-            - "servers/dsub/.tox"
       - save_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "servers/cromwell/requirements.txt" }}
           paths:
@@ -135,6 +148,8 @@ jobs:
 
   secrets:
     <<: *job_defaults
+    machine:
+      image: ubuntu-2004:202201-02
     steps:
       - checkout
       - <<: *run_env_setup

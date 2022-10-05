@@ -14,7 +14,7 @@ import {JobStatusIcon} from "../../shared/common";
 import {DisplayField} from "../../shared/model/DisplayField";
 import {ResourceUtils} from "../../shared/utils/resource-utils";
 import {JobManagerService} from "../../core/job-manager.service";
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {ErrorMessageFormatterPipe} from "../../shared/pipes/error-message-formatter.pipe";
 import {AuthService} from "../../core/auth.service";
 

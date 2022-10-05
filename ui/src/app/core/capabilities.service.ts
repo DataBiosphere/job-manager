@@ -1,6 +1,5 @@
-import {Headers, Http, RequestOptions} from '@angular/http';
+import {HttpHeaders, HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/toPromise';
 
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {ConfigLoaderService} from "../../environments/config-loader.service";
@@ -12,7 +11,7 @@ export class CapabilitiesService {
   private capabilitiesResponse: CapabilitiesResponse;
   private capabilitiesResponsePromise: Promise<CapabilitiesResponse>;
 
-  constructor(private http: Http,
+  constructor(private http: HttpClient,
               private configLoader:ConfigLoaderService) {}
 
   getCapabilitiesSynchronous(): CapabilitiesResponse {
@@ -26,11 +25,12 @@ export class CapabilitiesService {
     if (!this.capabilitiesResponsePromise) {
       const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
       this.capabilitiesResponsePromise =
-        this.http.get(`${apiUrl}/capabilities`,
-          new RequestOptions({headers: new Headers({'Content-Type': 'application/json'})}))
+        this.http.get(
+          `${apiUrl}/capabilities`,
+          {headers: new HttpHeaders({'Content-Type': 'application/json'})})
           .toPromise()
           .then(response => {
-            this.capabilitiesResponse = response.json() as CapabilitiesResponse;
+            this.capabilitiesResponse = response as CapabilitiesResponse;
             return this.capabilitiesResponse;
           });
     }

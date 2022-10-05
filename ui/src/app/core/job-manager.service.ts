@@ -1,6 +1,5 @@
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
+import {HttpHeaders, HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/toPromise';
 
 import {AuthService} from './auth.service';
 import {QueryJobsRequest} from '../shared/model/QueryJobsRequest';
@@ -19,7 +18,7 @@ export class JobManagerService {
   private static readonly defaultErrorDetail = "An unknown error has occurred. Please try again later.";
   private static readonly defaultErrorTitle = "Unknown";
 
-  constructor(private readonly authService: AuthService, private http: Http,
+  constructor(private readonly authService: AuthService, private http: HttpClient,
               private configLoader:ConfigLoaderService) {}
 
   private convertToJobMetadataResponse(json: object): JobMetadataResponse {
@@ -67,38 +66,28 @@ export class JobManagerService {
     return response;
   }
 
-  private respToJson(response: Response) {
-    try {
-      return response.json();
-    } catch (_) {
-      return {};
-    }
-  }
-
-  private getErrorTitle(response: Response): string {
-    const json = this.respToJson(response);
-    if (json["title"]) {
-      return json["title"];
+  private getErrorTitle(response: HttpErrorResponse): string {
+    if (response.name) {
+      return response.name;
     }
     return response.statusText ? response.statusText : JobManagerService.defaultErrorTitle;
   }
 
-  private getErrorDetail(response: Response): string {
-    const json = this.respToJson(response);
-    return json["detail"] ? json["detail"] : JobManagerService.defaultErrorDetail;
+  private getErrorDetail(response: HttpErrorResponse): string {
+    return response.message ? response.message : JobManagerService.defaultErrorDetail;
   }
 
-  private getHttpHeaders(): Headers {
-    var headers = new Headers({'Content-Type': 'application/json'});
+  private getHttpHeaders(): HttpHeaders {
+    var headers = new HttpHeaders({'Content-Type': 'application/json'});
     if (this.authService.authToken) {
-      headers.set('Authentication', `Bearer ${this.authService.authToken}`);
+      headers = headers.set('Authentication', `Bearer ${this.authService.authToken}`);
     }
     return headers;
   }
 
-  private handleError(response: Response): Promise<any> {
+  private handleError(response: HttpErrorResponse): Promise<any> {
     return Promise.reject({
-      status: response["status"],
+      status: response.status,
       title: this.getErrorTitle(response),
       message: this.getErrorDetail(response),
     });
@@ -108,7 +97,10 @@ export class JobManagerService {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
     return this.http.post(`${apiUrl}/jobs/${id}/abort`,
       {},
-      new RequestOptions({headers: this.getHttpHeaders()}))
+      {
+        headers: this.getHttpHeaders(), 
+        observe: 'response'
+      })
       .toPromise()
       .then(response => response.status == 200)
       .catch((e) => this.handleError(e));
@@ -118,18 +110,17 @@ export class JobManagerService {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
     return this.http.post(`${apiUrl}/jobs/${id}/updateLabels`,
       req,
-      new RequestOptions({headers: this.getHttpHeaders()}))
+      {headers: this.getHttpHeaders()})
       .toPromise()
-      .then(response => response.json())
       .catch((e) => this.handleError(e));
   }
 
   getJob(id: string): Promise<JobMetadataResponse> {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
     return this.http.get(`${apiUrl}/jobs/${id}`,
-      new RequestOptions({headers: this.getHttpHeaders()}))
+      {headers: this.getHttpHeaders()})
       .toPromise()
-      .then(response => this.convertToJobMetadataResponse(response.json()))
+      .then(response => this.convertToJobMetadataResponse(response))
       .catch((e) => this.handleError(e));
   }
 
@@ -140,42 +131,40 @@ export class JobManagerService {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
     return this.http.post(`${apiUrl}/jobs/query`,
       req,
-      new RequestOptions({headers: this.getHttpHeaders()}))
+      {headers: this.getHttpHeaders()})
       .toPromise()
-      .then(response => this.convertToQueryJobsResponse(response.json()))
+      .then(response => this.convertToQueryJobsResponse(response))
       .catch((e) => this.handleError(e));
   }
 
   queryAggregations(timeFrame: TimeFrame, projectId: string): Promise<AggregationResponse> {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
     return this.http.get(`${apiUrl}/aggregations`,
-      new RequestOptions({
+      {
         params: {
           projectId,
           timeFrame
         },
         headers: this.getHttpHeaders()
-      }))
+      })
       .toPromise()
-      .then(response => this.convertToAggregationJobsResponse(response.json()))
+      .then(response => this.convertToAggregationJobsResponse(response))
       .catch((e) => this.handleError(e));
   }
 
   getTaskAttempts(id:string, task:string): Promise<JobAttemptsResponse> {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
     return this.http.get(`${apiUrl}/jobs/${id}/${task}/attempts`,
-      new RequestOptions({headers: this.getHttpHeaders()}))
+      {headers: this.getHttpHeaders()})
       .toPromise()
-      .then(response => response.json())
       .catch((e) => this.handleError(e));
   }
 
   getShardAttempts(id:string, task:string, index:number): Promise<JobAttemptsResponse> {
     const apiUrl = this.configLoader.getEnvironmentConfigSynchronous()['apiUrl'];
     return this.http.get(`${apiUrl}/jobs/${id}/${task}/${index}/attempts`,
-      new RequestOptions({headers: this.getHttpHeaders()}))
+      {headers: this.getHttpHeaders()})
       .toPromise()
-      .then(response => response.json())
       .catch((e) => this.handleError(e));
   }
 }

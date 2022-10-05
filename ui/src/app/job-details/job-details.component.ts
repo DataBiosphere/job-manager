@@ -59,14 +59,6 @@ export class JobDetailsComponent implements OnInit {
     }
   }
 
-  handleClose(): void {
-    this.router.navigate(['jobs'], {
-      queryParams: {
-        'q': this.route.snapshot.queryParams['q']
-      }
-    });
-  }
-
   handleNavUp(): void {
     if (this.job.extensions.parentJobId) {
       this.router.navigate(['/jobs/' + this.job.extensions.parentJobId], {
