@@ -20,10 +20,7 @@ def quick_start():
 
     os.chdir(install_dir)
 
-    service_type = request_input_from_list('Select a shim to use',
-                                           ['Cromwell', 'dsub'], 'Cromwell')
-    options = {'Cromwell': quick_start_cromwell, 'dsub': quick_start_dsub}
-    options[service_type](version, install_dir, bin_dir, config_dir)
+    quick_start_cromwell(version, install_dir, bin_dir, config_dir)
 
 
 def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
@@ -90,13 +87,6 @@ def quick_start_cromwell(version, install_dir, bin_dir, config_dir):
             'Sorry, not yet implemented! Please raise this issue at https://github.com/DataBiosphere/job-manager/issues'
         )
         exit(1)
-
-
-def quick_start_dsub(version, install_dir, bin_dir, config_dir):
-    print(
-        'Sorry, not yet implemented! Please raise this issue at https://github.com/DataBiosphere/job-manager/issues'
-    )
-    exit(1)
 
 
 def download_file(version, file, to_path):

@@ -1,7 +1,7 @@
 version: '2.1'
 services:
   rebuild-swagger:
-    image: java
+    image: eclipse-temurin:latest
     volumes:
       - ./:/base
     entrypoint: ["/bin/bash", "-c", "cd base && /base/scripts/rebuild_swagger.sh"]
@@ -21,25 +21,6 @@ services:
       - ./ui/tslint.json:/ui/tslint.json
       - ./ui/angular.json:/ui/angular.json
       - ./api:/ui/api
-  dsub:
-    # Flags to gunicorn:
-    # http://docs.gunicorn.org/en/stable/run.html#commonly-used-arguments
-    command: ["-b", ":8190", "--reload"]
-    environment:
-      - PATH_PREFIX=/api/v1
-      # Avoid writing .pyc files back to the volume. Files generated this way
-      # have restricted permissions set which cause errors on subsequent docker
-      # builds.
-      - GUNICORN_CMD_ARGS=${GUNICORN_CMD_ARGS:-"--workers=5"}
-      - PYTHONDONTWRITEBYTECODE=1
-    volumes:
-      # Mount the python source so that code changes don't require rebuilding
-      # the image. Changes to requirements.txt will still require rebuilds.
-      - ./api:/app/api
-      - ./scripts:/scripts
-      - ./servers/dsub/jobs:/app/jobs
-    ports:
-      - 8190:8190
   cromwell:
     command: ["-b", ":8190", "-t", "60"]
     environment:
