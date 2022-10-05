@@ -5,13 +5,11 @@ import {RouterModule} from "@angular/router";
 import {DashboardComponent} from "./dashboard.component";
 import {TotalSummaryComponent} from './total-summary/total-summary.component';
 import {DashboardResolver} from "./dashboard.resolver.service";
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatSelectModule,
-  MatSortModule,
-  MatTableModule
-} from "@angular/material";
+import {MatButtonModule} from "@angular/material/button";
+import {MatCardModule} from "@angular/material/card";
+import {MatSelectModule} from "@angular/material/select";
+import {MatSortModule} from "@angular/material/sort";
+import {MatTableModule} from "@angular/material/table";
 import {GroupedSummaryComponent} from './grouped-summary/grouped-summary.component';
 import {SharedModule} from "../shared/shared.module";
 import {ClrIconModule, ClrTooltipModule} from "@clr/angular";

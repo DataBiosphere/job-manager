@@ -1,19 +1,23 @@
-import {HttpClientModule} from "@angular/common/http";
-import {TestBed, async, ComponentFixture} from '@angular/core/testing';
-import {By, DomSanitizer} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {Component, DebugElement, ViewChild} from '@angular/core';
-import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
-import {SharedModule} from '../../../shared/shared.module';
-import {JobDebugIconsComponent} from "./debug-icons.component";
-import {AuthService} from "../../../core/auth.service";
-import {FakeCapabilitiesService} from "../../../testing/fake-capabilities.service";
-import {MatSnackBarModule, MatIconModule, MatIconRegistry} from "@angular/material";
-import {GcsService} from "../../../core/gcs.service";
-import {JobManagerService} from "../../../core/job-manager.service";
-import {FakeJobManagerService} from "../../../testing/fake-job-manager.service";
-import {CapabilitiesService} from "../../../core/capabilities.service";
+import { HttpClientModule } from "@angular/common/http";
+import { Component, DebugElement, ViewChild } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule } from "@angular/material/dialog";
+import { MatIconModule, MatIconRegistry } from "@angular/material/icon";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { By, DomSanitizer } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
+import { ConfigLoaderService } from "../../../../environments/config-loader.service";
+import { AuthService } from "../../../core/auth.service";
+import { CapabilitiesService } from "../../../core/capabilities.service";
+import { GcsService } from "../../../core/gcs.service";
+import { JobManagerService } from "../../../core/job-manager.service";
 import { SamService } from "../../../core/sam.service";
+import { SharedModule } from '../../../shared/shared.module';
+import { FakeCapabilitiesService } from "../../../testing/fake-capabilities.service";
+import { FakeConfigLoaderService } from "../../../testing/fake-config-loader.service";
+import { FakeJobManagerService } from "../../../testing/fake-job-manager.service";
+import { JobDebugIconsComponent } from "./debug-icons.component";
 
 describe('JobDebugIconsComponent', () => {
   let fixture: ComponentFixture<TestDebugIconsComponent>;
@@ -39,6 +43,7 @@ describe('JobDebugIconsComponent', () => {
         ClrIconModule,
         ClrTooltipModule,
         HttpClientModule,
+        MatDialogModule,
         MatIconModule,
         MatSnackBarModule,
         SharedModule
@@ -48,7 +53,8 @@ describe('JobDebugIconsComponent', () => {
         {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null)},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: SamService}
+        {provide: SamService},
+        {provide: ConfigLoaderService, useValue: new FakeConfigLoaderService()}
       ],
     }).compileComponents();
   }));

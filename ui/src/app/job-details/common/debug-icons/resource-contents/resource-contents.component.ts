@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit, ViewChild} from "@angular/core";
-import {MAT_DIALOG_DATA} from "@angular/material";
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {NgxJsonViewerComponent} from "ngx-json-viewer";
 
 @Component({

@@ -1,0 +1,12 @@
+.error-message {
+  position: relative;
+  top: 90px;
+  bottom: 0;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+p {
+  font-size: 0.8rem;
+  margin: 1rem 0;
+}

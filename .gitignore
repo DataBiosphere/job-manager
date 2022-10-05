@@ -24,9 +24,7 @@ venv/
 /ui/src/assets/environments
 # Compiled Swagger output
 /ui/src/app/shared/model
-/servers/dsub/jobs/models
 /servers/cromwell/jobs/models
-/servers/dsub/jobs/swagger
 /servers/cromwell/jobs/swagger
 
 # dependencies
@@ -56,3 +54,10 @@ venv/
 
 # OS generated files
 .DS_Store
+
+# Yarn
+/ui/.yarn/*
+!/ui/.yarn/releases/*
+
+# Angular
+/ui/.angular/*

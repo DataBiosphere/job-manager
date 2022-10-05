@@ -1,6 +1,6 @@
 # Job Manager Utilities
 
-The `jm-utils` package contains common code used by both the cromwell and dsub backends.
+The `jm-utils` package contains common code used by both the cromwell and (now deprecated and removed) dsub backends.
 
 ## Installing
 To make jm_utils available for import, backends in the servers directory should

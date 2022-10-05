@@ -5,8 +5,7 @@ import {
   RouterStateSnapshot
 } from '@angular/router';
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/take';
+import {map, take} from 'rxjs/operators';
 
 import {JobManagerService} from '../core/job-manager.service';
 import {initialBackendPageSize} from '../shared/common';
