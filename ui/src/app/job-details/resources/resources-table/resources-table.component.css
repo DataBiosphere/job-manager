@@ -28,7 +28,7 @@ th {
   font-size: 0.75rem;
 }
 
-td {
+td, td.mat-cell {
   padding: 1rem;
 }
 

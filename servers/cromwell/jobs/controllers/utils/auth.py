@@ -4,6 +4,7 @@ from werkzeug.exceptions import Unauthorized
 
 
 def requires_auth(fn):
+
     def wrapper(*args, **kwargs):
         auth_token = request.headers.get('Authentication')
         auth = _get_user_auth() if not current_app.config['use_caas'] else None

@@ -1,12 +1,21 @@
 # Job Manager
 
+If you're looking for basics for Terra developers, see [here](TERRA_QUICKSTART.md).
+
 [![CircleCI branch](https://img.shields.io/circleci/project/github/DataBiosphere/job-manager/master.svg?label=Tests%20on%20Circle%20CI&style=flat-square)](https://circleci.com/gh/DataBiosphere/job-manager/tree/master)
-![Github](https://img.shields.io/badge/Supported%20Backends-cromwell%20%7C%20dsub-blue.svg?&style=flat-square)
+![Github](https://img.shields.io/badge/Supported%20Backends-cromwell-blue.svg?&style=flat-square)
 ![GitHub](https://img.shields.io/github/license/DataBiosphere/job-manager.svg?color=orange&style=flat-square)
 [![GitHub release](https://img.shields.io/github/release/DataBiosphere/job-manager.svg?label=Latest%20Release&style=flat-square&colorB=green)](https://github.com/DataBiosphere/job-manager/releases)
-[![Github](https://img.shields.io/badge/Docker%20Image-UI-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-ui)
-[![Github](https://img.shields.io/badge/Docker%20Image-dsub%20shim%20API-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-api-dsub)
-[![Github](https://img.shields.io/badge/Docker%20Image-cromwell%20shim%20API-blue.svg?style=flat-square)](https://cloud.docker.com/u/databiosphere/repository/docker/databiosphere/job-manager-api-cromwell)
+[![Github](https://img.shields.io/badge/Docker%20Image-UI-blue.svg?style=flat-square)](https://console.cloud.google.com/gcr/images/broad-dsp-gcr-public/US/job-manager-ui)
+[![Github](https://img.shields.io/badge/Docker%20Image-cromwell%20shim%20API-blue.svg?style=flat-square)](https://console.cloud.google.com/gcr/images/broad-dsp-gcr-public/US/job-manager-api-cromwell)
+
+## Lifecycle notice
+
+Job Manager is in maintenance mode and is not recommended for new projects.
+
+dsub support is deprecated and has been removed.
+
+The last release of Job Manager to support dsub without compromise is [1.5.7](https://github.com/DataBiosphere/job-manager/releases/tag/v1.5.7).
 
 ## User facing documentation
 
@@ -15,10 +24,6 @@ Welcome to the Job Manager repository! If you're a developer you're in the right
 However, if you just want to try out or deploy Job Manager, you will probably find our user and deployment focused content in
 our ReadTheDocs pages: https://data-biosphere-job-manager.readthedocs.io/en/latest/
 
-### Try it out, NOW!
-
-The easiest way to try out Job Manager is to use the [getting started script](https://data-biosphere-job-manager.readthedocs.io/en/stable/GettingStarted/QuickStart)
- 
 ## Welcome
 
 See the [development guide](#development) below.
@@ -30,25 +35,11 @@ The Broad, Verily, and many other organizations in the life sciences execute eno
 The Job Manager aspires to bring ease and efficiency to developing and debugging workflows while seamlessly scaling to production operations management.
 
 ## Key Features
-* Supports visualization over [Cromwell](https://github.com/broadinstitute/cromwell) or [dsub](https://github.com/googlegenomics/dsub) backends
+* Supports visualization over [Cromwell](https://github.com/broadinstitute/cromwell) backend
 * Service provider interface can be extended to support other engines
 * Rich search capabilities across current and historic workflows
 * Aborting workflows
 * Clean, intuitive UX based on material design principles
-
-### Future Features
-* Dynamic grouping, filtering, and drill-down
-* Re-launching workflows
-* Simplified troubleshooting of failed workflows
-* Improved UI design
-
-## Roadmap
-
-The current code is a work in progress towards an alpha release and as such has started with core features: connecting to both backends, visualizing workflow and task status and metadata, quick access to log files, and simple filtering.
-
-The near-term roadmap includes improvements to failure troubleshooting, creating a robust dashboard for grouping jobs and seeing status overviews, and improving handling of widely scattered workflows.
-
-We envision a product with user-customizable views of jobs running, insights into workflow compute cost, the ability to re-launch jobs, and the potential to make custom reports about the jobs that have been run.
 
 ## Architecture Overview
 
@@ -58,12 +49,6 @@ The UI must be deployed along with a backend implementation of the API, two such
 
 ### Cromwell
 Monitors jobs launched by the [Cromwell workflow engine](https://github.com/broadinstitute/cromwell). The Python Flask wrapper was created using Swagger Codegen and can be configured to pull data from a specific Cromwell instance. _At this time, to utilize all job manager features, please consider using Cromwell v32 or newer._
-
-### dsub
-
-Monitors jobs that were launched via the [dsub](https://github.com/googlegenomics/dsub) CLI. Thin stateless wrapper around the dsub Python library. Authorization is required for deploying the UI, which is used to communicate with the [Google Genomics Pipelines API](https://cloud.google.com/genomics/pipelines). The wrapper itself is implemented in Python Flask using Swagger codegen models. A Dockerfile is provided which serves for production deployment using gunicorn.
-
-Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s “job”.
 
 ## Development
 
@@ -98,9 +83,6 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
 
 ### Server Setup
 
-- Choose your own adventure: `cromwell` (local or CaaS) or `dsub`!
-
-
 #### Cromwell
 
 - Link your preferred backend docker compose file as `docker-compose.yml`:
@@ -108,18 +90,6 @@ Note that a “task” in dsub nomenclature corresponds to a Job Manager API’s
   - Cromwell (local): `ln -sf cromwell-instance-compose.yml docker-compose.yml`
   - Cromwell (CaaS): `ln -sf cromwell-caas-compose.yml docker-compose.yml`
 - Follow [servers/cromwell](servers/cromwell/README.md#Development) for Cromwell server setup then return here to continue.
-
-#### dsub
-
-- Link the dsub docker compose file as `docker-compose.yml`:
-```sh
-ln -sf dsub-local-compose.yml docker-compose.yml
-```
-  - If you prefer not to create a symbolic link, use:
-```sh
-docker-compose -f dsub-google-compose.yml CMD
-```
-- Set up the server for development with [`dsub`](https://github.com/googlegenomics/dsub): details in [servers/dsub](servers/dsub/README.md#Development).
 
 
 ### Run Locally
@@ -129,7 +99,7 @@ docker-compose -f dsub-google-compose.yml CMD
   ```
   jmui_1        | webpack: Compiled successfully.
   ```
-- Make sure that your backend (eg the Cromwell service or dsub) is ready to receive query requests. 
+- Make sure that your Cromwell backend is ready to receive query requests. 
 - Navigate to http://localhost:4200.
 
 #### Notes
@@ -165,9 +135,6 @@ resolve any broken dependencies on old API definitions or implement additional f
 ## Job Manager UI Server
 For UI server documentation, see [ui](ui/).
 
-## Job Manager `dsub` Server
-For `dsub` server documentation, see [servers/dsub](servers/dsub/README.md).
-
 ## Job Manager `cromwell` Server
 For `cromwell` server documentation, see [servers/cromwell](servers/cromwell/README.md).
 
@@ -175,31 +142,31 @@ For `cromwell` server documentation, see [servers/cromwell](servers/cromwell/REA
 
 ### How to build
 
-From v0.2.0, Job Manager starts to release stock docker images on [DockerHub](https://hub.docker.com/u/databiosphere)
+Starting with release v1.6.0, Job Manager docker images are on [GCR](https://console.cloud.google.com/gcr/images/broad-dsp-gcr-public).
 
-- Setting the docker tag first in bash, e.g. `TAG="v0.1.0"`
-
-- To build the `job-manager-ui` image with `$TAG` from the root of this Github repository:
+- Configure Docker to authenticate with GCR
     ```
-    docker build -t job-manager-ui:$TAG . -f ui/Dockerfile
+    gcloud config set account username@broadinstitute.org
+    gcloud auth configure-docker us.gcr.io
+    ```
+
+- Set the Docker tag first in bash, e.g. `TAG="v0.1.0"`
+
+- To publish the `job-manager-ui` image with `$TAG` from the root of this Github repository:
+    ```
+    docker build -t us.gcr.io/broad-dsp-gcr-public/job-manager-ui:$TAG . -f ui/Dockerfile
+    docker push us.gcr.io/broad-dsp-gcr-public/job-manager-ui:$TAG
     ```
     
-- **Cromwell:** To build the `job-manager-api-cromwell` image with `$TAG` from the root of this Github repository:
+- To publish the `job-manager-api-cromwell` image with `$TAG` from the root of this Github repository:
     ```
-    docker build -t job-manager-api-cromwell:$TAG . -f servers/cromwell/Dockerfile
-    ```
-    
-- **dsub:** To build the `job-manager-api-dsub` image with `$TAG` from the root of this Github repository:
-    ```
-    docker build -t job-manager-api-dsub:$TAG . -f servers/dsub/Dockerfile
+    docker build -t us.gcr.io/broad-dsp-gcr-public/job-manager-api-cromwell:$TAG . -f servers/cromwell/Dockerfile
+    docker push us.gcr.io/broad-dsp-gcr-public/job-manager-api-cromwell:$TAG
     ```
 
-### Add a github release pointing to the dockerhub images
+### Add a Github release pointing to the GCR images
 
-From v0.2.0, each release in Github will also release 3 corresponding docker images on Docker Hub:
+From v1.6.0, each release in Github will also release 2 corresponding Docker images on GCR:
 
-- [job-manager-ui](https://hub.docker.com/r/databiosphere/job-manager-ui/)
-- [job-manager-api-cromwell](https://hub.docker.com/r/databiosphere/job-manager-api-cromwell/)
-- [job-manager-api-dsub](https://hub.docker.com/r/databiosphere/job-manager-api-dsub/)
-
-For a long-term plan, we will set up a docker build hook so the release process can be more automated.
+- [job-manager-ui](https://console.cloud.google.com/gcr/images/broad-dsp-gcr-public/US/job-manager-ui)
+- [job-manager-api-cromwell](https://console.cloud.google.com/gcr/images/broad-dsp-gcr-public/US/job-manager-api-cromwell)

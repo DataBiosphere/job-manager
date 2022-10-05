@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from "@angular/core";
-import {MatDatepicker} from "@angular/material";
+import {MatDatepicker} from "@angular/material/datepicker";
 
 @Component({
   selector: 'jm-datepicker-input',

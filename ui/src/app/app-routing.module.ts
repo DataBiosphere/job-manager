@@ -11,6 +11,7 @@ import {JobDetailsResolver} from './job-details/job-details-resolver.service';
 import {JobListResolver} from './job-list/job-list-resolver.service';
 import { DashboardResolver } from './dashboard/dashboard.resolver.service';
 import {JobListComponent} from './job-list/job-list.component';
+import {PagenotfoundComponent} from './pagenotfound/pagenotfound.component';
 import {SignInComponent} from './sign-in/sign-in.component';
 import {ProjectsComponent} from './projects/projects.component'
 import {RouteReuse} from './route-reuse.service';
@@ -23,8 +24,7 @@ import {DashboardComponent} from "./dashboard/dashboard.component";
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'jobs',
-    pathMatch: 'full'
+    component: PagenotfoundComponent
   },
   {
     path: 'sign_in',
@@ -49,11 +49,7 @@ const routes: Routes = [
   },
   {
     path: 'jobs',
-    component: JobListComponent,
-    canActivate: [CapabilitiesActivator],
-    resolve: {
-      stream: JobListResolver
-    }
+    component: PagenotfoundComponent
   },
   {
     path: 'jobs/:id',
@@ -62,6 +58,10 @@ const routes: Routes = [
     resolve: {
       job: JobDetailsResolver
     }
+  },
+  {
+    path: '**',
+    component: PagenotfoundComponent
   },
 ];
 
