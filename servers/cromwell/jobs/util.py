@@ -1,7 +1,10 @@
-from typing import GenericMeta
-from datetime import datetime, date
+from datetime import date, datetime
+
 from six import integer_types, iteritems
 
+
+class GenericMeta(type):
+    pass
 
 def _deserialize(data, klass):
     """

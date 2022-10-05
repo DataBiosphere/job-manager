@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
 import argparse
-import os
 import json
+import logging
+import os
+from distutils.util import strtobool
+
 import connexion
-from .encoder import JSONEncoder
 import requests
 from requests.auth import HTTPBasicAuth
-import logging
+
+from .encoder import JSONEncoder
 from .models.capabilities_response import CapabilitiesResponse
-from distutils.util import strtobool
 
 CROMWELL_LABEL_MIN_LENGTH = 1
 CROMWELL_LABEL_MAX_LENGTH = 256
@@ -52,8 +54,8 @@ else:
     # Allow unknown args if we aren't the main program, these include flags to
     # gunicorn.
     args, _ = parser.parse_known_args()
-
-app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=False)
+options = {"swagger_ui": False}
+app = connexion.App(__name__, specification_dir='./swagger/', options=options)
 DEFAULT_CROMWELL_CREDENTIALS = {'cromwell_user': '', 'cromwell_password': ''}
 
 # Load credentials for cromwell
