@@ -7,6 +7,9 @@ from . import BaseTestCase
 from jobs.controllers.utils import job_statuses
 
 
+collections.Callable = collections.abc.Callable
+
+
 class TestJobStatuses(BaseTestCase):
 
     def test_cromwell_execution_status_converts_correctly(self):

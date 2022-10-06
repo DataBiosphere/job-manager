@@ -5,9 +5,6 @@ from flask_testing import TestCase
 
 from ..encoder import JSONEncoder
 
-collections.Callable = collections.abc.Callable
-
-
 class BaseTestCase(TestCase):
 
     def create_app(self):

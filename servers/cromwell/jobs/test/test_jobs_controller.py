@@ -16,6 +16,8 @@ from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from jobs.controllers import jobs_controller
 
+collections.Callable = collections.abc.Callable
+
 
 class TestJobsController(BaseTestCase):
     """ JobsController integration test stubs """

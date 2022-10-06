@@ -11,6 +11,9 @@ from jobs.models.shard import Shard
 import itertools
 
 
+collections.Callable = collections.abc.Callable
+
+
 class TestTaskStatuses(BaseTestCase):
     # yapf: disable
     def test_cromwell_execution_to_api_maps_all_task_execution_statuses_correctly(self):

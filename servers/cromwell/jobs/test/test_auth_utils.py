@@ -1,8 +1,12 @@
 # coding: utf-8
 
 from __future__ import absolute_import
+
 import requests_mock
+
 from . import BaseTestCase
+
+collections.Callable = collections.abc.Callable
 
 
 class TestAuthUtils(BaseTestCase):
