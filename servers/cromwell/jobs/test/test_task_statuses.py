@@ -10,8 +10,6 @@ from jobs.models.shard import Shard
 
 from . import BaseTestCase
 
-collections.Callable = collections.abc.Callable
-
 
 class TestTaskStatuses(BaseTestCase):
     # yapf: disable

@@ -6,8 +6,6 @@ from jobs.controllers.utils import job_statuses
 
 from . import BaseTestCase
 
-collections.Callable = collections.abc.Callable
-
 
 class TestJobStatuses(BaseTestCase):
 

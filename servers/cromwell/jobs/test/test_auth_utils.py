@@ -6,8 +6,6 @@ import requests_mock
 
 from . import BaseTestCase
 
-collections.Callable = collections.abc.Callable
-
 
 class TestAuthUtils(BaseTestCase):
 

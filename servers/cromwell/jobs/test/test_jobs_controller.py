@@ -2,21 +2,20 @@
 
 from __future__ import absolute_import
 
-import requests_mock
-from flask import json
 from datetime import datetime
-from dateutil.tz import *
-import dateutil.parser
-from . import BaseTestCase
 
+import dateutil.parser
+import requests_mock
+from dateutil.tz import *
+from flask import json
+from jobs.controllers import jobs_controller
 from jobs.models.extended_fields import ExtendedFields
 from jobs.models.query_jobs_request import QueryJobsRequest
 from jobs.models.query_jobs_result import QueryJobsResult
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
-from jobs.controllers import jobs_controller
 
-collections.Callable = collections.abc.Callable
+from . import BaseTestCase
 
 
 class TestJobsController(BaseTestCase):
