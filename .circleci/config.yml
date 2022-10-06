@@ -117,8 +117,8 @@ jobs:
       - run:
           name: Check Python version
           command: |
-            python --version
-            which python
+            python3 --version
+            which python3
       - run:
           name: Install tox and yapf
           # tox (and detox) fail with older versions of more-itertools: https://github.com/pytest-dev/pytest/issues/4770
