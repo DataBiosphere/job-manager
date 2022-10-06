@@ -123,7 +123,7 @@ jobs:
           name: Install tox and yapf
           # tox (and detox) fail with older versions of more-itertools: https://github.com/pytest-dev/pytest/issues/4770
           command: |
-            pip3 install --upgrade pip3
+            pip3 install --upgrade pip
             pip3 install tox>=3.13.2 pytest>=4.6.5 yapf
       - run:
           name: Lint python code with yapf
