@@ -1,8 +1,11 @@
-from flask_testing import TestCase
-from ..encoder import JSONEncoder
-import connexion
 import logging
 
+import connexion
+from flask_testing import TestCase
+
+from ..encoder import JSONEncoder
+
+collections.Callable = collections.abc.Callable
 
 class BaseTestCase(TestCase):
 
