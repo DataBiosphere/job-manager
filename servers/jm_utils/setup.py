@@ -7,7 +7,7 @@ VERSION = "1.0.0"
 
 # To install the library, run the following
 #
-# python setup.py install
+# python  install
 #
 # prerequisite: setuptools
 # http://pypi.python.org/pypi/setuptools
