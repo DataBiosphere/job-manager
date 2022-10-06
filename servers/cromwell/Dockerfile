@@ -7,13 +7,13 @@ ADD ./ /job-manager
 RUN /bin/bash -c scripts/rebuild_swagger.sh
 
 # We cannot yet adopt a blessed Python image because Job Manager uses python2 and blessed only has 3
-FROM python:3
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian
 
 WORKDIR /app
 
 COPY --from=0 /job-manager/servers/jm_utils /app/jm_utils
 COPY --from=0 /job-manager/servers/cromwell/jobs /app/jobs
-COPY ./servers/cromwell/requirements.txt /app/jobs
+COPY ./servers/cromwell/ /app/jobs
 
 RUN cd jobs && pip3 install -r requirements.txt
 # We installed jm_utils so don't need local copy anymore, which breaks imports

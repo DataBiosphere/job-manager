@@ -1,6 +1,6 @@
 # Note: This is the dockerfile for development purposes
 
-FROM python:3
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian
 
 WORKDIR /app
 
