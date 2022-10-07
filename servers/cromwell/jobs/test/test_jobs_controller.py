@@ -49,7 +49,7 @@ class TestJobsController(BaseTestCase):
 
         response = self.client.open('/jobs/{id}/abort'.format(id=workflow_id),
                                     method='POST')
-        self.assertStatus(response, 200)
+        self.assertStatus(response, 204)
 
     @requests_mock.mock()
     def test_abort_job_not_found(self, mock_request):
