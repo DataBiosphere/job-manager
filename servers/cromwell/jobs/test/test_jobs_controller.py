@@ -318,7 +318,7 @@ class TestJobsController(BaseTestCase):
     def test_update_job_labels_undefined_unsupported_media_type_exception(
             self, mock_request):
         workflow_id = 'id'
-        error_message = b'Invalid Content-type (), expected JSON data'
+        error_message = 'Invalid Content-type (), expected JSON data'
 
         def _request_callback(request, context):
             context.status_code = 415
@@ -1002,19 +1002,18 @@ class TestJobsController(BaseTestCase):
 
     def test_empty_cromwell_query_params(self):
         query = QueryJobsRequest()
-        self.assertEqual(
-            sorted(jobs_controller.cromwell_query_params(query, 1, 64, False)),
-            sorted([{
-                'page': '1'
-            }, {
+        self.assertEqual(jobs_controller.cromwell_query_params(query, 1, 64, False),
+            [{
                 'pageSize': '64'
+            }, {
+                'page': '1'
             }, {
                 'additionalQueryResultFields': 'parentWorkflowId'
             }, {
                 'additionalQueryResultFields': 'labels'
             }, {
                 'includeSubworkflows': 'false'
-            }]))
+            }])
 
     def test_cromwell_query_params(self):
         datetime_format = '%Y-%m-%dT%H:%M:%S.%fZ'
@@ -1052,10 +1051,8 @@ class TestJobsController(BaseTestCase):
             'includeSubworkflows': 'false'
         }]
         query_params.extend([{'status': s} for s in query.status])
-        self.assertItemsEqual(
-            sorted(query_params),
-            sorted(jobs_controller.cromwell_query_params(
-                query, 23, 100, False)))
+        self.assertCountEqual(query_params, jobs_controller.cromwell_query_params(
+                query, 23, 100, False))
 
     def test_format_job(self):
         time = '2017-10-27T18:04:47.271Z'

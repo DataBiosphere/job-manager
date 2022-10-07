@@ -1,6 +1,7 @@
 import collections
 import json
 import logging
+import math
 import urllib
 from datetime import datetime
 
@@ -485,7 +486,7 @@ def get_last_page(total_results, page_size):
 def page_from_offset(offset, page_size):
     if offset == 0:
         return 1
-    return 1 + (offset / page_size)
+    return math.floor(1 + (offset / page_size))
 
 
 def cromwell_query_params(query, page, page_size, has_auth):
