@@ -1,11 +1,9 @@
 # Note: This is the dockerfile for development purposes
 
-# We are aware that some dev dependencies are broken in node 14, for example chokidar
-# npm WARN deprecated chokidar@1.7.0: Chokidar 2 will break on node v14+.
 FROM node:14
 
 # Install python 3, needed for npm packages
-RUN apt-get update && apt-get -y install python3
+RUN apt-get update && apt-get -y install python
 
 WORKDIR /ui
 ADD .yarnrc.yml package.json yarn.lock angular.json /ui/
