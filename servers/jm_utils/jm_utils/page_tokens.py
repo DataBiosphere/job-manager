@@ -81,7 +81,7 @@ def encode_create_time_max(create_time_max, offset_id=None):
     if not isinstance(create_time_max, datetime.datetime):
         raise ValueError(
             'Invalid create time must be datetime: {}'.format(create_time_max))
-    if offset_id and not isinstance(offset_id, (str, bytes)):
+    if offset_id and not isinstance(offset_id, str):
         raise ValueError(
             'Invalid offset id must be string: {}'.format(offset_id))
 
@@ -138,7 +138,7 @@ def decode_create_time_max(token):
         raise ValueError(
             'Invalid created before in token JSON: {}'.format(token_dict))
 
-    if offset_id and not isinstance(offset_id, (str, bytes)):
+    if offset_id and not isinstance(offset_id, str):
         raise ValueError(
             'Invalid offset ID in token JSON: {}'.format(token_dict))
 
