@@ -8,6 +8,7 @@ import base64
 import datetime
 import json
 import numbers
+
 import pytz
 
 
@@ -21,7 +22,9 @@ def _encode(dictionary):
         (string) encoded page token representing a page of items
     """
     # Strip ugly base64 padding.
-    return base64.urlsafe_b64encode(json.dumps(dictionary)).rstrip('=')
+    byteStr = bytearray(json.dumps(dictionary).encode())
+    encodedStr = base64.urlsafe_b64encode(byteStr)
+    return encodedStr.rstrip('='.encode())
 
 
 def _decode(token):
@@ -36,7 +39,7 @@ def _decode(token):
     if token is None:
         return None
     # Pad the token out to be divisible by 4.
-    padded_token = token + '=' * (4 - (len(token) % 4))
+    padded_token = token + '='.encode() * (4 - (len(token) % 4))
     decoded_token = base64.urlsafe_b64decode(padded_token)
     token_dict = json.loads(decoded_token)
     if not token_dict or not isinstance(token_dict, dict):
@@ -58,7 +61,7 @@ def encode_offset(offset):
 
     if not isinstance(offset, numbers.Number) or offset <= 0:
         raise ValueError('Invalid offset must integer > 0: {}'.format(offset))
-    return _encode({'of': offset})
+    return _encode({"of": offset})
 
 
 def encode_create_time_max(create_time_max, offset_id=None):
@@ -78,7 +81,7 @@ def encode_create_time_max(create_time_max, offset_id=None):
     if not isinstance(create_time_max, datetime.datetime):
         raise ValueError(
             'Invalid create time must be datetime: {}'.format(create_time_max))
-    if offset_id and not isinstance(offset_id, basestring):
+    if offset_id and not isinstance(offset_id, (str, bytes)):
         raise ValueError(
             'Invalid offset id must be string: {}'.format(offset_id))
 
@@ -135,7 +138,7 @@ def decode_create_time_max(token):
         raise ValueError(
             'Invalid created before in token JSON: {}'.format(token_dict))
 
-    if offset_id and not isinstance(offset_id, basestring):
+    if offset_id and not isinstance(offset_id, (str, bytes)):
         raise ValueError(
             'Invalid offset ID in token JSON: {}'.format(token_dict))
 
