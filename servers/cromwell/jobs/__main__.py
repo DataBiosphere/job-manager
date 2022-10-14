@@ -77,23 +77,29 @@ finally:
     app.app.config.update(config)
 
 # Try to load the capabilities config file
-try:
-    with open(capabilities_path) as f:
-        capabilities_config = json.load(f)
-    for settings in capabilities_config['displayFields']:
-        if settings['field'].startswith(LABELS_PREFIX):
-            if len(settings['field']) == len(LABELS_PREFIX) or len(
-                    settings['field']
-            ) > len(LABELS_PREFIX) + CROMWELL_LABEL_MAX_LENGTH:
-                raise ValueError(
-                    'Custom capabilities config contained invalid label key')
-    logger.info('Successfully loaded the custom capabilities config.')
-    app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
-        capabilities_config)
-except (IOError, TypeError):
-    logger.warning(
-        'Failed to load capabilities config, using default display fields.')
+def loadCapabilities(capabilities_path):
+    try:
+        with open(capabilities_path) as f:
+            capabilities_config = json.load(f)
+        for settings in capabilities_config['displayFields']:
+            if settings['field'].startswith(LABELS_PREFIX):
+                if len(settings['field']) == len(LABELS_PREFIX) or len(
+                        settings['field']
+                ) > len(LABELS_PREFIX) + CROMWELL_LABEL_MAX_LENGTH:
+                    raise ValueError(
+                        'Custom capabilities config contained invalid label key')
+        logger.info('Successfully loaded the custom capabilities config.')
+        app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
+            capabilities_config)
+        return app.app.config['capabilities']
+    except IOError as io_err:
+        logger.exception(
+            'Failed to load capabilities config, using default display fields. %s', io_err)
+    except TypeError as type_err:
+        logger.exception(
+            'Failed to load capabilities config, using default display fields. %s', type_err)
 
+loadCapabilities(capabilities_path=capabilities_path)
 app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['sam_url'] = args.sam_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'

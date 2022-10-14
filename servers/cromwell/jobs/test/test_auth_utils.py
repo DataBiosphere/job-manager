@@ -2,8 +2,12 @@
 
 from __future__ import absolute_import
 
+from asyncio.log import logger
+
 import requests_mock
 
+from ..__main__ import loadCapabilities
+from ..models.capabilities_response import CapabilitiesResponse
 from . import BaseTestCase
 
 
@@ -74,6 +78,9 @@ class TestAuthUtils(BaseTestCase):
                                     content_type='application/json')
         self.assertStatus(response, 401)
 
+    def test_deserialize_config(self):
+        capabilities = loadCapabilities('../../../deploy/cromwell/capabilities-config.json')
+        logger.info("%s",capabilities)
 
 if __name__ == '__main__':
     import unittest
