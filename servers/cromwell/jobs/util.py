@@ -5,6 +5,8 @@ from datetime import date, datetime
 from six import integer_types, iteritems
 
 logger = logging.getLogger('{module_path}'.format(module_path=__name__))
+
+
 class GenericMeta(type):
     pass
 
@@ -30,13 +32,10 @@ def _deserialize(data, klass):
     elif klass == datetime:
         return deserialize_datetime(data)
     elif str(typing.List) in str(klass):
-        logger.info("Klass was a list: %s, falling back to generic model deserialization", klass)
         return _deserialize_list(data, klass.__args__[0])
     elif str(typing.Dict) in str(klass):
-        logger.info("Klass was a dict: %s, falling back to generic model deserialization", klass)
         return _deserialize_dict(data, klass.__args__[1])
     else:
-        logger.info("Klass was not a known model, instead it was %s, falling back to general model deserialization", klass)
         return deserialize_model(data, klass)
 
 

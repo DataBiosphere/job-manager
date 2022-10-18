@@ -76,6 +76,7 @@ except (IOError, TypeError):
 finally:
     app.app.config.update(config)
 
+
 # Try to load the capabilities config file
 def loadCapabilities(capabilities_path):
     try:
@@ -87,17 +88,20 @@ def loadCapabilities(capabilities_path):
                         settings['field']
                 ) > len(LABELS_PREFIX) + CROMWELL_LABEL_MAX_LENGTH:
                     raise ValueError(
-                        'Custom capabilities config contained invalid label key')
+                        'Custom capabilities config contained invalid label key'
+                    )
         logger.info('Successfully loaded the custom capabilities config.')
         app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
             capabilities_config)
         return app.app.config['capabilities']
     except IOError as io_err:
         logger.exception(
-            'Failed to load capabilities config, using default display fields. %s', io_err)
+            'Failed to load capabilities config, using default display fields. %s',
+            io_err)
     except TypeError as type_err:
         logger.exception(
-            'Failed to load capabilities config, using default display fields. %s', type_err)
+            'Failed to load capabilities config, using default display fields. %s',
+            type_err)
 
 loadCapabilities(capabilities_path=capabilities_path)
 app.app.config['cromwell_url'] = args.cromwell_url
