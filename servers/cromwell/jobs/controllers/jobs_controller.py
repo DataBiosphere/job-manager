@@ -646,7 +646,7 @@ def get_pet_token(**kwargs):
         headers=headers)
     if response.status_code != 200:
         handle_error(response)
-    return response.content
+    return response.content.decode()
 
 
 def _get_execution_events(metadata):
