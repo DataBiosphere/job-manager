@@ -627,7 +627,7 @@ def tail_file_contents(bucket, object, **kwargs):
     if response.status_code != 200:
         handle_error(response)
     return FileContents(
-        contents=response.content,
+        contents=response.content.decode(),
         truncated=True if len(response.content) == 500000 else False)
 
 
