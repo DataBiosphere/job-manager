@@ -103,6 +103,7 @@ def loadCapabilities(capabilities_path):
             'Failed to load capabilities config, using default display fields. %s',
             type_err)
 
+
 loadCapabilities(capabilities_path=capabilities_path)
 app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['sam_url'] = args.sam_url
