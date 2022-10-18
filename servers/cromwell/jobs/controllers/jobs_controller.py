@@ -634,7 +634,10 @@ def tail_file_contents(bucket, object, **kwargs):
 @requires_auth
 def get_pet_token(**kwargs):
     headers = kwargs.get('auth_headers')
-    headers['Content-Type'] = 'application/json'
+    if headers is not None:
+        headers['Content-Type'] = 'application/json'
+    else:
+        headers = {'Content-Type', 'application/json'}
     response = requests.post(
         '{sam_url}/user/petServiceAccount/token'.format(
             sam_url=_get_sam_url()),
