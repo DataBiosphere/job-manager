@@ -1,13 +1,13 @@
 # Note: This is the dockerfile for development purposes
 
-FROM gcr.io/google-appengine/python
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian
 
 WORKDIR /app
 
 ADD servers/jm_utils /app/jm_utils
 ADD servers/cromwell/jobs /app/jobs
 COPY servers/cromwell/requirements.txt /app/jobs
-RUN cd jobs && pip install -r requirements.txt
+RUN cd jobs && pip3 install -r requirements.txt
 # We installed jm_utils so don't need local copy anymore, which breaks imports
 RUN rm -rf jm_utils
 

@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
 import argparse
-import os
 import json
+import logging
+import os
+from distutils.util import strtobool
+
 import connexion
-from .encoder import JSONEncoder
 import requests
 from requests.auth import HTTPBasicAuth
-import logging
+
+from .encoder import JSONEncoder
 from .models.capabilities_response import CapabilitiesResponse
-from distutils.util import strtobool
 
 CROMWELL_LABEL_MIN_LENGTH = 1
 CROMWELL_LABEL_MAX_LENGTH = 256
@@ -52,8 +54,8 @@ else:
     # Allow unknown args if we aren't the main program, these include flags to
     # gunicorn.
     args, _ = parser.parse_known_args()
-
-app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=False)
+options = {"swagger_ui": False}
+app = connexion.App(__name__, specification_dir='./swagger/', options=options)
 DEFAULT_CROMWELL_CREDENTIALS = {'cromwell_user': '', 'cromwell_password': ''}
 
 # Load credentials for cromwell
@@ -74,24 +76,35 @@ except (IOError, TypeError):
 finally:
     app.app.config.update(config)
 
-# Try to load the capabilities config file
-try:
-    with open(capabilities_path) as f:
-        capabilities_config = json.load(f)
-    for settings in capabilities_config['displayFields']:
-        if settings['field'].startswith(LABELS_PREFIX):
-            if len(settings['field']) == len(LABELS_PREFIX) or len(
-                    settings['field']
-            ) > len(LABELS_PREFIX) + CROMWELL_LABEL_MAX_LENGTH:
-                raise ValueError(
-                    'Custom capabilities config contained invalid label key')
-    logger.info('Successfully loaded the custom capabilities config.')
-    app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
-        capabilities_config)
-except (IOError, TypeError):
-    logger.warning(
-        'Failed to load capabilities config, using default display fields.')
 
+# Try to load the capabilities config file
+def loadCapabilities(capabilities_path):
+    try:
+        with open(capabilities_path) as f:
+            capabilities_config = json.load(f)
+        for settings in capabilities_config['displayFields']:
+            if settings['field'].startswith(LABELS_PREFIX):
+                if len(settings['field']) == len(LABELS_PREFIX) or len(
+                        settings['field']
+                ) > len(LABELS_PREFIX) + CROMWELL_LABEL_MAX_LENGTH:
+                    raise ValueError(
+                        'Custom capabilities config contained invalid label key'
+                    )
+        logger.info('Successfully loaded the custom capabilities config.')
+        app.app.config['capabilities'] = CapabilitiesResponse.from_dict(
+            capabilities_config)
+        return app.app.config['capabilities']
+    except IOError as io_err:
+        logger.exception(
+            'Failed to load capabilities config, using default display fields. %s',
+            io_err)
+    except TypeError as type_err:
+        logger.exception(
+            'Failed to load capabilities config, using default display fields. %s',
+            type_err)
+
+
+loadCapabilities(capabilities_path=capabilities_path)
 app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['sam_url'] = args.sam_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'

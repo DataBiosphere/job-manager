@@ -1,7 +1,13 @@
 # coding: utf-8
 
 from __future__ import absolute_import
+
+from asyncio.log import logger
+
 import requests_mock
+
+from ..__main__ import loadCapabilities
+from ..models.capabilities_response import CapabilitiesResponse
 from . import BaseTestCase
 
 

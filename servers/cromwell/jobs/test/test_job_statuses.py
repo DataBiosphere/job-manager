@@ -2,9 +2,9 @@
 
 from __future__ import absolute_import
 
-from . import BaseTestCase
-
 from jobs.controllers.utils import job_statuses
+
+from . import BaseTestCase
 
 
 class TestJobStatuses(BaseTestCase):

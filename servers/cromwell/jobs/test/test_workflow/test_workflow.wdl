@@ -93,7 +93,7 @@ workflow TestAdapterSmartSeq2SingleCell {
       timeout_seconds = timeout_seconds,
       docker = docker
   }
-} 
+}
 
 task TestAdapterSmartSeq2SingleCellTask {
   String analysis_result_1
@@ -143,7 +143,7 @@ task TestAdapterSmartSeq2SingleCellTask {
     echo "Int: "${retry_seconds}
     echo "Int: "${timeout_seconds}
 
-    python <<CODE
+    python3 <<CODE
     chars = """
     ______      _   _
     | ___ \    | | | |

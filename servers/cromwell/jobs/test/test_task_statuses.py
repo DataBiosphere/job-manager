@@ -2,13 +2,13 @@
 
 from __future__ import absolute_import
 
-from . import BaseTestCase
+import itertools
 
-from jobs.controllers.utils import task_statuses
 from jobs.controllers import jobs_controller
+from jobs.controllers.utils import task_statuses
 from jobs.models.shard import Shard
 
-import itertools
+from . import BaseTestCase
 
 
 class TestTaskStatuses(BaseTestCase):

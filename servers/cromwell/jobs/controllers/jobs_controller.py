@@ -1,34 +1,38 @@
-import requests
-from flask import current_app
-from werkzeug.exceptions import BadRequest, Forbidden, InternalServerError, NotFound, ServiceUnavailable, Unauthorized
-from datetime import datetime
-from dateutil.tz import *
-import dateutil.parser
+import collections
 import json
 import logging
-import pytz
+import math
 import urllib
+from datetime import datetime
 
+import dateutil.parser
+import pytz
+import requests
+from dateutil.tz import *
+from flask import current_app
 from jm_utils import page_tokens
+from jobs.controllers.utils import job_statuses, task_statuses
 from jobs.controllers.utils.auth import requires_auth
+from jobs.models.execution_event import ExecutionEvent
 from jobs.models.extended_fields import ExtendedFields
-from jobs.models.query_jobs_result import QueryJobsResult
-from jobs.models.query_jobs_request import QueryJobsRequest
-from jobs.models.query_jobs_response import QueryJobsResponse
-from jobs.models.job_metadata_response import JobMetadataResponse
-from jobs.models.task_metadata import TaskMetadata
 from jobs.models.failure_message import FailureMessage
 from jobs.models.file_contents import FileContents
-from jobs.models.shard import Shard
-from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
-from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.models.health_response import HealthResponse
-from jobs.models.execution_event import ExecutionEvent
 from jobs.models.individual_attempt import IndividualAttempt
 from jobs.models.job_attempts_response import JobAttemptsResponse
+from jobs.models.job_metadata_response import JobMetadataResponse
 from jobs.models.job_operation_response import JobOperationResponse
-from jobs.controllers.utils import job_statuses
-from jobs.controllers.utils import task_statuses
+from jobs.models.query_jobs_request import QueryJobsRequest
+from jobs.models.query_jobs_response import QueryJobsResponse
+from jobs.models.query_jobs_result import QueryJobsResult
+from jobs.models.shard import Shard
+from jobs.models.task_metadata import TaskMetadata
+from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
+from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
+from werkzeug.exceptions import (BadRequest, Forbidden, InternalServerError,
+                                 NotFound, ServiceUnavailable, Unauthorized)
+
+collections.Callable = collections.abc.Callable
 
 _DEFAULT_PAGE_SIZE = 64
 
@@ -482,7 +486,7 @@ def get_last_page(total_results, page_size):
 def page_from_offset(offset, page_size):
     if offset == 0:
         return 1
-    return 1 + (offset / page_size)
+    return math.floor(1 + (offset / page_size))
 
 
 def cromwell_query_params(query, page, page_size, has_auth):
@@ -623,14 +627,17 @@ def tail_file_contents(bucket, object, **kwargs):
     if response.status_code != 200:
         handle_error(response)
     return FileContents(
-        contents=response.content,
+        contents=response.content.decode(),
         truncated=True if len(response.content) == 500000 else False)
 
 
 @requires_auth
 def get_pet_token(**kwargs):
     headers = kwargs.get('auth_headers')
-    headers['Content-Type'] = 'application/json'
+    if headers is not None:
+        headers['Content-Type'] = 'application/json'
+    else:
+        headers = {'Content-Type', 'application/json'}
     response = requests.post(
         '{sam_url}/user/petServiceAccount/token'.format(
             sam_url=_get_sam_url()),
@@ -639,7 +646,7 @@ def get_pet_token(**kwargs):
         headers=headers)
     if response.status_code != 200:
         handle_error(response)
-    return response.content
+    return response.content.decode()
 
 
 def _get_execution_events(metadata):

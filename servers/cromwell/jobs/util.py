@@ -1,6 +1,10 @@
-from typing import GenericMeta
-from datetime import datetime, date
+import logging
+import typing
+from datetime import date, datetime
+
 from six import integer_types, iteritems
+
+logger = logging.getLogger('{module_path}'.format(module_path=__name__))
 
 
 def _deserialize(data, klass):
@@ -23,11 +27,10 @@ def _deserialize(data, klass):
         return deserialize_date(data)
     elif klass == datetime:
         return deserialize_datetime(data)
-    elif type(klass) == GenericMeta:
-        if klass.__extra__ == list:
-            return _deserialize_list(data, klass.__args__[0])
-        if klass.__extra__ == dict:
-            return _deserialize_dict(data, klass.__args__[1])
+    elif str(typing.List) in str(klass):
+        return _deserialize_list(data, klass.__args__[0])
+    elif str(typing.Dict) in str(klass):
+        return _deserialize_dict(data, klass.__args__[1])
     else:
         return deserialize_model(data, klass)
 
