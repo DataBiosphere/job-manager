@@ -32,7 +32,6 @@ from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from werkzeug.exceptions import (BadRequest, Forbidden, InternalServerError,
                                  NotFound, ServiceUnavailable, Unauthorized)
 
-
 _DEFAULT_PAGE_SIZE = 64
 
 logging.basicConfig(level=logging.INFO)
