@@ -32,7 +32,12 @@ from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from werkzeug.exceptions import (BadRequest, Forbidden, InternalServerError,
                                  NotFound, ServiceUnavailable, Unauthorized)
 
-collections.Callable = collections.abc.Callable
+# This is needed to support different Python versions - this
+# package structure changed in Python 3.10.
+try:
+    collections.Callable = collections.abc.Callable
+except ImportError:
+    pass
 
 _DEFAULT_PAGE_SIZE = 64
 
