@@ -24,3 +24,4 @@ swagger-spec-validator==2.7.6
 typing==3.6.1
 urllib3==1.26.5
 Werkzeug==2.2.2
+setuptools>=65.5.1 # not directly required, pinned by Snyk to avoid a vulnerability
