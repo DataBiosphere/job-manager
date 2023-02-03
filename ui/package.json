@@ -8,7 +8,8 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test --sourcemaps=false",
-    "lint": "eslint --ext .js,.ts src",
+    "eslint": "eslint --ext .js,.ts src",
+    "tsc": "npx tsc",
     "e2e": "ng e2e"
   },
   "private": true,
