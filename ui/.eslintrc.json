@@ -1,0 +1,59 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "projects/**/*"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "project": [
+          "tsconfig.json",
+          "e2e/tsconfig.json"
+        ],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
+      "rules": {
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            // "prefix": "app",
+            "style": "kebab-case",
+            "type": "element"
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            // "prefix": "app",
+            "style": "camelCase",
+            "type": "attribute"
+          }
+        ],
+        //WX-922 turning these off for now since goal of the PR is to restore linting for code editors
+        //These rule violations are more about convention rather than functionality
+        //Will restore rules if time permits on a later PR
+        "@angular-eslint/no-output-native": "off",
+        "@angular-eslint/no-input-rename": "off",
+        "@angular-eslint/no-output-on-prefix": "off",
+        "@angular-eslint/contextual-lifecycle": "off",
+        "@angular-eslint/no-empty-lifecycle-method": "off"
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "rules": {}
+    }
+  ]
+}
