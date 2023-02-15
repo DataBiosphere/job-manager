@@ -18,7 +18,6 @@ services:
       - ./scripts:/scripts
       - ./ui/src:/ui/src
       - ./ui/tsconfig.json:/ui/tsconfig.json
-      - ./ui/tslint.json:/ui/tslint.json
       - ./ui/angular.json:/ui/angular.json
       - ./api:/ui/api
   cromwell:

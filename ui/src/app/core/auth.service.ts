@@ -3,7 +3,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { BehaviorSubject, fromEvent } from 'rxjs';
 import { ConfigLoaderService } from "../../environments/config-loader.service";
 import { CapabilitiesService } from './capabilities.service';
-
+import { AuthConfig, OAuthService } from "angular-oauth2-oidc";
 
 declare const gapi: any;
 
@@ -22,15 +22,19 @@ export class AuthService {
   private logoutTimer: number;
   private warningTimer: number;
   public logoutInterval: number;
+  public authenticationEnabled: boolean;
   readonly WARNING_INTERVAL = 10000;
 
-  private initAuth(scopes: string[]): Promise<any> {
+  public async initAuthConfig(): Promise<AuthConfig> {
     const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
-    return gapi.auth2.init({
-      client_id: clientId,
-      cookiepolicy: 'single_host_origin',
-      scope: scopes.join(" "),
-    });
+    const scope = this.scopes;
+    const issuer = "https://accounts.google.com/o/oauth2/v2/auth";
+    return {
+      issuer,
+      redirectUri: `${window.location.origin}/index.html`,
+      clientId,
+      scope
+    }
   }
 
   private updateUser(user: any) {
@@ -56,12 +60,14 @@ export class AuthService {
 
   constructor(private zone: NgZone, capabilitiesService: CapabilitiesService,
               private configLoader: ConfigLoaderService,
+              private oauthService: OAuthService,
               private snackBar: MatSnackBar) {
     capabilitiesService.getCapabilities().then(capabilities => {
       if (!capabilities.authentication || !capabilities.authentication.isRequired) {
+        this.authenticationEnabled = false;
         return;
       }
-
+      this.authenticationEnabled = true;
       if (capabilities.authentication.forcedLogoutDomains && capabilities.authentication.forcedLogoutTime &&
         (capabilities.authentication.forcedLogoutTime > (this.WARNING_INTERVAL * 2))) {
         this.forcedLogoutDomains = capabilities.authentication.forcedLogoutDomains;
@@ -69,27 +75,28 @@ export class AuthService {
       }
       this.scopes = capabilities.authentication.scopes.join(" ");
 
-      this.initAuthPromise = new Promise<void>( (resolve, reject) => {
-        gapi.load('client:auth2', {
-          callback: () => this.initAuth(capabilities.authentication.scopes)
-            .then(() => resolve())
-            .catch((message) => this.handleError(message)),
-          onerror: () => reject(),
-        });
-      });
 
-      this.initAuthPromise.then( () => {
-        // Update the current user to any subscribers and resolve the promise
-        this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
-        // Start listening for updates to the current user
-        gapi.auth2.getAuthInstance().currentUser.listen( (user) => {
-          // gapi executes callbacks outside of the Angular zone. To ensure that
-          // UI changes occur correctly, explicitly run all subscriptions to
-          // authentication state within the Angular zone for component change
-          // detection to work.
-          this.zone.run(() => this.updateUser(user));
-        });
-      });
+      // this.initAuthPromise = new Promise<void>( (resolve, reject) => {
+      //   gapi.load('client:auth2', {
+      //     callback: () => this.initAuth(capabilities.authentication.scopes)
+      //       .then(() => resolve())
+      //       .catch((message) => this.handleError(message)),
+      //     onerror: () => reject(),
+      //   });
+      // });
+
+      // this.initAuthPromise.then( () => {
+      //   // Update the current user to any subscribers and resolve the promise
+      //   this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
+      //   // Start listening for updates to the current user
+      //   gapi.auth2.getAuthInstance().currentUser.listen( (user) => {
+      //     // gapi executes callbacks outside of the Angular zone. To ensure that
+      //     // UI changes occur correctly, explicitly run all subscriptions to
+      //     // authentication state within the Angular zone for component change
+      //     // detection to work.
+      //     this.zone.run(() => this.updateUser(user));
+      //   });
+      // });
     });
   }
 
@@ -98,12 +105,12 @@ export class AuthService {
     return !!(user && user.isSignedIn());
   }
 
-  public signIn(): Promise<void> {
-    return gapi.auth2.getAuthInstance().signIn();
+  public async signIn(){
+    return await this.oauthService.initLoginFlow();
   }
 
-  public signOut(): Promise<void> {
-    return gapi.auth2.getAuthInstance().signOut();
+  public async signOut(){
+    return await this.oauthService.logOut();
   }
 
   private revokeToken(): Promise<void> {
