@@ -3148,16 +3148,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"angular-oauth2-oidc-jwks@npm:^15.0.1":
-  version: 15.0.1
-  resolution: "angular-oauth2-oidc-jwks@npm:15.0.1"
-  dependencies:
-    jsrsasign: ^10.3.0
-    tslib: ^2.0.0
-  checksum: 8fd674e4e9ce0a84fca6dafed9e8ee03d94c8c96de0ffd76da0b7f12154e56dc68a06dc2f8389321d8c8105ef0406814eb53337a12ccfecc3f691cd4e3e270f1
-  languageName: node
-  linkType: hard
-
 "angular-oauth2-oidc@npm:^14.0.1":
   version: 14.0.1
   resolution: "angular-oauth2-oidc@npm:14.0.1"
@@ -6489,7 +6479,6 @@ __metadata:
     "@typescript-eslint/parser": ^5.50.0
     "@webcomponents/custom-elements": ^1.5.0
     angular-oauth2-oidc: ^14.0.1
-    angular-oauth2-oidc-jwks: ^15.0.1
     core-js: ^3.25.0
     eslint: ^8.23.0
     jasmine-core: ^4.4.0
@@ -6654,13 +6643,6 @@ __metadata:
     json-schema: 0.4.0
     verror: 1.10.0
   checksum: 2ad1b9fdcccae8b3d580fa6ced25de930eaa1ad154db21bbf8478a4d30bbbec7925b5f5ff29b933fba9412b16a17bd484a8da4fdb3663b5e27af95dd693bab2a
-  languageName: node
-  linkType: hard
-
-"jsrsasign@npm:^10.3.0":
-  version: 10.6.1
-  resolution: "jsrsasign@npm:10.6.1"
-  checksum: 372cde32c0a1b54f0df65e2091f7b99724103f150ff535df5db798897e91cac5c484284633959da8ddf4e3d4868253c428df4d3c709f44667928e05e705105d2
   languageName: node
   linkType: hard
 

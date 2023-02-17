@@ -7,7 +7,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
-import { OAuthModule } from "angular-oauth2-oidc";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
@@ -18,6 +17,7 @@ import { JobListModule } from './job-list/job-list.module';
 import { ProjectsModule } from './projects/projects.module';
 import { SignInModule } from './sign-in/sign-in.module';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 @NgModule({
   imports: [
