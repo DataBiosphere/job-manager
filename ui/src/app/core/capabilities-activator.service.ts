@@ -34,19 +34,15 @@ export class CapabilitiesActivator implements CanActivate {
 
   private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): Promise<CapabilitiesResponse> {
     if (capabilities.authentication && capabilities.authentication.isRequired) {
-      if (this.authService.authenticated.getValue() || path == 'sign_in') {
+      if (this.authService.isAuthenticated() || path == 'sign_in') {
         return Promise.resolve(capabilities);
       }
-
-      return this.authService.initAuthPromise.then( () => {
-        if (!this.authService.isAuthenticated()) {
-          this.router.navigate(['sign_in'], {
-            queryParams: { returnUrl: url }
-          });
-          throw CapabilitiesActivator.notActivatedError;
-        }
-        return capabilities;
-      })
+      if (!this.authService.isAuthenticated()) {
+        this.router.navigate(['sign_in'], {
+          queryParams: { returnUrl: url }
+        });
+        throw CapabilitiesActivator.notActivatedError;
+      }
     } else if (path == 'sign_in') {
       // Do not allow navigation to the sign in page when authentication is
       // not required.

@@ -1,25 +1,36 @@
 import { Injectable, NgZone } from '@angular/core';
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { BehaviorSubject, fromEvent } from 'rxjs';
+import { BehaviorSubject, Subject, fromEvent } from 'rxjs';
 import { ConfigLoaderService } from "../../environments/config-loader.service";
 import { CapabilitiesService } from './capabilities.service';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 
 declare const gapi: any;
+declare const sessionStorage: any;
 
 const oAuthConfig = (clientId: string, scope: string): AuthConfig => {
   return {
     issuer: 'https://accounts.google.com',
     strictDiscoveryDocumentValidation: false,
-    redirectUri: window.location.origin,
-    clientId,
+    redirectUri: `${window.location.origin}/redirect-from-oauth`,
+    clientId, //NOTE: switch back with clientId when testing deployed version
     scope,
+  }
+}
+
+interface UserProfile {
+  info: {
+    email: string,
+    sub: string, //this is the google id,
+    name: string
   }
 }
 
 /** Service wrapper for google oauth2 state and starting sign-in flow. */
 @Injectable()
 export class AuthService {
+
+  public userProfileSubject = new Subject<UserProfile>;
   public initAuthPromise: Promise<void>;
   public authenticated = new BehaviorSubject<boolean>(false);
   public authToken: string;
@@ -32,39 +43,30 @@ export class AuthService {
   private logoutTimer: number;
   private warningTimer: number;
   public logoutInterval: number;
-  public authenticationEnabled: boolean;
+  public authenticationEnabled: boolean; //NOTE: remove if this isn't needed
   readonly WARNING_INTERVAL = 10000;
 
-  // public async initAuthConfig(): Promise<AuthConfig> {
-  //   const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
-  //   const scope = this.scopes;
-  //   const issuer = "https://accounts.google.com/o/oauth2/v2/auth";
-  //   return {
-  //     issuer,
-  //     redirectUri: `${window.location.origin}/index.html`,
-  //     clientId,
-  //     scope
-  //   }
-  // }
-
-  private updateUser(user: any) {
-    if (user && user.isSignedIn()) {
-      this.authToken = user.getAuthResponse().access_token;
-      this.userId = user.getId();
-      this.userEmail = user.getBasicProfile().getEmail();
-      this.userDomain = user.getHostedDomain();
-      this.gcsReadAccess = this.scopes.includes('https://www.googleapis.com/auth/devstorage.read_only');
+  private updateUser(userProfile: UserProfile) {
+    const hasValidAccessToken = this.oAuthService.hasValidAccessToken();
+    if(userProfile && hasValidAccessToken) {
+      const { info } = userProfile;
+      this.authToken = sessionStorage.access_token;
+      this.userEmail = info.email;
+      this.userId = info.sub;
+      this.gcsReadAccess = this.scopes.includes(
+        "https://www.googleapis.com/auth/devstorage.read_only"
+      );
       if (this.logoutInterval && this.forcedLogoutDomains && this.forcedLogoutDomains.includes(this.userDomain)) {
         this.setUpEventListeners();
       }
       this.authenticated.next(true);
     } else {
-      this.authToken = undefined;
-      this.userId = undefined;
-      this.userEmail = undefined;
-      this.userDomain = undefined;
-      this.gcsReadAccess = false;
-      this.authenticated.next(false);
+        this.authToken = undefined;
+        this.userId = undefined;
+        this.userEmail = undefined;
+        this.userDomain = undefined;
+        this.gcsReadAccess = false;
+        this.authenticated.next(false);
     }
   }
 
@@ -92,19 +94,12 @@ export class AuthService {
       oAuthService.configure(config);
       oAuthService.loadDiscoveryDocument().then(() => {
         oAuthService.tryLoginImplicitFlow().then(() => {
-          // if(!oAuthService.hasValidAccessToken) {
-          //   oAuthService.initLoginFlow();
-          // } else {
-          //   oAuthService.loadUserProfile().then((userProfile) => {
-          //     console.log(userProfile)
-          //   })
-          // }
-          if(oAuthService.hasValidAccessToken()) {
-            oAuthService.loadUserProfile().then((userProfile) => {
-              console.log(userProfile);
-            })
-          }
+          oAuthService.loadUserProfile().then((userProfile: UserProfile) => {
+            this.zone.run(() => this.updateUser(userProfile))
+          })
         })
+      }).catch(error => {
+        this.handleError(error)
       })
 
       // this.initAuthPromise = new Promise<void>( (resolve, reject) => {
@@ -136,12 +131,11 @@ export class AuthService {
   }
 
   public async signIn() {
-    // this.oAuthService.initLoginFlow()
-    this.oAuthService.initLoginFlow()
+    this.oAuthService.initLoginFlow();
   }
 
   public async signOut(){
-    // return await this.oauthService.logOut();
+    this.oAuthService.logOut();
   }
 
   private revokeToken(): Promise<void> {
