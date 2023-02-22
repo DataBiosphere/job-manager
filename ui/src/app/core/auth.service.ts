@@ -18,6 +18,7 @@ const oAuthConfig = (clientId: string, scope: string): AuthConfig => {
   }
 }
 
+//NOTE: add other attributes to this interface as needed
 interface UserProfile {
   info: {
     email: string,
@@ -74,8 +75,8 @@ export class AuthService {
               private configLoader: ConfigLoaderService,
               private readonly oAuthService: OAuthService,
               private snackBar: MatSnackBar) {
-    // const clientId =
-    //   this.configLoader.getEnvironmentConfigSynchronous()["clientId"];
+    const clientId =
+      this.configLoader.getEnvironmentConfigSynchronous()["clientId"];
     capabilitiesService.getCapabilities().then(capabilities => {
       if (!capabilities.authentication || !capabilities.authentication.isRequired) {
         this.authenticationEnabled = false;

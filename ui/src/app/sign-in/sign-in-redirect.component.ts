@@ -2,7 +2,6 @@ import {Component, ViewContainerRef, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {AuthService} from '../core/auth.service';
-import { fromEvent } from 'rxjs';
 
 @Component({
   templateUrl: './sign-in-redirect.component.html',
@@ -13,11 +12,14 @@ export class SignInRedirectComponent implements OnInit{
     private readonly authService: AuthService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly viewContainer: ViewContainerRef,
-    // private spinner: MatProgressSpinner,
+    private readonly viewContainer: ViewContainerRef
    ) {}
 
    ngOnInit() {
-    fromEvent
+    this.authService.authenticated.subscribe((isAuthenticated) => {
+      if (isAuthenticated) {
+        this.router.navigate(["/"]);
+      }
+    });
    }
 }
