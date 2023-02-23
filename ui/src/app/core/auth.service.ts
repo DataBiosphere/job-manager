@@ -4,6 +4,7 @@ import { BehaviorSubject, Subject, fromEvent } from 'rxjs';
 import { ConfigLoaderService } from "../../environments/config-loader.service";
 import { CapabilitiesService } from './capabilities.service';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
+import { Router } from '@angular/router';
 
 declare const gapi: any;
 declare const sessionStorage: any;
@@ -19,7 +20,7 @@ const oAuthConfig = (clientId: string, scope: string): AuthConfig => {
 }
 
 //NOTE: add other attributes to this interface as needed
-interface UserProfile {
+type UserProfile = {
   info: {
     email: string,
     sub: string, //this is the google id,
@@ -71,13 +72,15 @@ export class AuthService {
     }
   }
 
-  constructor(private zone: NgZone, capabilitiesService: CapabilitiesService,
+  constructor(private zone: NgZone,
+              private capabilitiesService: CapabilitiesService,
               private configLoader: ConfigLoaderService,
               private readonly oAuthService: OAuthService,
-              private snackBar: MatSnackBar) {
-    const clientId =
-      this.configLoader.getEnvironmentConfigSynchronous()["clientId"];
-    capabilitiesService.getCapabilities().then(capabilities => {
+              private router: Router,
+              private snackBar: MatSnackBar) {}
+
+  public async initOAuth() {
+    await this.capabilitiesService.getCapabilities().then(async (capabilities) => {
       if (!capabilities.authentication || !capabilities.authentication.isRequired) {
         this.authenticationEnabled = false;
         return;
@@ -92,39 +95,18 @@ export class AuthService {
       const clientId =
         this.configLoader.getEnvironmentConfigSynchronous()["clientId"];
       const config = oAuthConfig(clientId, this.scopes)
-      oAuthService.configure(config);
-      oAuthService.loadDiscoveryDocument().then(() => {
-        oAuthService.tryLoginImplicitFlow().then(() => {
-          oAuthService.loadUserProfile().then((userProfile: UserProfile) => {
-            this.zone.run(() => this.updateUser(userProfile))
-          })
-        })
-      }).catch(error => {
-        this.handleError(error)
-      })
+      this.oAuthService.configure(config);
+      const userProfile = await this.loadUserProfile();
+      this.zone.run(() => this.updateUser(userProfile as UserProfile));
+    }).catch((error) => {
+      this.router.navigate(['sign_in']);
+    })
+  }
 
-      // this.initAuthPromise = new Promise<void>( (resolve, reject) => {
-      //   gapi.load('client:auth2', {
-      //     callback: () => this.initAuth(capabilities.authentication.scopes)
-      //       .then(() => resolve())
-      //       .catch((message) => this.handleError(message)),
-      //     onerror: () => reject(),
-      //   });
-      // });
-
-      // this.initAuthPromise.then( () => {
-      //   // Update the current user to any subscribers and resolve the promise
-      //   this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
-      //   // Start listening for updates to the current user
-      //   gapi.auth2.getAuthInstance().currentUser.listen( (user) => {
-      //     // gapi executes callbacks outside of the Angular zone. To ensure that
-      //     // UI changes occur correctly, explicitly run all subscriptions to
-      //     // authentication state within the Angular zone for component change
-      //     // detection to work.
-      //     this.zone.run(() => this.updateUser(user));
-      //   });
-      // });
-    });
+  public async loadUserProfile() {
+    await this.oAuthService.loadDiscoveryDocument();
+    await this.oAuthService.tryLoginImplicitFlow();
+    return this.oAuthService.loadUserProfile();
   }
 
   public isAuthenticated(): boolean {
@@ -143,7 +125,7 @@ export class AuthService {
     return gapi.auth2.getAuthInstance().disconnect();
   }
 
-  private handleError(error): void {
+  public handleError(error): void {
     this.snackBar.open('An error occurred: ' + error);
   }
 

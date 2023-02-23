@@ -16,7 +16,7 @@ export class SignInComponent implements OnInit {
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MatSnackBar) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     let returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     this.authService.authenticated.subscribe( (authenticated) => {
       if (authenticated) {

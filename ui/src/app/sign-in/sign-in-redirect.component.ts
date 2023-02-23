@@ -10,16 +10,15 @@ import {AuthService} from '../core/auth.service';
 export class SignInRedirectComponent implements OnInit{
   constructor(
     private readonly authService: AuthService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router,
-    private readonly viewContainer: ViewContainerRef
+    private readonly router: Router
    ) {}
 
-   ngOnInit() {
-    this.authService.authenticated.subscribe((isAuthenticated) => {
-      if (isAuthenticated) {
-        this.router.navigate(["/"]);
-      }
-    });
+   async ngOnInit() {
+    await this.authService.initOAuth();
+    if(this.authService.isAuthenticated()) {
+      this.router.navigate(["/"])
+    } else {
+      this.router.navigate(["sign_in"])
+    }
    }
 }
