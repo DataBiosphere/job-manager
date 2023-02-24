@@ -79,7 +79,7 @@ describe('JobListComponent', () => {
       ]
     };
     fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
-    authService = new AuthService(null, fakeCapabilitiesService, null, snackBar);
+    authService = new AuthService(null, fakeCapabilitiesService, null, snackBar, null, null);
     settingsService = new SettingsService(authService, fakeCapabilitiesService, localStorage);
     TestBed.configureTestingModule({
       declarations: [

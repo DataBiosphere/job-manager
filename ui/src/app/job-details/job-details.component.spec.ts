@@ -64,7 +64,7 @@ describe('JobDetailsComponent', () => {
   beforeEach(async(() => {
     fakeJobService = new FakeJobManagerService([testJob()]);
     let fakeCapabilitiesService: FakeCapabilitiesService = new FakeCapabilitiesService({});
-    let authService = new AuthService(null, fakeCapabilitiesService, null, null);
+    let authService = new AuthService(null, fakeCapabilitiesService, null, null,null,null);
     let settingsService: SettingsService = new SettingsService(authService, fakeCapabilitiesService, localStorage);
 
     TestBed.configureTestingModule({

@@ -14,6 +14,8 @@ const oAuthConfig = (clientId: string, scope: string): AuthConfig => {
     issuer: 'https://accounts.google.com',
     strictDiscoveryDocumentValidation: false,
     redirectUri: `${window.location.origin}/redirect-from-oauth`,
+    useSilentRefresh: true,
+    silentRefreshRedirectUri: `${window.location.origin}/redirect-from-oauth-silent.html`,
     clientId, //NOTE: switch back with clientId when testing deployed version
     scope,
   }
@@ -52,6 +54,7 @@ export class AuthService {
     const hasValidAccessToken = this.oAuthService.hasValidAccessToken();
     if(userProfile && hasValidAccessToken) {
       const { info } = userProfile;
+      sessionStorage.setItem("userInfo", JSON.stringify(info)); //See if this is needed
       this.authToken = sessionStorage.access_token;
       this.userEmail = info.email;
       this.userId = info.sub;
@@ -75,11 +78,13 @@ export class AuthService {
   constructor(private zone: NgZone,
               private capabilitiesService: CapabilitiesService,
               private configLoader: ConfigLoaderService,
+              private snackBar: MatSnackBar,
               private readonly oAuthService: OAuthService,
-              private router: Router,
-              private snackBar: MatSnackBar) {}
+              private router: Router) {
+                this.authToken = sessionStorage.access_token;
+              }
 
-  public async initOAuth() {
+  public async initOAuthImplicit() {
     await this.capabilitiesService.getCapabilities().then(async (capabilities) => {
       if (!capabilities.authentication || !capabilities.authentication.isRequired) {
         this.authenticationEnabled = false;
@@ -96,6 +101,7 @@ export class AuthService {
         this.configLoader.getEnvironmentConfigSynchronous()["clientId"];
       const config = oAuthConfig(clientId, this.scopes)
       this.oAuthService.configure(config);
+      // this.oAuthService.setupAutomaticSilentRefresh();
       const userProfile = await this.loadUserProfile();
       this.zone.run(() => this.updateUser(userProfile as UserProfile));
     }).catch((error) => {
@@ -118,6 +124,7 @@ export class AuthService {
   }
 
   public async signOut(){
+    sessionStorage.removeItem("userInfo");
     this.oAuthService.logOut();
   }
 
@@ -127,6 +134,15 @@ export class AuthService {
 
   public handleError(error): void {
     this.snackBar.open('An error occurred: ' + error);
+  }
+
+  //added to test silent refresh
+  public async silentRefresh() {
+    await this.oAuthService.silentRefresh()
+      .then((info) => {
+        console.log(`Success: ${info}`)
+      })
+      .catch(err => console.log(`Error: ${err}`));
   }
 
   private setUpEventListeners(): void {

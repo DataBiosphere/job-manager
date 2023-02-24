@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.authService.initOAuth();
+    this.authService.initOAuthImplicit();
   }
 
   isSignedIn(): boolean {

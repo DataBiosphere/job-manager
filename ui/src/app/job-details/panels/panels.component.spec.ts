@@ -73,7 +73,7 @@ describe('JobPanelsComponent', () => {
       ],
       providers: [
         {provide: JobManagerService, useValue: fakeJobService},
-        {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null)},
+        {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null, null, null)},
         {provide: MatSnackBar},
       ]
     }).compileComponents();

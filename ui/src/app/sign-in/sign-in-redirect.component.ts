@@ -1,5 +1,5 @@
-import {Component, ViewContainerRef, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 
 import {AuthService} from '../core/auth.service';
 
@@ -14,7 +14,8 @@ export class SignInRedirectComponent implements OnInit{
    ) {}
 
    async ngOnInit() {
-    await this.authService.initOAuth();
+    console.log(this.authService);
+    await this.authService.initOAuthImplicit();
     if(this.authService.isAuthenticated()) {
       this.router.navigate(["/"])
     } else {

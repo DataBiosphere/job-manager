@@ -42,7 +42,8 @@ export class JobDebugIconsComponent implements OnInit {
       (this.capabilities.authentication && this.capabilities.authentication.outsideAuth);
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.authService.initOAuthImplicit();
     try {
       if (this.authService.isAuthenticated() && this.canGetFileContents) {
         if (this.backendLog) {

@@ -20,7 +20,8 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {"glob": "redirect-from-oauth-silent.html", "input": "src/assets", "output": "/"}
             ],
             "styles": [
               "src/styles.scss",

@@ -32,7 +32,7 @@ describe('AppComponent', () => {
   beforeEach(async(() => {
     let snackBar: MatSnackBar;
     let fakeCapabilitiesService = new FakeCapabilitiesService({});
-    let authService = new AuthService(null, fakeCapabilitiesService, null, snackBar);
+    let authService = new AuthService(null, fakeCapabilitiesService, null, snackBar, null, null);
 
     TestBed.configureTestingModule({
       declarations: [

@@ -50,7 +50,7 @@ describe('JobDebugIconsComponent', () => {
       ],
       providers: [
         {provide: GcsService},
-        {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null)},
+        {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null, null, null)},
         {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
         {provide: JobManagerService, useValue: fakeJobService},
         {provide: SamService},

@@ -20,6 +20,7 @@ export class CapabilitiesActivator implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     try {
+      await this.authService.initOAuthImplicit();
       const cap = await this.handleAuthCapabilities(await this.capabilitiesService.getCapabilities(), route.routeConfig.path, state.url);
       return this.handleProjectCapabilities(cap, route);
     } catch (error) {
