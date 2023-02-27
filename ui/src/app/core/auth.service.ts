@@ -54,7 +54,6 @@ export class AuthService {
     const hasValidAccessToken = this.oAuthService.hasValidAccessToken();
     if(userProfile && hasValidAccessToken) {
       const { info } = userProfile;
-      sessionStorage.setItem("userInfo", JSON.stringify(info)); //See if this is needed
       this.authToken = sessionStorage.access_token;
       this.userEmail = info.email;
       this.userId = info.sub;
@@ -124,7 +123,7 @@ export class AuthService {
   }
 
   public async signOut(){
-    sessionStorage.removeItem("userInfo");
+    localStorage.removeItem("userInfo");
     this.oAuthService.logOut();
   }
 

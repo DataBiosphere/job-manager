@@ -35,6 +35,10 @@ export class CapabilitiesActivator implements CanActivate {
   private handleAuthCapabilities(capabilities: CapabilitiesResponse, path: String, url: String): Promise<CapabilitiesResponse> {
     if (capabilities.authentication && capabilities.authentication.isRequired) {
       if (this.authService.isAuthenticated() || path == 'sign_in') {
+        const returnUrl = window.location.pathname;
+        if(returnUrl !== '/sign_in') {
+          localStorage.setItem('jm-returnUrl', window.location.pathname);
+        }
         return Promise.resolve(capabilities);
       }
       if (!this.authService.isAuthenticated()) {

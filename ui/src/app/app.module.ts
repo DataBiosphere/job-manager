@@ -18,7 +18,6 @@ import { ProjectsModule } from './projects/projects.module';
 import { SignInModule } from './sign-in/sign-in.module';
 import { SignInRedirectModule } from './sign-in/sign-in-redirect.module';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
-import { OAuthModule } from 'angular-oauth2-oidc';
 
 @NgModule({
   imports: [
@@ -39,7 +38,6 @@ import { OAuthModule } from 'angular-oauth2-oidc';
     DashboardModule,
     Ng2GoogleChartsModule,
     NgxJsonViewerModule,
-    OAuthModule.forRoot()
   ],
   providers: [CustomIconService],
   declarations: [AppComponent, PagenotfoundComponent],
