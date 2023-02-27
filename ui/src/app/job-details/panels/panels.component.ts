@@ -52,7 +52,6 @@ export class JobPanelsComponent implements OnInit {
     private readonly jobManagerService: JobManagerService) { }
 
   async ngOnInit() {
-    await this.authService.initOAuthImplicit();
     this.setUpExtensions();
     if (this.job.labels) {
       this.labels = Object.keys(this.job.labels).sort();

@@ -14,7 +14,6 @@ export class SignInRedirectComponent implements OnInit{
    ) {}
 
    async ngOnInit() {
-    console.log(this.authService);
     await this.authService.initOAuthImplicit();
     if(this.authService.isAuthenticated()) {
       this.router.navigate(["/"])

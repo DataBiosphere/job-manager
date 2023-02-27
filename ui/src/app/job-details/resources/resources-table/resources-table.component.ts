@@ -20,7 +20,6 @@ export class JobResourcesTableComponent implements OnInit {
   constructor(private authService: AuthService) {}
 
   async ngOnInit() {
-    await this.authService.initOAuthImplicit();
     this.populateEntryKeys(this.entries);
   }
 

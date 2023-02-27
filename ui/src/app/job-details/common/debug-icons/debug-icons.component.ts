@@ -43,7 +43,6 @@ export class JobDebugIconsComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.authService.initOAuthImplicit();
     try {
       if (this.authService.isAuthenticated() && this.canGetFileContents) {
         if (this.backendLog) {
