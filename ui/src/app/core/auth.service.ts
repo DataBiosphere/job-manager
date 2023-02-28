@@ -7,7 +7,6 @@ import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
 
 declare const gapi: any;
-declare const sessionStorage: any;
 
 const oAuthConfig = (clientId: string, scope: string): AuthConfig => {
   return {
@@ -54,7 +53,7 @@ export class AuthService {
     const hasValidAccessToken = this.oAuthService.hasValidAccessToken();
     if(userProfile && hasValidAccessToken) {
       const { info } = userProfile;
-      this.authToken = sessionStorage.access_token;
+      this.authToken = localStorage.access_token;
       this.userEmail = info.email;
       this.userId = info.sub;
       this.gcsReadAccess = this.scopes.includes(
@@ -80,7 +79,7 @@ export class AuthService {
               private snackBar: MatSnackBar,
               private readonly oAuthService: OAuthService,
               private router: Router) {
-                this.authToken = sessionStorage.access_token;
+                this.authToken = localStorage.access_token;
               }
 
   public async initOAuthImplicit() {

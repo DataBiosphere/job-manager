@@ -18,7 +18,6 @@ export class AppComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    localStorage.removeItem('jm-returnUrl');
     this.authService.initOAuthImplicit();
   }
 
