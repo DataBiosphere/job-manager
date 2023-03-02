@@ -13,14 +13,12 @@ const oAuthConfig = (clientId: string, scope: string): AuthConfig => {
     issuer: 'https://accounts.google.com',
     strictDiscoveryDocumentValidation: false,
     redirectUri: `${window.location.origin}/redirect-from-oauth`,
-    useSilentRefresh: true,
-    silentRefreshRedirectUri: `${window.location.origin}/redirect-from-oauth-silent.html`,
-    clientId, //NOTE: switch back with clientId when testing deployed version
+    clientId,
     scope,
   }
 }
 
-//NOTE: add other attributes to this interface as needed
+//NOTE: add other attributes to this type as needed
 type UserProfile = {
   info: {
     email: string,
@@ -46,7 +44,6 @@ export class AuthService {
   private logoutTimer: number;
   private warningTimer: number;
   public logoutInterval: number;
-  public authenticationEnabled: boolean; //NOTE: remove if this isn't needed
   readonly WARNING_INTERVAL = 10000;
 
   private updateUser(userProfile: UserProfile) {
@@ -85,10 +82,8 @@ export class AuthService {
   public async initOAuthImplicit() {
     await this.capabilitiesService.getCapabilities().then(async (capabilities) => {
       if (!capabilities.authentication || !capabilities.authentication.isRequired) {
-        this.authenticationEnabled = false;
         return;
       }
-      this.authenticationEnabled = true;
       if (capabilities.authentication.forcedLogoutDomains && capabilities.authentication.forcedLogoutTime &&
         (capabilities.authentication.forcedLogoutTime > (this.WARNING_INTERVAL * 2))) {
         this.forcedLogoutDomains = capabilities.authentication.forcedLogoutDomains;
@@ -97,11 +92,10 @@ export class AuthService {
       this.scopes = capabilities.authentication.scopes.join(" ");
       const clientId =
         this.configLoader.getEnvironmentConfigSynchronous()["clientId"];
-      const config = oAuthConfig(clientId, this.scopes)
+      const config = oAuthConfig(clientId, this.scopes);
       this.oAuthService.configure(config);
-      // this.oAuthService.setupAutomaticSilentRefresh();
-      const userProfile = await this.loadUserProfile();
-      this.zone.run(() => this.updateUser(userProfile as UserProfile));
+      const userProfile = await this.loadUserProfile() as UserProfile;
+      this.zone.run(() => this.updateUser(userProfile));
     }).catch((error) => {
       this.router.navigate(['sign_in']);
     })
@@ -132,15 +126,6 @@ export class AuthService {
 
   public handleError(error): void {
     this.snackBar.open('An error occurred: ' + error);
-  }
-
-  //added to test silent refresh
-  public async silentRefresh() {
-    await this.oAuthService.silentRefresh()
-      .then((info) => {
-        console.log(`Success: ${info}`)
-      })
-      .catch(err => console.log(`Error: ${err}`));
   }
 
   private setUpEventListeners(): void {
