@@ -50,7 +50,11 @@ const routes: Routes = [
   },
   {
     path: 'jobs',
-    component: PagenotfoundComponent
+    component:JobListComponent,
+    canActivate:[CapabilitiesActivator],
+    resolve: {
+      stream: JobListResolver
+    }
   },
   {
     path: 'jobs/:id',

@@ -114,7 +114,6 @@ def get_job(id, **kwargs):
 
     :rtype: JobMetadataResponse
     """
-
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
         id=id,
@@ -456,7 +455,6 @@ def query_jobs(body, **kwargs):
     page = page_from_offset(offset, query_page_size)
 
     has_auth = headers is not None
-
     response = requests.post(_get_base_url() + '/query',
                              json=cromwell_query_params(
                                  query, page, query_page_size, has_auth),
@@ -474,10 +472,13 @@ def query_jobs(body, **kwargs):
     ]
     if page >= last_page:
         return QueryJobsResponse(results=jobs_list, total_size=total_results)
+    # NOTE: This encode method isn't working as expected
+    # assignment causes thrown error where byte can't be assigned as a JSON property
+    # converted this to a string, let's see if this works out on subsequent queries
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
     return QueryJobsResponse(results=jobs_list,
                              total_size=total_results,
-                             next_page_token=next_page_token)
+                             next_page_token=str(next_page_token))
 
 
 def get_last_page(total_results, page_size):
