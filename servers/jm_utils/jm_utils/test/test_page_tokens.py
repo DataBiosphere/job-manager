@@ -14,7 +14,7 @@ class TestJmUtils(unittest.TestCase):
     """ jm_utils unit tests """
 
     def test_encode_decode_offset(self):
-        encoded = page_tokens.encode_offset(12)
+        encoded = page_tokens.encode_offset(12).decode()
         decoded = page_tokens.decode_offset(encoded)
         self.assertEqual(decoded, 12)
 
@@ -25,9 +25,9 @@ class TestJmUtils(unittest.TestCase):
                       str(context.exception))
 
     def test_decode_offset_zero(self):
-        encoded = str(page_tokens._encode({'of': 0}).decode())
+        token = page_tokens._encode({'of': 0}).decode()
         with self.assertRaises(ValueError) as context:
-            page_tokens.decode_offset(encoded)
+            page_tokens.decode_offset(token)
         self.assertIn('Invalid offset token JSON', str(context.exception))
 
     def test_decode_offset_none(self):
@@ -36,7 +36,7 @@ class TestJmUtils(unittest.TestCase):
     def test_encode_decode_create_time_max(self):
         now = datetime.datetime.now().replace(microsecond=0).replace(
             tzinfo=pytz.utc)
-        encoded = page_tokens.encode_create_time_max(now, 'offset-id')
+        encoded = page_tokens.encode_create_time_max(now, 'offset-id').decode()
         decoded_create_time, decoded_offset_id = page_tokens.decode_create_time_max(
             encoded)
         self.assertEqual(decoded_create_time, now)
@@ -53,14 +53,14 @@ class TestJmUtils(unittest.TestCase):
                       str(context.exception))
 
     def test_decode_create_time_max_invalid(self):
-        token = str(page_tokens._encode({"cb": "not-a-date"}).decode())
+        token = page_tokens._encode({"cb": "not-a-date"}).decode()
         with self.assertRaises(ValueError) as context:
-            page_tokens.decode_create_time_max(encoded)
+            page_tokens.decode_create_time_max(token)
         self.assertIn("Invalid created before in token JSON",
                       str(context.exception))
-        encoded = page_tokens._encode({'cb': 10, 'oi': 123})
+        token = page_tokens._encode({'cb': 10, 'oi': 123}).decode()
         with self.assertRaises(ValueError) as context:
-            page_tokens.decode_create_time_max(encoded)
+            page_tokens.decode_create_time_max(token)
         self.assertIn("Invalid offset ID in token JSON",
                       str(context.exception))
 
