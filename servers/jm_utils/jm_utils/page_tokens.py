@@ -39,7 +39,7 @@ def _decode(token):
     if token is None:
         return None
     # Pad the token out to be divisible by 4.
-    padded_token = token + '='.encode() * (4 - (len(token) % 4))
+    padded_token = bytes(token, 'utf8') + '='.encode() * (4 - (len(token) % 4))
     decoded_token = base64.urlsafe_b64decode(padded_token)
     token_dict = json.loads(decoded_token)
     if not token_dict or not isinstance(token_dict, dict):

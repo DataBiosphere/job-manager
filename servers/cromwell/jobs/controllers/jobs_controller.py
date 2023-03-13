@@ -475,10 +475,12 @@ def query_jobs(body, **kwargs):
     # NOTE: This encode method isn't working as expected
     # assignment causes thrown error where byte can't be assigned as a JSON property
     # converted this to a string, let's see if this works out on subsequent queries
+    # NOTE: Why encode this at all? Why not just send an unencoded token?
+
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
     return QueryJobsResponse(results=jobs_list,
                              total_size=total_results,
-                             next_page_token=str(next_page_token))
+                             next_page_token=next_page_token.decode())
 
 
 def get_last_page(total_results, page_size):

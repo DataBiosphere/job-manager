@@ -16,7 +16,7 @@ export class SignInRedirectComponent implements OnInit{
 
    async ngOnInit() {
     await this.authService.initOAuthImplicit();
-    const returnUrl = localStorage.getItem('jm-returnUrl') || '/';
+    const returnUrl = localStorage.getItem('jm-returnUrl') || '/jobs';
     if(this.authService.isAuthenticated()) {
       this.router.navigateByUrl(returnUrl);
       localStorage.removeItem('jm-returnUrl');
