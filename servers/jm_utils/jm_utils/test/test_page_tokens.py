@@ -25,7 +25,7 @@ class TestJmUtils(unittest.TestCase):
                       str(context.exception))
 
     def test_decode_offset_zero(self):
-        encoded = page_tokens._encode({'of': 0})
+        encoded = str(page_tokens._encode({'of': 0}).decode())
         with self.assertRaises(ValueError) as context:
             page_tokens.decode_offset(encoded)
         self.assertIn('Invalid offset token JSON', str(context.exception))
@@ -53,7 +53,7 @@ class TestJmUtils(unittest.TestCase):
                       str(context.exception))
 
     def test_decode_create_time_max_invalid(self):
-        encoded = page_tokens._encode({"cb": "not-a-date"})
+        token = str(page_tokens._encode({"cb": "not-a-date"}).decode())
         with self.assertRaises(ValueError) as context:
             page_tokens.decode_create_time_max(encoded)
         self.assertIn("Invalid created before in token JSON",

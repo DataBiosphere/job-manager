@@ -31,7 +31,7 @@ def _decode(token):
     """Decodes the pagination token.
 
     Args:
-        token: (string) Base64 encoded JSON pagination token
+        token: (string) JSON pagination token
 
     Returns:
         (dict) The token dictionary representing a page of items.
