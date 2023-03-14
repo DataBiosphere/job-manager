@@ -472,11 +472,6 @@ def query_jobs(body, **kwargs):
     ]
     if page >= last_page:
         return QueryJobsResponse(results=jobs_list, total_size=total_results)
-    # NOTE: This encode method isn't working as expected
-    # assignment causes thrown error where byte can't be assigned as a JSON property
-    # converted this to a string, let's see if this works out on subsequent queries
-    # NOTE: Why encode this at all? Why not just send an unencoded token?
-
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
     return QueryJobsResponse(results=jobs_list,
                              total_size=total_results,
