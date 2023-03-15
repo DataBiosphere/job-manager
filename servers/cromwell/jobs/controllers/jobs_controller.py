@@ -594,7 +594,6 @@ def get_operation_details(job, operation, **kwargs):
 
         if response.status_code != 200:
             handle_error(response)
-
         return JobOperationResponse(id=job, details=response.text)
 
 
@@ -756,8 +755,11 @@ def _is_call_cached(metadata):
 
 def _get_response_message(response):
     logger.error('Response error: {}'.format(response.content))
-    if is_jsonable(response) and response.json().get('message'):
-        return response.json().get('message')
+    if is_jsonable(response):
+        try:
+            return response.json().get('message')
+        except:
+            return str(response.json())
     return str(response)
 
 
