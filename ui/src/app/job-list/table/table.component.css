@@ -191,6 +191,7 @@ clr-icon {
 
 .edit-field .field-value {
   width: 100%;
+  white-space: pre;
 }
 
 div.button-container {
