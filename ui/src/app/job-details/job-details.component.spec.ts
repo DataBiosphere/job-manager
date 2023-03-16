@@ -141,6 +141,27 @@ describe('JobDetailsComponent', () => {
     expect(de.query(By.css('#job-id')).nativeElement.value).toContain(jobId);
   }));
 
+  it("navigates to jobs table on close", fakeAsync(() => {
+    const q = URLSearchParamsUtils.encodeURLSearchParams({
+      extensions: { projectId: "foo" },
+    });
+    router.navigate(["jobs/" + jobId], { queryParams: { q } });
+    tick();
+
+    fixture.detectChanges();
+    tick();
+
+    const de: DebugElement = fixture.debugElement;
+    de.query(By.css(".close")).nativeElement.click();
+    fixture.detectChanges();
+    tick();
+
+    const fakeJobs = fixture.debugElement.query(By.css(".fake-jobs"));
+    expect(fakeJobs).toBeTruthy();
+    const fakeJobsRoute = fakeJobs.componentInstance.route;
+    expect(fakeJobsRoute.snapshot.queryParams["q"]).toEqual(q);
+  }));
+
   @Component({
     selector: 'jm-test-app',
     template: '<router-outlet></router-outlet>'

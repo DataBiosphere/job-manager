@@ -10,6 +10,14 @@
       </a>
     </clr-tooltip>
   </p>
+  <button mat-icon-button class="close" (click)="handleClose()">
+    <clr-tooltip>
+      <clr-icon clrTooltipTrigger shape="times" style="color:#74AE43"></clr-icon>
+      <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
+        <span>go back to list view</span>
+      </clr-tooltip-content>
+    </clr-tooltip>
+  </button>
   <button mat-icon-button class="close"
           *ngIf="hasParent()" (click)="handleNavUp()">
     <clr-tooltip>
