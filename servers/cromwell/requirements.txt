@@ -23,4 +23,4 @@ six==1.11.0
 swagger-spec-validator==2.7.6
 typing==3.6.1
 urllib3==1.26.5
-Werkzeug==2.2.2
+Werkzeug==2.2.3
