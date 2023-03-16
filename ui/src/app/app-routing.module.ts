@@ -17,6 +17,7 @@ import {ProjectsComponent} from './projects/projects.component'
 import {RouteReuse} from './route-reuse.service';
 
 import {DashboardComponent} from "./dashboard/dashboard.component";
+import { SignInRedirectComponent } from './sign-in/sign-in-redirect.component';
 
 
 // Based on the URL mapping in "routes" below, the RouterModule attaches
@@ -58,6 +59,10 @@ const routes: Routes = [
     resolve: {
       job: JobDetailsResolver
     }
+  },
+  {
+    path: 'redirect-from-oauth',
+    component: SignInRedirectComponent
   },
   {
     path: '**',

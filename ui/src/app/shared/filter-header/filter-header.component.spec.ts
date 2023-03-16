@@ -62,7 +62,7 @@ describe('FilterHeaderComponent', () => {
 
   beforeEach(async(() => {
     const fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
-    const authService = new AuthService(null, fakeCapabilitiesService, null, snackBar);
+    const authService = new AuthService(null, fakeCapabilitiesService, null, snackBar, null, null);
 
     TestBed.configureTestingModule({
       declarations: [FilterHeaderComponent, TestHeaderComponent, MockFilterChipComponent],

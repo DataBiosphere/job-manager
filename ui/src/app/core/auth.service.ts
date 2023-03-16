@@ -1,15 +1,37 @@
 import { Injectable, NgZone } from '@angular/core';
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { BehaviorSubject, fromEvent } from 'rxjs';
+import { BehaviorSubject, Subject, fromEvent } from 'rxjs';
 import { ConfigLoaderService } from "../../environments/config-loader.service";
 import { CapabilitiesService } from './capabilities.service';
-
+import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
+import { Router } from '@angular/router';
 
 declare const gapi: any;
+
+const oAuthConfig = (clientId: string, scope: string): AuthConfig => {
+  return {
+    issuer: 'https://accounts.google.com',
+    strictDiscoveryDocumentValidation: false,
+    redirectUri: `${window.location.origin}/redirect-from-oauth`,
+    clientId,
+    scope,
+  }
+}
+
+//NOTE: add other attributes to this type as needed
+type UserProfile = {
+  info: {
+    email: string,
+    sub: string, //this is the google id,
+    name: string
+  }
+}
 
 /** Service wrapper for google oauth2 state and starting sign-in flow. */
 @Injectable()
 export class AuthService {
+
+  public userProfileSubject = new Subject<UserProfile>;
   public initAuthPromise: Promise<void>;
   public authenticated = new BehaviorSubject<boolean>(false);
   public authToken: string;
@@ -24,93 +46,85 @@ export class AuthService {
   public logoutInterval: number;
   readonly WARNING_INTERVAL = 10000;
 
-  private initAuth(scopes: string[]): Promise<any> {
-    const clientId = this.configLoader.getEnvironmentConfigSynchronous()['clientId'];
-    return gapi.auth2.init({
-      client_id: clientId,
-      cookiepolicy: 'single_host_origin',
-      scope: scopes.join(" "),
-    });
-  }
-
-  private updateUser(user: any) {
-    if (user && user.isSignedIn()) {
-      this.authToken = user.getAuthResponse().access_token;
-      this.userId = user.getId();
-      this.userEmail = user.getBasicProfile().getEmail();
-      this.userDomain = user.getHostedDomain();
-      this.gcsReadAccess = this.scopes.includes('https://www.googleapis.com/auth/devstorage.read_only');
+  private updateUser(userProfile: UserProfile) {
+    const hasValidAccessToken = this.oAuthService.hasValidAccessToken();
+    if(userProfile && hasValidAccessToken) {
+      const { info } = userProfile;
+      this.authToken = localStorage.access_token;
+      this.userEmail = info.email;
+      this.userId = info.sub;
+      this.gcsReadAccess = this.scopes.includes(
+        "https://www.googleapis.com/auth/devstorage.read_only"
+      );
       if (this.logoutInterval && this.forcedLogoutDomains && this.forcedLogoutDomains.includes(this.userDomain)) {
         this.setUpEventListeners();
       }
       this.authenticated.next(true);
     } else {
-      this.authToken = undefined;
-      this.userId = undefined;
-      this.userEmail = undefined;
-      this.userDomain = undefined;
-      this.gcsReadAccess = false;
-      this.authenticated.next(false);
+        this.authToken = undefined;
+        this.userId = undefined;
+        this.userEmail = undefined;
+        this.userDomain = undefined;
+        this.gcsReadAccess = false;
+        this.authenticated.next(false);
     }
   }
 
-  constructor(private zone: NgZone, capabilitiesService: CapabilitiesService,
+  constructor(private zone: NgZone,
+              private capabilitiesService: CapabilitiesService,
               private configLoader: ConfigLoaderService,
-              private snackBar: MatSnackBar) {
-    capabilitiesService.getCapabilities().then(capabilities => {
+              private snackBar: MatSnackBar,
+              private readonly oAuthService: OAuthService,
+              private router: Router) {
+                this.authToken = localStorage.access_token;
+              }
+
+  public async initOAuthImplicit() {
+    await this.capabilitiesService.getCapabilities().then(async (capabilities) => {
       if (!capabilities.authentication || !capabilities.authentication.isRequired) {
         return;
       }
-
       if (capabilities.authentication.forcedLogoutDomains && capabilities.authentication.forcedLogoutTime &&
         (capabilities.authentication.forcedLogoutTime > (this.WARNING_INTERVAL * 2))) {
         this.forcedLogoutDomains = capabilities.authentication.forcedLogoutDomains;
         this.logoutInterval = capabilities.authentication.forcedLogoutTime;
       }
       this.scopes = capabilities.authentication.scopes.join(" ");
+      const clientId =
+        this.configLoader.getEnvironmentConfigSynchronous()["clientId"];
+      const config = oAuthConfig(clientId, this.scopes);
+      this.oAuthService.configure(config);
+      const userProfile = await this.loadUserProfile() as UserProfile;
+      this.zone.run(() => this.updateUser(userProfile));
+    }).catch((error) => {
+      this.router.navigate(['sign_in']);
+    })
+  }
 
-      this.initAuthPromise = new Promise<void>( (resolve, reject) => {
-        gapi.load('client:auth2', {
-          callback: () => this.initAuth(capabilities.authentication.scopes)
-            .then(() => resolve())
-            .catch((message) => this.handleError(message)),
-          onerror: () => reject(),
-        });
-      });
-
-      this.initAuthPromise.then( () => {
-        // Update the current user to any subscribers and resolve the promise
-        this.updateUser(gapi.auth2.getAuthInstance().currentUser.get());
-        // Start listening for updates to the current user
-        gapi.auth2.getAuthInstance().currentUser.listen( (user) => {
-          // gapi executes callbacks outside of the Angular zone. To ensure that
-          // UI changes occur correctly, explicitly run all subscriptions to
-          // authentication state within the Angular zone for component change
-          // detection to work.
-          this.zone.run(() => this.updateUser(user));
-        });
-      });
-    });
+  public async loadUserProfile() {
+    await this.oAuthService.loadDiscoveryDocument();
+    await this.oAuthService.tryLoginImplicitFlow();
+    return this.oAuthService.loadUserProfile();
   }
 
   public isAuthenticated(): boolean {
-    const user = gapi.auth2 && gapi.auth2.getAuthInstance().currentUser.get();
-    return !!(user && user.isSignedIn());
+    return this.oAuthService.hasValidAccessToken();
   }
 
-  public signIn(): Promise<void> {
-    return gapi.auth2.getAuthInstance().signIn();
+  public async signIn() {
+    this.oAuthService.initLoginFlow();
   }
 
-  public signOut(): Promise<void> {
-    return gapi.auth2.getAuthInstance().signOut();
+  public async signOut(){
+    localStorage.removeItem("userInfo");
+    this.oAuthService.logOut();
   }
 
   private revokeToken(): Promise<void> {
     return gapi.auth2.getAuthInstance().disconnect();
   }
 
-  private handleError(error): void {
+  public handleError(error): void {
     this.snackBar.open('An error occurred: ' + error);
   }
 

@@ -16,6 +16,7 @@ import { JobDetailsModule } from './job-details/job-details.module';
 import { JobListModule } from './job-list/job-list.module';
 import { ProjectsModule } from './projects/projects.module';
 import { SignInModule } from './sign-in/sign-in.module';
+import { SignInRedirectModule } from './sign-in/sign-in-redirect.module';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 
 @NgModule({
@@ -32,10 +33,11 @@ import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
     JobListModule,
     MatIconModule,
     SignInModule,
+    SignInRedirectModule,
     ProjectsModule,
     DashboardModule,
     Ng2GoogleChartsModule,
-    NgxJsonViewerModule
+    NgxJsonViewerModule,
   ],
   providers: [CustomIconService],
   declarations: [AppComponent, PagenotfoundComponent],

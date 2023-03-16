@@ -15,13 +15,20 @@ import {JobListResolver} from '../job-list/job-list-resolver.service';
 import {JobDetailsResolver} from '../job-details/job-details-resolver.service';
 import {RouteReuse} from '../route-reuse.service';
 import {STORAGE_REF} from "../shared/common";
+import { OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
 
 /** Provides all of the common singleton components and services that can be
  *  shared across the app and should only ever be instantiated once. */
+
+export function storageFactory(): OAuthStorage {
+  return localStorage;
+}
+
 @NgModule({
   imports: [
     BrowserModule,
     MatSnackBarModule,
+    OAuthModule.forRoot()
   ],
   declarations: [
     InitialErrorComponent,
@@ -42,6 +49,10 @@ import {STORAGE_REF} from "../shared/common";
     {
       provide: STORAGE_REF,
       useValue: window.localStorage
+    },
+    {
+      provide: OAuthStorage,
+      useFactory: storageFactory
     },
     RouteReuse,
     {

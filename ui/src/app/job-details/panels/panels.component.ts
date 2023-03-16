@@ -51,7 +51,7 @@ export class JobPanelsComponent implements OnInit {
     private readonly snackBar: MatSnackBar,
     private readonly jobManagerService: JobManagerService) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.setUpExtensions();
     if (this.job.labels) {
       this.labels = Object.keys(this.job.labels).sort();

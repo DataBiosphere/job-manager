@@ -113,6 +113,14 @@ https://github.com/angular/angular-cli/issues/6349).
   ```
   docker-compose build ui
   ```
+3. As of 03/31/2023 you'll need to register a `redirectURI` for your application if you've enabled Google OAuth for your JM instance. This is a result of Google deprecating the `Google Sign-In JavaScript Platform Library`.
+  * To do so, log in to Google Cloud Platform and go to the `Credentials` page under the `API & Services` section of the sidebar.
+  * Under `OAuth 2.0 Client IDs`, find the ID used for your JM domain and click the name to go to the edit page.
+  * Under `Authorized redirect URIs`, add the new `redirectURI` as `https://{ORIGIN_NAME}/redirect-from-oauth` (make sure to click the save button after).
+    * Example URI: `https://test-domain.org/redirect-from-oauth`
+    * You'll need to repeat this process if you use a different client ID for each of your domains/environments.
+  * **NOTE**: As a result of the Platform Library deprecation Google is no longer keeping track of active sessions. The authorization flow JM supports (known as the implicit flow) will provide an access_token that lasts for an hour.
+    * Upon expiration, the applciation will redirect users to the Sign In page again. Simply log back in and you'll be redirected to the page you were previously viewing.
 
 ### Updating the API using swagger-codegen
 

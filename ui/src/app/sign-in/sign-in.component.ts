@@ -16,14 +16,15 @@ export class SignInComponent implements OnInit {
     private readonly viewContainer: ViewContainerRef,
     private errorBar: MatSnackBar) {}
 
-  ngOnInit() {
-    let returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+  async ngOnInit() {
+    let returnUrl = localStorage.getItem('jm-returnUrl') || '/'
     this.authService.authenticated.subscribe( (authenticated) => {
       if (authenticated) {
         this.router.navigateByUrl(returnUrl).then(() => {
           if (this.authService.logoutInterval) {
             this.authService.resetTimers();
           }
+          localStorage.removeItem('jm-returnUrl');
         });
       }
     });
