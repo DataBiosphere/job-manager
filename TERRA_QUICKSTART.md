@@ -56,15 +56,14 @@ work the same as local testing.
 ## Releasing JobManager in Terra
 
 Start by following release instructions in [the README](README.md#build-docker-images-and-releases).
-Once the new version exists in GCR and Github, update the dev environment and BEE template in Beehive. 
-For each of these:
- * broad.io/beehive/r/chart-release/swatomation/jobmanager
- * broad.io/beehive/r/chart-release/dev/jobmanager
-Follow these steps:
+Once the new version exists in GCR and Github, update the dev environment in Beehive. 
+[Go here](broad.io/beehive/r/chart-release/dev/jobmanager) and follow these steps:
  * Click on `On Demand Deployment > Change Versions`
- * In the `Specify App Version > Set Exact Version` box, change the version to the one you just pushed
+ * In the `Specify App Version > Set Exact Version` box, change the version to the one you just pushed. 
+ Make sure you include the EXACT tag you pushed with, it's easy to forget the `v`.
  * Click `Calculate and Preview`
  * After reviewing changes, click `Apply 1 change` on the right
-In dev, this will kick off a Github Action that will update the dev k8s cluster.
+This will kick off a Github Action that will update the dev k8s cluster. Test in dev and ensure that JM is functional
+and your changes are present.
 
 The version should automatically roll out to prod with the new monolith release.
