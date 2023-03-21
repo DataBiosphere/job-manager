@@ -1,7 +1,7 @@
 <mat-chip class="chip"
           [matMenuTriggerFor]="menu"
           (onMenuOpen)="focusInput()"
-          (remove)="removeThisChip()"
+          (removed)="removeThisChip()"
           >
   {{ getDisplayValue() }}
   <img matChipRemove
