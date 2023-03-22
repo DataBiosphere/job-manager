@@ -12,7 +12,7 @@
     class="job-list-table"
     [ngStyle]="{'opacity': tableOpacity}"
     [dataSource]="dataSource"
-    (onJobsChanged)="handleJobsChanged()"
+    (onJobsChanged)="handleJobsChanged($event)"
     (onFiltersChanged)="handleFiltersChanged($event)"
     [displayFields]="displayFields">
   </jm-job-list-table>

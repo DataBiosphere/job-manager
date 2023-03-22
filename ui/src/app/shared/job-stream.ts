@@ -29,7 +29,8 @@ export class JobStream extends BehaviorSubject<JobListView> {
   // Makes an API request if this JobStream doesn't have atLeast this many
   // total entries; no-op otherwise. The job stream may elect to load more than
   // the requested number.
-  public loadAtLeast(atLeast: number): Promise<any> {
+  public loadAtLeast(atLeast: number, updatedJobs: any[] = undefined): Promise<any> {
+    let targetResults
     this.queryPromise = this.queryPromise.then(prevResp => {
       if (this.value.exhaustive ||
         this.value.results.length >= atLeast) {
@@ -39,8 +40,14 @@ export class JobStream extends BehaviorSubject<JobListView> {
       let pageSize = Math.max(
         JobStream.minBackendPageSize, atLeast - this.value.results.length);
       return this.queryJobs(pageSize, prevResp.nextPageToken).then(resp => {
+        //If updatedJobs is provided, apply the label updates via helper method
+        if(updatedJobs !== undefined) {
+          targetResults = this.applyUpdatedJobs(resp.results.slice(), updatedJobs);
+        } else {
+          targetResults = resp.results;
+        }
         this.next({
-          results: this.value.results.concat(resp.results),
+          results: this.value.results.concat(targetResults),
           totalSize: resp.totalSize,
           exhaustive: !resp.nextPageToken,
           stale: false
@@ -58,6 +65,18 @@ export class JobStream extends BehaviorSubject<JobListView> {
       exhaustive: this.value.exhaustive,
       stale: true
     });
+  }
+
+  //Helper method to apply UI job label updates to updated query results
+  //Apparently queryJobs does not return the updated labels even when it's called after a successful (200) label update
+  private applyUpdatedJobs(results, updatedJobs) {
+    updatedJobs.forEach((job) => {
+      const targetIndex = results.findIndex((result) => result.id === job.id);
+      if(targetIndex > -1) {
+        results[targetIndex] = job;
+      }
+    });
+    return results;
   }
 
   private queryJobs(pageSize: number, pageToken?: string): Promise<QueryJobsResponse> {
