@@ -144,7 +144,7 @@ h2.settings-header {
 
 ::ng-deep .table-paginator-container .mat-select-min-line {
   display: inline-block;
-  border: 1px solid rgb(51, 63, 82);
+  border: 1px solid #5C912E;
   border-radius: 4px;
   padding: 5px;
 }
