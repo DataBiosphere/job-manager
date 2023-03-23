@@ -142,6 +142,13 @@ h2.settings-header {
   width: 0.8em;
 }
 
+::ng-deep .table-paginator-container .mat-select-min-line {
+  display: inline-block;
+  border: 1px solid #5C912E;
+  border-radius: 4px;
+  padding: 5px;
+}
+
 .settings-icon-container {
   padding-top: 5px;
 }
@@ -186,6 +193,8 @@ button.clear-query clr-icon {
   width: 1.75rem;
   height: 1.75rem;
   margin-left: 0.5rem;
+  display: flex;
+  align-items: center;
 }
 ::ng-deep .search-table-controls .mat-paginator-navigation-previous.mat-icon-button:disabled,
 ::ng-deep .search-table-controls .mat-paginator-navigation-next.mat-icon-button:disabled {

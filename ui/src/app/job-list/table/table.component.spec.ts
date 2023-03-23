@@ -192,7 +192,7 @@ describe('JobsTableComponent', () => {
   }));
 
   // Ignoring broken test, job list page not currently supported
-  xit('should display extended field and label job data in row', fakeAsync(() => {
+  it('should display extended field and label job data in row', fakeAsync(() => {
     testComponent.jobs.next([jobs[0]]);
     tick();
     fixture.detectChanges();
@@ -210,8 +210,8 @@ describe('JobsTableComponent', () => {
     let dsubColumns = de.queryAll(By.css('.additional-column'));
     expect(dsubColumns.length).toEqual(7);
     // Unwrap image tag to verify the reflect message
-    expect((dsubColumns[1].children[0].childNodes[2]['attributes']['shape']))
-      .toEqual(JobStatusIcon[jobs[0].status]);
+    const statusIcon = de.query(By.css('.tooltip-trigger'));
+    expect(statusIcon.attributes.shape).toBe("sync");
     expect(dsubColumns[2].nativeElement.textContent.trim())
       .toEqual((new ShortDateTimePipe(new DatePipe("en-US"))).transform(jobs[0].submission));
     expect(dsubColumns[3].nativeElement.textContent.trim())

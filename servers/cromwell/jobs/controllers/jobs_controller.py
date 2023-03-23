@@ -114,7 +114,6 @@ def get_job(id, **kwargs):
 
     :rtype: JobMetadataResponse
     """
-
     url = '{cromwell_url}/{id}/metadata?{query}'.format(
         cromwell_url=_get_base_url(),
         id=id,
@@ -456,7 +455,6 @@ def query_jobs(body, **kwargs):
     page = page_from_offset(offset, query_page_size)
 
     has_auth = headers is not None
-
     response = requests.post(_get_base_url() + '/query',
                              json=cromwell_query_params(
                                  query, page, query_page_size, has_auth),
@@ -477,7 +475,7 @@ def query_jobs(body, **kwargs):
     next_page_token = page_tokens.encode_offset(offset + query_page_size)
     return QueryJobsResponse(results=jobs_list,
                              total_size=total_results,
-                             next_page_token=next_page_token)
+                             next_page_token=next_page_token.decode())
 
 
 def get_last_page(total_results, page_size):
@@ -596,7 +594,6 @@ def get_operation_details(job, operation, **kwargs):
 
         if response.status_code != 200:
             handle_error(response)
-
         return JobOperationResponse(id=job, details=response.text)
 
 
@@ -758,8 +755,11 @@ def _is_call_cached(metadata):
 
 def _get_response_message(response):
     logger.error('Response error: {}'.format(response.content))
-    if is_jsonable(response) and response.json().get('message'):
-        return response.json().get('message')
+    if is_jsonable(response):
+        try:
+            return response.json().get('message')
+        except:
+            return str(response.json())
     return str(response)
 
 

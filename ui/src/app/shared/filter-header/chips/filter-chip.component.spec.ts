@@ -83,7 +83,7 @@ describe('FilterChipComponent', () => {
 
   it('should trigger remove callback', async(() => {
     spyOn(fixture.componentInstance, 'removeChipCallback').and.callThrough();
-    fixture.debugElement.query(By.css('.chip')).triggerEventHandler('remove', null);
+    fixture.debugElement.query(By.css('.chip')).triggerEventHandler('removed', null);
     expect(fixture.componentInstance.removeChipCallback).toHaveBeenCalled();
   }));
 

@@ -68,9 +68,7 @@ export class JobListComponent implements OnInit {
     });
     const req = URLSearchParamsUtils.unpackURLSearchParams(this.route.snapshot.queryParams['q']);
     this.projectId = req.extensions.projectId || '';
-    
     this.pageSubject.subscribe(resp => this.onClientPaginate(resp));
-    
     if (this.settingsService.getSavedSettingValue('pageSize', this.projectId)) {
       this.pageSize = this.settingsService.getSavedSettingValue('pageSize', this.projectId);
     }
@@ -99,7 +97,7 @@ export class JobListComponent implements OnInit {
     });
   }
 
-  reloadJobs(query: string, lazy = false): void {
+  reloadJobs(query: string, lazy = false, updatedJobs = undefined): void {
     if (!this.streamSubscription) {
       // ngOnInit hasn't happened yet, this shouldn't occur.
       return;
@@ -122,7 +120,7 @@ export class JobListComponent implements OnInit {
 
     this.streamSubscription.unsubscribe();
     const nextStream = new JobStream(this.jobManagerService, req);
-    nextStream.loadAtLeast(initialBackendPageSize)
+    nextStream.loadAtLeast(initialBackendPageSize, updatedJobs)
       .then(() => {
         if (query !== this.route.snapshot.queryParams['q']) {
           // We initiated another query since the original request; ignore
@@ -156,8 +154,8 @@ export class JobListComponent implements OnInit {
       {viewContainerRef: this.viewContainer});
   }
 
-  handleJobsChanged() {
-    this.reloadJobs(this.route.snapshot.queryParams['q']);
+  handleJobsChanged(updatedJobs) {
+    this.reloadJobs(this.route.snapshot.queryParams['q'], false, updatedJobs);
   }
 
   handleFiltersChanged(filter: string[]) {

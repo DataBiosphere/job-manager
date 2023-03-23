@@ -24,49 +24,54 @@ import { SignInRedirectComponent } from './sign-in/sign-in-redirect.component';
 // UI Components to the <router-outlet> element in the main AppComponent.
 const routes: Routes = [
   {
-    path: '',
-    component: PagenotfoundComponent
+    path: "",
+    redirectTo: "jobs",
+    pathMatch: "full",
   },
   {
-    path: 'sign_in',
+    path: "sign_in",
     component: SignInComponent,
-    canActivate: [CapabilitiesActivator]
+    canActivate: [CapabilitiesActivator],
   },
   {
-    path: 'projects',
+    path: "projects",
     component: ProjectsComponent,
-    canActivate: [CapabilitiesActivator]
+    canActivate: [CapabilitiesActivator],
   },
   {
-    path: 'dashboard',
+    path: "dashboard",
     component: DashboardComponent,
     //TODO: (zach) if the projectId param is missing, it gives a 400 error which is not desired.
     // Should be redirect to the home page.
     canActivate: [CapabilitiesActivator],
-    runGuardsAndResolvers: 'always',
+    runGuardsAndResolvers: "always",
     resolve: {
-      aggregations: DashboardResolver
-    }
+      aggregations: DashboardResolver,
+    },
   },
   {
-    path: 'jobs',
-    component: PagenotfoundComponent
+    path: "jobs",
+    component: JobListComponent,
+    canActivate: [CapabilitiesActivator],
+    resolve: {
+      stream: JobListResolver,
+    },
   },
   {
-    path: 'jobs/:id',
+    path: "jobs/:id",
     component: JobDetailsComponent,
     canActivate: [CapabilitiesActivator],
     resolve: {
-      job: JobDetailsResolver
-    }
+      job: JobDetailsResolver,
+    },
   },
   {
-    path: 'redirect-from-oauth',
-    component: SignInRedirectComponent
+    path: "redirect-from-oauth",
+    component: SignInRedirectComponent,
   },
   {
-    path: '**',
-    component: PagenotfoundComponent
+    path: "**",
+    component: PagenotfoundComponent,
   },
 ];
 

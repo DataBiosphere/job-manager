@@ -31,7 +31,6 @@ import {FakeJobManagerService} from '../testing/fake-job-manager.service';
 import {FakeCapabilitiesService} from '../testing/fake-capabilities.service';
 import {SharedModule} from '../shared/shared.module';
 import {Router} from "@angular/router";
-import {of} from 'rxjs';
 import {CapabilitiesResponse} from '../shared/model/CapabilitiesResponse';
 import {QueryJobsResult} from '../shared/model/QueryJobsResult';
 import {JobStatus} from '../shared/model/JobStatus';
@@ -193,17 +192,15 @@ describe('JobListComponent', () => {
     expect(de.queryAll(By.css('.spinner-container')).length).toEqual(0);
   }));
 
-  // Ignoring broken test, job list page not currently supported
-  xit('paginates forward', fakeAsync(() => {
+  it('paginates forward', fakeAsync(() => {
     fakeJobService.jobs = testJobs(5);
     tick();
     fixture.detectChanges();
     tick();
     const de: DebugElement = fixture.debugElement;
-    de.query(By.css('.mat-paginator-increment')).nativeElement.click();
+    de.query(By.css('.mat-paginator-navigation-next')).nativeElement.click();
     fixture.detectChanges();
     tick();
-
     // Page 2.
     expectJobsRendered(fakeJobService.jobs.slice(3, 5));
 
@@ -212,17 +209,16 @@ describe('JobListComponent', () => {
     expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('true');
   }));
 
-  // Ignoring broken test, job list page not currently supported
-  xit('paginates backwards', fakeAsync(() => {
+  it('paginates backwards', fakeAsync(() => {
     fakeJobService.jobs = testJobs(5);
     tick();
     fixture.detectChanges();
     const de: DebugElement = fixture.debugElement;
-    de.query(By.css('.mat-paginator-increment')).nativeElement.click();
+    de.query(By.css('.mat-paginator-navigation-next')).nativeElement.click();
     fixture.detectChanges();
 
     // Back to page 1, which should have the first 3 jobs.
-    de.query(By.css('.mat-paginator-decrement')).nativeElement.click();
+    de.query(By.css('.mat-paginator-navigation-previous')).nativeElement.click();
     fixture.detectChanges();
     tick();
     expectJobsRendered(fakeJobService.jobs.slice(0, 3));
@@ -232,15 +228,14 @@ describe('JobListComponent', () => {
     expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('false');
   }));
 
-  // Ignoring broken test, job list page not currently supported
-  xit('next pagination is disabled on last page when number of jobs equals the page length', fakeAsync(() => {
+  it('next pagination is disabled on last page when number of jobs equals the page length', fakeAsync(() => {
     fakeJobService.jobs = testJobs(6);
     testComponent.jobStream.setStale();
     fixture.detectChanges();
     tick(100);
 
     const de: DebugElement = fixture.debugElement;
-    de.query(By.css('.mat-paginator-increment')).nativeElement.click();
+    de.query(By.css('.mat-paginator-navigation-next')).nativeElement.click();
     fixture.detectChanges();
 
     // the last three jobs should be displayed and next page button should be disabled
@@ -309,8 +304,7 @@ describe('JobListComponent', () => {
     });
   }));
 
-  // Ignoring broken test, job list page not currently supported
-  xit('pagination resets on filter', fakeAsync(() => {
+  it('pagination resets on filter', fakeAsync(() => {
     const jobs = testJobs(5);
     jobs[3].status = JobStatus.Failed;
     fakeJobService.jobs = jobs;
@@ -318,7 +312,7 @@ describe('JobListComponent', () => {
     fixture.detectChanges();
 
     const de: DebugElement = fixture.debugElement;
-    de.query(By.css('.mat-paginator-increment')).nativeElement.click();
+    de.query(By.css('.mat-paginator-navigation-next')).nativeElement.click();
     fixture.detectChanges();
 
     de.query(By.css('.failed-button')).nativeElement.click();
@@ -339,8 +333,7 @@ describe('JobListComponent', () => {
     expect(de.queryAll(By.css('.fake-projects')).length).toEqual(1);
   }));
 
-  // Ignoring broken test, job list page not currently supported
-  xit('does not display the hide archived setting without the right project setting', async(() => {
+  it('does not display the hide archived setting without the right project setting', async(() => {
     testComponent.settingsService.setSavedSettingValue('hideArchived', null, testComponent.projectId);
     fixture.detectChanges();
     const de: DebugElement = fixture.debugElement;
@@ -351,15 +344,13 @@ describe('JobListComponent', () => {
     expect(de.queryAll(By.css('.settings-menu .mat-slide-toggle.hide-archived')).length).toEqual(0);
   }));
 
-  // Ignoring broken test, job list page not currently supported
-  xit('displays the hide archived setting when the project setting is set', async(() => {
+  it('displays the hide archived setting when the project setting is set', fakeAsync(() => {
+    tick();
     testComponent.settingsService.setSavedSettingValue('hideArchived', true, testComponent.projectId);
     fixture.detectChanges();
     const de: DebugElement = fixture.debugElement;
-
-    de.query(By.css('button.settings-icon')).nativeElement.click();
+    de.query(By.css('.settings-icon')).nativeElement.click();
     fixture.detectChanges();
-
     expect(de.queryAll(By.css('.settings-menu .mat-slide-toggle.hide-archived')).length).toEqual(1);
   }));
 
