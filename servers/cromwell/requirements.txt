@@ -18,7 +18,7 @@ pathlib==1.0.1
 python-dateutil==2.6.0
 pytz==2022.4
 PyYAML==5.4
-requests==2.28.1
+requests==2.31.0
 six==1.11.0
 swagger-spec-validator==2.7.6
 typing==3.6.1
