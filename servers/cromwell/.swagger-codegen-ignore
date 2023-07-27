@@ -7,6 +7,7 @@ README.md
 .gitignore
 tox.ini
 test-requirements.txt
+constraints.txt
 
 # These have been hand-modified, no need to regenerate as they would get overwritten.
 requirements.txt
