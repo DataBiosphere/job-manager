@@ -14,7 +14,7 @@ COPY --from=0 /job-manager/servers/jm_utils /app/jm_utils
 COPY --from=0 /job-manager/servers/cromwell/jobs /app/jobs
 COPY ./servers/cromwell/ /app/jobs
 
-RUN cd jobs && pip3 install -r requirements.txt
+RUN cd jobs && pip3 install -r requirements.txt -c constraints.txt
 # We installed jm_utils so don't need local copy anymore, which breaks imports
 RUN rm -rf jm_utils
 
