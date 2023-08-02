@@ -63,5 +63,9 @@
     "ts-node": "^10.9.1",
     "typescript": "~4.8.2"
   },
+  "resolutions": {
+    "node-gyp/semver@^7.3.5": "7.5.2",
+    "@npmcli/fs/semver@^7.3.5": "7.5.2"
+  },
   "packageManager": "yarn@3.2.2"
 }
