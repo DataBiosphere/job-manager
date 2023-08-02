@@ -105,7 +105,7 @@ Monitors jobs launched by the [Cromwell workflow engine](https://github.com/broa
 #### Notes
 1. Websocket reload on code change does not work in docker-compose (see
 https://github.com/angular/angular-cli/issues/6349).
-2. Changes to `package.json` or `requirements.txt` or [regenerating the API](#updating-the-api-using-swagger-codegen) require a rebuild with:
+2. Changes to `package.json`, `requirements.txt`, or `constraints.txt` [regenerating the API](#updating-the-api-using-swagger-codegen) require a rebuild with:
   ```
   docker-compose up --build
   ```
