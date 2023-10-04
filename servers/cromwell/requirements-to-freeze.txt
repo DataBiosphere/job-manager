@@ -2,6 +2,6 @@ connexion == 1.1.13
 python_dateutil == 2.6.0
 typing == 3.5.2.2
 setuptools >= 65.4.1
-gevent==1.3.4
+gevent==23.9
 gunicorn==19.8.1
 ../jm_utils
