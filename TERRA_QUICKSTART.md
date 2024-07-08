@@ -32,7 +32,7 @@ $ export CROMWELL_URL="http://192.XXX.Y.ZZZ:8000/api/workflows/v1"
 ```
 or the one-liner:
 ```
-$ export CROMWELL_URL="http://$(ifconfig | grep inet | grep broadcast | cut -d ' ' -f 2):8000/api/workflows/v1"
+$ export CROMWELL_URL="http://$(ifconfig | grep inet | grep broadcast | head -n 1 | cut -d ' ' -f 2):8000/api/workflows/v1"
 ```
 
 ### Start JobManager
