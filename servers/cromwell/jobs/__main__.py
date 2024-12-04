@@ -54,8 +54,8 @@ else:
     # Allow unknown args if we aren't the main program, these include flags to
     # gunicorn.
     args, _ = parser.parse_known_args()
-options = {"swagger_ui": False}
-app = connexion.App(__name__, specification_dir='./swagger/', options=options)
+options = connexion.options.SwaggerUIOptions(swagger_ui = False)
+app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui_options=options)
 DEFAULT_CROMWELL_CREDENTIALS = {'cromwell_user': '', 'cromwell_password': ''}
 
 # Load credentials for cromwell
