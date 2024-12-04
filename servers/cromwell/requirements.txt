@@ -17,14 +17,6 @@ MarkupSafe==2.1.1
 pathlib==1.0.1
 python-dateutil==2.6.0
 pytz==2022.4
-# Below is a link explaining why the PyYAML package is commented out
-# https://github.com/yaml/pyyaml/issues/736#issuecomment-1653209769
-# In short, due to Cython 3 being released, PyYAML needs to have it's Cython dependency contrained, otherwise it'll fail to install due to deprecated features
-# However installation of PyYAML uses a "wheel", which is basically a pre-compiled version of the package
-# This is problematic for requirements.txt as it cannot specify a wheel, only a source package
-# So we need to install PyYAML separately with the constraint defined in constraints.txt via pip install as opposed to here
-# You can see the above implemented in the Dockerfiles
-# PyYAML==5.4
 requests==2.28.1
 six==1.11.0
 swagger-spec-validator==2.7.6
