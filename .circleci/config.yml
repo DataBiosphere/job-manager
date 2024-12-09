@@ -19,7 +19,12 @@ run_secret_setup: &run_secret_setup
     command: |
       git clone https://github.com/awslabs/git-secrets.git
       pushd git-secrets >/dev/null
-      git checkout ad82d68ee924906a0401dfd48de5057731a9bc84
+
+      # 2024-12-09 updated to a new version of git-secrets, the old one
+      # relied `say` command which is unavailable in new CircleCI base image
+      # https://github.com/awslabs/git-secrets/issues/220
+      git checkout 5357e18bc27b42a827b6780564ea873a72ca1f01
+
       popd >/dev/null
       ./minnie-kenny.sh -f
 
@@ -27,8 +32,8 @@ jobs:
   ui:
     <<: *job_defaults
     machine:
-      # latest pinned 20.04 version https://circleci.com/developer/machine/image/ubuntu-2004
-      image: ubuntu-2004:202201-02
+      # latest pinned 24.04 version https://circleci.com/developer/machine/image/ubuntu-2404
+      image: ubuntu-2404:2024.11.1
     steps:
       - checkout
       - <<: *run_env_setup
@@ -107,7 +112,7 @@ jobs:
   backends:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:202201-02
+      image: ubuntu-2404:2024.11.1
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
     steps:
@@ -127,6 +132,11 @@ jobs:
           command: |
             python3 --version
             which python3
+      - run:
+          name: Install Python 3.10
+          command: |
+            pyenv install 3.10
+            pyenv global 3.10
       - run:
           name: Install tox and yapf
           # tox (and detox) fail with older versions of more-itertools: https://github.com/pytest-dev/pytest/issues/4770
@@ -157,7 +167,7 @@ jobs:
   secrets:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:202201-02
+      image: ubuntu-2404:2024.11.1
     steps:
       - checkout
       - <<: *run_env_setup
