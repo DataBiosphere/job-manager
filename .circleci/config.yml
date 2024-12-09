@@ -28,7 +28,7 @@ jobs:
     <<: *job_defaults
     machine:
       # latest pinned 20.04 version https://circleci.com/developer/machine/image/ubuntu-2004
-      image: ubuntu-2004:202201-02
+      image: ubuntu-2004:2024.11.1
     steps:
       - checkout
       - <<: *run_env_setup
