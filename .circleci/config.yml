@@ -19,7 +19,7 @@ run_secret_setup: &run_secret_setup
     command: |
       git clone https://github.com/awslabs/git-secrets.git
       pushd git-secrets >/dev/null
-      git checkout ad82d68ee924906a0401dfd48de5057731a9bc84
+      git checkout 5357e18bc27b42a827b6780564ea873a72ca1f01
       popd >/dev/null
       ./minnie-kenny.sh -f
 
