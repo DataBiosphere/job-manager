@@ -19,7 +19,12 @@ run_secret_setup: &run_secret_setup
     command: |
       git clone https://github.com/awslabs/git-secrets.git
       pushd git-secrets >/dev/null
+
+      # 2024-12-09 updated to a new version of git-secrets, the old one
+      # relied `say` command which is unavailable in new CircleCI base image
+      # https://github.com/awslabs/git-secrets/issues/220
       git checkout 5357e18bc27b42a827b6780564ea873a72ca1f01
+
       popd >/dev/null
       ./minnie-kenny.sh -f
 
