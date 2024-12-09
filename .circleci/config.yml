@@ -32,8 +32,8 @@ jobs:
   ui:
     <<: *job_defaults
     machine:
-      # latest pinned 20.04 version https://circleci.com/developer/machine/image/ubuntu-2004
-      image: ubuntu-2004:2024.11.1
+      # latest pinned 24.04 version https://circleci.com/developer/machine/image/ubuntu-2404
+      image: ubuntu-2404:2024.11.1
     steps:
       - checkout
       - <<: *run_env_setup
@@ -112,7 +112,7 @@ jobs:
   backends:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:2024.11.1
+      image: ubuntu-2404:2024.11.1
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
     steps:
@@ -167,7 +167,7 @@ jobs:
   secrets:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:2024.11.1
+      image: ubuntu-2404:2024.11.1
     steps:
       - checkout
       - <<: *run_env_setup
