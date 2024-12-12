@@ -23,3 +23,4 @@ swagger-spec-validator==2.7.6
 typing==3.6.1
 urllib3==1.26.5
 Werkzeug==3.0.6
+uvicorn==0.32.1
