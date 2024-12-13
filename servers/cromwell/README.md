@@ -369,5 +369,5 @@ To run unit and integration tests on the python-flask app, install
 [`tox`](https://github.com/tox-dev/tox).
 ```
 cd servers/cromwell
-tox -- -s
+tox -- -s .
 ```
