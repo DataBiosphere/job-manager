@@ -100,11 +100,11 @@ def loadCapabilities(capabilities_path):
             capabilities_config)
         return app.app.config['capabilities']
     except IOError as io_err:
-        logger.exception(
+        logger.error(
             'Failed to load capabilities config, using default display fields. %s',
             io_err)
     except TypeError as type_err:
-        logger.exception(
+        logger.error(
             'Failed to load capabilities config, using default display fields. %s',
             type_err)
 
