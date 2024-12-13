@@ -56,7 +56,7 @@ else:
     # gunicorn.
     args, _ = parser.parse_known_args()
 
-options = connexion.options.SwaggerUIOptions(swagger_ui = False)
+options = connexion.options.SwaggerUIOptions(swagger_ui=False)
 app = connexion.App(__name__, 
                     specification_dir='./swagger/', 
                     swagger_ui_options=options, 
