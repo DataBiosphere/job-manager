@@ -6,6 +6,7 @@ from datetime import datetime
 
 import dateutil.parser
 import requests_mock
+import unittest
 from dateutil.tz import *
 from flask import json
 from jobs.controllers import jobs_controller
@@ -15,22 +16,27 @@ from jobs.models.query_jobs_result import QueryJobsResult
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 
-from . import BaseTestCase
+from . import create_app, json_dumps
 
 
-class TestJobsController(BaseTestCase):
+class TestJobsController(unittest.TestCase):
     """ JobsController integration test stubs """
     maxDiff = None
 
     def setUp(self):
+        self.app = create_app()
         self.base_url = 'https://test-cromwell.org'
-        self.app.config.update({
+        self.app.app.config.update({
             'cromwell_url': self.base_url,
             'cromwell_user': 'user',
             'cromwell_password': 'password',
             'use_caas': False,
             'capabilities': {}
         })
+        self.client = self.app.test_client()
+
+    def assertStatus(self, response, expectedStatus):
+        self.assertEqual(response.status_code, expectedStatus)
 
     @requests_mock.mock()
     def test_abort_job(self, mock_request):
@@ -47,8 +53,7 @@ class TestJobsController(BaseTestCase):
         abort_url = self.base_url + '/{id}/abort'.format(id=workflow_id)
         mock_request.post(abort_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}/abort'.format(id=workflow_id),
-                                    method='POST')
+        response = self.client.post('/jobs/{id}/abort'.format(id=workflow_id))
         self.assertStatus(response, 204)
 
     @requests_mock.mock()
@@ -69,8 +74,7 @@ class TestJobsController(BaseTestCase):
         abort_url = self.base_url + '/{id}/abort'.format(id=workflow_id)
         mock_request.post(abort_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}/abort'.format(id=workflow_id),
-                                    method='POST')
+        response = self.client.post('/jobs/{id}/abort'.format(id=workflow_id))
         self.assertStatus(response, 404)
 
     @requests_mock.mock()
@@ -142,13 +146,11 @@ class TestJobsController(BaseTestCase):
 
         payload = UpdateJobLabelsRequest(
             labels={"test_label": "test_label_value"})
-        response = self.client.open(
+        response = self.client.post(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
-            method='POST',
-            data=json.dumps(payload),
-            content_type='application/json')
+            json=json_dumps(payload))
         self.assertStatus(response, 200)
-        self.assertEquals(response.json,
+        self.assertEquals(response.json(),
                           {"labels": {
                               "test_label": "test_label_value"
                           }})
@@ -224,11 +226,9 @@ class TestJobsController(BaseTestCase):
 
         payload = UpdateJobLabelsRequest(
             labels={"new_test_label": "new_test_label_value"})
-        response = self.client.open(
+        response = self.client.post(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
-            method='POST',
-            data=json.dumps(payload),
-            content_type='application/json')
+            json=json_dumps(payload))
 
         expected_result = UpdateJobLabelsResponse.from_dict({
             "labels": {
@@ -238,7 +238,7 @@ class TestJobsController(BaseTestCase):
             }
         })
 
-        result = UpdateJobLabelsResponse.from_dict(response.json)
+        result = UpdateJobLabelsResponse.from_dict(response.json())
 
         self.assertStatus(response, 200)
         self.assertDictEqual(result.labels, expected_result.labels)
@@ -257,13 +257,11 @@ class TestJobsController(BaseTestCase):
         mock_request.patch(update_label_url, json=_request_callback)
 
         payload = UpdateJobLabelsRequest(labels={"": "test_invalid_label"})
-        response = self.client.open(
+        response = self.client.post(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
-            method='POST',
-            data=json.dumps(payload),
-            content_type='application/json')
+            json=json_dumps(payload))
         self.assertStatus(response, 400)
-        self.assertEquals(json.loads(response.data)['detail'], error_message)
+        self.assertEquals(response.json()['detail'], error_message)
 
     @requests_mock.mock()
     def test_update_job_labels_internal_server_error(self, mock_request):
@@ -280,13 +278,11 @@ class TestJobsController(BaseTestCase):
 
         payload = UpdateJobLabelsRequest(
             labels={"test_label": "test_label_value"})
-        response = self.client.open(
+        response = self.client.post(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
-            method='POST',
-            data=json.dumps(payload),
-            content_type='application/json')
+            json=json_dumps(payload))
         self.assertStatus(response, 500)
-        self.assertEquals(json.loads(response.data)['detail'], error_message)
+        self.assertEquals(response.json()['detail'], error_message)
 
     @requests_mock.mock()
     def test_update_job_labels_not_found(self, mock_request):
@@ -306,13 +302,11 @@ class TestJobsController(BaseTestCase):
 
         payload = UpdateJobLabelsRequest(
             labels={"test_label": "test_label_value"})
-        response = self.client.open(
+        response = self.client.post(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
-            method='POST',
-            data=json.dumps(payload),
-            content_type='application/json')
+            json=json_dumps(payload))
         self.assertStatus(response, 404)
-        self.assertEquals(json.loads(response.data)['detail'], error_message)
+        self.assertEquals(response.json()['detail'], error_message)
 
     @requests_mock.mock()
     def test_update_job_labels_undefined_unsupported_media_type_exception(
@@ -329,13 +323,11 @@ class TestJobsController(BaseTestCase):
         mock_request.patch(update_label_url, json=_request_callback)
 
         payload = UpdateJobLabelsRequest(labels={"test_label": None})
-        response = self.client.open(
+        response = self.client.post(
             '/jobs/{id}/updateLabels'.format(id=workflow_id),
-            headers={'Accept': 'application/json'},
-            method='POST',
-            data=json.dumps(payload))
+            json=json_dumps(payload))
         self.assertStatus(response, 415)
-        self.assertEquals(json.loads(response.data)['detail'], error_message)
+        self.assertEquals(response.json()['detail'], error_message)
 
     @requests_mock.mock()
     def test_get_job_returns_200(self, mock_request):
@@ -400,10 +392,9 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
-                                    method='GET')
+        response = self.client.get('/jobs/{id}'.format(id=workflow_id))
         self.assertStatus(response, 200)
-        response_data = json.loads(response.data)
+        response_data = response.json()
         expected_data = {
             'name': workflow_name,
             'id': workflow_id,
@@ -481,10 +472,9 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
-                                    method='GET')
+        response = self.client.get('/jobs/{id}'.format(id=workflow_id))
         self.assertStatus(response, 200)
-        response_data = json.loads(response.data)
+        response_data = response.json()
         expected_data = {
             'name': workflow_name,
             'id': workflow_id,
@@ -595,10 +585,9 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
-                                    method='GET')
+        response = self.client.get('/jobs/{id}'.format(id=workflow_id))
         self.assertStatus(response, 200)
-        response_data = json.loads(response.data)
+        response_data = response.json()
         expected_data = {
             'name': workflow_name,
             'id': workflow_id,
@@ -740,11 +729,10 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}/{task}/attempts'.format(
-            id=workflow_id, task='task'),
-                                    method='GET')
+        response = self.client.get('/jobs/{id}/{task}/attempts'.format(
+            id=workflow_id, task='task'))
         self.assertStatus(response, 200)
-        response_data = json.loads(response.data)
+        response_data = response.json()
         expected_data = {
             'attempts': [{
                 'attemptNumber': 1,
@@ -852,13 +840,12 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open(
+        response = self.client.get(
             '/jobs/{id}/{task}/{index}/attempts'.format(id=workflow_id,
                                                         task='task',
-                                                        index=0),
-            method='GET')
+                                                        index=0))
         self.assertStatus(response, 200)
-        response_data = json.loads(response.data)
+        response_data = response.json()
         expected_data = {
             'attempts': [{
                 'attemptNumber': 1,
@@ -939,10 +926,9 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
-                                    method='GET')
+        response = self.client.get('/jobs/{id}'.format(id=workflow_id))
         self.assertStatus(response, 400)
-        self.assertEquals(json.loads(response.data)['detail'], error_message)
+        self.assertEquals(response.json()['detail'], error_message)
 
     @requests_mock.mock()
     def test_job_not_found(self, mock_request):
@@ -956,10 +942,9 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
-                                    method='GET')
+        response = self.client.get('/jobs/{id}'.format(id=workflow_id))
         self.assertStatus(response, 404)
-        self.assertEquals(json.loads(response.data)['detail'], error_message)
+        self.assertEquals(response.json()['detail'], error_message)
 
     @requests_mock.mock()
     def test_job_internal_server_error(self, mock_request):
@@ -973,10 +958,9 @@ class TestJobsController(BaseTestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.open('/jobs/{id}'.format(id=workflow_id),
-                                    method='GET')
+        response = self.client.get('/jobs/{id}'.format(id=workflow_id))
         self.assertStatus(response, 500)
-        self.assertEquals(json.loads(response.data)['detail'], error_message)
+        self.assertEquals(response.json()['detail'], error_message)
 
     @requests_mock.mock()
     def test_query_jobs_returns_200(self, mock_request):
@@ -994,10 +978,8 @@ class TestJobsController(BaseTestCase):
         mock_request.post(query_url, json=_request_callback)
 
         query = QueryJobsRequest()
-        response = self.client.open('/jobs/query',
-                                    method='POST',
-                                    data=json.dumps(query),
-                                    content_type='application/json')
+        response = self.client.post('/jobs/query',
+                                    json=json_dumps(query))
         self.assertStatus(response, 200)
 
     def test_empty_cromwell_query_params(self):

@@ -5,20 +5,27 @@ from __future__ import absolute_import
 from asyncio.log import logger
 
 import requests_mock
+import unittest
 
 from ..__main__ import loadCapabilities
 from ..models.capabilities_response import CapabilitiesResponse
-from . import BaseTestCase
+
+from . import create_app, json_dumps
 
 
-class TestAuthUtils(BaseTestCase):
+class TestAuthUtils(unittest.TestCase):
 
     def setUp(self):
+        self.app = create_app()
         self.base_url = 'https://test-cromwell.org'
+        self.client = self.app.test_client()
+
+    def assertStatus(self, response, expectedStatus):
+        self.assertEqual(response.status_code, expectedStatus)
 
     @requests_mock.mock()
     def test_token_auth_returns_200(self, mock_request):
-        self.app.config.update({
+        self.app.app.config.update({
             'cromwell_url': self.base_url,
             'cromwell_user': '',
             'cromwell_password': '',
@@ -34,16 +41,14 @@ class TestAuthUtils(BaseTestCase):
         query_url = self.base_url + '/query'
         mock_request.post(query_url, json=_request_callback)
 
-        response = self.client.open('/jobs/query',
-                                    method='POST',
+        response = self.client.post('/jobs/query',
                                     headers={'Authentication': 'Bearer 12345'},
-                                    data={},
-                                    content_type='application/json')
+                                    json="{}")
         self.assertStatus(response, 200)
 
     @requests_mock.mock()
     def test_basic_auth_returns_200(self, mock_request):
-        self.app.config.update({
+        self.app.app.config.update({
             'cromwell_url': self.base_url,
             'cromwell_user': 'user',
             'cromwell_password': 'password',
@@ -58,24 +63,18 @@ class TestAuthUtils(BaseTestCase):
         query_url = self.base_url + '/query'
         mock_request.post(query_url, json=_request_callback)
 
-        response = self.client.open('/jobs/query',
-                                    method='POST',
-                                    data={},
-                                    content_type='application/json')
+        response = self.client.post('/jobs/query', json="{}")
         self.assertStatus(response, 200)
 
     def test_no_auth_with_caas_returns_401(self):
-        self.app.config.update({
+        self.app.app.config.update({
             'cromwell_url': self.base_url,
             'cromwell_user': '',
             'cromwell_password': '',
             'use_caas': True,
             'capabilities': {}
         })
-        response = self.client.open('/jobs/query',
-                                    method='POST',
-                                    data={},
-                                    content_type='application/json')
+        response = self.client.post('/jobs/query', data="{}")
         self.assertStatus(response, 401)
 
 

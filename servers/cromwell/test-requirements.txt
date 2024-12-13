@@ -1,4 +1,3 @@
-flask_testing==0.8.1
 coverage>=4.0.3
 nose2>=0.12.0
 pluggy>=1.0.0
