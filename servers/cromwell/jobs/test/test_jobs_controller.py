@@ -839,10 +839,8 @@ class TestJobsController(unittest.TestCase):
         cromwell_url = self.base_url + '/{id}/metadata'.format(id=workflow_id)
         mock_request.get(cromwell_url, json=_request_callback)
 
-        response = self.client.get(
-            '/jobs/{id}/{task}/{index}/attempts'.format(id=workflow_id,
-                                                        task='task',
-                                                        index=0))
+        response = self.client.get('/jobs/{id}/{task}/{index}/attempts'.format(
+            id=workflow_id, task='task', index=0))
         self.assertStatus(response, 200)
         response_data = response.json()
         expected_data = {
@@ -977,8 +975,7 @@ class TestJobsController(unittest.TestCase):
         mock_request.post(query_url, json=_request_callback)
 
         query = QueryJobsRequest()
-        response = self.client.post('/jobs/query',
-                                    json=json_dumps(query))
+        response = self.client.post('/jobs/query', json=json_dumps(query))
         self.assertStatus(response, 200)
 
     def test_empty_cromwell_query_params(self):
