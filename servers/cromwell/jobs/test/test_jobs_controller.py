@@ -8,7 +8,6 @@ import dateutil.parser
 import requests_mock
 import unittest
 from dateutil.tz import *
-from flask import json
 from jobs.controllers import jobs_controller
 from jobs.models.extended_fields import ExtendedFields
 from jobs.models.query_jobs_request import QueryJobsRequest

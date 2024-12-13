@@ -7,10 +7,7 @@ from asyncio.log import logger
 import requests_mock
 import unittest
 
-from ..__main__ import loadCapabilities
-from ..models.capabilities_response import CapabilitiesResponse
-
-from . import create_app, json_dumps
+from . import create_app
 
 
 class TestAuthUtils(unittest.TestCase):
