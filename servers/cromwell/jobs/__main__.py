@@ -57,9 +57,9 @@ else:
     args, _ = parser.parse_known_args()
 
 options = connexion.options.SwaggerUIOptions(swagger_ui=False)
-app = connexion.App(__name__, 
-                    specification_dir='./swagger/', 
-                    swagger_ui_options=options, 
+app = connexion.App(__name__,
+                    specification_dir='./swagger/',
+                    swagger_ui_options=options,
                     jsonifier=Jsonifier(cls=JSONEncoder))
 DEFAULT_CROMWELL_CREDENTIALS = {'cromwell_user': '', 'cromwell_password': ''}
 
@@ -114,8 +114,8 @@ app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['sam_url'] = args.sam_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'
 app.app.config['include_subworkflows'] = args.include_subworkflows
-app.add_api('swagger.yaml', 
-            base_path=args.path_prefix, 
+app.add_api('swagger.yaml',
+            base_path=args.path_prefix,
             jsonifier=Jsonifier(cls=JSONEncoder))
 
 
