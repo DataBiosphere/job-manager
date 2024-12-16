@@ -7,7 +7,6 @@ WORKDIR /app
 ADD servers/jm_utils /app/jm_utils
 ADD servers/cromwell/jobs /app/jobs
 COPY servers/cromwell/requirements.txt /app/jobs
-COPY servers/cromwell/constraints.txt /app/jobs
 RUN cd jobs && pip install -r requirements.txt
 # We installed jm_utils so don't need local copy anymore, which breaks imports
 RUN rm -rf jm_utils
