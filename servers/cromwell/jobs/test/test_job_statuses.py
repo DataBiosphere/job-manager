@@ -2,12 +2,12 @@
 
 from __future__ import absolute_import
 
+import unittest
+
 from jobs.controllers.utils import job_statuses
 
-from . import BaseTestCase
 
-
-class TestJobStatuses(BaseTestCase):
+class TestJobStatuses(unittest.TestCase):
 
     def test_cromwell_execution_status_converts_correctly(self):
         for key, status in job_statuses.ApiStatus.__dict__.items():
