@@ -16,6 +16,13 @@ enum: &TIMEFRAME
   - DAYS_30
   - ALL_TIME
 
+# NOTE!!!
+# Due to the way the Connexion library handles this file, the order in which
+# endpoints are defined is important. More narrowly-defined URL paths must be
+# listed before wider ones. For example, it's important that /jobs/operationDetails
+# is earlier than /jobs/{id} in the below definition. When this is done incorrectly,
+# we get confusing errors about missing or incorrect parameters.
+
 paths:
   '/capabilities':
     get:
