@@ -27,7 +27,6 @@
       </clr-tooltip-content>
     </clr-tooltip>
   </button>
-  <button *ngIf="canAbort()" (click)="abortJob()" class="close mat-raised-button">Abort job</button>
   <p class="job-id">
     ID: <input matInput id="job-id" value="{{ job.id }}" readonly="readonly" type="text">
     <button mat-icon-button (click)="copyJobIdToClipboard()" class="copy-button">
@@ -48,6 +47,7 @@
   <mat-card class="card">
     <mat-card-title>Status: <span class="job-status">{{ job.status }}</span>
       <clr-icon [attr.shape]="getStatusIcon(job.status)"></clr-icon>
+      <button *ngIf="canAbort()" (click)="abortJob()" class="close mat-raised-button">Abort job</button>
     </mat-card-title>
     <mat-card-content>
       <p><b>
