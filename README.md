@@ -93,7 +93,7 @@ Monitors jobs launched by the [Cromwell workflow engine](https://github.com/broa
 
 
 ### Run Locally
-- Run `docker-compose up` from the root of the repository:
+- Run `docker compose up` from the root of the repository:
   - If this is the first time running `docker-compose up`  this might take a few minutes.
   - Eventually you should see a compilation success message like this: 
   ```
@@ -107,11 +107,11 @@ Monitors jobs launched by the [Cromwell workflow engine](https://github.com/broa
 https://github.com/angular/angular-cli/issues/6349).
 2. Changes to `package.json`, `requirements.txt`, or `constraints.txt` [regenerating the API](#updating-the-api-using-swagger-codegen) require a rebuild with:
   ```
-  docker-compose up --build
+  docker compose up --build
   ```
   Alternatively, rebuild a single component:
   ```
-  docker-compose build ui
+  docker compose build jmui
   ```
 3. As of 03/31/2023 you'll need to register a `redirectURI` for your application if you've enabled Google OAuth for your JM instance. This is a result of Google deprecating the `Google Sign-In JavaScript Platform Library`.
   * To do so, log in to Google Cloud Platform and go to the `Credentials` page under the `API & Services` section of the sidebar.
@@ -128,7 +128,7 @@ https://github.com/angular/angular-cli/issues/6349).
 defined in `api/jobs.yaml` into appropriate classes for the servers and the UI to use.
 * Whenever the API is updated, run this to trigger a rebuild: 
 ```sh
-docker-compose up rebuild-swagger
+docker compose up rebuild-swagger
 ```
  
 #### Swagger codegen notes
