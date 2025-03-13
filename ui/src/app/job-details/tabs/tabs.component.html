@@ -135,7 +135,9 @@
     </mat-tab>
     <!-- Task inputs tab -->
     <mat-tab *ngIf="hasInputs(job)" label="Inputs">
-      <jm-resources-table #inputsTab [entries]="job.inputs"></jm-resources-table>
+      <jm-resources-table #inputsTab [entries]="job.inputs"
+                          [displayedColumns]="['key','value']"
+      ></jm-resources-table>
     </mat-tab>
     <!-- Task outputs tab -->
     <mat-tab *ngIf="hasOutputs(job)" label="Outputs">

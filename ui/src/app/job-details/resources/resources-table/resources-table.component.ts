@@ -16,6 +16,7 @@ import {ResourceUtils} from '../../../shared/utils/resource-utils';
 export class JobResourcesTableComponent implements OnInit {
   @Input() entries: Object;
   entryKeys: Array<string>;
+  @Input() displayedColumns!: string[];
 
   constructor(private authService: AuthService) {}
 

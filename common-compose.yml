@@ -14,7 +14,7 @@ services:
       # node_modules must not be included here. Mount only files required to run
       # the dev server. Anything required to install dependencies (npm install)
       # should instead be added via the Dockerfile. Updating dependencies
-      # requires use of the slower docker-compose build.
+      # requires use of the slower docker compose build.
       - ./scripts:/scripts
       - ./ui/src:/ui/src
       - ./ui/tsconfig.json:/ui/tsconfig.json

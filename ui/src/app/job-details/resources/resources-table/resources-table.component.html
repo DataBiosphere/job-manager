@@ -1,14 +1,18 @@
 <!-- changed from  <mat-cell> to <td mat-cell> because of display bug -->
 <mat-table class="resources-table" #table [dataSource]="entryKeys">
   <ng-container matColumnDef="key">
+    <th mat-header-cell *matHeaderCellDef class="resource-key"> Input Name </th>
     <td mat-cell class="resource-key" *matCellDef="let key"> {{ key }} </td>
   </ng-container>
   <ng-container matColumnDef="value">
+    <th mat-header-cell *matHeaderCellDef class="resource-value"> Value </th>
     <td mat-cell class="resource-value" *matCellDef="let key">
       <a *ngIf="isResourceURL(key)" href="{{ getResourceURL(key) }}" target="_blank">{{ entries[key] }}</a>
       <span *ngIf="!isResourceURL(key)">{{ entries[key] | json }}</span>
     </td>
   </ng-container>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+<!--  <mat-row *matRowDef="let row; columns: ['key', 'value'];"></mat-row>-->
 
   <mat-row *matRowDef="let row; columns: ['key', 'value'];"></mat-row>
 </mat-table>
