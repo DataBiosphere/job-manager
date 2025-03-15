@@ -94,6 +94,7 @@ a.icon {
 
 mat-card-title .job-status {
   color: #000;
+  margin-right: 0.25rem;
 }
 
 mat-card-title clr-icon {
@@ -138,7 +139,7 @@ clr-tooltip-content {
   border: none;
   font-size: 1rem;
   font-weight: 500;
-  width: 21rem;
+  width: 18.5rem;
   display: block;
   cursor: default;
   margin: 0 0.25rem;
