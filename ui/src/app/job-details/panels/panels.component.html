@@ -9,7 +9,7 @@
         </clr-tooltip-content>
       </a>
     </clr-tooltip>
-    <button *ngIf="canAbort()"  mat-icon-button class="close" (click)="abortJob()">
+    <button *ngIf="canAbort()"  mat-icon-button class="close mat-icon-button" (click)="abortJob()">
       <clr-tooltip>
         <clr-icon clrTooltipTrigger shape="times-circle" style="color:#db3214;height: 1.5rem;margin-bottom: 0.7rem;"></clr-icon>
         <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
