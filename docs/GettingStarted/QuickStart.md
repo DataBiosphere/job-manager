@@ -9,7 +9,6 @@ The `quick_start.py` script relies on the following being available before start
 - Linux or MacOS based system
 - Python 3
 - docker
-- docker-compose
 - ifconfig (to provide a hint about your IP address)
 
 ## Run the Command!

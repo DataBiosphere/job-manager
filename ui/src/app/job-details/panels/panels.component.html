@@ -9,6 +9,14 @@
         </clr-tooltip-content>
       </a>
     </clr-tooltip>
+    <button *ngIf="canAbort()" (click)="abortJob()" mat-icon-button class="mat-button abort">
+      <clr-tooltip>
+        <clr-icon clrTooltipTrigger shape="times-circle"></clr-icon>
+        <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
+          <span>abort job</span>
+        </clr-tooltip-content>
+      </clr-tooltip>
+    </button>
   </p>
   <button mat-icon-button class="close" (click)="handleClose()">
     <clr-tooltip>
@@ -43,7 +51,6 @@
       <span *ngIf="job.labels[l]">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
     </span>
   </div>
-  <button *ngIf="canAbort()" (click)="abortJob()" class="close mat-raised-button">Abort job</button>
   <mat-card class="card">
     <mat-card-title>Status: <span class="job-status">{{ job.status }}</span>
       <clr-icon [attr.shape]="getStatusIcon(job.status)"></clr-icon>
@@ -90,7 +97,7 @@
                          [showHeaders]="false"
                          [jobId]="job.id"
                          [displayedColumns]="['name','shardIndex','links']"
-                         [context]="'card'">
+                         [context]="['card']">
       </jm-failures-table>
     </mat-card-content>
   </mat-card>

@@ -38,14 +38,14 @@ $ export CROMWELL_URL="http://$(ifconfig | grep inet | grep broadcast | head -n 
 ### Start JobManager
 
 ```
-$ docker-compose up
+$ docker compose up
 ```
 Once you see `webpack: Compiled successfully.` you should be able to access JobManager
 at http://localhost:4200, and state of your local Cromwell should be reflected there.
 
 To also rebuild the docker images:
 ```
-$ docker-compose --build
+$ docker compose --build
 ```
 Building the Job Manager UI docker image will invoke `yarn install` to generate a fresh
 `node_modules` from `yarn.lock` (see `ui/Dockerfile.dev`). This may seem redundant if you have a

@@ -94,7 +94,7 @@ Monitors jobs launched by the [Cromwell workflow engine](https://github.com/broa
 
 ### Run Locally
 - Run `docker compose up` from the root of the repository:
-  - If this is the first time running `docker-compose up`  this might take a few minutes.
+  - If this is the first time running `docker compose up`  this might take a few minutes.
   - Eventually you should see a compilation success message like this: 
   ```
   jmui_1        | webpack: Compiled successfully.

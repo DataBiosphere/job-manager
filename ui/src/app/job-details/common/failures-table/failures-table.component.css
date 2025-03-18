@@ -21,6 +21,12 @@ mat-table {
   min-height: auto;
 }
 
+.mat-header-cell {
+  color: #333F52;
+  font-weight: 600;
+  padding: 0.5rem;
+}
+
 td,
 th {
   text-align: left;
