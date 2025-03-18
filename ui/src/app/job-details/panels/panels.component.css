@@ -32,6 +32,22 @@ p {
   height: 2.25rem;
 }
 
+.abort {
+  float: right;
+  margin-right: 1rem;
+  width: 2rem;
+  height: 2rem;
+  background-color:#fff;
+}
+
+.abort clr-icon {
+  width: 2.25rem;
+  height: 1.5rem;
+  color:#db3214;
+  margin-bottom: 0.7rem;
+  margin-left: -0.15rem;
+}
+
 button.mat-raised-button {
   background-color: #74AE43;
   color: #fff;
