@@ -29,6 +29,8 @@ export class JobDebugIconsComponent implements OnInit {
   logFileData: Map<string, string> = new Map();
   private readonly canGetFileContents:boolean;
   private readonly capabilities: CapabilitiesResponse;
+  private readonly gcpBatchOperationIdRegex = 
+    new RegExp("^projects/\(?<projectId>[^/]+\)/locations/\(?<location>[^/]+\)/jobs/job-\(?<batchJobId>[-a-fA-F0-9]+\)$", "i");
 
   constructor(private readonly authService: AuthService,
               private readonly gcsService: GcsService,
@@ -77,7 +79,8 @@ export class JobDebugIconsComponent implements OnInit {
   }
 
   hasOperationalDetails(): boolean {
-    return this.capabilities.authentication && this.capabilities.authentication.outsideAuth && !!this.operationId;
+    var hasBatchConsoleUrl = this.getGcpBatchConsoleUrl(this.operationId) != '';
+    return hasBatchConsoleUrl || (this.capabilities.authentication && this.capabilities.authentication.outsideAuth && !!this.operationId);
   }
 
   showOrLinkTo(e: MouseEvent, url: string): void {
@@ -97,22 +100,46 @@ export class JobDebugIconsComponent implements OnInit {
     }
   }
 
-  showOperationDetails(e: MouseEvent): void {
+  // If this is a GCP Batch operation, transform the operation id into a URL to the Batch 
+  // job details page.
+  // Example input: projects/broad-dsde-cromwell-dev/locations/us-central1/jobs/job-1a4f7cff-3f17-49bf-b9ef-48b8b09c0f39
+  // Example output: https://console.cloud.google.com/batch/jobsDetail/regions/us-central1/jobs/job-1a4f7cff-3f17-49bf-b9ef-48b8b09c0f39/details?project=broad-dsde-cromwell-dev
+  getGcpBatchConsoleUrl(operationId: string): string {
+    var match = this.gcpBatchOperationIdRegex.exec(operationId);
+    if (match != null) {
+      var projectId = match.groups.projectId;
+      var location = match.groups.location;
+      var batchJobId = match.groups.batchJobId;
+      return `https://console.cloud.google.com/batch/jobsDetail/regions/${location}/jobs/job-${batchJobId}/details?project=${projectId}`;
+    }
+    else {
+      return '';
+    }
+  }
+
+  // If this task ran on the Cromwell GCP Batch backend, link directly to the GCP Console for
+  // operation details. If it ran on the older PAPIv2, load the operation details into a modal.
+  showOrLinkToOperationDetails(e: MouseEvent): void {
     e.stopPropagation();
-    this.samService.getOperationDetails(this.jobId, this.operationId)
-      .then((response) => {
-        if (response && response.details) {
-          this.resourceContentsDialog.open(JobResourceContentsComponent, {
-            disableClose: false,
-            data: {
-              resourceName: this.operationId,
-              resourceContents: new JsonPipe().transform(JSON.parse(response.details)),
-              resourceLink: '',
-              resourceType: 'json'
-            }
-          });
-        }
-    });
+    var batchUrl = this.getGcpBatchConsoleUrl(this.operationId);
+    if (batchUrl) {
+      window.open(batchUrl);
+    } else {
+      this.samService.getOperationDetails(this.jobId, this.operationId)
+        .then((response) => {
+          if (response && response.details) {
+            this.resourceContentsDialog.open(JobResourceContentsComponent, {
+              disableClose: false,
+              data: {
+                resourceName: this.operationId,
+                resourceContents: new JsonPipe().transform(JSON.parse(response.details)),
+                resourceLink: '',
+                resourceType: 'json'
+              }
+            });
+          }
+      });
+    }
   }
 
   private async getLogContents(url: string): Promise<string> {
