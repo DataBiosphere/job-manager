@@ -79,7 +79,7 @@ export class JobDebugIconsComponent implements OnInit {
   }
 
   hasBackendOperationalDetails(): boolean {
-    return this.capabilities.authentication && this.capabilities.authentication.outsideAuth && !!this.operationId;
+    return this.capabilities.authentication && this.capabilities.authentication.outsideAuth && !!this.operationId && !this.hasExternalOperationDetails();
   }
 
   hasExternalOperationDetails(): boolean {
