@@ -32,7 +32,7 @@
       </clr-tooltip-content>
     </button>
   </clr-tooltip>
-  <clr-tooltip *ngIf="!!hasExternalOperationDetails()">
+  <clr-tooltip *ngIf="!!hasExternalOperationalDetails()">
     <a class="log-item operation-details-button" [href]="getOperationalDetailsUrl()" target="_blank" (click)="$event.stopPropagation()">
       <clr-icon clrTooltipTrigger shape="info-standard"></clr-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
