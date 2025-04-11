@@ -33,7 +33,7 @@
     </button>
   </clr-tooltip>
   <clr-tooltip *ngIf="!!hasExternalOperationDetails()">
-    <a class="log-item operation-details-button" [href]="getOperationDetailsUrl()" target="_blank" (click)="$event.stopPropagation()">
+    <a class="log-item operation-details-button" [href]="getOperationalDetailsUrl()" target="_blank" (click)="$event.stopPropagation()">
       <clr-icon clrTooltipTrigger shape="info-standard"></clr-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
         <span>compute details</span>
