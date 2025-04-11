@@ -80,7 +80,8 @@ export class JobDebugIconsComponent implements OnInit {
 
   // Corresponds to running in Terra with the PAPIv2 Google backend. Operation details
   // are requested from JM server, which gets them from Rawls, which gets them from GCP.
-  // Users are shown a large JSON in a modal.
+  // Users are shown a large JSON in a modal. Example operation id:
+  // projects/1088423515928/locations/us-central1/operations/16424150744502
   hasBackendOperationalDetails(): boolean {
     return this.capabilities.authentication && this.capabilities.authentication.outsideAuth && !!this.operationId && !this.hasExternalOperationalDetails();
   }
