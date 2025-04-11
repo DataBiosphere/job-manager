@@ -8,7 +8,7 @@
   </clr-tooltip>
   <mat-icon *ngIf="!getResourceUrl(backendLog)" svgIcon="cloud-file" class="disabled"></mat-icon>
   <clr-tooltip *ngIf="getResourceUrl(backendLog)">
-    <button class="log-item" (click)="showOrLinkTo($event, backendLog)">
+    <button class="log-item backend-log-button" (click)="showOrLinkTo($event, backendLog)">
       <mat-icon clrTooltipTrigger svgIcon="cloud-file"></mat-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
         <span>backend log</span>
@@ -17,19 +17,27 @@
   </clr-tooltip>
   <clr-icon *ngIf="!getDirectoryUrl(directory)" shape="folder" class="is-solid disabled"></clr-icon>
   <clr-tooltip *ngIf="getDirectoryUrl(directory)">
-    <a class="log-item" [href]="getDirectoryUrl(directory)" target="_blank" (click)="$event.stopPropagation()">
+    <a class="log-item execution-directory-button" [href]="getDirectoryUrl(directory)" target="_blank" (click)="$event.stopPropagation()">
       <clr-icon clrTooltipTrigger shape="folder" class="is-solid"></clr-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
         <span>execution directory</span>
       </clr-tooltip-content>
     </a>
   </clr-tooltip>
-  <clr-tooltip *ngIf="!!hasOperationalDetails()">
-    <button class="log-item" (click)="showOrLinkToOperationDetails($event)">
+  <clr-tooltip *ngIf="!!hasBackendOperationalDetails()">
+    <button class="log-item" (click)="showOperationDetails($event)">
       <clr-icon clrTooltipTrigger shape="info-standard"></clr-icon>
       <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
         <span>compute details</span>
       </clr-tooltip-content>
     </button>
+  </clr-tooltip>
+  <clr-tooltip *ngIf="!!hasExternalOperationDetails()">
+    <a class="log-item operation-details-button" [href]="getOperationDetailsUrl()" target="_blank" (click)="$event.stopPropagation()">
+      <clr-icon clrTooltipTrigger shape="info-standard"></clr-icon>
+      <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+        <span>compute details</span>
+      </clr-tooltip-content>
+    </a>
   </clr-tooltip>
 
