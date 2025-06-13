@@ -126,6 +126,16 @@ describe('JobDebugIconsComponent', () => {
     expect(de.queryAll(By.css('a.operation-details-button'))[0].nativeElement.href).toEqual(expectedUrl);
   }));
 
+  it('should link to the right location for GCP Batch logs', async(() => {
+    fixture.detectChanges();
+    testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+    testComponent.job.backendLog = "";
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    let expectedUrl = "https://console.cloud.google.com/batch/jobsDetail/regions/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/logs?project=my-nice-project";
+    expect(de.queryAll(By.css('a.backend-log-button'))[0].nativeElement.href).toEqual(expectedUrl);
+  }));
+
   @Component({
     selector: 'jm-test-debug-icons-component',
     template: `<jm-debug-icons [displayMessage]="false"

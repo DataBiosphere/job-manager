@@ -92,6 +92,12 @@ export class JobDebugIconsComponent implements OnInit {
     return this.getOperationalDetailsUrl() != '';
   }
 
+  // Corresponds to running with the Google Batch backend. We link directly to the GCP console
+  // to show users backend logs. 
+  hasExternalLogs(): boolean {
+    return this.getExternalLogsUrl() != '';
+  }
+
   showOrLinkTo(e: MouseEvent, url: string): void {
     e.stopPropagation();
     if (this.hasContents(this.getFileName(url))) {
@@ -109,20 +115,28 @@ export class JobDebugIconsComponent implements OnInit {
     }
   }
 
-  // If this is a GCP Batch operation, transform the operation id into a URL to the Batch job details page.
+  // If this is a GCP Batch operation, transform the operation id into a URL to the appropriate tab on the Batch job details page.
   // Example input: projects/broad-dsde-cromwell-dev/locations/us-central1/jobs/job-1a4f7cff-3f17-49bf-b9ef-48b8b09c0f39
-  // Example output: https://console.cloud.google.com/batch/jobsDetail/regions/us-central1/jobs/job-1a4f7cff-3f17-49bf-b9ef-48b8b09c0f39/details?project=broad-dsde-cromwell-dev
-  getOperationalDetailsUrl(): string {
+  // Example output: https://console.cloud.google.com/batch/jobsDetail/regions/us-central1/jobs/job-1a4f7cff-3f17-49bf-b9ef-48b8b09c0f39/{TAB_NAME}?project=broad-dsde-cromwell-dev  
+  getGcpBatchUrlJobUrl(tabName: string): string {
     var match = this.gcpBatchOperationIdRegex.exec(this.operationId);
     if (match != null) {
       var projectId = match.groups.projectId;
       var location = match.groups.location;
       var batchJobId = match.groups.batchJobId;
-      return `https://console.cloud.google.com/batch/jobsDetail/regions/${location}/jobs/job-${batchJobId}/details?project=${projectId}`;
+      return `https://console.cloud.google.com/batch/jobsDetail/regions/${location}/jobs/job-${batchJobId}/${tabName}?project=${projectId}`;
     }
     else {
       return '';
     }
+  }
+
+  getOperationalDetailsUrl(): string {
+    return this.getGcpBatchUrlJobUrl('details');
+  }
+
+  getExternalLogsUrl(): string {
+    return this.getGcpBatchUrlJobUrl('logs');
   }
 
   showOperationDetails(e: MouseEvent): void {
