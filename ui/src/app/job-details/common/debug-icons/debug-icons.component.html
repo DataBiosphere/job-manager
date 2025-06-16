@@ -6,7 +6,7 @@
       </clr-tooltip-content>
     </a>
   </clr-tooltip>
-  <mat-icon *ngIf="!getResourceUrl(backendLog)" svgIcon="cloud-file" class="disabled"></mat-icon>
+  <mat-icon *ngIf="!getResourceUrl(backendLog) && !hasExternalLogs()" svgIcon="cloud-file" class="disabled"></mat-icon>
   <clr-tooltip *ngIf="getResourceUrl(backendLog)">
     <button class="log-item backend-log-button" (click)="showOrLinkTo($event, backendLog)">
       <mat-icon clrTooltipTrigger svgIcon="cloud-file"></mat-icon>
@@ -14,6 +14,14 @@
         <span>backend log</span>
       </clr-tooltip-content>
     </button>
+  </clr-tooltip>
+  <clr-tooltip *ngIf="!!hasExternalLogs() && !getResourceUrl(backendLog)">
+    <a class="log-item backend-log-button" [href]="getExternalLogsUrl()" target="_blank" (click)="$event.stopPropagation()">
+      <mat-icon clrTooltipTrigger svgIcon="cloud-file"></mat-icon>
+      <clr-tooltip-content clrPosition="top-left" clrSize="xs" *clrIfOpen>
+        <span>backend log</span>
+      </clr-tooltip-content>
+    </a>
   </clr-tooltip>
   <clr-icon *ngIf="!getDirectoryUrl(directory)" shape="folder" class="is-solid disabled"></clr-icon>
   <clr-tooltip *ngIf="getDirectoryUrl(directory)">
