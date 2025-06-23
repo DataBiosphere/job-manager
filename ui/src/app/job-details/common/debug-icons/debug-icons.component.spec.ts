@@ -138,6 +138,9 @@ describe('JobDebugIconsComponent', () => {
 
   it('should disable the log icon when backend log datum exists but the file cannot be loaded', async(() => {
     fixture.detectChanges();
+    testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+    testComponent.job.backendLog = "f00bar"; // exists but not valid
+    fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.backend-log-button'))[0].nativeElement.classList).toContain('disabled');
   }));
