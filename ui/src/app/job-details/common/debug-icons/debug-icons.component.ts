@@ -95,7 +95,7 @@ export class JobDebugIconsComponent implements OnInit {
   // Corresponds to running with the Google Batch backend. We link directly to the GCP console
   // to show users backend logs. 
   hasExternalLogs(): boolean {
-    return this.getExternalLogsUrl() != '';
+    return this.getExternalLogsUrl() != '' && !this.backendLog;
   }
 
   showOrLinkTo(e: MouseEvent, url: string): void {
