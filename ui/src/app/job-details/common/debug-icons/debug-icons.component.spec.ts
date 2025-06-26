@@ -136,6 +136,15 @@ describe('JobDebugIconsComponent', () => {
     expect(de.queryAll(By.css('a.backend-log-button'))[0].nativeElement.href).toEqual(expectedUrl);
   }));
 
+  it('should disable the log icon when backend log datum exists but the file cannot be loaded', async(() => {
+    fixture.detectChanges();
+    testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
+    testComponent.job.backendLog = "f00bar"; // exists but not valid
+    fixture.detectChanges();
+    let de: DebugElement = fixture.debugElement;
+    expect(de.queryAll(By.css('.backend-log-button'))[0].nativeElement.classList).toContain('disabled');
+  }));
+
   @Component({
     selector: 'jm-test-debug-icons-component',
     template: `<jm-debug-icons [displayMessage]="false"
