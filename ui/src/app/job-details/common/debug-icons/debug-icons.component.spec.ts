@@ -83,7 +83,9 @@ describe('JobDebugIconsComponent', () => {
 
   it('should calculate the right location for backend log', async(() => {
     fixture.detectChanges();
-    expect(testComponent.jobDebugIconsComponent.getResourceUrl(job.backendLog) == 'https://console.cloud.google.com/storage/browser/test-bucket/test-job?prefix=test-log.txt');
+    testComponent.job.backendLog = 'gs://test-bucket/test-log.txt';
+    fixture.detectChanges();
+    expect(testComponent.jobDebugIconsComponent.getResourceUrl(testComponent.job.backendLog)).toEqual('https://console.cloud.google.com/storage/browser/test-bucket?prefix=test-log.txt');
   }));
 
   it('should link to the right location for execution directory', async(() => {
@@ -95,26 +97,34 @@ describe('JobDebugIconsComponent', () => {
   it('should not link to anything when there is no GCP Batch operation id', async(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('a.operation-details-button'))).toBeUndefined;
+    expect(de.queryAll(By.css('a.operation-details-button')).length).toBe(0);
   }));
 
   it('should not return a GCP Batch URL for unexpected operation ids', async(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "foo/bar";
-    expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl() == '');
+    expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl()).toEqual('');
   }));
 
   it('should not return a GCP Batch URL for PAPI operation ids', async(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "projects/1088423515928/locations/us-central1/operations/16424150744502";
-    expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl() == '');
+    expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl()).toEqual('');
   }));
 
   it('should return a GCP Batch URL for Batch operation ids', async(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
     let expectedUrl = "https://console.cloud.google.com/batch/jobsDetail/regions/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/details?project=my-nice-project";
-    expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl() == expectedUrl);
+    expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl()).toEqual(expectedUrl);
+  }));
+
+  it('should return a GCP Batch URL for Batch operation ids with the new human-readable format', async(() => {
+    fixture.detectChanges();
+    testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-e83cf9a5-imputationbeaglephase-0-2-f26c7050";
+    fixture.detectChanges();
+    let expectedUrl = "https://console.cloud.google.com/batch/jobsDetail/regions/the-moon/jobs/job-e83cf9a5-imputationbeaglephase-0-2-f26c7050/details?project=my-nice-project";
+    expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl()).toEqual(expectedUrl);
   }));
 
   it('should link to the right location for GCP Batch operation details', async(() => {

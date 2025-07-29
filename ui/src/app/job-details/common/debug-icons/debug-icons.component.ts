@@ -30,7 +30,7 @@ export class JobDebugIconsComponent implements OnInit {
   private readonly canGetFileContents:boolean;
   private readonly capabilities: CapabilitiesResponse;
   private readonly gcpBatchOperationIdRegex = 
-    new RegExp("^projects/\(?<projectId>[^/]+\)/locations/\(?<location>[^/]+\)/jobs/job-\(?<batchJobId>[-a-fA-F0-9]+\)$", "i");
+    new RegExp("^projects/\(?<projectId>[^/]+\)/locations/\(?<location>[^/]+\)/jobs/job-\(?<batchJobId>[^/]+\)$", "i");
 
   constructor(private readonly authService: AuthService,
               private readonly gcsService: GcsService,
