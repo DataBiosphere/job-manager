@@ -117,6 +117,14 @@ describe('JobDebugIconsComponent', () => {
     expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl() == expectedUrl);
   }));
 
+  it('should return a GCP Batch URL for Batch operation ids with the new human-readable format', async(() => {
+    fixture.detectChanges();
+    testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-e83cf9a5-imputationbeaglephase-0-2-f26c7050";
+    fixture.detectChanges();
+    let expectedUrl = "https://console.cloud.google.com/batch/jobsDetail/regions/the-moon/jobs/job-e83cf9a5-imputationbeaglephase-0-2-f26c7050/details?project=my-nice-project";
+    expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl()).toEqual(expectedUrl);
+  }));
+
   it('should link to the right location for GCP Batch operation details', async(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
