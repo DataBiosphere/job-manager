@@ -176,5 +176,5 @@ Starting with release v1.6.0, Job Manager docker images are on [GCR](https://con
 
 From v1.6.0, each release in Github will also release 2 corresponding Docker images on GCR:
 
-- [job-manager-ui](https://console.cloud.google.com/gcr/images/broad-dsp-gcr-public/US/job-manager-ui)
-- [job-manager-api-cromwell](https://console.cloud.google.com/gcr/images/broad-dsp-gcr-public/US/job-manager-api-cromwell)
+- [job-manager-ui](https://console.cloud.google.com/artifacts/docker/broad-dsp-gcr-public/us/us.gcr.io/job-manager-ui?project=broad-dsp-gcr-public)
+- [job-manager-api-cromwell](https://console.cloud.google.com/artifacts/docker/broad-dsp-gcr-public/us/us.gcr.io/job-manager-api-cromwell?project=broad-dsp-gcr-public)
