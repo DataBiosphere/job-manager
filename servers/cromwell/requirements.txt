@@ -17,10 +17,10 @@ MarkupSafe==2.1.1
 pathlib==1.0.1
 python-dateutil==2.6.0
 pytz==2022.4
-requests==2.28.1
+requests==2.32.5
 six==1.11.0
 swagger-spec-validator==2.7.6
 typing==3.6.1
-urllib3==1.26.5
+urllib3==2.6.3
 Werkzeug==3.0.6
 uvicorn==0.32.1
