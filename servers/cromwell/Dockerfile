@@ -1,4 +1,4 @@
-FROM us.gcr.io/broad-dsp-gcr-public/base/jre:11-debian
+FROM us.gcr.io/broad-dsp-gcr-public/base/jre:21-debian
 
 WORKDIR /job-manager
 
@@ -6,7 +6,7 @@ ADD ./ /job-manager
 
 RUN /bin/bash -c scripts/rebuild_swagger.sh
 
-FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.10-debian
+FROM us.gcr.io/broad-dsp-gcr-public/base/python:3.11-debian
 
 WORKDIR /app
 
