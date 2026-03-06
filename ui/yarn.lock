@@ -326,20 +326,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:^14.2.0":
-  version: 14.2.0
-  resolution: "@angular/cdk@npm:14.2.0"
+"@angular/cdk@npm:^15.2.9":
+  version: 15.2.9
+  resolution: "@angular/cdk@npm:15.2.9"
   dependencies:
-    parse5: ^5.0.0
+    parse5: ^7.1.2
     tslib: ^2.3.0
   peerDependencies:
-    "@angular/common": ^14.0.0 || ^15.0.0
-    "@angular/core": ^14.0.0 || ^15.0.0
+    "@angular/common": ^15.0.0 || ^16.0.0
+    "@angular/core": ^15.0.0 || ^16.0.0
     rxjs: ^6.5.3 || ^7.4.0
   dependenciesMeta:
     parse5:
       optional: true
-  checksum: 34da5c7a55bc590999b0f4818f5c4d2b34d1255eba7e2f2615576f6cd608df9d525e83b6c4e2c4e8d2d8745c9f23ca236dfed0ae9e756a8375a7961feec57eab
+  checksum: fb4d44a80c38a6716480e635c072fe982d223f953c3360f098de3e19865630dbee93070e2ed1eaba3eca1c67798e663ca9dbc9d705b0338a9a42e2825c88ad9c
   languageName: node
   linkType: hard
 
@@ -8399,7 +8399,7 @@ __metadata:
     "@angular-devkit/build-angular": ^19.2.22
     "@angular-eslint/schematics": ^19.8.1
     "@angular/animations": ^19.2.19
-    "@angular/cdk": ^14.2.0
+    "@angular/cdk": ^15.2.9
     "@angular/cli": ^19.2.22
     "@angular/common": ^19.2.19
     "@angular/compiler": ^19.2.19
@@ -10177,14 +10177,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5@npm:^5.0.0":
-  version: 5.1.1
-  resolution: "parse5@npm:5.1.1"
-  checksum: 613a714af4c1101d1cb9f7cece2558e35b9ae8a0c03518223a4a1e35494624d9a9ad5fad4c13eab66a0e0adccd9aa3d522fc8f5f9cc19789e0579f3fa0bdfc65
-  languageName: node
-  linkType: hard
-
-"parse5@npm:^7.0.0":
+"parse5@npm:^7.0.0, parse5@npm:^7.1.2":
   version: 7.3.0
   resolution: "parse5@npm:7.3.0"
   dependencies:
