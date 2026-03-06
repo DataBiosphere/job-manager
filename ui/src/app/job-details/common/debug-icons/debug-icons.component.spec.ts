@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { Component, DebugElement, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from "@angular/material/dialog";
@@ -34,29 +34,27 @@ describe('JobDebugIconsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         TestDebugIconsComponent,
         JobDebugIconsComponent
-      ],
-      imports: [
-        BrowserAnimationsModule,
+    ],
+    imports: [BrowserAnimationsModule,
         ClrIconModule,
         ClrTooltipModule,
-        HttpClientModule,
         MatDialogModule,
         MatIconModule,
         MatSnackBarModule,
-        SharedModule
-      ],
-      providers: [
-        {provide: GcsService},
-        {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null, null, null)},
-        {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
-        {provide: JobManagerService, useValue: fakeJobService},
-        {provide: SamService},
-        {provide: ConfigLoaderService, useValue: new FakeConfigLoaderService()}
-      ],
-    }).compileComponents();
+        SharedModule],
+    providers: [
+        { provide: GcsService },
+        { provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null, null, null) },
+        { provide: CapabilitiesService, useValue: fakeCapabilitiesService },
+        { provide: JobManagerService, useValue: fakeJobService },
+        { provide: SamService },
+        { provide: ConfigLoaderService, useValue: new FakeConfigLoaderService() },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {

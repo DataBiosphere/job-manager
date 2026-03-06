@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { Component, DebugElement, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from "@angular/material/button";
@@ -163,7 +163,7 @@ describe('JobTabsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         JobAttemptComponent,
         JobDebugIconsComponent,
         JobTabsComponent,
@@ -171,13 +171,11 @@ describe('JobTabsComponent', () => {
         JobResourcesTableComponent,
         JobTimingDiagramComponent,
         TestTasksComponent
-      ],
-      imports: [
-        BrowserAnimationsModule,
+    ],
+    imports: [BrowserAnimationsModule,
         ClrIconModule,
         ClrTooltipModule,
         CommonModule,
-        HttpClientModule,
         MatButtonModule,
         MatDialogModule,
         MatExpansionModule,
@@ -188,17 +186,17 @@ describe('JobTabsComponent', () => {
         MatTabsModule,
         MatTooltipModule,
         Ng2GoogleChartsModule,
-        SharedModule
-      ],
-      providers: [
-        {provide: GcsService, useValue: new FakeGcsService('test-bucket', null, null)},
-        {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null, null, null)},
-        {provide: JobManagerService, useValue: fakeJobService},
-        {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
-        {provide: SamService},
-        {provide: ConfigLoaderService, useValue: new FakeConfigLoaderService()}
-      ]
-    }).compileComponents();
+        SharedModule],
+    providers: [
+        { provide: GcsService, useValue: new FakeGcsService('test-bucket', null, null) },
+        { provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null, null, null) },
+        { provide: JobManagerService, useValue: fakeJobService },
+        { provide: CapabilitiesService, useValue: fakeCapabilitiesService },
+        { provide: SamService },
+        { provide: ConfigLoaderService, useValue: new FakeConfigLoaderService() },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {
