@@ -50,7 +50,7 @@ describe('JobPanelsComponent', () => {
     };
   let fakeJobService = new FakeJobManagerService([minimalJob, completeJob]);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         JobDebugIconsComponent,
@@ -94,7 +94,7 @@ describe('JobPanelsComponent', () => {
       .toContain(minimalJob.id);
   }));
 
-  it('should display all features with complete job', async(() => {
+  it('should display all features with complete job', waitForAsync(() => {
     testComponent.job = completeJob;
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;

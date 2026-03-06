@@ -131,7 +131,7 @@ describe('DashboardComponent', () => {
   let snackBar: MatSnackBar;
   const TEST_PROJECT = 'test-project';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fakeJobService = new FakeAggregationService(TEST_AGGREGATION_RESPONSE);
     const capabilities : CapabilitiesResponse = {
       displayFields: [

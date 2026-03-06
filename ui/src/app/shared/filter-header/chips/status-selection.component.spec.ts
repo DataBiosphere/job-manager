@@ -12,7 +12,7 @@ describe('StatusSelectionComponent', () => {
   let parentComponent: TestStatusSelectionComponent;
   let testComponent: StatusSelectionComponent;
   let fixture: ComponentFixture<TestStatusSelectionComponent>;
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         StatusSelectionComponent,
@@ -31,14 +31,14 @@ describe('StatusSelectionComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fixture = TestBed.createComponent(TestStatusSelectionComponent);
     parentComponent = fixture.componentInstance;
     fixture.detectChanges();
     testComponent = parentComponent.statusSelectionComponent;
   }));
 
-  it('should set up status list', async(() => {
+  it('should set up status list', waitForAsync(() => {
     expect(testComponent.currentChipValues).toContain("Running");
     expect(testComponent.currentChipValues).toContain("Failed");
     expect(testComponent.currentChipValues.length).toEqual(2);

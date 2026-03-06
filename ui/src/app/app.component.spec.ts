@@ -24,7 +24,7 @@ describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let testComponent: AppComponent;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     let snackBar: MatSnackBar;
     let fakeCapabilitiesService = new FakeCapabilitiesService({});
     let authService = new AuthService(null, fakeCapabilitiesService, null, snackBar, null, null);

@@ -119,7 +119,7 @@ describe('GroupedSummaryComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         GroupedSummaryComponent,

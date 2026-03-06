@@ -71,7 +71,7 @@ describe('JobDebugIconsComponent', () => {
     expect(de.queryAll(By.css('clr-icon[shape=exclamation-triangle]')).length).toEqual(0);
   }));
 
-  it('should display message icon if displayMessage is set to true', async(() => {
+  it('should display message icon if displayMessage is set to true', waitForAsync(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.displayMessage = true;
     let de: DebugElement = fixture.debugElement;
@@ -79,45 +79,45 @@ describe('JobDebugIconsComponent', () => {
     expect(de.queryAll(By.css('clr-icon[shape=exclamation-triangle]')).length).toEqual(1);
   }));
 
-  it('should calculate the right location for backend log', async(() => {
+  it('should calculate the right location for backend log', waitForAsync(() => {
     fixture.detectChanges();
     testComponent.job.backendLog = 'gs://test-bucket/test-log.txt';
     fixture.detectChanges();
     expect(testComponent.jobDebugIconsComponent.getResourceUrl(testComponent.job.backendLog)).toEqual('https://console.cloud.google.com/storage/browser/test-bucket?prefix=test-log.txt');
   }));
 
-  it('should link to the right location for execution directory', async(() => {
+  it('should link to the right location for execution directory', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('a.execution-directory-button'))[0].nativeElement.href).toEqual('https://console.cloud.google.com/storage/browser/test-bucket/test-job/');
   }));
 
-  it('should not link to anything when there is no GCP Batch operation id', async(() => {
+  it('should not link to anything when there is no GCP Batch operation id', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('a.operation-details-button')).length).toBe(0);
   }));
 
-  it('should not return a GCP Batch URL for unexpected operation ids', async(() => {
+  it('should not return a GCP Batch URL for unexpected operation ids', waitForAsync(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "foo/bar";
     expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl()).toEqual('');
   }));
 
-  it('should not return a GCP Batch URL for PAPI operation ids', async(() => {
+  it('should not return a GCP Batch URL for PAPI operation ids', waitForAsync(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "projects/1088423515928/locations/us-central1/operations/16424150744502";
     expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl()).toEqual('');
   }));
 
-  it('should return a GCP Batch URL for Batch operation ids', async(() => {
+  it('should return a GCP Batch URL for Batch operation ids', waitForAsync(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
     let expectedUrl = "https://console.cloud.google.com/batch/jobsDetail/regions/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/details?project=my-nice-project";
     expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl()).toEqual(expectedUrl);
   }));
 
-  it('should return a GCP Batch URL for Batch operation ids with the new human-readable format', async(() => {
+  it('should return a GCP Batch URL for Batch operation ids with the new human-readable format', waitForAsync(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-e83cf9a5-imputationbeaglephase-0-2-f26c7050";
     fixture.detectChanges();
@@ -125,7 +125,7 @@ describe('JobDebugIconsComponent', () => {
     expect(testComponent.jobDebugIconsComponent.getOperationalDetailsUrl()).toEqual(expectedUrl);
   }));
 
-  it('should link to the right location for GCP Batch operation details', async(() => {
+  it('should link to the right location for GCP Batch operation details', waitForAsync(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
     fixture.detectChanges();
@@ -134,7 +134,7 @@ describe('JobDebugIconsComponent', () => {
     expect(de.queryAll(By.css('a.operation-details-button'))[0].nativeElement.href).toEqual(expectedUrl);
   }));
 
-  it('should link to the right location for GCP Batch logs', async(() => {
+  it('should link to the right location for GCP Batch logs', waitForAsync(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
     testComponent.job.backendLog = "";
@@ -144,7 +144,7 @@ describe('JobDebugIconsComponent', () => {
     expect(de.queryAll(By.css('a.backend-log-button'))[0].nativeElement.href).toEqual(expectedUrl);
   }));
 
-  it('should disable the log icon when backend log datum exists but the file cannot be loaded', async(() => {
+  it('should disable the log icon when backend log datum exists but the file cannot be loaded', waitForAsync(() => {
     fixture.detectChanges();
     testComponent.jobDebugIconsComponent.operationId = "projects/my-nice-project/locations/the-moon/jobs/job-aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee";
     testComponent.job.backendLog = "f00bar"; // exists but not valid

@@ -97,7 +97,7 @@ describe('FilterHeaderComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fixture = TestBed.createComponent(TestHeaderComponent);
     fixture.detectChanges();
     testComponent = fixture.componentInstance.headerComponent;
@@ -107,7 +107,7 @@ describe('FilterHeaderComponent', () => {
       .set('status', 'Running');
   }));
 
-  it('should display a chip for each query filter', async(() => {
+  it('should display a chip for each query filter', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.chipShell')).length).toEqual(3);
@@ -127,7 +127,7 @@ describe('FilterHeaderComponent', () => {
     expect(fixture.debugElement.queryAll(By.css('.chipShell')).length).toEqual(4);
   }));
 
-  it('should not show status buttons', async(() => {
+  it('should not show status buttons', waitForAsync(() => {
     testComponent.chips.set('status', 'list,of,status');
     testComponent.search();
     fixture.detectChanges();
@@ -137,7 +137,7 @@ describe('FilterHeaderComponent', () => {
     });
   }));
 
-  it('should show status buttons', async(() => {
+  it('should show status buttons', waitForAsync(() => {
     testComponent.chips.delete('status');
     testComponent.search();
     fixture.detectChanges();
@@ -147,7 +147,7 @@ describe('FilterHeaderComponent', () => {
     });
   }));
 
-  it('should show status counts', async(() => {
+  it('should show status counts', waitForAsync(() => {
     testComponent.chips.delete('status');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
@@ -164,7 +164,7 @@ describe('FilterHeaderComponent', () => {
     });
   }));
 
-  it('should show hide status counts on non-exhaustive', async(() => {
+  it('should show hide status counts on non-exhaustive', waitForAsync(() => {
     testComponent.chips.delete('status');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
@@ -181,7 +181,7 @@ describe('FilterHeaderComponent', () => {
     });
   }));
 
-  it('should not show length of inexhaustive job streams of unknown length', async(() => {
+  it('should not show length of inexhaustive job streams of unknown length', waitForAsync(() => {
     testComponent.jobs.next({
       results: [testJob1],
       totalSize: undefined,
@@ -205,7 +205,7 @@ describe('FilterHeaderComponent', () => {
       .toContain(' 1 – 2 of 2 '); // <-- this is an en-dash, not a hyphen
   }));
 
-  it('should show length of inexhaustive job streams of known length', async(() => {
+  it('should show length of inexhaustive job streams of known length', waitForAsync(() => {
     testComponent.jobs.next({
       results: [testJob1, testJob2],
       totalSize: 25,

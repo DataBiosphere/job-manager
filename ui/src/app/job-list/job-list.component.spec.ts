@@ -67,7 +67,7 @@ describe('JobListComponent', () => {
   let authService: AuthService;
   let snackBar: MatSnackBar;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
     capabilities = {
       displayFields: [
@@ -149,7 +149,7 @@ describe('JobListComponent', () => {
     });
   }
 
-  it('displays error message bar', async(() => {
+  it('displays error message bar', waitForAsync(() => {
     let error = {
       status: 400,
       title: 'Bad Request',
@@ -259,7 +259,7 @@ describe('JobListComponent', () => {
     expectJobsRendered([jobs[1]]);
   }));
 
-  it('reloads properly on abort', async(() => {
+  it('reloads properly on abort', waitForAsync(() => {
     const jobs = testJobs(5);
     fakeJobService.jobs = jobs;
     fixture.detectChanges();
@@ -333,7 +333,7 @@ describe('JobListComponent', () => {
     expect(de.queryAll(By.css('.fake-projects')).length).toEqual(1);
   }));
 
-  it('does not display the hide archived setting without the right project setting', async(() => {
+  it('does not display the hide archived setting without the right project setting', waitForAsync(() => {
     testComponent.settingsService.setSavedSettingValue('hideArchived', null, testComponent.projectId);
     fixture.detectChanges();
     const de: DebugElement = fixture.debugElement;

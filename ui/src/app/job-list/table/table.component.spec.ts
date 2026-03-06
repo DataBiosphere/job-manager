@@ -115,7 +115,7 @@ describe('JobsTableComponent', () => {
     }];
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     jobs = testJobs();
     fakeJobService = new FakeJobManagerService(jobs)
     TestBed.configureTestingModule({
@@ -177,13 +177,13 @@ describe('JobsTableComponent', () => {
     return !bulkLabelEditButton.componentInstance.disabled;
   }
 
-  it('should display a row for each job', async(() => {
+  it('should display a row for each job', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.mat-row')).length).toEqual(jobs.length);
   }));
 
-  it('should display general job data in row', async(() => {
+  it('should display general job data in row', waitForAsync(() => {
     testComponent.jobs.next([jobs[0]]);
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
@@ -220,7 +220,7 @@ describe('JobsTableComponent', () => {
       .toEqual(jobs[0].labels['status-detail']);
   }))
 
-  it('should not display editable field for job label if config has not explicitly said it is editable', async(() => {
+  it('should not display editable field for job label if config has not explicitly said it is editable', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
@@ -229,7 +229,7 @@ describe('JobsTableComponent', () => {
       .toEqual(0);
   }));
 
-  it('should display editable field for job label if config has explicitly said it is editable', async(() => {
+  it('should display editable field for job label if config has explicitly said it is editable', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
@@ -239,12 +239,12 @@ describe('JobsTableComponent', () => {
       .toEqual(de.queryAll(By.css('.cdk-column-labels-comment')).length - 1);
   }));
 
-  it('hides the group selection on 0 selection', async(() => {
+  it('hides the group selection on 0 selection', waitForAsync(() => {
     fixture.detectChanges();
     expect(isGroupSelectionRendered()).toBeFalsy();
   }));
 
-  it('disables the abort button for non-abortable selection', async(() => {
+  it('disables the abort button for non-abortable selection', waitForAsync(() => {
     fixture.detectChanges();
     for (let j of jobs) {
       j.status = JobStatus.Succeeded;
@@ -256,7 +256,7 @@ describe('JobsTableComponent', () => {
     expect(isGroupAbortIsEnabled()).toBeFalsy();
   }))
 
-  it('enables the abort button when some selected are abortable', async(() => {
+  it('enables the abort button when some selected are abortable', waitForAsync(() => {
     fixture.detectChanges();
     jobs[2].status = JobStatus.Running;
     testComponent.jobs.next(jobs);
@@ -266,7 +266,7 @@ describe('JobsTableComponent', () => {
     expect(isGroupAbortIsEnabled()).toBeTruthy();
   }))
 
-  it('enables the abort button when all selected are abortable', async(() => {
+  it('enables the abort button when all selected are abortable', waitForAsync(() => {
     fixture.detectChanges();
     for (let j of jobs) {
       j.status = JobStatus.Running;
@@ -278,7 +278,7 @@ describe('JobsTableComponent', () => {
     expect(isGroupAbortIsEnabled()).toBeTruthy();
   }))
 
-  it('enables the bulk edit button when there is a bulkEditable field and at least one job selected', async(() => {
+  it('enables the bulk edit button when there is a bulkEditable field and at least one job selected', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[1].nativeElement.click();
@@ -286,7 +286,7 @@ describe('JobsTableComponent', () => {
     expect(isBulkLabelEditIsEnabled()).toBeTruthy();
   }))
 
-  it('displays error message bar', async(() => {
+  it('displays error message bar', waitForAsync(() => {
     let error = {
       status: 412,
       title: 'Precondition Failed',
@@ -300,7 +300,7 @@ describe('JobsTableComponent', () => {
       .toEqual("Precondition Failed (412): Job already in terminal status `FAILED`Dismiss");
   }))
 
-  it('shows error on failed abort', async(() => {
+  it('shows error on failed abort', waitForAsync(() => {
     let count = 0;
     fakeJobService.abortJob = () => {
       // Fail every odd request.
@@ -337,7 +337,7 @@ describe('JobsTableComponent', () => {
     });
   }))
 
-  it('should select multiple jobs on shift-click', async(() => {
+  it('should select multiple jobs on shift-click', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[1].nativeElement.click();
@@ -348,7 +348,7 @@ describe('JobsTableComponent', () => {
       .toEqual([false, true, true, true, false]);
   }))
 
-  it('should select multiple jobs on shift-click (reverse order)', async(() => {
+  it('should select multiple jobs on shift-click (reverse order)', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[4].nativeElement.click();
@@ -359,7 +359,7 @@ describe('JobsTableComponent', () => {
       .toEqual([false, false, true, true, true]);
   }))
 
-  it('should select multiple jobs on shift-click (with an already-checked job within the range)', async(() => {
+  it('should select multiple jobs on shift-click (with an already-checked job within the range)', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[1].nativeElement.click();
@@ -371,7 +371,7 @@ describe('JobsTableComponent', () => {
       .toEqual([true, true, true, true, false]);
   }))
 
-  it('should select multiple jobs on shift-click (if you check/uncheck a job within the range)', async(() => {
+  it('should select multiple jobs on shift-click (if you check/uncheck a job within the range)', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[0].nativeElement.click();
@@ -385,7 +385,7 @@ describe('JobsTableComponent', () => {
     expect(testComponent.jobsTableComponent.allSelected()).toEqual(true);
   }))
 
-  it('should select multiple jobs on shift-click (if one of the boundaries is already selected)', async(() => {
+  it('should select multiple jobs on shift-click (if one of the boundaries is already selected)', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[0].nativeElement.click();

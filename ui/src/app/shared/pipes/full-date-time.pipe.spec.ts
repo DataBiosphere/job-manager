@@ -4,7 +4,7 @@ import { FullDateTimePipe } from "./full-date-time.pipe";
 
 
 describe('FullDateTimeFormat', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         FullDateTimePipe

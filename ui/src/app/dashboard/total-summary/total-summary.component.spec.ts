@@ -32,7 +32,7 @@ describe('TotalSummaryComponent', () => {
   let testComponent: TotalSummaryComponent;
   let fixture: ComponentFixture<TestHostComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         TotalSummaryComponent,

@@ -70,18 +70,18 @@ describe('FilterChipComponent', () => {
     testComponent = fixture.componentInstance.filterChipComponent;
   }));
 
-  it('should display default chip value', async(() => {
+  it('should display default chip value', waitForAsync(() => {
     expect(testComponent.getDisplayValue()).toBe("key: initialValue");
   }));
 
-  it('should update chip value and trigger callback', async(() => {
+  it('should update chip value and trigger callback', waitForAsync(() => {
     spyOn(fixture.componentInstance, 'updateValueCallback').and.callThrough();
     testComponent.setChipValue("newValue");
     expect(fixture.componentInstance.updateValueCallback).toHaveBeenCalledWith("newValue");
     expect(testComponent.getDisplayValue()).toBe("key: newValue");
   }));
 
-  it('should trigger remove callback', async(() => {
+  it('should trigger remove callback', waitForAsync(() => {
     spyOn(fixture.componentInstance, 'removeChipCallback').and.callThrough();
     fixture.debugElement.query(By.css('.chip')).triggerEventHandler('removed', null);
     expect(fixture.componentInstance.removeChipCallback).toHaveBeenCalled();

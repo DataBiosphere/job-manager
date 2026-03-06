@@ -22,7 +22,7 @@ const queryMap:  Map<String, String[]> = new Map()
 const queryMapString: string = 'name=job-name&status=Running&status=Aborted&key=value&projectId=project-id';
 
 describe('URLSearchParamsUtils', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
 
