@@ -1,8 +1,7 @@
 # coding: utf-8
 
 import sys
-
-from setuptools import find_packages, setup
+from setuptools import setup, find_packages
 
 NAME = "jobs"
 VERSION = "1.0.0"
