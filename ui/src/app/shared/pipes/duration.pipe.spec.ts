@@ -1,4 +1,4 @@
-import {TestBed, async} from '@angular/core/testing';
+import {TestBed, waitForAsync} from '@angular/core/testing';
 
 import {DurationPipe} from './duration.pipe';
 

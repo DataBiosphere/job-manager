@@ -4,7 +4,7 @@ import {By} from '@angular/platform-browser';
 import {RouterTestingModule} from '@angular/router/testing';
 import {Injectable} from '@angular/core';
 import {Location} from '@angular/common';
-import {async, flush, TestBed, fakeAsync, tick, ComponentFixture} from '@angular/core/testing';
+import {flush, TestBed, fakeAsync, tick, ComponentFixture, waitForAsync} from '@angular/core/testing';
 import {ClrIconModule} from '@clr/angular';
 
 import {AppComponent} from './app.component';

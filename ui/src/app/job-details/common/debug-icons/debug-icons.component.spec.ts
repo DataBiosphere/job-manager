@@ -1,6 +1,6 @@
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { Component, DebugElement, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatIconModule, MatIconRegistry } from "@angular/material/icon";
 import { MatSnackBarModule } from "@angular/material/snack-bar";

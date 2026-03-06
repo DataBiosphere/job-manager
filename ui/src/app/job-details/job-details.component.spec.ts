@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, DebugElement } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatDialogModule } from "@angular/material/dialog";
@@ -61,7 +61,7 @@ describe('JobDetailsComponent', () => {
     };
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fakeJobService = new FakeJobManagerService([testJob()]);
     let fakeCapabilitiesService: FakeCapabilitiesService = new FakeCapabilitiesService({});
     let authService = new AuthService(null, fakeCapabilitiesService, null, null,null,null);
