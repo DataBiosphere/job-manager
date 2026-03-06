@@ -1,4 +1,4 @@
-import {TestBed, ComponentFixture, waitForAsync} from '@angular/core/testing';
+import {TestBed, ComponentFixture} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {Component, DebugElement, ViewChild} from '@angular/core';
@@ -84,7 +84,7 @@ describe('JobPanelsComponent', () => {
     testComponent = fixture.componentInstance;
   });
 
-  it('should display with minimal job', async(() => {
+  it('should display with minimal job', waitForAsync(() => {
     testComponent.job = minimalJob;
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
@@ -112,10 +112,14 @@ describe('JobPanelsComponent', () => {
 
   @Component({
     selector: 'jm-test-panels-component',
-    template: `<jm-panels [job]="job" [primaryLabels]="['label1', 'label2']"></jm-panels>`,
+    template: `<jm-panels [job]="job" [primaryLabels]="primaryLabels"></jm-panels>`,
     standalone: false
 })
   class TestPanelsComponent {
+    public primaryLabels = [
+      { field: 'labels.label1', display: 'Label 1' },
+      { field: 'labels.label2', display: 'Label 2' }
+    ];
     public job: JobMetadataResponse = {
       id: '',
       status: JobStatus.Failed,

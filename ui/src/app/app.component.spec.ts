@@ -73,12 +73,8 @@ describe('AppComponent', () => {
     const location = TestBed.get(Location);
     location.replaceState('error');
     const router: Router = TestBed.get(Router);
-    // Stop router errors from propagating as they fail the test.
-    router.errorHandler = () => {
-      return {
-        handleError: () => undefined
-      };
-    };
+    // In newer Angular versions, navigation errors are handled differently
+    // and don't fail the test by default
     router.initialNavigation();
     tick();
     fixture.detectChanges();

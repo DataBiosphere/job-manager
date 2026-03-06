@@ -44,7 +44,7 @@ describe('StatusSelectionComponent', () => {
     expect(testComponent.currentChipValues.length).toEqual(2);
   }));
 
-  it('should update status list', async( () => {
+  it('should update status list', waitForAsync( () => {
     spyOn(parentComponent, 'updateValueCallback').and.callThrough();
     testComponent.changeStatus('Running', false);
     testComponent.changeStatus('Completed', true);

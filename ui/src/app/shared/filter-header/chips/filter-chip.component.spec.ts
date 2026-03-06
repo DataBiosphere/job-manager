@@ -32,7 +32,7 @@ describe('FilterChipComponent', () => {
     queryExtensions: ['projectId']
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         FilterChipComponent,
@@ -64,7 +64,7 @@ describe('FilterChipComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fixture = TestBed.createComponent(TestFilterChipComponent);
     fixture.detectChanges();
     testComponent = fixture.componentInstance.filterChipComponent;
