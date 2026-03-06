@@ -32,7 +32,7 @@ describe('JobDebugIconsComponent', () => {
   let fakeCapabilitiesService =  new FakeCapabilitiesService({});
   let fakeJobService: FakeJobManagerService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
     declarations: [
         TestDebugIconsComponent,
@@ -65,7 +65,7 @@ describe('JobDebugIconsComponent', () => {
     testComponent = fixture.componentInstance;
   });
 
-  it('should not display message icon if displayMessage is set to false', async(() => {
+  it('should not display message icon if displayMessage is set to false', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('clr-icon[shape=exclamation-triangle]')).length).toEqual(0);

@@ -60,7 +60,7 @@ describe('FilterHeaderComponent', () => {
     queryExtensions: ['projectId']
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
     const authService = new AuthService(null, fakeCapabilitiesService, null, snackBar, null, null);
 
@@ -113,14 +113,14 @@ describe('FilterHeaderComponent', () => {
     expect(de.queryAll(By.css('.chipShell')).length).toEqual(3);
   }));
 
-  it('should stage a chip', async ( () => {
+  it('should stage a chip', waitForAsync( () => {
     testComponent.addChip('key');
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('');
     expect(fixture.debugElement.queryAll(By.css('.chipShell')).length).toEqual(4);
   }));
 
-  it('should stage and complete a chip', async (() => {
+  it('should stage and complete a chip', waitForAsync(() => {
     testComponent.addChip('key: value');
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('value');

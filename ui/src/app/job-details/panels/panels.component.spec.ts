@@ -1,7 +1,8 @@
 import {TestBed, ComponentFixture} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {Component, DebugElement, ViewChild} from '@angular/core';
+import { Component, DebugElement, ViewChild} from '@angular/core';
+import { waitForAsync } from '@angular/core/testing';
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatGridListModule} from "@angular/material/grid-list";
