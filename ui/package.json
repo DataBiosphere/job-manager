@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.22",
-    "@angular-eslint/schematics": "^17.5.3",
+    "@angular-eslint/schematics": "^18.4.3",
     "@angular/cli": "^19.2.22",
     "@angular/compiler-cli": "^19.2.19",
     "@angular/language-service": "^19.2.19",
