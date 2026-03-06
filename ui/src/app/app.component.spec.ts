@@ -1,9 +1,4 @@
-import {
-  ActivatedRouteSnapshot,
-  Router,
-  Resolve,
-  RouterStateSnapshot,
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {RouterTestingModule} from '@angular/router/testing';
@@ -101,7 +96,7 @@ describe('AppComponent', () => {
 });
 
 @Injectable()
-class ErrorResolver implements Resolve<void> {
+class ErrorResolver  {
   static readonly error = {
     status: 500,
     title: 'server exploded'

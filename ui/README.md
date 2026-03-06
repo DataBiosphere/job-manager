@@ -13,6 +13,10 @@ Run `ng generate component component-name` to generate a new component. You can 
 ng generate directive|pipe|service|class|guard|interface|enum|module
 ```
 
+# Angular upgrades
+Run the following command to upgrade to Angular 19 (change version:
+`ng update @angular/core@15 @angular/cli@15`
+
 ## Build
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 

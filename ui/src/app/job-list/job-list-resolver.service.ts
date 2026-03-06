@@ -1,9 +1,4 @@
-import {
-  ActivatedRouteSnapshot,
-  Router,
-  Resolve,
-  RouterStateSnapshot
-} from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import {Injectable} from '@angular/core';
 import {map, take} from 'rxjs/operators';
 
@@ -16,7 +11,7 @@ import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 import {SettingsService} from "../core/settings.service";
 
 @Injectable()
-export class JobListResolver implements Resolve<JobStream> {
+export class JobListResolver  {
   constructor(
     private jobManagerService: JobManagerService,
     private settingsService: SettingsService,
