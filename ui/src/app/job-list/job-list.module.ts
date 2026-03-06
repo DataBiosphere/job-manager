@@ -54,9 +54,6 @@ import { JobsTableComponent } from './table/table.component';
     RouterModule,
     SharedModule,
   ],
-  entryComponents: [
-    JobsBulkEditComponent
-  ],
   declarations: [
     JobListComponent,
     JobsBulkEditComponent,

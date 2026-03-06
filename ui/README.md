@@ -14,8 +14,10 @@ ng generate directive|pipe|service|class|guard|interface|enum|module
 ```
 
 # Angular upgrades
-Run the following command to upgrade to Angular 19 (change version:
+Run the following command to upgrade to Angular 19 (change versions as needed):
 `ng update @angular/core@15 @angular/cli@15`
+
+This guide will also show a more in-depth list of changes to make when upgrading Angular versions: https://angular.dev/update-guide?v=14.0-19.0&l=2
 
 ## Build
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
