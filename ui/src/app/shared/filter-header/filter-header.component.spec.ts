@@ -234,9 +234,9 @@ describe('FilterHeaderComponent', () => {
 
   @Component({
     selector: 'jm-test-table-component',
-    template:
-      `<jm-filter-header [jobs]="jobs" [pageSize]="2"></jm-filter-header>`
-  })
+    template: `<jm-filter-header [jobs]="jobs" [pageSize]="2"></jm-filter-header>`,
+    standalone: false
+})
   class TestHeaderComponent {
     public jobs = new BehaviorSubject<JobListView>(initJobs);
     @ViewChild(FilterHeaderComponent)
@@ -245,8 +245,9 @@ describe('FilterHeaderComponent', () => {
 
   @Component({
     selector: 'jm-filter-chip',
-    template: ''
-  })
+    template: '',
+    standalone: false
+})
   class MockFilterChipComponent {
     @Input() chipKey: string;
     @Input() initialChipValue: string;

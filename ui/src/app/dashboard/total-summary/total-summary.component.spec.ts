@@ -71,8 +71,9 @@ describe('TotalSummaryComponent', () => {
 
   @Component({
     selector: `jm-test-host-component`,
-    template: `<jm-total-summary [summary]="componentSummary" [statusArray]="statusArray"></jm-total-summary>`
-  })
+    template: `<jm-total-summary [summary]="componentSummary" [statusArray]="statusArray"></jm-total-summary>`,
+    standalone: false
+})
 
   class TestHostComponent {
     public componentSummary: StatusCounts;

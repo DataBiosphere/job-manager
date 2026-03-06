@@ -18,9 +18,10 @@ enum CardStatus {
 }
 
 @Component({
-  selector: 'jm-grouped-summary',
-  templateUrl: './grouped-summary.component.html',
-  styleUrls: ['./grouped-summary.component.css']
+    selector: 'jm-grouped-summary',
+    templateUrl: './grouped-summary.component.html',
+    styleUrls: ['./grouped-summary.component.css'],
+    standalone: false
 })
 export class GroupedSummaryComponent implements OnInit {
   @Input() aggregation: Aggregation;

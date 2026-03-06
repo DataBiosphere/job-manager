@@ -399,9 +399,9 @@ describe('JobsTableComponent', () => {
 
   @Component({
     selector: 'jm-test-table-component',
-    template:
-      `<jm-job-list-table [dataSource]="dataSource" [displayFields]="displayFields"></jm-job-list-table>`
-  })
+    template: `<jm-job-list-table [dataSource]="dataSource" [displayFields]="displayFields"></jm-job-list-table>`,
+    standalone: false
+})
   class TestTableComponent {
     public jobs = new BehaviorSubject<QueryJobsResult[]>([]);
     public dataSource = new TestDataSource(this.jobs);

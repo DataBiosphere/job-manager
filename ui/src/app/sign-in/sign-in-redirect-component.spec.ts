@@ -83,19 +83,22 @@ describe("SignInRedirectComponent", () => {
 });
 
 @Component({
-  selector: "jm-test-app",
-  template: "<router-outlet></router-outlet>",
+    selector: "jm-test-app",
+    template: "<router-outlet></router-outlet>",
+    standalone: false
 })
 class AppComponent {}
 
 @Component({
-  selector: "jm-test-sign-in",
-  template: "<router-outlet></router-outlet>",
+    selector: "jm-test-sign-in",
+    template: "<router-outlet></router-outlet>",
+    standalone: false
 })
 class TestSignInComponent {}
 
 @Component({
-  selector: "jm-test-return-url",
-  template: "<router-outlet></router-outlet>"
+    selector: "jm-test-return-url",
+    template: "<router-outlet></router-outlet>",
+    standalone: false
 })
 class TestReturnComponent {}

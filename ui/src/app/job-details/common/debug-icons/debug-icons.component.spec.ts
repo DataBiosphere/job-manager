@@ -160,8 +160,9 @@ describe('JobDebugIconsComponent', () => {
                                [operationId]=""
                                [message]="job.failure"
                                [backendLog]="job.backendLog"
-                               [directory]="job.callRoot"></jm-debug-icons>`
-  })
+                               [directory]="job.callRoot"></jm-debug-icons>`,
+    standalone: false
+})
   class TestDebugIconsComponent {
     public job = job;
     @ViewChild(JobDebugIconsComponent)

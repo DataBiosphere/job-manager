@@ -194,8 +194,9 @@ describe('JobResourcesComponent', () => {
 
   @Component({
     selector: 'jm-test-resources-component',
-    template: `<jm-resources [job]="job"></jm-resources>`
-  })
+    template: `<jm-resources [job]="job"></jm-resources>`,
+    standalone: false
+})
   class TestResourcesComponent {
     public job: JobMetadataResponse = {
       id: '',

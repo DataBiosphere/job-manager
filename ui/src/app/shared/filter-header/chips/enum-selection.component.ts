@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 
 @Component({
-  selector: 'jm-enum-selection',
-  templateUrl: './enum-selection.component.html',
+    selector: 'jm-enum-selection',
+    templateUrl: './enum-selection.component.html',
+    standalone: false
 })
 export class EnumSelectionComponent implements OnInit {
   @Input() initialChipValue: string;

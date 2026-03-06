@@ -250,14 +250,16 @@ describe('DashboardComponent', () => {
 
   @Component({
     selector: 'jm-test-app',
-    template: '<router-outlet></router-outlet>'
-  })
+    template: '<router-outlet></router-outlet>',
+    standalone: false
+})
   class AppComponent {}
 
   @Component({
     selector: 'jm-test-job-list-component',
-    template: '<div>fake job-list page</div>'
-  })
+    template: '<div>fake job-list page</div>',
+    standalone: false
+})
   class TestJobListComponent {
       constructor(public activatedRoute : ActivatedRoute) {}
   }

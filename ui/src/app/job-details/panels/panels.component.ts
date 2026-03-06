@@ -19,9 +19,10 @@ import {ErrorMessageFormatterPipe} from "../../shared/pipes/error-message-format
 import {AuthService} from "../../core/auth.service";
 
 @Component({
-  selector: 'jm-panels',
-  templateUrl: './panels.component.html',
-  styleUrls: ['./panels.component.css'],
+    selector: 'jm-panels',
+    templateUrl: './panels.component.html',
+    styleUrls: ['./panels.component.css'],
+    standalone: false
 })
 export class JobPanelsComponent implements OnInit {
 

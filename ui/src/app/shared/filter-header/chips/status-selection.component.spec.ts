@@ -58,11 +58,11 @@ describe('StatusSelectionComponent', () => {
 
   @Component({
     selector: 'jm-test-status-selection-component',
-    template:
-      `<jm-status-selection
+    template: `<jm-status-selection
         [initialChipValue]="initialValue"
-        (updateValue)="updateValueCallback($event)"></jm-status-selection>`
-  })
+        (updateValue)="updateValueCallback($event)"></jm-status-selection>`,
+    standalone: false
+})
   class TestStatusSelectionComponent {
     @ViewChild(StatusSelectionComponent)
     public statusSelectionComponent: StatusSelectionComponent;

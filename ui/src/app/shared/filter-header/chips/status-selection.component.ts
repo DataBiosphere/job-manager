@@ -2,8 +2,9 @@ import {JobStatus} from "../../model/JobStatus";
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 
 @Component({
-  selector: 'jm-status-selection',
-  templateUrl: './status-selection.component.html',
+    selector: 'jm-status-selection',
+    templateUrl: './status-selection.component.html',
+    standalone: false
 })
 export class StatusSelectionComponent implements OnInit {
   @Input() initialChipValue: string;

@@ -89,13 +89,13 @@ describe('FilterChipComponent', () => {
 
   @Component({
     selector: 'jm-test-filter-chip-component',
-    template:
-      `<jm-filter-chip
+    template: `<jm-filter-chip
         [chipKey]="'key'"
         [initialChipValue]="'initialValue'"
         (updateValue)="updateValueCallback($event)"
-        (removeChip)="removeChipCallback()" ></jm-filter-chip>`
-  })
+        (removeChip)="removeChipCallback()" ></jm-filter-chip>`,
+    standalone: false
+})
   class TestFilterChipComponent {
     @ViewChild(FilterChipComponent)
     public filterChipComponent: FilterChipComponent;
@@ -107,16 +107,18 @@ describe('FilterChipComponent', () => {
 
   @Component({
     selector: 'jm-status-selection',
-    template: ''
-  })
+    template: '',
+    standalone: false
+})
   class MockStatusSelectionComponent {
     @Input() initialChipValue: string;
   }
 
   @Component({
     selector: 'jm-datepicker-input',
-    template: ''
-  })
+    template: '',
+    standalone: false
+})
   class MockDatepickerInputComponent {
     @Input() chipKey: string;
     @Input() initialChipValue: string;

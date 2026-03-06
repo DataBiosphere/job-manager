@@ -204,8 +204,9 @@ describe('GroupedSummaryComponent', () => {
   @Component({
     selector: `jm-test-host-component`,
     template: `<jm-grouped-summary [aggregation]="aggregation"
-                                   [statusArray]="statusArray"></jm-grouped-summary>`
-  })
+                                   [statusArray]="statusArray"></jm-grouped-summary>`,
+    standalone: false
+})
 
   class TestHostComponent {
     public aggregation: Aggregation;

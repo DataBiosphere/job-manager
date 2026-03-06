@@ -164,20 +164,23 @@ describe('JobDetailsComponent', () => {
 
   @Component({
     selector: 'jm-test-app',
-    template: '<router-outlet></router-outlet>'
-  })
+    template: '<router-outlet></router-outlet>',
+    standalone: false
+})
   class AppComponent {}
 
   @Component({
     selector: 'jm-test-job-details-component',
-    template: '<jm-job-details></jm-job-details>'
-  })
+    template: '<jm-job-details></jm-job-details>',
+    standalone: false
+})
   class TestJobDetailsComponent {}
 
   @Component({
     selector: 'jm-fake-job-list-component',
-    template: '<div class="fake-jobs"></div>'
-  })
+    template: '<div class="fake-jobs"></div>',
+    standalone: false
+})
   class FakeJobListComponent {
     constructor(public route: ActivatedRoute) {}
   }

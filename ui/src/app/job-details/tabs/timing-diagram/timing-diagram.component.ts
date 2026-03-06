@@ -3,9 +3,10 @@ import { GoogleChartInterface } from 'ng2-google-charts/ng2-google-charts';
 import { TaskMetadata } from "../../../shared/model/TaskMetadata";
 
 @Component({
-  selector: 'jm-timing-diagram',
-  templateUrl: './timing-diagram.component.html',
-  styleUrls: ['./timing-diagram.component.css'],
+    selector: 'jm-timing-diagram',
+    templateUrl: './timing-diagram.component.html',
+    styleUrls: ['./timing-diagram.component.css'],
+    standalone: false
 })
 export class JobTimingDiagramComponent implements OnInit {
   @Input() metadata: TaskMetadata[] = [];

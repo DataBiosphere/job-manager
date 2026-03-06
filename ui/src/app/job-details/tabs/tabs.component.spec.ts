@@ -268,8 +268,9 @@ describe('JobTabsComponent', () => {
 
   @Component({
     selector: 'jm-test-tasks-component',
-    template: `<jm-tabs [tasks]="job.extensions.tasks" [job]="job"></jm-tabs>`
-  })
+    template: `<jm-tabs [tasks]="job.extensions.tasks" [job]="job"></jm-tabs>`,
+    standalone: false
+})
   class TestTasksComponent {
     public job = job;
     @ViewChild(JobTabsComponent)

@@ -20,9 +20,10 @@ import { JobsBulkEditComponent } from "./bulk-edit/bulk-edit.component";
 
 
 @Component({
-  selector: 'jm-job-list-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.css'],
+    selector: 'jm-job-list-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.css'],
+    standalone: false
 })
 @Injectable()
 export class JobsTableComponent implements OnInit {

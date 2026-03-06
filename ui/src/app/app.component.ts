@@ -5,9 +5,10 @@ import {CustomIconService} from './core/custom-icon.service';
 import { OnInit } from '@angular/core';
 
 @Component({
-  selector: 'jm-app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'jm-app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    standalone: false
 })
 export class AppComponent implements OnInit {
 

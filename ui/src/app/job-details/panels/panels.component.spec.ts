@@ -112,8 +112,9 @@ describe('JobPanelsComponent', () => {
 
   @Component({
     selector: 'jm-test-panels-component',
-    template: `<jm-panels [job]="job" [primaryLabels]="['label1', 'label2']"></jm-panels>`
-  })
+    template: `<jm-panels [job]="job" [primaryLabels]="['label1', 'label2']"></jm-panels>`,
+    standalone: false
+})
   class TestPanelsComponent {
     public job: JobMetadataResponse = {
       id: '',

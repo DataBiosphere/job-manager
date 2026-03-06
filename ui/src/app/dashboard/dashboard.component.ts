@@ -7,9 +7,10 @@ import {URLSearchParamsUtils} from "../shared/utils/url-search-params.utils";
 import {defaultTimeFrame, timeFrameToDescriptionMap} from "../shared/common";
 
 @Component({
-  selector: 'jm-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+    selector: 'jm-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.css'],
+    standalone: false
 })
 export class DashboardComponent implements OnInit {
   aggregationResponse: AggregationResponse;

@@ -6,9 +6,10 @@ import {JobStatus} from "../../../shared/model/JobStatus";
 import {JobStatusIcon, objectNotEmpty} from "../../../shared/common";
 
 @Component({
-  selector: 'jm-scattered-attempts-component',
-  templateUrl: 'scattered-attempts.component.html',
-  styleUrls: ['scattered-attempts.component.css']
+    selector: 'jm-scattered-attempts-component',
+    templateUrl: 'scattered-attempts.component.html',
+    styleUrls: ['scattered-attempts.component.css'],
+    standalone: false
 })
 export class JobScatteredAttemptsComponent {
   @ViewChild('dialogContainer') dialogContainer: HTMLElement;
