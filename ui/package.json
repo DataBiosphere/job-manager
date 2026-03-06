@@ -57,7 +57,7 @@
     "lodash": "^4.17.21",
     "ng2-google-charts": "^7.0.0",
     "ngx-json-viewer": "^3.1.0",
-    "protractor": "^3.3.0",
+    "protractor": "^7.0.0",
     "sass": "^1.54.9",
     "sshpk": "^1.17.0",
     "ts-node": "^10.9.1",
