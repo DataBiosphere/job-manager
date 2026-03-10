@@ -121,7 +121,10 @@ export class JobPanelsComponent implements OnInit {
 
   hasPrimaryLabels(): boolean {
     if (this.primaryLabels && this.job.labels) {
-      return this.primaryLabels.filter(label => this.job.labels.hasOwnProperty(label)).length > 0;
+      return this.primaryLabels.filter(label => {
+        const labelKey = label.field ? label.field.replace('labels.', '') : label;
+        return this.job.labels.hasOwnProperty(labelKey);
+      }).length > 0;
     }
     return false;
   }

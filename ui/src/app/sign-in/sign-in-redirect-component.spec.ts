@@ -53,7 +53,8 @@ describe("SignInRedirectComponent", () => {
     router.initialNavigation();
     router.navigate(["redirect-from-oauth"]);
     tick();
-    const component = de.query(By.css("redirect-from-oauth")).componentInstance;
+    fixture.detectChanges();
+    const component = de.query(By.directive(SignInRedirectComponent));
     expect(component).toBeTruthy();
   }));
 

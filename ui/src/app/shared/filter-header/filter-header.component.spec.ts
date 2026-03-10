@@ -190,7 +190,7 @@ describe('FilterHeaderComponent', () => {
     });
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+    expect(de.query(By.css('.mat-mdc-paginator-range-label')).nativeElement.textContent)
       .toContain(' 1 – 1 of many '); // <-- this is an en-dash, not a hyphen
 
     // Transition to exhaustive, "of X" should now display length (even though totalSize is still null).
@@ -201,7 +201,7 @@ describe('FilterHeaderComponent', () => {
       stale: false
     });
     fixture.detectChanges();
-    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+    expect(de.query(By.css('.mat-mdc-paginator-range-label')).nativeElement.textContent)
       .toContain(' 1 – 2 of 2 '); // <-- this is an en-dash, not a hyphen
   }));
 
@@ -214,7 +214,7 @@ describe('FilterHeaderComponent', () => {
     });
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+    expect(de.query(By.css('.mat-mdc-paginator-range-label')).nativeElement.textContent)
       .toContain(' 1 – 2 of 25 '); // <-- this is an en-dash, not a hyphen
   }));
 

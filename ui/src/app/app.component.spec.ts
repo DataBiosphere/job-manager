@@ -69,25 +69,36 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  it('should show an error on initial nav failure', fakeAsync(() => {
+  it('should show an error on initial nav failure', waitForAsync(() => {
     const location = TestBed.get(Location);
     location.replaceState('error');
     const router: Router = TestBed.get(Router);
-    // In newer Angular versions, navigation errors are handled differently
-    // and don't fail the test by default
-    router.initialNavigation();
-    tick();
-    fixture.detectChanges();
-    const errorComponent =
-      fixture.debugElement.query(By.css('jm-initial-error'));
-    expect(errorComponent).toBeTruthy();
-    expect(errorComponent.nativeElement.textContent).toContain(ErrorResolver.error.title);
-    expect(errorComponent.nativeElement.textContent).toContain("Job Manager is running but encountered a problem");
 
-    // Something is setting a timeout() with a non-0 wait-time; couldn't track
-    // the source but it doesn't seem to be coming from the Job Manager code
-    // itself. Flush it here to avoid a "pending timers" failure.
-    flush();
+    // Mock the zone to catch unhandled rejections
+    spyOn(Zone.current, 'runGuarded').and.callFake((fn: Function) => {
+      try {
+        return fn();
+      } catch (e) {
+        // Suppress the expected error from ErrorResolver
+        if (e && e.status !== 500) {
+          throw e;
+        }
+      }
+    });
+
+    // In newer Angular versions, navigation errors are handled differently
+    // The ErrorResolver will reject, but Angular catches it and shows the error component
+    router.initialNavigation();
+
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+
+      const errorComponent =
+        fixture.debugElement.query(By.css('jm-initial-error'));
+      expect(errorComponent).toBeTruthy();
+      expect(errorComponent.nativeElement.textContent).toContain(ErrorResolver.error.title);
+      expect(errorComponent.nativeElement.textContent).toContain("Job Manager is running but encountered a problem");
+    });
   }));
 });
 

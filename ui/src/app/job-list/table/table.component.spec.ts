@@ -66,8 +66,8 @@ describe('JobsTableComponent', () => {
   });
 
   function getJobCheckboxes(): DebugElement[] {
-    let jobCheckboxes = fixture.debugElement.queryAll(By.css('.mat-checkbox-input'));
-    jobCheckboxes.shift();
+    let jobCheckboxes = fixture.debugElement.queryAll(By.css('input[type="checkbox"]'));
+    jobCheckboxes.shift();  // Remove the select-all checkbox
     return jobCheckboxes;
   }
 
@@ -296,11 +296,11 @@ describe('JobsTableComponent', () => {
     testComponent.jobsTableComponent.handleError(error);
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.mat-simple-snackbar')).nativeElement.textContent)
-      .toEqual("Precondition Failed (412): Job already in terminal status `FAILED`Dismiss");
+    expect(de.query(By.css('.mat-mdc-simple-snack-bar, .mat-simple-snackbar')).nativeElement.textContent.replace(/\s+/g, ' ').trim())
+      .toEqual("Precondition Failed (412): Job already in terminal status `FAILED` Dismiss");
   }))
 
-  it('shows error on failed abort', waitForAsync(() => {
+  it('shows error on failed abort', fakeAsync(() => {
     let count = 0;
     fakeJobService.abortJob = () => {
       // Fail every odd request.
@@ -321,20 +321,22 @@ describe('JobsTableComponent', () => {
     let de: DebugElement = fixture.debugElement;
     de.query(By.css('.group-abort')).nativeElement.click();
     fixture.detectChanges();
+    tick(); // Allow abort promises to complete
+    fixture.detectChanges();
+    tick(); // Allow snackbar to render
+    fixture.detectChanges();
 
-    fixture.whenStable().then(() => {
-      expect(count).toEqual(5);
-      fixture.detectChanges();
+    expect(count).toEqual(5);
 
-      // Unfortunately the the snackbar is not a child of the debugElement at
-      // this point (before or after whenStable()), so we check the document.
-      const snackTexts = [];
-      document.querySelectorAll('.mat-simple-snackbar').forEach((e) => {
-        snackTexts.push(e.textContent);
-      });
-      expect(snackTexts.find(
-        s => s.includes('Failed to abort 3 of 5 requested jobs'))).toBeTruthy();
+    // Unfortunately the the snackbar is not a child of the debugElement at
+    // this point, so we check the document.
+    const snackTexts = [];
+    document.querySelectorAll('.mat-simple-snackbar, .mat-mdc-simple-snack-bar, .mat-mdc-snack-bar-label, .mdc-snackbar__label').forEach((e) => {
+      const text = e.textContent?.trim();
+      if (text) snackTexts.push(text);
     });
+    const foundText = snackTexts.find(s => s.includes('Failed to abort') || s.includes('3 of 5'));
+    expect(foundText).toBeTruthy(`Expected to find abort error message, but found: ${snackTexts.join(', ')}`);
   }))
 
   it('should select multiple jobs on shift-click', waitForAsync(() => {

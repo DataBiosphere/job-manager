@@ -130,28 +130,28 @@ describe('JobResourcesComponent', () => {
   it('should hide resources tabs for minimal job', waitForAsync(() => {
     testComponent.job = minimalJob;
     fixture.detectChanges();
-    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-mdc-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(0);
   }));
 
   it('should show source file tab', waitForAsync(() => {
     testComponent.job = inputOutputSourceFileJob;
     fixture.detectChanges();
-    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-mdc-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(1);
   }));
 
   it('should show source file and event details tabs', waitForAsync(() => {
     testComponent.job = eventDetailsJob;
     fixture.detectChanges();
-    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-mdc-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(2);
   }));
 
   it('should switch content when tabs switch', fakeAsync(() => {
     testComponent.job = inputOutputSourceFileJob;
     fixture.detectChanges();
-    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-mdc-tab-group'))[0];
 
     tabGroup.componentInstance.selectedIndex = 1;
     tick();
@@ -165,7 +165,7 @@ describe('JobResourcesComponent', () => {
     tick();
     fixture.detectChanges();
     tick();
-    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-mdc-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(3);
 
     tabGroup.componentInstance.selectedIndex = 1;

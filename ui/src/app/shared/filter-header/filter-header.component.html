@@ -1,8 +1,8 @@
 <div class="content">
   <mat-form-field class="query-form">
     <span matPrefix><clr-icon shape="filter-2"></clr-icon></span>
-    <mat-chip-list #chipList>
-      <mat-chip
+    <mat-chip-grid #chipGrid>
+      <mat-chip-row
         *ngFor="let chipKey of getChipKeys()"
         class="chipShell"
         (removed)="removeChip(chipKey)"
@@ -13,12 +13,12 @@
           (updateValue)="updateValue(chipKey, $event)"
           (removeChip)="removeChip(chipKey)">
         </jm-filter-chip>
-      </mat-chip>
+      </mat-chip-row>
       <input matInput placeholder="Filter jobs"
              [(ngModel)]="inputValue"
              value="{{inputValue}}"
              [matAutocomplete]="auto"
-             [matChipInputFor]="chipList"
+             [matChipInputFor]="chipGrid"
              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
              [matChipInputAddOnBlur]="false"
              (matChipInputTokenEnd)="addChip($event.value)"
@@ -31,9 +31,9 @@
           {{ getDisplayForFilter(option) }}
         </mat-option>
       </mat-autocomplete>
-    </mat-chip-list>
+    </mat-chip-grid>
   </mat-form-field>
-  <button mat-button *ngIf="hasChipsToClear()" matSuffix mat-icon-button aria-label="Clear" (click)="removeAllChips()" class="clear-query">
+  <button *ngIf="hasChipsToClear()" matSuffix mat-icon-button aria-label="Clear" (click)="removeAllChips()" class="clear-query">
     <clr-icon shape="close"></clr-icon>
   </button>
 

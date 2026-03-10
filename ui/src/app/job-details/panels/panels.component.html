@@ -48,7 +48,9 @@
   </p>
   <div *ngIf="hasPrimaryLabels()" class="job-labels">
     <span class="label" *ngFor="let l of primaryLabels">
-      <span *ngIf="job.labels[l]">{{ l + ': '}}<b>{{ job.labels[l] }}</b></span>
+      <ng-container *ngIf="l.field">
+        <span *ngIf="job.labels[l.field.replace('labels.', '')]">{{ l.field.replace('labels.', '') + ': '}}<b>{{ job.labels[l.field.replace('labels.', '')] }}</b></span>
+      </ng-container>
     </span>
   </div>
   <mat-card class="card">
