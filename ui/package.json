@@ -8,7 +8,7 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "eslint": "eslint --ext .js,.ts src",
+    "eslint": "eslint",
     "tsc": "npx tsc",
     "e2e": "ng e2e"
   },
@@ -39,6 +39,8 @@
     "@angular/cli": "^19.2.1",
     "@angular/compiler-cli": "^19.2.19",
     "@angular/language-service": "^19.2.19",
+    "@eslint/eslintrc": "^3.3.5",
+    "@eslint/js": "^9.39.4",
     "@types/angular": "^1.8.4",
     "@types/jasmine": "^4.3.0",
     "@types/jasminewd2": "^2.0.10",
