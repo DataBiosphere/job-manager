@@ -34,7 +34,8 @@ describe("SignInRedirectComponent", () => {
         RouterTestingModule.withRoutes([
           {path: 'redirect-from-oauth', component: SignInRedirectComponent},
           {path: 'sign_in', component: TestSignInComponent},
-          {path: 'return-url', component: TestReturnComponent}
+          {path: 'return-url', component: TestReturnComponent},
+          {path: 'jobs', component: TestReturnComponent}  // Default redirect destination
         ])
       ],
       providers: [
