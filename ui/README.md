@@ -14,8 +14,8 @@ ng generate directive|pipe|service|class|guard|interface|enum|module
 ```
 
 # Angular upgrades
-Run the following command to upgrade to Angular 19 (change versions as needed):
-`ng update @angular/core@15 @angular/cli@15`
+Run the following command to upgrade the Angular version (change versions as needed):
+`ng update @angular/core@20 @angular/cli@20`
 
 This guide will also show a more in-depth list of changes to make when upgrading Angular versions: https://angular.dev/update-guide?v=14.0-19.0&l=2
 
