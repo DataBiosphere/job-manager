@@ -1,95 +1,93 @@
-mat-table {
-  width: 99%;
-  display: table;
-}
+/* Resources table - matching List View table styling */
 
-.mat-header-row,
-.mat-row {
-  display: table-row;
-  padding: 0;
-}
-
-.mat-row {
-  min-height: auto;
-}
-
-th {
-  color: #999;
-  font-weight: normal;
-  padding: 0.5rem 1rem;
-}
-
-td,
-th {
-  display: table-cell;
-  text-align: left;
-  line-height: 1.2rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-  font-size: 0.75rem;
-}
-
-td, td.mat-cell {
-  padding: 1rem;
-}
-
-.mat-table {
+:host ::ng-deep mat-table.resources-table,
+:host ::ng-deep .mat-table.resources-table {
   margin-top: 1.25rem;
   display: table;
+  table-layout: fixed;
   border-radius: 5px;
   border: 1px solid #CCCFD4;
   box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
   margin-left: auto;
   margin-right: auto;
+  width: 99%;
 }
 
-.mat-header-row, .mat-row {
+:host ::ng-deep .resources-table .mat-mdc-header-row,
+:host ::ng-deep .resources-table .mat-header-row,
+:host ::ng-deep .resources-table .mat-mdc-row,
+:host ::ng-deep .resources-table .mat-row {
   display: table-row;
   padding: 0;
   border: none;
 }
 
-.mat-header-cell, .mat-cell {
-  display: table-cell;
-  vertical-align: middle;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.mat-cell {
-  height: auto;
-  margin: 0;
-  max-width: 200px;
-  word-wrap: break-word;
-}
-
-.mat-header-row {
-  background-color: #F1F4F7;
+:host ::ng-deep .resources-table .mat-row {
   min-height: auto;
 }
 
-.mat-header-cell {
+:host ::ng-deep .resources-table .mat-mdc-header-cell,
+:host ::ng-deep .resources-table .mat-header-cell,
+:host ::ng-deep .resources-table .mat-mdc-cell,
+:host ::ng-deep .resources-table .mat-cell,
+:host ::ng-deep .resources-table th,
+:host ::ng-deep .resources-table td {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+:host ::ng-deep .resources-table .mat-mdc-header-cell:last-child,
+:host ::ng-deep .resources-table .mat-header-cell:last-child,
+:host ::ng-deep .resources-table .mat-mdc-cell:last-child,
+:host ::ng-deep .resources-table .mat-cell:last-child,
+:host ::ng-deep .resources-table th:last-child,
+:host ::ng-deep .resources-table td:last-child {
+  border-right: none;
+}
+
+:host ::ng-deep .resources-table .mat-mdc-header-row,
+:host ::ng-deep .resources-table .mat-header-row {
+  background-color: #F1F4F7;
+  min-height: 3rem;
+}
+
+:host ::ng-deep .resources-table .mat-mdc-header-cell,
+:host ::ng-deep .resources-table .mat-header-cell,
+:host ::ng-deep .resources-table th {
   color: #333F52;
   font-weight: 600;
-  padding: 0.5rem;
+  font-size: 0.7rem;
+  white-space: nowrap;
 }
 
-.mat-header-cell.slim-cell, .mat-cell.slim-cell {
-  text-align: right;
+:host ::ng-deep .resources-table .mat-mdc-cell,
+:host ::ng-deep .resources-table .mat-cell,
+:host ::ng-deep .resources-table td {
+  font-size: 0.75rem;
+  line-height: 1.2rem;
+  height: auto;
 }
 
-a {
+:host ::ng-deep .resources-table a {
   color: #5C912E;
 }
 
-mat-table.resources-table td.resource-key {
-  max-width: 18.75rem;
+:host ::ng-deep mat-table.resources-table td.resource-key,
+:host ::ng-deep mat-table.resources-table th.resource-key {
+  width: 30%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
 }
 
-mat-table.resources-table td.resource-value {
-  width: 100%;
+:host ::ng-deep mat-table.resources-table td.resource-value,
+:host ::ng-deep mat-table.resources-table th.resource-value {
+  width: 70%;
+  word-wrap: break-word;
 }
 
 :host-context(div.mat-menu-panel.input-menu) mat-table.resources-table {

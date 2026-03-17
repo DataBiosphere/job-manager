@@ -3,9 +3,10 @@ import {MAT_DIALOG_DATA} from "@angular/material/dialog";
 import {NgxJsonViewerComponent} from "ngx-json-viewer";
 
 @Component({
-  selector: 'jm-resource-contents-component',
-  templateUrl: 'resource-contents.component.html',
-  styleUrls: ['resource-contents.component.css']
+    selector: 'jm-resource-contents-component',
+    templateUrl: 'resource-contents.component.html',
+    styleUrls: ['resource-contents.component.css'],
+    standalone: false
 })
 export class JobResourceContentsComponent implements OnInit{
   resourceJson: object;

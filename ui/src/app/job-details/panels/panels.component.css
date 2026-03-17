@@ -38,14 +38,18 @@ p {
   width: 2rem;
   height: 2rem;
   background-color:#fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: -0.3rem;
 }
 
 .abort clr-icon {
-  width: 2.25rem;
+  width: 1.5rem;
   height: 1.5rem;
   color:#db3214;
-  margin-bottom: 0.7rem;
-  margin-left: -0.15rem;
+  margin: 0;
 }
 
 button.mat-raised-button {
@@ -55,8 +59,42 @@ button.mat-raised-button {
   text-transform: uppercase;
 }
 
-.job-id {
+.job-ids {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.id-row {
+  display: flex;
+  align-items: center;
   margin-bottom: 0.5rem;
+}
+
+.id-label {
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.copyable-id {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+  font-family: monospace;
+  font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 500px;
+}
+
+.copyable-id:hover {
+  background-color: #E8F0FE;
+  text-decoration: underline;
+}
+
+.copyable-id:active {
+  background-color: #D2E3FC;
 }
 
 .mat-card-title {
@@ -80,15 +118,34 @@ button.mat-raised-button {
   padding-right: 12px;
 }
 
-.card .mat-card-title {
+:host ::ng-deep .card .mat-card-title,
+:host ::ng-deep .card .mat-mdc-card-title,
+:host ::ng-deep .card mat-card-title {
   margin-bottom: 10px;
   line-height: 3rem;
   background-color: #F1F4F7;
+  font-size: 1rem;
+  color: #333F52;
+  padding-left: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
 }
 
-.card .mat-card-content {
-  font-size: 0.7rem;
-  line-height: 1rem;
+:host ::ng-deep .card .mat-card-content,
+:host ::ng-deep .card .mat-mdc-card-content,
+:host ::ng-deep .card mat-card-content {
+  font-size: 0.75rem;
+  line-height: 1.1rem;
+  padding-bottom: 1rem;
+}
+
+:host ::ng-deep .card .mat-card-content p,
+:host ::ng-deep .card .mat-mdc-card-content p,
+:host ::ng-deep .card mat-card-content p {
+  font-size: 0.75rem;
+  line-height: 1.1rem;
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
 }
 
 /* TODO(bryancrampton): Add hover-over to display full detail field, if truncated */

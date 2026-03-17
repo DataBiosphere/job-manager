@@ -1,4 +1,5 @@
 import { DataSource, SelectionModel } from '@angular/cdk/collections';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Injectable, Input, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,9 +21,10 @@ import { JobsBulkEditComponent } from "./bulk-edit/bulk-edit.component";
 
 
 @Component({
-  selector: 'jm-job-list-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.css'],
+    selector: 'jm-job-list-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.css'],
+    standalone: false
 })
 @Injectable()
 export class JobsTableComponent implements OnInit {
@@ -44,13 +46,15 @@ export class JobsTableComponent implements OnInit {
   displayedColumns: string[];
   firstColumn: string;
 
+
   constructor(
     private readonly route: ActivatedRoute,
     private readonly jobManagerService: JobManagerService,
     private readonly capabilitiesService: CapabilitiesService,
     private readonly viewContainer: ViewContainerRef,
     private snackBar: MatSnackBar,
-    public bulkEditDialog: MatDialog) { }
+    public bulkEditDialog: MatDialog,
+    private clipboard: Clipboard) { }
 
   ngOnInit() {
     this.setUpFieldsAndColumns();
@@ -152,7 +156,36 @@ export class JobsTableComponent implements OnInit {
   }
 
   isSimpleField(df: DisplayField): boolean {
-    return !this.isDateField(df) && !this.isStatusField(df) && !this.canEdit(df) && !this.isFirstColumn(df) && !this.canFilterBy(df.field);
+    return !this.isDateField(df) && !this.isStatusField(df) && !this.canEdit(df) && !this.isFirstColumn(df) && !this.canFilterBy(df.field) && !this.isCopyableIdField(df);
+  }
+
+  isCopyableIdField(df: DisplayField): boolean {
+    // Check if this is a workflow ID, submission ID, or workspace ID field
+    const field = df.field.toLowerCase();
+    return field.includes('workflow-id') || field.includes('submission-id') || field.includes('workspace-id');
+  }
+
+  copyToClipboard(value: string, fieldName: string): void {
+    if (this.clipboard.copy(value)) {
+      this.snackBar.open(
+        `${fieldName} copied to clipboard`,
+        'Dismiss',
+        {
+          viewContainerRef: this.viewContainer,
+          duration: 2000
+        });
+    }
+  }
+
+  getDisplayValue(job: QueryJobsResult, df: DisplayField): string {
+    let value = this.getFieldValue(job, df);
+
+    // Strip "cromwell-" prefix from workflow IDs
+    if (df.field.toLowerCase().includes('cromwell-workflow-id') && typeof value === 'string') {
+      value = value.replace(/^cromwell-/, '');
+    }
+
+    return value;
   }
 
   shouldShowMenu(job: QueryJobsResult, df: DisplayField): boolean {
@@ -184,7 +217,7 @@ export class JobsTableComponent implements OnInit {
 
   getFieldType(df: DisplayField): string {
     if (df && df.fieldType) {
-      return df.fieldType.toString();
+      return String(df.fieldType);
     }
     return 'text';
   }
@@ -329,7 +362,6 @@ export class JobsTableComponent implements OnInit {
   }
 
   // set up fields to display as columns and bulk update-able labels for job list table
-  // add in "Details" column after the first non-checkbox column for job details menu
   public setUpFieldsAndColumns() {
     this.displayedColumns = ["Checkbox"];
     this.bulkLabelFields = [];
@@ -341,7 +373,8 @@ export class JobsTableComponent implements OnInit {
         this.bulkLabelFields.push({'displayField' : displayField, 'default' : null});
       }
     }
-    this.displayedColumns.splice(2, 0, "Details");
+    // Don't add Details column - it was causing layout issues
+    // The first column (name) will be a clickable link to job details
     this.firstColumn = this.displayedColumns[1];
   }
 

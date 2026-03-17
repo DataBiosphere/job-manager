@@ -9,14 +9,17 @@ import {ResourceUtils} from '../../../shared/utils/resource-utils';
 
 
 @Component({
-  selector: 'jm-resources-table',
-  templateUrl: './resources-table.component.html',
-  styleUrls: ['./resources-table.component.css'],
+    selector: 'jm-resources-table',
+    templateUrl: './resources-table.component.html',
+    styleUrls: ['./resources-table.component.css'],
+    standalone: false
 })
 export class JobResourcesTableComponent implements OnInit {
   @Input() entries: Object;
   entryKeys: Array<string>;
   @Input() displayedColumns!: string[];
+  @Input() keyHeader: string = 'Input Name';
+  @Input() valueHeader: string = 'Value';
 
   constructor(private authService: AuthService) {}
 

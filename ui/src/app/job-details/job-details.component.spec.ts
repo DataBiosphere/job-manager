@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, DebugElement } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatDialogModule } from "@angular/material/dialog";
@@ -61,7 +61,7 @@ describe('JobDetailsComponent', () => {
     };
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fakeJobService = new FakeJobManagerService([testJob()]);
     let fakeCapabilitiesService: FakeCapabilitiesService = new FakeCapabilitiesService({});
     let authService = new AuthService(null, fakeCapabilitiesService, null, null,null,null);
@@ -138,7 +138,9 @@ describe('JobDetailsComponent', () => {
 
   it('renders details', fakeAsync(() => {
     const de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('#job-id')).nativeElement.value).toContain(jobId);
+    const workflowIdElement = de.query(By.css('.copyable-id'));
+    expect(workflowIdElement.nativeElement.textContent.trim())
+      .toContain(jobId.replace(/^cromwell-/, ''));
   }));
 
   it("navigates to jobs table on close", fakeAsync(() => {
@@ -164,20 +166,23 @@ describe('JobDetailsComponent', () => {
 
   @Component({
     selector: 'jm-test-app',
-    template: '<router-outlet></router-outlet>'
-  })
+    template: '<router-outlet></router-outlet>',
+    standalone: false
+})
   class AppComponent {}
 
   @Component({
     selector: 'jm-test-job-details-component',
-    template: '<jm-job-details></jm-job-details>'
-  })
+    template: '<jm-job-details></jm-job-details>',
+    standalone: false
+})
   class TestJobDetailsComponent {}
 
   @Component({
     selector: 'jm-fake-job-list-component',
-    template: '<div class="fake-jobs"></div>'
-  })
+    template: '<div class="fake-jobs"></div>',
+    standalone: false
+})
   class FakeJobListComponent {
     constructor(public route: ActivatedRoute) {}
   }

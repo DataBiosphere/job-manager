@@ -57,10 +57,6 @@ import { JobTimingDiagramComponent } from "./tabs/timing-diagram/timing-diagram.
     Ng2GoogleChartsModule,
     NgxJsonViewerModule
   ],
-  entryComponents: [
-    JobResourceContentsComponent,
-    JobScatteredAttemptsComponent,
-  ],
   declarations: [
     JobAttemptComponent,
     JobDebugIconsComponent,

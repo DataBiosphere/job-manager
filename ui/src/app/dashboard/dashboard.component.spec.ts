@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
+import {ComponentFixture, TestBed, fakeAsync, tick, waitForAsync} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
 import {Component, DebugElement} from '@angular/core';
@@ -131,7 +131,7 @@ describe('DashboardComponent', () => {
   let snackBar: MatSnackBar;
   const TEST_PROJECT = 'test-project';
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fakeJobService = new FakeAggregationService(TEST_AGGREGATION_RESPONSE);
     const capabilities : CapabilitiesResponse = {
       displayFields: [
@@ -250,14 +250,16 @@ describe('DashboardComponent', () => {
 
   @Component({
     selector: 'jm-test-app',
-    template: '<router-outlet></router-outlet>'
-  })
+    template: '<router-outlet></router-outlet>',
+    standalone: false
+})
   class AppComponent {}
 
   @Component({
     selector: 'jm-test-job-list-component',
-    template: '<div>fake job-list page</div>'
-  })
+    template: '<div>fake job-list page</div>',
+    standalone: false
+})
   class TestJobListComponent {
       constructor(public activatedRoute : ActivatedRoute) {}
   }

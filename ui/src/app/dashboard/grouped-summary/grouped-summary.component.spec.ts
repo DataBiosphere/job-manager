@@ -1,4 +1,4 @@
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatSelectModule} from "@angular/material/select";
@@ -119,7 +119,7 @@ describe('GroupedSummaryComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         GroupedSummaryComponent,
@@ -204,8 +204,9 @@ describe('GroupedSummaryComponent', () => {
   @Component({
     selector: `jm-test-host-component`,
     template: `<jm-grouped-summary [aggregation]="aggregation"
-                                   [statusArray]="statusArray"></jm-grouped-summary>`
-  })
+                                   [statusArray]="statusArray"></jm-grouped-summary>`,
+    standalone: false
+})
 
   class TestHostComponent {
     public aggregation: Aggregation;

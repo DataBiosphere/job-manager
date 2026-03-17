@@ -14,9 +14,10 @@ import {GcsService} from '../../core/gcs.service';
 import {EventDetail} from "../../shared/model/EventDetail";
 
 @Component({
-  selector: 'jm-resources',
-  templateUrl: './resources.component.html',
-  styleUrls: ['./resources.component.css'],
+    selector: 'jm-resources',
+    templateUrl: './resources.component.html',
+    styleUrls: ['./resources.component.css'],
+    standalone: false
 })
 export class JobResourcesComponent implements OnInit {
   @Input() job: JobMetadataResponse;

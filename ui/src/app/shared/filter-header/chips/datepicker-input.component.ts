@@ -2,9 +2,10 @@ import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from "@angula
 import {MatDatepicker} from "@angular/material/datepicker";
 
 @Component({
-  selector: 'jm-datepicker-input',
-  templateUrl: './datepicker-input.component.html',
-  styleUrls: ['./filter-chip.component.css'],
+    selector: 'jm-datepicker-input',
+    templateUrl: './datepicker-input.component.html',
+    styleUrls: ['./filter-chip.component.css'],
+    standalone: false
 })
 export class DatepickerInputComponent implements OnInit {
   @Input() chipKey: string;

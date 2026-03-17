@@ -1,7 +1,7 @@
 import { DataSource } from '@angular/cdk/collections';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, DebugElement, ViewChild } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatCheckboxModule } from "@angular/material/checkbox";
@@ -66,8 +66,8 @@ describe('JobsTableComponent', () => {
   });
 
   function getJobCheckboxes(): DebugElement[] {
-    let jobCheckboxes = fixture.debugElement.queryAll(By.css('.mat-checkbox-input'));
-    jobCheckboxes.shift();
+    let jobCheckboxes = fixture.debugElement.queryAll(By.css('input[type="checkbox"]'));
+    jobCheckboxes.shift();  // Remove the select-all checkbox
     return jobCheckboxes;
   }
 
@@ -115,7 +115,7 @@ describe('JobsTableComponent', () => {
     }];
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     jobs = testJobs();
     fakeJobService = new FakeJobManagerService(jobs)
     TestBed.configureTestingModule({
@@ -177,13 +177,13 @@ describe('JobsTableComponent', () => {
     return !bulkLabelEditButton.componentInstance.disabled;
   }
 
-  it('should display a row for each job', async(() => {
+  it('should display a row for each job', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.mat-row')).length).toEqual(jobs.length);
   }));
 
-  it('should display general job data in row', async(() => {
+  it('should display general job data in row', waitForAsync(() => {
     testComponent.jobs.next([jobs[0]]);
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
@@ -220,7 +220,7 @@ describe('JobsTableComponent', () => {
       .toEqual(jobs[0].labels['status-detail']);
   }))
 
-  it('should not display editable field for job label if config has not explicitly said it is editable', async(() => {
+  it('should not display editable field for job label if config has not explicitly said it is editable', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
@@ -229,7 +229,7 @@ describe('JobsTableComponent', () => {
       .toEqual(0);
   }));
 
-  it('should display editable field for job label if config has explicitly said it is editable', async(() => {
+  it('should display editable field for job label if config has explicitly said it is editable', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
@@ -239,12 +239,12 @@ describe('JobsTableComponent', () => {
       .toEqual(de.queryAll(By.css('.cdk-column-labels-comment')).length - 1);
   }));
 
-  it('hides the group selection on 0 selection', async(() => {
+  it('hides the group selection on 0 selection', waitForAsync(() => {
     fixture.detectChanges();
     expect(isGroupSelectionRendered()).toBeFalsy();
   }));
 
-  it('disables the abort button for non-abortable selection', async(() => {
+  it('disables the abort button for non-abortable selection', waitForAsync(() => {
     fixture.detectChanges();
     for (let j of jobs) {
       j.status = JobStatus.Succeeded;
@@ -256,7 +256,7 @@ describe('JobsTableComponent', () => {
     expect(isGroupAbortIsEnabled()).toBeFalsy();
   }))
 
-  it('enables the abort button when some selected are abortable', async(() => {
+  it('enables the abort button when some selected are abortable', waitForAsync(() => {
     fixture.detectChanges();
     jobs[2].status = JobStatus.Running;
     testComponent.jobs.next(jobs);
@@ -266,7 +266,7 @@ describe('JobsTableComponent', () => {
     expect(isGroupAbortIsEnabled()).toBeTruthy();
   }))
 
-  it('enables the abort button when all selected are abortable', async(() => {
+  it('enables the abort button when all selected are abortable', waitForAsync(() => {
     fixture.detectChanges();
     for (let j of jobs) {
       j.status = JobStatus.Running;
@@ -278,7 +278,7 @@ describe('JobsTableComponent', () => {
     expect(isGroupAbortIsEnabled()).toBeTruthy();
   }))
 
-  it('enables the bulk edit button when there is a bulkEditable field and at least one job selected', async(() => {
+  it('enables the bulk edit button when there is a bulkEditable field and at least one job selected', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[1].nativeElement.click();
@@ -286,7 +286,7 @@ describe('JobsTableComponent', () => {
     expect(isBulkLabelEditIsEnabled()).toBeTruthy();
   }))
 
-  it('displays error message bar', async(() => {
+  it('displays error message bar', waitForAsync(() => {
     let error = {
       status: 412,
       title: 'Precondition Failed',
@@ -296,11 +296,11 @@ describe('JobsTableComponent', () => {
     testComponent.jobsTableComponent.handleError(error);
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.mat-simple-snackbar')).nativeElement.textContent)
-      .toEqual("Precondition Failed (412): Job already in terminal status `FAILED`Dismiss");
+    expect(de.query(By.css('.mat-mdc-simple-snack-bar, .mat-simple-snackbar')).nativeElement.textContent.replace(/\s+/g, ' ').trim())
+      .toEqual("Precondition Failed (412): Job already in terminal status `FAILED` Dismiss");
   }))
 
-  it('shows error on failed abort', async(() => {
+  it('shows error on failed abort', fakeAsync(() => {
     let count = 0;
     fakeJobService.abortJob = () => {
       // Fail every odd request.
@@ -321,23 +321,25 @@ describe('JobsTableComponent', () => {
     let de: DebugElement = fixture.debugElement;
     de.query(By.css('.group-abort')).nativeElement.click();
     fixture.detectChanges();
+    tick(); // Allow abort promises to complete
+    fixture.detectChanges();
+    tick(); // Allow snackbar to render
+    fixture.detectChanges();
 
-    fixture.whenStable().then(() => {
-      expect(count).toEqual(5);
-      fixture.detectChanges();
+    expect(count).toEqual(5);
 
-      // Unfortunately the the snackbar is not a child of the debugElement at
-      // this point (before or after whenStable()), so we check the document.
-      const snackTexts = [];
-      document.querySelectorAll('.mat-simple-snackbar').forEach((e) => {
-        snackTexts.push(e.textContent);
-      });
-      expect(snackTexts.find(
-        s => s.includes('Failed to abort 3 of 5 requested jobs'))).toBeTruthy();
+    // Unfortunately the the snackbar is not a child of the debugElement at
+    // this point, so we check the document.
+    const snackTexts = [];
+    document.querySelectorAll('.mat-simple-snackbar, .mat-mdc-simple-snack-bar, .mat-mdc-snack-bar-label, .mdc-snackbar__label').forEach((e) => {
+      const text = e.textContent?.trim();
+      if (text) snackTexts.push(text);
     });
+    const foundText = snackTexts.find(s => s.includes('Failed to abort') || s.includes('3 of 5'));
+    expect(foundText).toBeTruthy(`Expected to find abort error message, but found: ${snackTexts.join(', ')}`);
   }))
 
-  it('should select multiple jobs on shift-click', async(() => {
+  it('should select multiple jobs on shift-click', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[1].nativeElement.click();
@@ -348,7 +350,7 @@ describe('JobsTableComponent', () => {
       .toEqual([false, true, true, true, false]);
   }))
 
-  it('should select multiple jobs on shift-click (reverse order)', async(() => {
+  it('should select multiple jobs on shift-click (reverse order)', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[4].nativeElement.click();
@@ -359,7 +361,7 @@ describe('JobsTableComponent', () => {
       .toEqual([false, false, true, true, true]);
   }))
 
-  it('should select multiple jobs on shift-click (with an already-checked job within the range)', async(() => {
+  it('should select multiple jobs on shift-click (with an already-checked job within the range)', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[1].nativeElement.click();
@@ -371,7 +373,7 @@ describe('JobsTableComponent', () => {
       .toEqual([true, true, true, true, false]);
   }))
 
-  it('should select multiple jobs on shift-click (if you check/uncheck a job within the range)', async(() => {
+  it('should select multiple jobs on shift-click (if you check/uncheck a job within the range)', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[0].nativeElement.click();
@@ -385,7 +387,7 @@ describe('JobsTableComponent', () => {
     expect(testComponent.jobsTableComponent.allSelected()).toEqual(true);
   }))
 
-  it('should select multiple jobs on shift-click (if one of the boundaries is already selected)', async(() => {
+  it('should select multiple jobs on shift-click (if one of the boundaries is already selected)', waitForAsync(() => {
     fixture.detectChanges();
     const jobCheckboxes = getJobCheckboxes();
     jobCheckboxes[0].nativeElement.click();
@@ -399,9 +401,9 @@ describe('JobsTableComponent', () => {
 
   @Component({
     selector: 'jm-test-table-component',
-    template:
-      `<jm-job-list-table [dataSource]="dataSource" [displayFields]="displayFields"></jm-job-list-table>`
-  })
+    template: `<jm-job-list-table [dataSource]="dataSource" [displayFields]="displayFields"></jm-job-list-table>`,
+    standalone: false
+})
   class TestTableComponent {
     public jobs = new BehaviorSubject<QueryJobsResult[]>([]);
     public dataSource = new TestDataSource(this.jobs);

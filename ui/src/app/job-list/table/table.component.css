@@ -1,43 +1,64 @@
 /* Job Manager table */
 
 
+.mat-mdc-table,
 .mat-table {
-  margin: 0 1rem;
+  margin: 1rem 1rem 0 1rem;
   width: 95%;
-  display: table;
   border-radius: 5px;
   border: 1px solid #CCCFD4;
   box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
+  display: table;
+  table-layout: fixed;
 }
 
-.mat-header-row, .mat-row {
+.mat-mdc-header-row,
+.mat-mdc-row,
+.mat-header-row,
+.mat-row {
   display: table-row;
   padding: 0;
   border: none;
 }
 
-.mat-header-cell, .mat-cell {
+.mat-mdc-header-cell,
+.mat-mdc-cell,
+.mat-header-cell,
+.mat-cell {
   display: table-cell;
   vertical-align: middle;
   padding: 0.5rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  overflow: hidden;
 }
 
+.mat-mdc-header-cell:last-child,
+.mat-mdc-cell:last-child,
+.mat-header-cell:last-child,
+.mat-cell:last-child {
+  border-right: none;
+}
+
+.mat-mdc-cell,
 .mat-cell {
   height: auto;
   font-size: 0.75rem;
 }
 
+.mat-mdc-header-cell,
 .mat-header-cell {
   font-size: 0.7rem;
   white-space: nowrap;
 }
 
+.mat-mdc-header-row,
 .mat-header-row {
   background-color: #F1F4F7;
   min-height: 3rem;
 }
 
+.mat-mdc-header-cell,
 .mat-header-cell {
   color: #333F52;
   font-weight: 600;
@@ -49,14 +70,101 @@
   text-overflow: ellipsis;
 }
 
-.mat-column-select {
-  overflow: initial;
+/* Column width definitions - apply to both header and body cells */
+.mat-column-Checkbox,
+.mat-mdc-header-cell.mat-column-Checkbox,
+.mat-header-cell.mat-column-Checkbox,
+.mat-mdc-cell.mat-column-Checkbox,
+.mat-cell.mat-column-Checkbox {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  text-align: center;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+}
+
+/* ID columns need more space to display full IDs */
+/* Note: The dot is part of the class name, so it must be escaped with backslash */
+.mat-column-labels\.cromwell-workflow-id,
+.mat-mdc-header-cell.mat-column-labels\.cromwell-workflow-id,
+.mat-header-cell.mat-column-labels\.cromwell-workflow-id,
+.mat-mdc-cell.mat-column-labels\.cromwell-workflow-id,
+.mat-cell.mat-column-labels\.cromwell-workflow-id {
+  width: 450px !important;
+  min-width: 450px !important;
+  max-width: 450px !important;
+}
+
+.mat-column-labels\.submission-id,
+.mat-column-labels\.workspace-id,
+.mat-mdc-header-cell.mat-column-labels\.submission-id,
+.mat-mdc-header-cell.mat-column-labels\.workspace-id,
+.mat-header-cell.mat-column-labels\.submission-id,
+.mat-header-cell.mat-column-labels\.workspace-id,
+.mat-mdc-cell.mat-column-labels\.submission-id,
+.mat-mdc-cell.mat-column-labels\.workspace-id,
+.mat-cell.mat-column-labels\.submission-id,
+.mat-cell.mat-column-labels\.workspace-id {
+  width: 300px !important;
+  min-width: 300px !important;
+  max-width: 300px !important;
+}
+
+/* Name column should be narrower */
+.mat-column-name,
+.mat-mdc-header-cell.mat-column-name,
+.mat-header-cell.mat-column-name,
+.mat-mdc-cell.mat-column-name,
+.mat-cell.mat-column-name {
+  width: 150px !important;
+  min-width: 150px !important;
+  max-width: 150px !important;
+}
+
+/* Status column */
+.mat-column-status,
+.mat-mdc-header-cell.mat-column-status,
+.mat-header-cell.mat-column-status,
+.mat-mdc-cell.mat-column-status,
+.mat-cell.mat-column-status {
+  width: 60px !important;
+  min-width: 60px !important;
+  max-width: 60px !important;
+  text-align: center;
+}
+
+/* Date columns */
+.mat-column-submission,
+.mat-column-end,
+.mat-mdc-header-cell.mat-column-submission,
+.mat-mdc-header-cell.mat-column-end,
+.mat-header-cell.mat-column-submission,
+.mat-header-cell.mat-column-end,
+.mat-mdc-cell.mat-column-submission,
+.mat-mdc-cell.mat-column-end,
+.mat-cell.mat-column-submission,
+.mat-cell.mat-column-end {
+  width: 120px !important;
+  min-width: 120px !important;
+  max-width: 120px !important;
+}
+
+/* Comment column */
+.mat-column-labels\.comment,
+.mat-mdc-header-cell.mat-column-labels\.comment,
+.mat-header-cell.mat-column-labels\.comment,
+.mat-mdc-cell.mat-column-labels\.comment,
+.mat-cell.mat-column-labels\.comment {
+  width: auto !important;
+  min-width: 150px !important;
 }
 
 .selected-row {
   background-color: #E8F0FE !important;
 }
 
+.mat-mdc-row:hover,
 .mat-row:hover {
   background-color: #F5F5F5;
 }
@@ -180,6 +288,32 @@ clr-icon {
 .edit-field {
   display: flex;
   flex-direction: row;
+}
+
+/* Copyable ID fields */
+.copyable-id-field {
+  cursor: pointer;
+}
+
+.copyable-id {
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copyable-id:hover {
+  background-color: #E8F0FE;
+  text-decoration: underline;
+}
+
+.copyable-id:active {
+  background-color: #D2E3FC;
 }
 
 .edit-field .mat-icon-button {

@@ -1,9 +1,5 @@
 import {NgModule} from '@angular/core';
-import {
-  CanActivate,
-  RouterModule,
-  Routes
-} from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import {CapabilitiesActivator} from './core/capabilities-activator.service';
 import {JobDetailsComponent} from './job-details/job-details.component';

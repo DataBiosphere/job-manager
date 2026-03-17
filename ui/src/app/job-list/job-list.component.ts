@@ -19,9 +19,10 @@ import { JobsTableComponent } from "./table/table.component";
 
 
 @Component({
-  selector: 'jm-job-list',
-  templateUrl: './job-list.component.html',
-  styleUrls: ['./job-list.component.css'],
+    selector: 'jm-job-list',
+    templateUrl: './job-list.component.html',
+    styleUrls: ['./job-list.component.css'],
+    standalone: false
 })
 export class JobListComponent implements OnInit {
   @Input() pageSize: number = 50;

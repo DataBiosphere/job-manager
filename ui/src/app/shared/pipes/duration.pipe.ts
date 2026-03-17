@@ -1,7 +1,8 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
 @Pipe({
-  name: 'jmDuration'
+    name: 'jmDuration',
+    standalone: false
 })
 export class DurationPipe implements PipeTransform {
   transform(start: Date, end: Date): string {

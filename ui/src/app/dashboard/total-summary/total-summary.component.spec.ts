@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {Component} from "@angular/core";
 import {By} from "@angular/platform-browser";
 import {CommonModule} from "@angular/common";
@@ -32,7 +32,7 @@ describe('TotalSummaryComponent', () => {
   let testComponent: TotalSummaryComponent;
   let fixture: ComponentFixture<TestHostComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         TotalSummaryComponent,
@@ -71,8 +71,9 @@ describe('TotalSummaryComponent', () => {
 
   @Component({
     selector: `jm-test-host-component`,
-    template: `<jm-total-summary [summary]="componentSummary" [statusArray]="statusArray"></jm-total-summary>`
-  })
+    template: `<jm-total-summary [summary]="componentSummary" [statusArray]="statusArray"></jm-total-summary>`,
+    standalone: false
+})
 
   class TestHostComponent {
     public componentSummary: StatusCounts;

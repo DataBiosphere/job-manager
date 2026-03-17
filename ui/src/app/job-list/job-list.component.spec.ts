@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
+import {ComponentFixture, TestBed, fakeAsync, tick, waitForAsync} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {By} from '@angular/platform-browser';
 import {CommonModule} from '@angular/common';
@@ -67,7 +67,7 @@ describe('JobListComponent', () => {
   let authService: AuthService;
   let snackBar: MatSnackBar;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fakeJobService = new FakeJobManagerService(testJobs(5));
     capabilities = {
       displayFields: [
@@ -149,7 +149,7 @@ describe('JobListComponent', () => {
     });
   }
 
-  it('displays error message bar', async(() => {
+  it('displays error message bar', waitForAsync(() => {
     let error = {
       status: 400,
       title: 'Bad Request',
@@ -159,8 +159,8 @@ describe('JobListComponent', () => {
     fixture.detectChanges();
 
     let de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.mat-simple-snackbar')).nativeElement.textContent)
-      .toEqual("Bad Request (400): Missing required field `parentId`Dismiss");
+    expect(de.query(By.css('.mat-mdc-simple-snack-bar, .mat-simple-snackbar')).nativeElement.textContent.replace(/\s+/g, ' ').trim())
+      .toEqual("Bad Request (400): Missing required field `parentId` Dismiss");
   }));
 
   // Note: Unfortunately many of the following fakeAsync() usages require
@@ -198,15 +198,24 @@ describe('JobListComponent', () => {
     fixture.detectChanges();
     tick();
     const de: DebugElement = fixture.debugElement;
-    de.query(By.css('.mat-paginator-navigation-next')).nativeElement.click();
+    de.query(By.css('button[aria-label="Next page"]')).nativeElement.click();
     fixture.detectChanges();
     tick();
+    fixture.detectChanges(); // Allow paginator to update its state
     // Page 2.
     expectJobsRendered(fakeJobService.jobs.slice(3, 5));
 
-    // the prev page button should be enabled and the next page button should be disabled
-    expect(de.query(By.css('.mat-paginator-navigation-previous')).attributes['ng-reflect-disabled']).toEqual('false');
-    expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('true');
+    // Verify we're on the last page by checking button classes or aria-disabled
+    const prevButton = de.query(By.css('button[aria-label="Previous page"]'));
+    const nextButton = de.query(By.css('button[aria-label="Next page"]'));
+
+    // Previous button should be enabled (not have disabled class)
+    expect(prevButton.nativeElement.classList.contains('mat-mdc-button-disabled') ||
+           prevButton.nativeElement.getAttribute('aria-disabled') === 'true').toBeFalsy();
+    // Next button should be disabled (we're on last page)
+    expect(nextButton.nativeElement.classList.contains('mat-mdc-button-disabled') ||
+           nextButton.nativeElement.getAttribute('aria-disabled') === 'true' ||
+           nextButton.nativeElement.disabled).toBeTruthy();
   }));
 
   it('paginates backwards', fakeAsync(() => {
@@ -214,18 +223,27 @@ describe('JobListComponent', () => {
     tick();
     fixture.detectChanges();
     const de: DebugElement = fixture.debugElement;
-    de.query(By.css('.mat-paginator-navigation-next')).nativeElement.click();
+    de.query(By.css('button[aria-label="Next page"]')).nativeElement.click();
     fixture.detectChanges();
 
     // Back to page 1, which should have the first 3 jobs.
-    de.query(By.css('.mat-paginator-navigation-previous')).nativeElement.click();
+    de.query(By.css('button[aria-label="Previous page"]')).nativeElement.click();
     fixture.detectChanges();
     tick();
+    fixture.detectChanges(); // Allow paginator to update its state
     expectJobsRendered(fakeJobService.jobs.slice(0, 3));
 
-    // the prev page button should be disabled and the next page button should be enabled
-    expect(de.query(By.css('.mat-paginator-navigation-previous')).attributes['ng-reflect-disabled']).toEqual('true');
-    expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('false');
+    // Verify we're on the first page
+    const prevButton = de.query(By.css('button[aria-label="Previous page"]'));
+    const nextButton = de.query(By.css('button[aria-label="Next page"]'));
+
+    // Previous button should be disabled (we're on first page)
+    expect(prevButton.nativeElement.classList.contains('mat-mdc-button-disabled') ||
+           prevButton.nativeElement.getAttribute('aria-disabled') === 'true' ||
+           prevButton.nativeElement.disabled).toBeTruthy();
+    // Next button should be enabled
+    expect(nextButton.nativeElement.classList.contains('mat-mdc-button-disabled') ||
+           nextButton.nativeElement.getAttribute('aria-disabled') === 'true').toBeFalsy();
   }));
 
   it('next pagination is disabled on last page when number of jobs equals the page length', fakeAsync(() => {
@@ -235,12 +253,17 @@ describe('JobListComponent', () => {
     tick(100);
 
     const de: DebugElement = fixture.debugElement;
-    de.query(By.css('.mat-paginator-navigation-next')).nativeElement.click();
+    de.query(By.css('button[aria-label="Next page"]')).nativeElement.click();
     fixture.detectChanges();
+    tick(); // Allow async operations
+    fixture.detectChanges(); // Allow paginator to update its state
 
     // the last three jobs should be displayed and next page button should be disabled
     expectJobsRendered(fakeJobService.jobs.slice(3, 6));
-    expect(de.query(By.css('.mat-paginator-navigation-next')).attributes['ng-reflect-disabled']).toEqual('true');
+    const nextButton = de.query(By.css('button[aria-label="Next page"]'));
+    expect(nextButton.nativeElement.classList.contains('mat-mdc-button-disabled') ||
+           nextButton.nativeElement.getAttribute('aria-disabled') === 'true' ||
+           nextButton.nativeElement.disabled).toBeTruthy();
   }));
 
   it('reloads properly on filter', fakeAsync(() => {
@@ -259,7 +282,7 @@ describe('JobListComponent', () => {
     expectJobsRendered([jobs[1]]);
   }));
 
-  it('reloads properly on abort', async(() => {
+  it('reloads properly on abort', waitForAsync(() => {
     const jobs = testJobs(5);
     fakeJobService.jobs = jobs;
     fixture.detectChanges();
@@ -312,7 +335,7 @@ describe('JobListComponent', () => {
     fixture.detectChanges();
 
     const de: DebugElement = fixture.debugElement;
-    de.query(By.css('.mat-paginator-navigation-next')).nativeElement.click();
+    de.query(By.css('button[aria-label="Next page"]')).nativeElement.click();
     fixture.detectChanges();
 
     de.query(By.css('.failed-button')).nativeElement.click();
@@ -333,7 +356,7 @@ describe('JobListComponent', () => {
     expect(de.queryAll(By.css('.fake-projects')).length).toEqual(1);
   }));
 
-  it('does not display the hide archived setting without the right project setting', async(() => {
+  it('does not display the hide archived setting without the right project setting', waitForAsync(() => {
     testComponent.settingsService.setSavedSettingValue('hideArchived', null, testComponent.projectId);
     fixture.detectChanges();
     const de: DebugElement = fixture.debugElement;
@@ -351,24 +374,27 @@ describe('JobListComponent', () => {
     const de: DebugElement = fixture.debugElement;
     de.query(By.css('.settings-icon')).nativeElement.click();
     fixture.detectChanges();
-    expect(de.queryAll(By.css('.settings-menu .mat-slide-toggle.hide-archived')).length).toEqual(1);
+    expect(de.queryAll(By.css('.settings-menu .hide-archived')).length).toEqual(1);
   }));
 
   @Component({
     selector: 'jm-test-app',
-    template: '<router-outlet></router-outlet>'
-  })
+    template: '<router-outlet></router-outlet>',
+    standalone: false
+})
   class AppComponent {}
 
   @Component({
     selector: 'jm-test-job-list-component',
-    template: '<jm-job-list [pageSize]="3"></jm-job-list>'
-  })
+    template: '<jm-job-list [pageSize]="3"></jm-job-list>',
+    standalone: false
+})
   class TestJobListComponent {}
 
   @Component({
     selector: 'jm-fake-projects-component',
-    template: '<div class="fake-projects"></div>'
-  })
+    template: '<div class="fake-projects"></div>',
+    standalone: false
+})
   class FakeProjectsComponent {}
 });

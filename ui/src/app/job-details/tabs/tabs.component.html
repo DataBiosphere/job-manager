@@ -137,15 +137,23 @@
     <mat-tab *ngIf="hasInputs(job)" label="Inputs">
       <jm-resources-table #inputsTab [entries]="job.inputs"
                           [displayedColumns]="['key','value']"
+                          [keyHeader]="'Input Name'"
+                          [valueHeader]="'Value'"
       ></jm-resources-table>
     </mat-tab>
     <!-- Task outputs tab -->
     <mat-tab *ngIf="hasOutputs(job)" label="Outputs">
-      <jm-resources-table #outputsTab [entries]="job.outputs"></jm-resources-table>
+      <jm-resources-table #outputsTab [entries]="job.outputs"
+                          [displayedColumns]="['key','value']"
+                          [keyHeader]="'Output Name'"
+                          [valueHeader]="'Value'"></jm-resources-table>
     </mat-tab>
     <!-- Secondary Labels tab -->
     <mat-tab *ngIf="job.labels" label="Labels">
-      <jm-resources-table [entries]="job.labels"></jm-resources-table>
+      <jm-resources-table [entries]="job.labels"
+                          [displayedColumns]="['key','value']"
+                          [keyHeader]="'Label Name'"
+                          [valueHeader]="'Value'"></jm-resources-table>
     </mat-tab>
     <!-- Task timing diagram tab -->
     <mat-tab *ngIf="hasTasks()" label="Timing Diagram">

@@ -12,9 +12,10 @@ import {CapabilitiesResponse} from "../shared/model/CapabilitiesResponse";
 import {objectNotEmpty} from '../shared/common';
 
 @Component({
-  selector: "jm-job-details",
-  templateUrl: "./job-details.component.html",
-  styleUrls: ["./job-details.component.css"],
+    selector: "jm-job-details",
+    templateUrl: "./job-details.component.html",
+    styleUrls: ["./job-details.component.css"],
+    standalone: false
 })
 export class JobDetailsComponent implements OnInit {
   @ViewChild(JobTabsComponent) taskTabs;

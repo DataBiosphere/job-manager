@@ -15,9 +15,10 @@ import {SamService} from "../../../core/sam.service";
 import {FileContents} from "../../../shared/model/FileContents";
 
 @Component({
-  selector: 'jm-debug-icons',
-  templateUrl: './debug-icons.component.html',
-  styleUrls: ['./debug-icons.component.css']
+    selector: 'jm-debug-icons',
+    templateUrl: './debug-icons.component.html',
+    styleUrls: ['./debug-icons.component.css'],
+    standalone: false
 })
 export class JobDebugIconsComponent implements OnInit {
   @Input() displayMessage: boolean;

@@ -4,9 +4,10 @@ import {Router} from '@angular/router';
 import {AuthService} from '../core/auth.service';
 
 @Component({
-  selector: 'redirect-from-oauth',
-  templateUrl: './sign-in-redirect.component.html',
-  styleUrls: ['./sign-in-redirect.component.css'],
+    selector: 'redirect-from-oauth',
+    templateUrl: './sign-in-redirect.component.html',
+    styleUrls: ['./sign-in-redirect.component.css'],
+    standalone: false
 })
 export class SignInRedirectComponent implements OnInit{
   constructor(

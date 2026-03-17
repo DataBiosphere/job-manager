@@ -1,4 +1,4 @@
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
@@ -19,29 +19,22 @@ import { SignInModule } from './sign-in/sign-in.module';
 import { SignInRedirectModule } from './sign-in/sign-in-redirect.module';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 
-@NgModule({
-  imports: [
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    BrowserModule,
-    ClrIconModule,
-    ClrTooltipModule,
-    CoreModule,
-    FormsModule,
-    HttpClientModule,
-    JobDetailsModule,
-    JobListModule,
-    MatIconModule,
-    SignInModule,
-    SignInRedirectModule,
-    ProjectsModule,
-    DashboardModule,
-    Ng2GoogleChartsModule,
-    NgxJsonViewerModule,
-  ],
-  providers: [CustomIconService],
-  declarations: [AppComponent, PagenotfoundComponent],
-  // This specifies the top-level component, to load first.
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [AppComponent, PagenotfoundComponent],
+    // This specifies the top-level component, to load first.
+    bootstrap: [AppComponent], imports: [AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        ClrIconModule,
+        ClrTooltipModule,
+        CoreModule,
+        FormsModule,
+        JobDetailsModule,
+        JobListModule,
+        MatIconModule,
+        SignInModule,
+        SignInRedirectModule,
+        ProjectsModule,
+        DashboardModule,
+        Ng2GoogleChartsModule,
+        NgxJsonViewerModule], providers: [CustomIconService, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {}

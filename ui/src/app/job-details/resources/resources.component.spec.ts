@@ -1,4 +1,4 @@
-import {TestBed, async, ComponentFixture, fakeAsync, tick} from '@angular/core/testing';
+import {TestBed, ComponentFixture, fakeAsync, tick, waitForAsync} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {Component, ViewChild} from '@angular/core';
@@ -99,7 +99,7 @@ describe('JobResourcesComponent', () => {
     ['stderr', 1000000], // 10MB should hit limit
   ]);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         JobResourcesComponent,
@@ -127,31 +127,31 @@ describe('JobResourcesComponent', () => {
     testComponent = fixture.componentInstance;
   });
 
-  it('should hide resources tabs for minimal job', async(() => {
+  it('should hide resources tabs for minimal job', waitForAsync(() => {
     testComponent.job = minimalJob;
     fixture.detectChanges();
-    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-mdc-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(0);
   }));
 
-  it('should show source file tab', async(() => {
+  it('should show source file tab', waitForAsync(() => {
     testComponent.job = inputOutputSourceFileJob;
     fixture.detectChanges();
-    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-mdc-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(1);
   }));
 
-  it('should show source file and event details tabs', async(() => {
+  it('should show source file and event details tabs', waitForAsync(() => {
     testComponent.job = eventDetailsJob;
     fixture.detectChanges();
-    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-mdc-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(2);
   }));
 
   it('should switch content when tabs switch', fakeAsync(() => {
     testComponent.job = inputOutputSourceFileJob;
     fixture.detectChanges();
-    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-mdc-tab-group'))[0];
 
     tabGroup.componentInstance.selectedIndex = 1;
     tick();
@@ -165,7 +165,7 @@ describe('JobResourcesComponent', () => {
     tick();
     fixture.detectChanges();
     tick();
-    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-tab-group'))[0];
+    let tabGroup = fixture.debugElement.queryAll(By.css('.mat-mdc-tab-group'))[0];
     expect(tabGroup.componentInstance._tabs.length).toBe(3);
 
     tabGroup.componentInstance.selectedIndex = 1;
@@ -194,8 +194,9 @@ describe('JobResourcesComponent', () => {
 
   @Component({
     selector: 'jm-test-resources-component',
-    template: `<jm-resources [job]="job"></jm-resources>`
-  })
+    template: `<jm-resources [job]="job"></jm-resources>`,
+    standalone: false
+})
   class TestResourcesComponent {
     public job: JobMetadataResponse = {
       id: '',

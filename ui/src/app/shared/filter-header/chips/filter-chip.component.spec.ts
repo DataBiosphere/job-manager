@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import {ComponentFixture, TestBed, waitForAsync} from "@angular/core/testing";
 import {Component, Input, ViewChild} from "@angular/core";
 import {FilterChipComponent} from "./filter-chip.component";
 import {RouterTestingModule} from "@angular/router/testing";
@@ -32,7 +32,7 @@ describe('FilterChipComponent', () => {
     queryExtensions: ['projectId']
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         FilterChipComponent,
@@ -64,24 +64,24 @@ describe('FilterChipComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fixture = TestBed.createComponent(TestFilterChipComponent);
     fixture.detectChanges();
     testComponent = fixture.componentInstance.filterChipComponent;
   }));
 
-  it('should display default chip value', async(() => {
+  it('should display default chip value', waitForAsync(() => {
     expect(testComponent.getDisplayValue()).toBe("key: initialValue");
   }));
 
-  it('should update chip value and trigger callback', async(() => {
+  it('should update chip value and trigger callback', waitForAsync(() => {
     spyOn(fixture.componentInstance, 'updateValueCallback').and.callThrough();
     testComponent.setChipValue("newValue");
     expect(fixture.componentInstance.updateValueCallback).toHaveBeenCalledWith("newValue");
     expect(testComponent.getDisplayValue()).toBe("key: newValue");
   }));
 
-  it('should trigger remove callback', async(() => {
+  it('should trigger remove callback', waitForAsync(() => {
     spyOn(fixture.componentInstance, 'removeChipCallback').and.callThrough();
     fixture.debugElement.query(By.css('.chip')).triggerEventHandler('removed', null);
     expect(fixture.componentInstance.removeChipCallback).toHaveBeenCalled();
@@ -89,13 +89,13 @@ describe('FilterChipComponent', () => {
 
   @Component({
     selector: 'jm-test-filter-chip-component',
-    template:
-      `<jm-filter-chip
+    template: `<jm-filter-chip
         [chipKey]="'key'"
         [initialChipValue]="'initialValue'"
         (updateValue)="updateValueCallback($event)"
-        (removeChip)="removeChipCallback()" ></jm-filter-chip>`
-  })
+        (removeChip)="removeChipCallback()" ></jm-filter-chip>`,
+    standalone: false
+})
   class TestFilterChipComponent {
     @ViewChild(FilterChipComponent)
     public filterChipComponent: FilterChipComponent;
@@ -107,16 +107,18 @@ describe('FilterChipComponent', () => {
 
   @Component({
     selector: 'jm-status-selection',
-    template: ''
-  })
+    template: '',
+    standalone: false
+})
   class MockStatusSelectionComponent {
     @Input() initialChipValue: string;
   }
 
   @Component({
     selector: 'jm-datepicker-input',
-    template: ''
-  })
+    template: '',
+    standalone: false
+})
   class MockDatepickerInputComponent {
     @Input() chipKey: string;
     @Input() initialChipValue: string;

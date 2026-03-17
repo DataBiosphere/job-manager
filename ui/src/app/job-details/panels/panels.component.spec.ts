@@ -1,7 +1,8 @@
-import {TestBed, async, ComponentFixture} from '@angular/core/testing';
+import {TestBed, ComponentFixture} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {Component, DebugElement, ViewChild} from '@angular/core';
+import { Component, DebugElement, ViewChild} from '@angular/core';
+import { waitForAsync } from '@angular/core/testing';
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatGridListModule} from "@angular/material/grid-list";
@@ -50,7 +51,7 @@ describe('JobPanelsComponent', () => {
     };
   let fakeJobService = new FakeJobManagerService([minimalJob, completeJob]);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         JobDebugIconsComponent,
@@ -84,17 +85,18 @@ describe('JobPanelsComponent', () => {
     testComponent = fixture.componentInstance;
   });
 
-  it('should display with minimal job', async(() => {
+  it('should display with minimal job', waitForAsync(() => {
     testComponent.job = minimalJob;
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.card')).length).toEqual(1);
     expect(de.query(By.css('.header')).nativeElement.textContent.replace(/\s/g, '')).toEqual('');
-    expect(de.query(By.css('#job-id')).nativeElement.value)
-      .toContain(minimalJob.id);
+    const workflowIdElement = de.query(By.css('.copyable-id'));
+    expect(workflowIdElement.nativeElement.textContent.trim())
+      .toContain(minimalJob.id.replace(/^cromwell-/, ''));
   }));
 
-  it('should display all features with complete job', async(() => {
+  it('should display all features with complete job', waitForAsync(() => {
     testComponent.job = completeJob;
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
@@ -112,9 +114,14 @@ describe('JobPanelsComponent', () => {
 
   @Component({
     selector: 'jm-test-panels-component',
-    template: `<jm-panels [job]="job" [primaryLabels]="['label1', 'label2']"></jm-panels>`
-  })
+    template: `<jm-panels [job]="job" [primaryLabels]="primaryLabels"></jm-panels>`,
+    standalone: false
+})
   class TestPanelsComponent {
+    public primaryLabels = [
+      { field: 'labels.label1', display: 'Label 1' },
+      { field: 'labels.label2', display: 'Label 2' }
+    ];
     public job: JobMetadataResponse = {
       id: '',
       status: JobStatus.Failed,

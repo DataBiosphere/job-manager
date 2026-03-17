@@ -1,5 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatButtonModule } from "@angular/material/button";
@@ -32,6 +33,7 @@ import { FilterHeaderComponent } from "./filter-header/filter-header.component";
 
 @NgModule({
   imports: [
+    ClipboardModule,
     ClrIconModule,
     ClrTooltipModule,
     CommonModule,
@@ -69,6 +71,7 @@ import { FilterHeaderComponent } from "./filter-header/filter-header.component";
     DatePipe
   ],
   exports: [
+    ClipboardModule,
     DatetimeComponent,
     ShortDateTimePipe,
     FullDateTimePipe,

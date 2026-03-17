@@ -3,9 +3,10 @@ import {Location} from '@angular/common';
 import {NavigationError, Router} from '@angular/router';
 
 @Component({
-  selector: 'jm-initial-error',
-  templateUrl: './initial-error.component.html',
-  styleUrls: ['./initial-error.component.css']
+    selector: 'jm-initial-error',
+    templateUrl: './initial-error.component.html',
+    styleUrls: ['./initial-error.component.css'],
+    standalone: false
 })
 export class InitialErrorComponent {
   errorMessage: string;
