@@ -35,17 +35,32 @@
       </clr-tooltip-content>
     </clr-tooltip>
   </button>
-  <p class="job-id">
-    ID: <input matInput id="job-id" value="{{ job.id }}" readonly="readonly" type="text">
-    <button mat-icon-button (click)="copyJobIdToClipboard()" class="copy-button">
-      <clr-tooltip>
-        <clr-icon clrTooltipTrigger [attr.shape]="copyIcon"></clr-icon>
-        <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
-          <span>copy job id to clipboard</span>
-        </clr-tooltip-content>
-      </clr-tooltip>
-    </button>
-  </p>
+  <div class="job-ids">
+    <div class="id-row">
+      <span class="id-label">Workflow ID:</span>
+      <span class="copyable-id"
+            (click)="copyJobIdToClipboard()"
+            [title]="job.id">
+        {{ getCleanWorkflowId() }}
+      </span>
+    </div>
+    <div class="id-row" *ngIf="getSubmissionId()">
+      <span class="id-label">Submission ID:</span>
+      <span class="copyable-id"
+            (click)="copyIdToClipboard(getSubmissionId(), 'Submission ID')"
+            [title]="getSubmissionId()">
+        {{ getSubmissionId() }}
+      </span>
+    </div>
+    <div class="id-row" *ngIf="getWorkspaceId()">
+      <span class="id-label">Workspace ID:</span>
+      <span class="copyable-id"
+            (click)="copyIdToClipboard(getWorkspaceId(), 'Workspace ID')"
+            [title]="getWorkspaceId()">
+        {{ getWorkspaceId() }}
+      </span>
+    </div>
+  </div>
   <div *ngIf="hasPrimaryLabels()" class="job-labels">
     <span class="label" *ngFor="let l of primaryLabels">
       <ng-container *ngIf="l.field">

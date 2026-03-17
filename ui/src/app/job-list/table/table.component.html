@@ -1,4 +1,4 @@
-<mat-table #table [dataSource]="dataSource" [ngStyle]="{'padding-bottom': showSelectionBar() ? '4.8rem' : '0'}">
+<mat-table #table [dataSource]="dataSource">
 
   <!-- Checkbox column -->
   <ng-container matColumnDef="Checkbox">
@@ -18,51 +18,6 @@
     </mat-cell>
   </ng-container>
 
-  <!-- Job details dropdown column -->
-  <ng-container matColumnDef="Details">
-    <mat-header-cell class="details-drop-down-cell" *matHeaderCellDef></mat-header-cell>
-    <mat-cell class="details-drop-down-cell" *matCellDef="let j">
-      <button mat-icon-button class="jobs-dropdown-arrow"
-              [class.visible]="showDropdownArrow(j)"
-              [matMenuTriggerFor]="labelMenu">
-        <img src="{{ getDropdownArrowUrl() }}">
-      </button>
-      <mat-menu #labelMenu="matMenu" class="details-menu">
-        <mat-card>
-          <mat-card-subtitle>{{ j.status }}</mat-card-subtitle>
-          <mat-card-subtitle>Submitted: {{ j.submission | jmShortDateTime }}</mat-card-subtitle>
-          <mat-divider></mat-divider>
-          <mat-card-actions>
-            <mat-list>
-              <mat-list-item>
-                <a [routerLink]="[j.id]" [queryParams]="getQueryParams()">
-                  <clr-icon shape="arrow" dir="right"></clr-icon>
-                  <span>Job details</span>
-                </a>
-              </mat-list-item>
-              <mat-list-item *ngIf="canAbort(j)">
-                <a (click)="abortJob(j)" class="inline-filter">
-                  <clr-icon shape="times-circle"></clr-icon>
-                  <span>Abort job</span>
-                </a>
-              </mat-list-item>
-              <mat-list-item *ngIf="j[firstColumn] && canFilterBy(firstColumn)">
-                <clr-tooltip>
-                  <a (click)="filterOnColumnValue(firstColumn, j[firstColumn])" clrTooltipTrigger class="inline-filter">
-                    <clr-icon shape="filter-2"></clr-icon>
-                    <span>Filter by {{ getFilterFromField(firstColumn) }}:{{ j[firstColumn] }} {{ firstColumn }}</span>
-                    <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
-                      <span>Filter by {{ getFilterFromField(firstColumn) }}:{{ j[firstColumn] }}</span>
-                    </clr-tooltip-content>
-                  </a>
-                </clr-tooltip>
-            </mat-list-item>
-            </mat-list>
-          </mat-card-actions>
-        </mat-card>
-      </mat-menu>
-    </mat-cell>
-  </ng-container>
 
   <!-- Implementation-specific columns -->
   <ng-container *ngFor="let df of displayFields">
@@ -124,6 +79,13 @@
           <a *ngIf="isFirstColumn(df)" class="field-value job-details-button mat-body-1"
              [routerLink]="[j.id]"
              [queryParams]="getQueryParams()">{{ getFieldValue(j, df) }}</a>
+        </div>
+        <div class="display-field copyable-id-field" *ngIf="isCopyableIdField(df)">
+          <span class="copyable-id"
+                (click)="copyToClipboard(getDisplayValue(j, df), df.display)"
+                [title]="getFieldValue(j, df)">
+            {{ getDisplayValue(j, df) }}
+          </span>
         </div>
         <div class="display-field" *ngIf="getFieldType(df) == 'date'">
           <jm-datetime [datetime]="getFieldValue(j, df)"></jm-datetime>

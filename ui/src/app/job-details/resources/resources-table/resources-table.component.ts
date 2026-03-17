@@ -18,6 +18,8 @@ export class JobResourcesTableComponent implements OnInit {
   @Input() entries: Object;
   entryKeys: Array<string>;
   @Input() displayedColumns!: string[];
+  @Input() keyHeader: string = 'Input Name';
+  @Input() valueHeader: string = 'Value';
 
   constructor(private authService: AuthService) {}
 

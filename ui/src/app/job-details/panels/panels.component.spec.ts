@@ -91,8 +91,9 @@ describe('JobPanelsComponent', () => {
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.card')).length).toEqual(1);
     expect(de.query(By.css('.header')).nativeElement.textContent.replace(/\s/g, '')).toEqual('');
-    expect(de.query(By.css('#job-id')).nativeElement.value)
-      .toContain(minimalJob.id);
+    const workflowIdElement = de.query(By.css('.copyable-id'));
+    expect(workflowIdElement.nativeElement.textContent.trim())
+      .toContain(minimalJob.id.replace(/^cromwell-/, ''));
   }));
 
   it('should display all features with complete job', waitForAsync(() => {

@@ -138,7 +138,9 @@ describe('JobDetailsComponent', () => {
 
   it('renders details', fakeAsync(() => {
     const de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('#job-id')).nativeElement.value).toContain(jobId);
+    const workflowIdElement = de.query(By.css('.copyable-id'));
+    expect(workflowIdElement.nativeElement.textContent.trim())
+      .toContain(jobId.replace(/^cromwell-/, ''));
   }));
 
   it("navigates to jobs table on close", fakeAsync(() => {
