@@ -25,5 +25,5 @@ RUN /ui/node_modules/.bin/ng build --configuration=production
 
 FROM us.gcr.io/broad-dsp-gcr-public/base/nginx:mainline-alpine
 
-COPY --from=1 /ui/dist /ui/dist
+COPY --from=1 /ui/dist/browser /ui/dist
 ADD ./ui/nginx.prod.conf /etc/nginx/nginx.conf
