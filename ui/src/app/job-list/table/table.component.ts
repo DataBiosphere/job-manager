@@ -189,7 +189,16 @@ export class JobsTableComponent implements OnInit {
   }
 
   shouldShowMenu(job: QueryJobsResult, df: DisplayField): boolean {
-    return !this.isFirstColumn(df) && (this.canEdit(df) || (this.canFilterBy(df.field) && this.getFieldValue(job, df)));
+    // Don't show menu for first column (name field shown as link)
+    if (this.isFirstColumn(df)) {
+      return false;
+    }
+    // Don't show menu for copyable ID fields (they have their own display logic)
+    if (this.isCopyableIdField(df)) {
+      return false;
+    }
+    // Show menu for editable fields or filterable fields with values
+    return this.canEdit(df) || (this.canFilterBy(df.field) && this.getFieldValue(job, df));
   }
 
   getFieldValue(job: QueryJobsResult, df: DisplayField): any {

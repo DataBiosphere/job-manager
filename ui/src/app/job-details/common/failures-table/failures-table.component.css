@@ -1,10 +1,16 @@
-mat-table {
+/* Failures table - matching resources/labels table styling */
+
+:host ::ng-deep mat-table,
+:host ::ng-deep .mat-table {
   margin-top: 1.25rem;
   display: table;
+  table-layout: fixed;
   width: 99%;
-  border-radius: 0.3125rem;
+  border-radius: 5px;
   border: 1px solid #CCCFD4;
   box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 3px 2px 0 rgba(0,0,0,0.12);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 :host-context(mat-card.card) mat-table {
@@ -15,42 +21,71 @@ mat-table {
   margin-top: 0;
 }
 
-.mat-header-row,
-.mat-row {
+:host ::ng-deep .mat-mdc-header-row,
+:host ::ng-deep .mat-header-row,
+:host ::ng-deep .mat-mdc-row,
+:host ::ng-deep .mat-row {
   display: table-row;
+  padding: 0;
+  border: none;
+}
+
+:host ::ng-deep .mat-row {
   min-height: auto;
 }
 
-.mat-header-cell {
-  color: #333F52;
-  font-weight: 600;
-  padding: 0.5rem;
-}
-
-td,
-th {
-  text-align: left;
-  font-size: 0.7rem;
-  line-height: 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+:host ::ng-deep .mat-mdc-header-cell,
+:host ::ng-deep .mat-header-cell,
+:host ::ng-deep .mat-mdc-cell,
+:host ::ng-deep .mat-cell,
+:host ::ng-deep td,
+:host ::ng-deep th {
   display: table-cell;
+  vertical-align: middle;
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  text-align: left;
+  font-size: 0.75rem;
+  line-height: 1.2rem;
 }
 
-th {
+:host ::ng-deep .mat-mdc-header-cell:last-child,
+:host ::ng-deep .mat-header-cell:last-child,
+:host ::ng-deep .mat-mdc-cell:last-child,
+:host ::ng-deep .mat-cell:last-child,
+:host ::ng-deep th:last-child,
+:host ::ng-deep td:last-child {
+  border-right: none;
+}
+
+:host ::ng-deep .mat-mdc-header-row,
+:host ::ng-deep .mat-header-row {
   background-color: #F1F4F7;
+  min-height: 3rem;
+}
+
+:host ::ng-deep .mat-mdc-header-cell,
+:host ::ng-deep .mat-header-cell,
+:host ::ng-deep th {
   color: #333F52;
   font-weight: 600;
-  padding: 0.5rem 1rem;
+  font-size: 0.7rem;
+  white-space: nowrap;
 }
 
-td {
-  padding: 1rem;
+:host ::ng-deep .mat-mdc-cell,
+:host ::ng-deep .mat-cell,
+:host ::ng-deep td {
+  font-size: 0.75rem;
+  line-height: 1.2rem;
+  height: auto;
 }
 
 th.failure-task,
 td.failure-task {
-  min-width: 5.375rem;
-  max-width: 14.75rem;
+  width: 20%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -58,22 +93,31 @@ td.failure-task {
 
 th.failure-message,
 td.failure-message {
+  width: 50%;
   line-height: 1.25rem;
   word-wrap: break-word;
+  white-space: normal;
 }
 
 th.failure-shard,
 td.failure-shard {
-  max-width: 3.5rem;
-  min-width: 3.5rem;
+  width: 10%;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 th.failure-links,
 td.failure-links {
-  max-width: 7em;
-  min-width: 7em;
+  width: 20%;
+}
+
+.title-link {
+  color: #5C912E;
+  text-decoration: none;
+}
+
+.title-link:hover {
+  text-decoration: underline;
 }
 
 .log-item {
