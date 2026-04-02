@@ -39,7 +39,7 @@ jobs:
       - <<: *run_env_setup
       - <<: *run_secret_setup
       - restore_cache:
-          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}--{{ checksum "ui/yarn.lock" }}
       - run:
           name: nvm install node and UI dependencies
           # The Circle Ubuntu machine images of yore apparently came with nvm installed, but the current images require
@@ -62,9 +62,9 @@ jobs:
             corepack enable
 
             cd ui
-            yarn install
+            yarn install --immutable
       - save_cache:
-          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}--{{ checksum "ui/yarn.lock" }}
           paths:
             - "ui/node_modules"
       - run:

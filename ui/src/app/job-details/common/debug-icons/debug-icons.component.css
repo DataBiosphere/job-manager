@@ -1,47 +1,15 @@
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  text-align: left;
-  color: #fff;
-  padding: 0.25rem 0.5rem;
-  max-width: 29.25rem;
-  z-index: 999;
-  font-size: 0.65rem;
-  line-height: 0.8rem;
-}
-
-clr-tooltip-content.message {
-  margin: -1rem 0 0 0;
-  height: auto;
-  line-height: 1rem;
-  overflow-wrap: break-word;
-}
-
-:host-context(.mat-expansion-panel-header) clr-tooltip-content.message {
-  max-width: 50%;
-}
-
-clr-tooltip a {
-  text-decoration: none;
-}
-
-clr-icon,
-clr-icon.is-solid {
+mat-icon.mat-icon {
   color: #5C912E;
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-mat-icon.mat-icon,
-mat-icon.disabled {
   margin: 0 0 0 0.0625rem;
   width: 1.5rem;
   height: 1.5rem;
+  font-size: 1.5rem;
   display: inline-block;
   vertical-align: middle;
   line-height: 1.5rem;
 }
 
-clr-icon.disabled {
+mat-icon.disabled {
   color: #ccc;
 }
 
@@ -52,22 +20,8 @@ clr-icon.disabled {
   fill: #ccc;
 }
 
-/* override default color of alert triangle for clarity icon */
-::ng-deep clr-icon.log-error .clr-i-alert.clr-i-outline--alerted {
-  fill: #e62700;
-}
-
 ::ng-deep .mat-expansion-panel-header.mat-expanded .task-links mat-icon .st0,
-::ng-deep .mat-expansion-panel-header.mat-expanded .task-links mat-icon .st4,
-::ng-deep .mat-expansion-panel-header.mat-expanded .task-links clr-icon {
-  fill: #ccc;
-}
-
-::ng-deep .mat-expansion-panel-header.mat-expanded .task-links clr-icon.log-error .clr-i-alert.clr-i-outline--alerted {
-  fill: #ccc;
-}
-
-::ng-deep clr-icon.log-error.disabled .clr-i-alert.clr-i-outline--alerted {
+::ng-deep .mat-expansion-panel-header.mat-expanded .task-links mat-icon .st4 {
   fill: #ccc;
 }
 

@@ -244,7 +244,7 @@ mat-icon.job-status {
   padding: 0;
 }
 
-::ng-deep a.inline-filter {
+::ng-deep button.inline-filter {
   display: block;
   cursor: pointer;
   max-width: 13.125rem;

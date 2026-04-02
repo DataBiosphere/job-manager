@@ -87,8 +87,12 @@ describe('JobPanelsComponent', () => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.card')).length).toEqual(1);
-    const headerIcons = de.queryAll(By.css('.header mat-icon')).map(el => el.nativeElement.textContent).join('');
-    expect(de.query(By.css('.header')).nativeElement.textContent.replace(/\s/g, '').replace(headerIcons.replace(/\s/g,''), '')).toEqual('');
+    const headerElement: HTMLElement = de.query(By.css('.header')).nativeElement;
+    const textNodeContent = Array.from(headerElement.childNodes)
+      .filter(n => n.nodeType === Node.TEXT_NODE)
+      .map(n => n.textContent?.trim() ?? '')
+      .join('');
+    expect(textNodeContent).toEqual('');
     const workflowIdElement = de.query(By.css('.copyable-id'));
     expect(workflowIdElement.nativeElement.textContent.trim())
       .toContain(minimalJob.id.replace(/^cromwell-/, ''));

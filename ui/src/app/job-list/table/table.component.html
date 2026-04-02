@@ -48,12 +48,12 @@
                   </div>
                 </div>
                 <div *ngIf="!canEdit(df) && canFilterBy(df.field)" class="mat-menu-content filter-menu">
-                  <a (click)="filterOnColumnValue(df.field, getFieldValue(j, df))" class="inline-filter"
-                     [matTooltip]="'Filter by ' + getFilterFromField(df.field) + ':' + getFieldValue(j, df)"
-                     matTooltipPosition="below">
+                  <button type="button" (click)="filterOnColumnValue(df.field, getFieldValue(j, df))" class="inline-filter"
+                          [matTooltip]="'Filter by ' + getFilterFromField(df.field) + ':' + getFieldValue(j, df)"
+                          matTooltipPosition="below">
                     <mat-icon>filter_list</mat-icon>
                     <span>Filter by {{ getFilterFromField(df.field) }}:{{ getFieldValue(j, df) }}</span>
-                  </a>
+                  </button>
                 </div>
               </mat-menu>
             </div>
