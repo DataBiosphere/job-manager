@@ -1,6 +1,1 @@
-<clr-tooltip>
-  <span clrTooltipTrigger>{{ datetime | jmShortDateTime }}</span>
-  <clr-tooltip-content clrPosition="top-right" clrSize="xs" *clrIfOpen>
-    <span>{{ datetime | jmFullDateTime }}</span>
-  </clr-tooltip-content>
-</clr-tooltip>
+<span [matTooltip]="datetime | jmFullDateTime" matTooltipPosition="above">{{ datetime | jmShortDateTime }}</span>

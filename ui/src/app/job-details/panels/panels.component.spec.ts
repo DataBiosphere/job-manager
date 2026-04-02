@@ -11,7 +11,6 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatTableModule} from "@angular/material/table";
-import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {SharedModule} from '../../shared/shared.module';
 import {JobStatus} from '../../shared/model/JobStatus';
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
@@ -61,8 +60,6 @@ describe('JobPanelsComponent', () => {
       ],
       imports: [
         BrowserAnimationsModule,
-        ClrIconModule,
-        ClrTooltipModule,
         MatButtonModule,
         MatCardModule,
         MatGridListModule,
@@ -90,7 +87,8 @@ describe('JobPanelsComponent', () => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.card')).length).toEqual(1);
-    expect(de.query(By.css('.header')).nativeElement.textContent.replace(/\s/g, '')).toEqual('');
+    const headerIcons = de.queryAll(By.css('.header mat-icon')).map(el => el.nativeElement.textContent).join('');
+    expect(de.query(By.css('.header')).nativeElement.textContent.replace(/\s/g, '').replace(headerIcons.replace(/\s/g,''), '')).toEqual('');
     const workflowIdElement = de.query(By.css('.copyable-id'));
     expect(workflowIdElement.nativeElement.textContent.trim())
       .toContain(minimalJob.id.replace(/^cromwell-/, ''));

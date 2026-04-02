@@ -20,7 +20,6 @@ import { MatSortModule } from "@angular/material/sort";
 import { MatTableModule } from "@angular/material/table";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { RouterModule } from '@angular/router';
-import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
 import { SharedModule } from '../shared/shared.module';
 import { JobListComponent } from './job-list.component';
 import { JobsBulkEditComponent } from "./table/bulk-edit/bulk-edit.component";
@@ -29,8 +28,6 @@ import { JobsTableComponent } from './table/table.component';
 
 @NgModule({
   imports: [
-    ClrIconModule,
-    ClrTooltipModule,
     CommonModule,
     MatButtonModule,
     MatCardModule,

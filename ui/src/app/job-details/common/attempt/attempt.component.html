@@ -7,44 +7,26 @@
     </mat-panel-title>
     <mat-panel-description>
       <div class="task-status">
-        <clr-tooltip>
-          <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(attempt.executionStatus)"></clr-icon>
-          <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-            <span>{{ attempt.executionStatus }}</span>
-          </clr-tooltip-content>
-        </clr-tooltip>
+        <mat-icon [ngClass]="getStatusIcon(attempt.executionStatus)" [matTooltip]="attempt.executionStatus" matTooltipPosition="left">{{getStatusIcon(attempt.executionStatus)}}</mat-icon>
       </div>
       <div class="task-start"><jm-datetime [datetime]="attempt.start"></jm-datetime></div>
       <div class="task-duration">
         {{ attempt.start | jmDuration: attempt.end }}
-        <clr-tooltip *ngIf="attempt.callCached">
-          <clr-icon clrTooltipTrigger shape="history" style="color:rgba(0, 0, 0, 0.54)"></clr-icon>
-          <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-            <span>This attempt was cached</span>
-          </clr-tooltip-content>
-        </clr-tooltip>
+        <mat-icon *ngIf="attempt.callCached" style="color:rgba(0, 0, 0, 0.54)" matTooltip="This attempt was cached" matTooltipPosition="left">history</mat-icon>
       </div>
       <div class="task-inputs">
-        <button mat-icon-button *ngIf="hasInputs(attempt)" [mat-menu-trigger-for]="inputMenu" (click)="$event.stopPropagation()">
-          <clr-tooltip>
-            <clr-icon clrTooltipTrigger shape="import"></clr-icon>
-            <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-              <span>inputs</span>
-            </clr-tooltip-content>
-          </clr-tooltip>
+        <button mat-icon-button *ngIf="hasInputs(attempt)" [mat-menu-trigger-for]="inputMenu" (click)="$event.stopPropagation()"
+                matTooltip="inputs" matTooltipPosition="left">
+          <mat-icon>login</mat-icon>
         </button>
         <mat-menu #inputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
           <jm-resources-table [entries]="attempt.inputs" (click)="$event.stopPropagation()"></jm-resources-table>
         </mat-menu>
       </div>
       <div class="task-outputs">
-        <button mat-icon-button *ngIf="hasOutputs(attempt)" [mat-menu-trigger-for]="outputMenu" (click)="$event.stopPropagation()">
-          <clr-tooltip>
-            <clr-icon clrTooltipTrigger shape="export"></clr-icon>
-            <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-              <span>outputs</span>
-            </clr-tooltip-content>
-          </clr-tooltip>
+        <button mat-icon-button *ngIf="hasOutputs(attempt)" [mat-menu-trigger-for]="outputMenu" (click)="$event.stopPropagation()"
+                matTooltip="outputs" matTooltipPosition="left">
+          <mat-icon>logout</mat-icon>
         </button>
         <mat-menu #outputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
           <jm-resources-table [entries]="attempt.outputs" (click)="$event.stopPropagation()"></jm-resources-table>

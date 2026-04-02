@@ -47,7 +47,7 @@ describe("SignInRedirectComponent", () => {
   beforeEach(fakeAsync(() => {
     fixture = TestBed.createComponent(AppComponent);
     de = fixture.debugElement;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
   }))
 
   it('should create the redirect page', fakeAsync(() => {

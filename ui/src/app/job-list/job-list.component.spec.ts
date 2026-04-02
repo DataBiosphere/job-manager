@@ -19,7 +19,6 @@ import {MatSortModule} from "@angular/material/sort";
 import {MatTableModule} from "@angular/material/table";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {RouterTestingModule} from '@angular/router/testing';
-import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 
 import {CapabilitiesService} from '../core/capabilities.service';
 import {JobListComponent} from "./job-list.component"
@@ -91,8 +90,6 @@ describe('JobListComponent', () => {
       ],
       imports: [
         BrowserAnimationsModule,
-        ClrIconModule,
-        ClrTooltipModule,
         CommonModule,
         MatButtonModule,
         MatCardModule,
@@ -129,7 +126,7 @@ describe('JobListComponent', () => {
   beforeEach(fakeAsync(() => {
     fixture = TestBed.createComponent(AppComponent);
 
-    const router: Router = TestBed.get(Router);
+    const router: Router = TestBed.inject(Router);
     router.initialNavigation();
     router.navigate(['jobs']);
     tick();

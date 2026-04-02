@@ -13,7 +13,7 @@ import {JobStatus} from "../../shared/model/JobStatus";
 import {Aggregation} from "../../shared/model/Aggregation";
 import {ActivatedRoute} from "@angular/router";
 import {RouterTestingModule} from "@angular/router/testing";
-import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
+
 import {SharedModule} from "../../shared/shared.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
@@ -126,8 +126,6 @@ describe('GroupedSummaryComponent', () => {
         TestHostComponent
       ],
       imports: [
-        ClrIconModule,
-        ClrTooltipModule,
         CommonModule,
         BrowserAnimationsModule,
         MatCardModule,

@@ -10,7 +10,7 @@ import {JobStatus} from "../../shared/model/JobStatus";
 import {StatusCounts} from "../../shared/model/StatusCounts";
 import {ActivatedRoute} from "@angular/router";
 import {RouterTestingModule} from "@angular/router/testing";
-import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
+
 
 const testSummary: StatusCounts = {
   counts: [
@@ -39,8 +39,6 @@ describe('TotalSummaryComponent', () => {
         TestHostComponent
       ],
       imports: [
-        ClrIconModule,
-        ClrTooltipModule,
         CommonModule,
         MatCardModule,
         MatTableModule,

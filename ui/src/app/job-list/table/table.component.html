@@ -48,15 +48,12 @@
                   </div>
                 </div>
                 <div *ngIf="!canEdit(df) && canFilterBy(df.field)" class="mat-menu-content filter-menu">
-                  <clr-tooltip>
-                    <a (click)="filterOnColumnValue(df.field, getFieldValue(j, df))" clrTooltipTrigger class="inline-filter">
-                      <clr-icon shape="filter-2"></clr-icon>
-                      <span>Filter by {{ getFilterFromField(df.field) }}:{{ getFieldValue(j, df) }}</span>
-                      <clr-tooltip-content clrPosition="bottom-left" clrSize="xs" *clrIfOpen>
-                        Filter by {{ getFilterFromField(df.field) }}:{{ getFieldValue(j, df) }}
-                      </clr-tooltip-content>
-                    </a>
-                  </clr-tooltip>
+                  <a (click)="filterOnColumnValue(df.field, getFieldValue(j, df))" class="inline-filter"
+                     [matTooltip]="'Filter by ' + getFilterFromField(df.field) + ':' + getFieldValue(j, df)"
+                     matTooltipPosition="below">
+                    <mat-icon>filter_list</mat-icon>
+                    <span>Filter by {{ getFilterFromField(df.field) }}:{{ getFieldValue(j, df) }}</span>
+                  </a>
                 </div>
               </mat-menu>
             </div>
@@ -91,12 +88,10 @@
           <jm-datetime [datetime]="getFieldValue(j, df)"></jm-datetime>
         </div>
         <div class="display-field" *ngIf="isSimpleField(df)">{{ getFieldValue(j, df) }}</div>
-        <clr-tooltip *ngIf=isStatusField(df) class="job-status">
-          <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(getFieldValue(j, df))"></clr-icon>
-          <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-            <span>{{ getFieldValue(j, df) }}</span>
-          </clr-tooltip-content>
-        </clr-tooltip>
+        <mat-icon *ngIf="isStatusField(df)" class="job-status"
+                  [ngClass]="getStatusIcon(getFieldValue(j, df))"
+                  [matTooltip]="getFieldValue(j, df)"
+                  matTooltipPosition="left">{{getStatusIcon(getFieldValue(j, df))}}</mat-icon>
       </mat-cell>
     </ng-container>
   </ng-container>

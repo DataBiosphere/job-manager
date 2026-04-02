@@ -8,12 +8,7 @@
           </span></th>
           <ng-container *ngFor="let status of statusArray">
             <th [mat-sort-header]=status>
-              <clr-tooltip>
-                <clr-icon clrTooltipTrigger [attr.shape]="getStatusIcon(status)" class="status-icon"></clr-icon>
-                <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-                  <span>{{ status }}</span>
-                </clr-tooltip-content>
-              </clr-tooltip>
+              <mat-icon class="status-icon" [ngClass]="getStatusIcon(status)" [matTooltip]="status" matTooltipPosition="left">{{getStatusIcon(status)}}</mat-icon>
             </th>
           </ng-container>
         </tr>
@@ -39,7 +34,7 @@
     </mat-card-content>
     <div class="button-container" *ngIf="displayCollapseArrow()">
       <button mat-icon-button (click)="onArrowClick()">
-          <clr-icon [attr.shape]="'angle'" class="arrow"></clr-icon>
+          <mat-icon class="arrow">expand_more</mat-icon>
       </button>
     </div>
   </mat-card>

@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from "@angular/material/icon";
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { AppRoutingModule } from './app-routing.module';
@@ -24,8 +23,6 @@ import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
     bootstrap: [AppComponent], imports: [AppRoutingModule,
         BrowserAnimationsModule,
         BrowserModule,
-        ClrIconModule,
-        ClrTooltipModule,
         CoreModule,
         FormsModule,
         JobDetailsModule,

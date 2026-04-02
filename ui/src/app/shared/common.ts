@@ -7,13 +7,13 @@ import {TimeFrame} from "./model/TimeFrame";
 export const STORAGE_REF = 'storage-ref';
 
 export enum JobStatusIcon {
-  Submitted = 'minus',
+  Submitted = 'remove',
   Running = 'sync',
   Aborting = 'sync',
-  Failed = 'error-standard',
-  Succeeded = 'success-standard',
-  Aborted = 'times-circle',
-  OnHold = 'minus-circle'
+  Failed = 'error',
+  Succeeded = 'check_circle',
+  Aborted = 'cancel',
+  OnHold = 'remove_circle'
 }
 
 // TODO(bryancrampton): We may want to move this to be part of
