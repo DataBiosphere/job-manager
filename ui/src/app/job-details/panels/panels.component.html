@@ -56,7 +56,7 @@
   </div>
   <mat-card class="card">
     <mat-card-title>Status: <span class="job-status">{{ job.status }}</span>
-      <mat-icon [ngClass]="getStatusIcon(job.status)">{{getStatusIcon(job.status)}}</mat-icon>
+      <mat-icon class="job-status-icon" [ngClass]="getStatusIcon(job.status)">{{getStatusIcon(job.status)}}</mat-icon>
     </mat-card-title>
     <mat-card-content>
       <p><b>

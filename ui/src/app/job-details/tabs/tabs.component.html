@@ -38,7 +38,7 @@
                       <div class="shards-container" *ngIf="taskIsScattered(t)">
                         <div class="shards-statuses" *ngFor="let jobStatus of getShardStatuses()">
                           <div class="shard-status">
-                            <mat-icon [ngClass]="getStatusIcon(jobStatus)" [matTooltip]="jobStatus" matTooltipPosition="left">{{getStatusIcon(jobStatus)}}</mat-icon>
+                            <mat-icon class="job-status-icon" [ngClass]="getStatusIcon(jobStatus)" [matTooltip]="jobStatus" matTooltipPosition="left">{{getStatusIcon(jobStatus)}}</mat-icon>
                           </div>
                           <div class="shard-count">{{ getShardCountByStatus(t, jobStatus) }}</div>
                         </div>
@@ -48,7 +48,7 @@
                 </mat-panel-title>
                 <mat-panel-description>
                   <div class="task-status status-icon">
-                    <mat-icon [ngClass]="getStatusIcon(t.executionStatus)" [matTooltip]="t.executionStatus" matTooltipPosition="left"
+                    <mat-icon class="job-status-icon" [ngClass]="getStatusIcon(t.executionStatus)" [matTooltip]="t.executionStatus" matTooltipPosition="left"
                               [attr.aria-label]="t.executionStatus" role="img" tabindex="0">{{getStatusIcon(t.executionStatus)}}</mat-icon>
                   </div>
                   <div class="task-start">

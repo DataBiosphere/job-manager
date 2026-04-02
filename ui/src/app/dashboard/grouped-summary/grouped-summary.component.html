@@ -8,7 +8,7 @@
           </span></th>
           <ng-container *ngFor="let status of statusArray">
             <th [mat-sort-header]="status" [attr.aria-label]="status">
-              <mat-icon class="status-icon" [ngClass]="getStatusIcon(status)" [matTooltip]="status" matTooltipPosition="left">{{getStatusIcon(status)}}</mat-icon>
+              <mat-icon class="status-icon job-status-icon" [ngClass]="getStatusIcon(status)" [matTooltip]="status" matTooltipPosition="left">{{getStatusIcon(status)}}</mat-icon>
             </th>
           </ng-container>
         </tr>

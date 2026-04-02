@@ -104,16 +104,16 @@ mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {
   font-weight: 500;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-inputs clr-icon,
-mat-expansion-panel.mat-expansion-panel .task-outputs clr-icon {
+mat-expansion-panel.mat-expansion-panel .task-inputs mat-icon,
+mat-expansion-panel.mat-expansion-panel .task-outputs mat-icon {
   color: #5C912E;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
+mat-expansion-panel.mat-expansion-panel .task-duration mat-icon {
   padding-left: 5px;
 }
 
-mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded clr-icon {
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded mat-icon {
   color: #ccc;
 }
 
@@ -137,7 +137,7 @@ mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-
   border-bottom: 1px solid rgba(0, 0, 0, 0.26);
 }
 
-mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded clr-icon {
+mat-accordion.mat-accordion.content mat-expansion-panel.mat-expansion-panel.mat-expanded mat-icon {
   color: #ccc;
 }
 
@@ -163,12 +163,14 @@ a.title-link {
   cursor: pointer;
 }
 
-.task-status clr-icon {
+.task-status mat-icon {
+  font-size: 1.125rem;
   width: 1.125rem;
   height: 1.125rem;
 }
 
-.task-duration clr-icon {
+.task-duration mat-icon {
+  font-size: 0.875rem;
   width: 0.875rem;
   height: 0.875rem;
   color:rgba(0, 0, 0, 0.54)

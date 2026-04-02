@@ -7,7 +7,7 @@
       <div class="content">
           <!-- Add commas to numbers for better UX -->
           {{ statusCountsMap.get(status).toLocaleString('en') }}
-        <mat-icon class="icon" [ngClass]="getStatusIcon(status)">{{getStatusIcon(status)}}</mat-icon>
+        <mat-icon class="icon job-status-icon" [ngClass]="getStatusIcon(status)">{{getStatusIcon(status)}}</mat-icon>
       </div>
     </a>
   </mat-card>

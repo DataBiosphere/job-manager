@@ -7,7 +7,7 @@
     </mat-panel-title>
     <mat-panel-description>
       <div class="task-status">
-        <mat-icon [ngClass]="getStatusIcon(attempt.executionStatus)" [matTooltip]="attempt.executionStatus" matTooltipPosition="left"
+        <mat-icon class="job-status-icon" [ngClass]="getStatusIcon(attempt.executionStatus)" [matTooltip]="attempt.executionStatus" matTooltipPosition="left"
                   [attr.aria-label]="attempt.executionStatus" role="img" tabindex="0">{{getStatusIcon(attempt.executionStatus)}}</mat-icon>
       </div>
       <div class="task-start"><jm-datetime [datetime]="attempt.start"></jm-datetime></div>

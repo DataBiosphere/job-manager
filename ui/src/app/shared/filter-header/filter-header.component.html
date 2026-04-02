@@ -42,7 +42,7 @@
     <div class="status-filter-buttons">
       <ng-container *ngIf="shouldDisplayStatusButtons()">
         <button class="mat-raised-button status-button {{ status | lowercase }}-button" (click)="showJobsWithStatus(status)" *ngFor="let status of buttonStatuses">
-          <mat-icon [ngClass]="getStatusIcon(status)">{{getStatusIcon(status)}}</mat-icon>
+          <mat-icon class="job-status-icon" [ngClass]="getStatusIcon(status)">{{getStatusIcon(status)}}</mat-icon>
           {{ status }} <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus(status) }})</span>
         </button>
       </ng-container>

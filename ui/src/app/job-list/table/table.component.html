@@ -88,7 +88,7 @@
           <jm-datetime [datetime]="getFieldValue(j, df)"></jm-datetime>
         </div>
         <div class="display-field" *ngIf="isSimpleField(df)">{{ getFieldValue(j, df) }}</div>
-        <mat-icon *ngIf="isStatusField(df)" class="job-status"
+        <mat-icon *ngIf="isStatusField(df)" class="job-status job-status-icon"
                   [ngClass]="getStatusIcon(getFieldValue(j, df))"
                   [matTooltip]="getFieldValue(j, df)"
                   matTooltipPosition="left"

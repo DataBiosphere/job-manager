@@ -86,21 +86,21 @@ a {
     background-color: #74AE43;
 }
 
-mat-icon.remove {
+mat-icon.job-status-icon.remove {
   color: #333F52;
 }
 
-mat-icon.sync,
-mat-icon.check_circle {
+mat-icon.job-status-icon.sync,
+mat-icon.job-status-icon.check_circle {
   color: #5C912E;
 }
 
-mat-icon.error,
-mat-icon.cancel {
+mat-icon.job-status-icon.error,
+mat-icon.job-status-icon.cancel {
   color: #DB3214;
 }
 
-mat-icon.remove_circle {
+mat-icon.job-status-icon.remove_circle {
   color: #F7981C;
 }
 
