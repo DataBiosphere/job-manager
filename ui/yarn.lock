@@ -343,7 +343,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-eslint/eslint-plugin-template@npm:20.7.0":
+"@angular-eslint/eslint-plugin-template@npm:20.7.0, @angular-eslint/eslint-plugin-template@npm:^20.0.0":
   version: 20.7.0
   resolution: "@angular-eslint/eslint-plugin-template@npm:20.7.0"
   dependencies:
@@ -361,7 +361,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-eslint/eslint-plugin@npm:20.7.0":
+"@angular-eslint/eslint-plugin@npm:20.7.0, @angular-eslint/eslint-plugin@npm:^20.0.0":
   version: 20.7.0
   resolution: "@angular-eslint/eslint-plugin@npm:20.7.0"
   dependencies:
@@ -388,6 +388,19 @@ __metadata:
     semver: 7.7.3
     strip-json-comments: 3.1.1
   checksum: 0b1e6d05516744e156c9a295c510a689a0440b688f8cc3c65a233cefa66922f112c0b2726ecc2779eba5141654e55cf19704c9426290a358818818cf62ddf999
+  languageName: node
+  linkType: hard
+
+"@angular-eslint/template-parser@npm:^20.0.0":
+  version: 20.7.0
+  resolution: "@angular-eslint/template-parser@npm:20.7.0"
+  dependencies:
+    "@angular-eslint/bundled-angular-compiler": 20.7.0
+    eslint-scope: ^9.0.0
+  peerDependencies:
+    eslint: ^8.57.0 || ^9.0.0
+    typescript: "*"
+  checksum: b2c315308e5ce6e02dc5e0c7a73cfd8b92c63d7945f955951a655062ecfed0cbd3c2e987f439f0ce3c1237ac0424f303d604a6126ac744d024961411f9b60cd5
   languageName: node
   linkType: hard
 
@@ -4123,6 +4136,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/esrecurse@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "@types/esrecurse@npm:4.3.1"
+  checksum: ada5798554b76ac466e90fff26a769b65f905666f32988dcd1b6cf8288896e0fb53080843fd644bf731d16719a6e09b155d623ce36545b75abdd99bb6dcec114
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:*, @types/estree@npm:1.0.8, @types/estree@npm:^1.0.8":
   version: 1.0.8
   resolution: "@types/estree@npm:1.0.8"
@@ -6570,6 +6590,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-scope@npm:^9.0.0":
+  version: 9.1.2
+  resolution: "eslint-scope@npm:9.1.2"
+  dependencies:
+    "@types/esrecurse": ^4.3.1
+    "@types/estree": ^1.0.8
+    esrecurse: ^4.3.0
+    estraverse: ^5.2.0
+  checksum: ea1a4333f5912e1ec83328ecf8103b0bb9628beca10d5efc17ce63a825ed3ab0b68c036c2dbd3127cf71f51cc04fb4685a27aac082d55c2faf134391d06443af
+  languageName: node
+  linkType: hard
+
 "eslint-visitor-keys@npm:^3.4.1, eslint-visitor-keys@npm:^3.4.3":
   version: 3.4.3
   resolution: "eslint-visitor-keys@npm:3.4.3"
@@ -8117,7 +8149,10 @@ __metadata:
   resolution: "job-manager-ui@workspace:."
   dependencies:
     "@angular-devkit/build-angular": ^20.0.0
+    "@angular-eslint/eslint-plugin": ^20.0.0
+    "@angular-eslint/eslint-plugin-template": ^20.0.0
     "@angular-eslint/schematics": ^20.0.0
+    "@angular-eslint/template-parser": ^20.0.0
     "@angular/animations": ^20.0.0
     "@angular/cdk": ^20.0.0
     "@angular/cli": ^20.0.0
