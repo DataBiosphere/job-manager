@@ -2,19 +2,24 @@
   <p class="header">
     {{ job.name }}
     <a *ngIf="!hasParent() && getTopLevelDirectory()" class="log-item"
-       [href]="getTopLevelDirectory()" target="_blank" (click)="$event.stopPropagation()">
-      <mat-icon matTooltip="top-level execution directory" matTooltipPosition="right">folder</mat-icon>
+       [href]="getTopLevelDirectory()" target="_blank" rel="noopener noreferrer"
+       (click)="$event.stopPropagation()"
+       matTooltip="top-level execution directory" matTooltipPosition="right">
+      <mat-icon>folder</mat-icon>
     </a>
-    <button *ngIf="canAbort()" (click)="abortJob()" mat-icon-button class="mat-button abort">
-      <mat-icon matTooltip="abort job" matTooltipPosition="right">cancel</mat-icon>
+    <button *ngIf="canAbort()" (click)="abortJob()" mat-icon-button class="mat-button abort"
+            matTooltip="abort job" matTooltipPosition="right" aria-label="Abort job">
+      <mat-icon>cancel</mat-icon>
     </button>
   </p>
-  <button mat-icon-button class="close" (click)="handleClose()">
-    <mat-icon style="color:#74AE43" matTooltip="go back to list view" matTooltipPosition="left">close</mat-icon>
+  <button mat-icon-button class="close" (click)="handleClose()"
+          matTooltip="go back to list view" matTooltipPosition="left" aria-label="Go back to list view">
+    <mat-icon style="color:#74AE43">close</mat-icon>
   </button>
   <button mat-icon-button class="close"
-          *ngIf="hasParent()" (click)="handleNavUp()">
-    <mat-icon style="color:#74AE43" matTooltip="go back to parent job" matTooltipPosition="left">arrow_back</mat-icon>
+          *ngIf="hasParent()" (click)="handleNavUp()"
+          matTooltip="go back to parent job" matTooltipPosition="left" aria-label="Go back to parent job">
+    <mat-icon style="color:#74AE43">arrow_back</mat-icon>
   </button>
   <div class="job-ids">
     <div class="id-row">

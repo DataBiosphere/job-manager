@@ -7,7 +7,7 @@
             {{ aggregation.name }}
           </span></th>
           <ng-container *ngFor="let status of statusArray">
-            <th [mat-sort-header]=status>
+            <th [mat-sort-header]="status" [attr.aria-label]="status">
               <mat-icon class="status-icon" [ngClass]="getStatusIcon(status)" [matTooltip]="status" matTooltipPosition="left">{{getStatusIcon(status)}}</mat-icon>
             </th>
           </ng-container>
@@ -33,7 +33,7 @@
       </table>
     </mat-card-content>
     <div class="button-container" *ngIf="displayCollapseArrow()">
-      <button mat-icon-button (click)="onArrowClick()">
+      <button mat-icon-button (click)="onArrowClick()" aria-label="Toggle expand or collapse grouped summary">
           <mat-icon class="arrow">expand_more</mat-icon>
       </button>
     </div>

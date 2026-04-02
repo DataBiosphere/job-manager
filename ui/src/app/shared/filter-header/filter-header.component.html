@@ -58,8 +58,9 @@
     </div>
 
     <div class="settings-icon-container">
-      <button mat-icon-button [matMenuTriggerFor]="settingsMenu" class="settings-icon">
-        <mat-icon matTooltip="view settings" matTooltipPosition="left">settings</mat-icon>
+      <button mat-icon-button [matMenuTriggerFor]="settingsMenu" class="settings-icon"
+              matTooltip="view settings" matTooltipPosition="left" aria-label="View settings">
+        <mat-icon>settings</mat-icon>
       </button>
       <mat-menu #settingsMenu="matMenu" class="wide-menu settings-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
         <h2 class="settings-header">Displayed columns</h2>

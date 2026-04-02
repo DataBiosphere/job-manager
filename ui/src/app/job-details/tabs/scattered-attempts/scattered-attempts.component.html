@@ -29,7 +29,8 @@
           </mat-panel-title>
           <mat-panel-description>
             <div class="task-status status-icon">
-              <mat-icon [ngClass]="getStatusIcon(shard.executionStatus)" [matTooltip]="shard.executionStatus" matTooltipPosition="left">{{getStatusIcon(shard.executionStatus)}}</mat-icon>
+              <mat-icon [ngClass]="getStatusIcon(shard.executionStatus)" [matTooltip]="shard.executionStatus" matTooltipPosition="left"
+                        [attr.aria-label]="shard.executionStatus" role="img" tabindex="0">{{getStatusIcon(shard.executionStatus)}}</mat-icon>
             </div>
             <div class="task-start">
               <jm-datetime [datetime]="shard.start"></jm-datetime>

@@ -1,6 +1,6 @@
 /** A collection of enums and static functions. */
 
-/** Enum mapping of statuses and the clarity icon shapes representing with them. */
+/** Enum mapping of statuses to their Angular Material icon names. */
 
 import {TimeFrame} from "./model/TimeFrame";
 

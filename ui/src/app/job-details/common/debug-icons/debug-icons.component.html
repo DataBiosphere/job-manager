@@ -1,6 +1,7 @@
-  <a *ngIf="displayMessage" class="log-item message-icon">
-    <mat-icon style="color:#DB3214" [matTooltip]="message" matTooltipPosition="left">warning</mat-icon>
-  </a>
+  <button *ngIf="displayMessage" class="log-item message-icon" type="button"
+          [matTooltip]="message" matTooltipPosition="left">
+    <mat-icon style="color:#DB3214">warning</mat-icon>
+  </button>
   <mat-icon *ngIf="!getResourceUrl(backendLog) && !hasExternalLogs()" svgIcon="cloud-file" class="backend-log-button disabled"></mat-icon>
   <button *ngIf="getResourceUrl(backendLog)" class="log-item backend-log-button"
           (click)="showOrLinkTo($event, backendLog)"
@@ -8,13 +9,13 @@
     <mat-icon svgIcon="cloud-file"></mat-icon>
   </button>
   <a *ngIf="!!hasExternalLogs() && !getResourceUrl(backendLog)" class="log-item backend-log-button"
-     [href]="getExternalLogsUrl()" target="_blank" (click)="$event.stopPropagation()"
+     [href]="getExternalLogsUrl()" target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()"
      matTooltip="backend log" matTooltipPosition="above">
     <mat-icon svgIcon="cloud-file"></mat-icon>
   </a>
   <mat-icon *ngIf="!getDirectoryUrl(directory)" class="disabled">folder</mat-icon>
   <a *ngIf="getDirectoryUrl(directory)" class="log-item execution-directory-button"
-     [href]="getDirectoryUrl(directory)" target="_blank" (click)="$event.stopPropagation()"
+     [href]="getDirectoryUrl(directory)" target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()"
      matTooltip="execution directory" matTooltipPosition="above">
     <mat-icon>folder</mat-icon>
   </a>
@@ -24,7 +25,7 @@
     <mat-icon>info</mat-icon>
   </button>
   <a *ngIf="!!hasExternalOperationalDetails()" class="log-item operation-details-button"
-     [href]="getOperationalDetailsUrl()" target="_blank" (click)="$event.stopPropagation()"
+     [href]="getOperationalDetailsUrl()" target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()"
      matTooltip="compute details" matTooltipPosition="above">
     <mat-icon>info</mat-icon>
   </a>

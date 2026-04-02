@@ -7,7 +7,8 @@
     </mat-panel-title>
     <mat-panel-description>
       <div class="task-status">
-        <mat-icon [ngClass]="getStatusIcon(attempt.executionStatus)" [matTooltip]="attempt.executionStatus" matTooltipPosition="left">{{getStatusIcon(attempt.executionStatus)}}</mat-icon>
+        <mat-icon [ngClass]="getStatusIcon(attempt.executionStatus)" [matTooltip]="attempt.executionStatus" matTooltipPosition="left"
+                  [attr.aria-label]="attempt.executionStatus" role="img" tabindex="0">{{getStatusIcon(attempt.executionStatus)}}</mat-icon>
       </div>
       <div class="task-start"><jm-datetime [datetime]="attempt.start"></jm-datetime></div>
       <div class="task-duration">
@@ -16,7 +17,7 @@
       </div>
       <div class="task-inputs">
         <button mat-icon-button *ngIf="hasInputs(attempt)" [mat-menu-trigger-for]="inputMenu" (click)="$event.stopPropagation()"
-                matTooltip="inputs" matTooltipPosition="left">
+                matTooltip="inputs" matTooltipPosition="left" aria-label="Open inputs menu">
           <mat-icon>login</mat-icon>
         </button>
         <mat-menu #inputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
@@ -25,7 +26,7 @@
       </div>
       <div class="task-outputs">
         <button mat-icon-button *ngIf="hasOutputs(attempt)" [mat-menu-trigger-for]="outputMenu" (click)="$event.stopPropagation()"
-                matTooltip="outputs" matTooltipPosition="left">
+                matTooltip="outputs" matTooltipPosition="left" aria-label="Open outputs menu">
           <mat-icon>logout</mat-icon>
         </button>
         <mat-menu #outputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">

@@ -30,7 +30,7 @@
                   </div>
                   <span *ngIf="taskIsScattered(t)" class="scatter-icon-container">
                     <button mat-icon-button [matMenuTriggerFor]="shardMenu" class="scatter-icon"
-                            matTooltip="task is scattered" matTooltipPosition="left">
+                            matTooltip="task is scattered" matTooltipPosition="left" aria-label="Open scattered task menu">
                       <mat-icon>layers</mat-icon>
                     </button>
                     <mat-menu #shardMenu="matMenu" class="wide-menu shards-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
@@ -48,7 +48,8 @@
                 </mat-panel-title>
                 <mat-panel-description>
                   <div class="task-status status-icon">
-                    <mat-icon [ngClass]="getStatusIcon(t.executionStatus)" [matTooltip]="t.executionStatus" matTooltipPosition="left">{{getStatusIcon(t.executionStatus)}}</mat-icon>
+                    <mat-icon [ngClass]="getStatusIcon(t.executionStatus)" [matTooltip]="t.executionStatus" matTooltipPosition="left"
+                              [attr.aria-label]="t.executionStatus" role="img" tabindex="0">{{getStatusIcon(t.executionStatus)}}</mat-icon>
                   </div>
                   <div class="task-start">
                     <jm-datetime [datetime]="t.start"></jm-datetime>
@@ -59,7 +60,7 @@
                   </div>
                   <div class="task-inputs">
                     <button mat-icon-button *ngIf="hasInputs(t)" [mat-menu-trigger-for]="inputMenu" (click)="$event.stopPropagation()"
-                            matTooltip="inputs" matTooltipPosition="left">
+                            matTooltip="inputs" matTooltipPosition="left" aria-label="Open inputs menu">
                       <mat-icon>login</mat-icon>
                     </button>
                     <mat-menu #inputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">
@@ -68,7 +69,7 @@
                   </div>
                   <div class="task-outputs">
                     <button mat-icon-button *ngIf="hasOutputs(t)" [mat-menu-trigger-for]="outputMenu" (click)="$event.stopPropagation()"
-                            matTooltip="outputs" matTooltipPosition="left">
+                            matTooltip="outputs" matTooltipPosition="left" aria-label="Open outputs menu">
                       <mat-icon>logout</mat-icon>
                     </button>
                     <mat-menu #outputMenu="matMenu" class="input-menu" xPosition="after" yPosition="below" [overlapTrigger]="false">

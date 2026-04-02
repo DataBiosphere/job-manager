@@ -66,7 +66,7 @@ describe('JobDebugIconsComponent', () => {
   it('should not display message icon if displayMessage is set to false', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('a.log-item.message-icon')).length).toEqual(0);
+    expect(de.queryAll(By.css('button.log-item.message-icon')).length).toEqual(0);
   }));
 
   it('should display message icon if displayMessage is set to true', waitForAsync(() => {
@@ -74,7 +74,7 @@ describe('JobDebugIconsComponent', () => {
     testComponent.jobDebugIconsComponent.displayMessage = true;
     let de: DebugElement = fixture.debugElement;
     fixture.detectChanges();
-    expect(de.queryAll(By.css('a.log-item.message-icon')).length).toEqual(1);
+    expect(de.queryAll(By.css('button.log-item.message-icon')).length).toEqual(1);
   }));
 
   it('should calculate the right location for backend log', waitForAsync(() => {
