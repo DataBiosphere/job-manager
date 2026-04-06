@@ -1,6 +1,6 @@
 # Note: This is the dockerfile for development purposes
 
-FROM node:18
+FROM node:20
 
 # Install python 3, needed for npm packages
 RUN apt-get update && apt-get -y install python3
