@@ -199,18 +199,14 @@
   visibility: visible !important;
 }
 
-.mat-menu-panel.details-menu .mat-list-item a clr-icon {
+.mat-menu-panel.details-menu .mat-list-item a mat-icon {
   padding-right: 0.625rem;
 }
 
-clr-icon {
+mat-icon.job-status {
+  font-size: 1.125rem;
   width: 1.125rem;
   height: 1.125rem;
-}
-
-.task-status clr-icon {
-  width: 1.5rem;
-  height: 1.5rem;
 }
 
 ::ng-deep .mat-menu-panel.details-menu {
@@ -248,7 +244,7 @@ clr-icon {
   padding: 0;
 }
 
-::ng-deep a.inline-filter {
+::ng-deep button.inline-filter {
   display: block;
   cursor: pointer;
   max-width: 13.125rem;
@@ -258,7 +254,7 @@ clr-icon {
 }
 
 ::ng-deep .mat-menu-panel.details-menu mat-card a,
-::ng-deep .mat-menu-panel.details-menu mat-card a clr-icon {
+::ng-deep .mat-menu-panel.details-menu mat-card a mat-icon {
   color: rgba(0, 0, 0, 0.8);
   font-size: 0.75rem;
   white-space: nowrap;
@@ -384,16 +380,3 @@ button.apply-link:hover {
   padding-top: 0;
 }
 
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem 0.5rem;
-  font-size: 0.65rem;
-  color: #fff;
-  display: block;
-  margin: -0.6rem 0.5rem 0 0;
-}
-
-.mat-menu-content.filter-menu clr-tooltip-content {
-  padding: 0.25rem 0.5rem;
-  margin: 0.25rem 0 0 5rem;
-}

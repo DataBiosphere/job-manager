@@ -39,7 +39,7 @@ jobs:
       - <<: *run_env_setup
       - <<: *run_secret_setup
       - restore_cache:
-          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}--{{ checksum "ui/yarn.lock" }}
       - run:
           name: nvm install node and UI dependencies
           # The Circle Ubuntu machine images of yore apparently came with nvm installed, but the current images require
@@ -55,14 +55,16 @@ jobs:
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-            nvm install 18
+            # Angular 20 requires Node >=20.19.0
+            nvm install 22
+
+            # Enable corepack so yarn Berry (3.x) works correctly
+            corepack enable
 
             cd ui
-            npm install
-
-            npm install -g @angular/cli@14.2.1
+            yarn install --immutable
       - save_cache:
-          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}--{{ checksum "ui/yarn.lock" }}
           paths:
             - "ui/node_modules"
       - run:
@@ -76,8 +78,9 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 18
-            npm run eslint
+            nvm install 22
+            corepack enable
+            yarn eslint
       - run:
           name: Type check with tsc
           command: |
@@ -85,8 +88,9 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 18
-            npm run tsc
+            nvm install 22
+            corepack enable
+            yarn tsc
       - run:
           name: Run UI unit tests
           command: |
@@ -94,8 +98,9 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 18
-            ng test --watch=false --source-map=false --browsers=ChromeHeadless
+            nvm install 22
+            corepack enable
+            yarn ng test --watch=false --source-map=false --browsers=ChromeHeadless
       - run:
           name: Ensure the UI builds for prod
           # Target production to emulate deployment, but a dev environment
@@ -106,8 +111,9 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 18
-            ng build --configuration=production
+            nvm install 22
+            corepack enable
+            yarn ng build --configuration=production
 
   backends:
     <<: *job_defaults

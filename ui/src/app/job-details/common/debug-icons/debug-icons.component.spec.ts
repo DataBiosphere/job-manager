@@ -6,7 +6,7 @@ import { MatIconModule, MatIconRegistry } from "@angular/material/icon";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { By, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
+
 import { ConfigLoaderService } from "../../../../environments/config-loader.service";
 import { AuthService } from "../../../core/auth.service";
 import { CapabilitiesService } from "../../../core/capabilities.service";
@@ -39,8 +39,6 @@ describe('JobDebugIconsComponent', () => {
         JobDebugIconsComponent
     ],
     imports: [BrowserAnimationsModule,
-        ClrIconModule,
-        ClrTooltipModule,
         MatDialogModule,
         MatIconModule,
         MatSnackBarModule,
@@ -58,8 +56,8 @@ describe('JobDebugIconsComponent', () => {
   }));
 
   beforeEach(() => {
-    iconRegistry = TestBed.get(MatIconRegistry);
-    sanitizer = TestBed.get(DomSanitizer);
+    iconRegistry = TestBed.inject(MatIconRegistry);
+    sanitizer = TestBed.inject(DomSanitizer);
     iconRegistry.addSvgIcon('cloud-file', sanitizer.bypassSecurityTrustResourceUrl('/assets/images/icon-cloud-file.svg'));
     fixture = TestBed.createComponent(TestDebugIconsComponent);
     testComponent = fixture.componentInstance;
@@ -68,7 +66,7 @@ describe('JobDebugIconsComponent', () => {
   it('should not display message icon if displayMessage is set to false', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.queryAll(By.css('clr-icon[shape=exclamation-triangle]')).length).toEqual(0);
+    expect(de.queryAll(By.css('button.log-item.message-icon')).length).toEqual(0);
   }));
 
   it('should display message icon if displayMessage is set to true', waitForAsync(() => {
@@ -76,7 +74,7 @@ describe('JobDebugIconsComponent', () => {
     testComponent.jobDebugIconsComponent.displayMessage = true;
     let de: DebugElement = fixture.debugElement;
     fixture.detectChanges();
-    expect(de.queryAll(By.css('clr-icon[shape=exclamation-triangle]')).length).toEqual(1);
+    expect(de.queryAll(By.css('button.log-item.message-icon')).length).toEqual(1);
   }));
 
   it('should calculate the right location for backend log', waitForAsync(() => {

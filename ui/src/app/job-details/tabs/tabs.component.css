@@ -126,12 +126,12 @@ mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-body {
   color: #333F52;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-inputs clr-icon,
-mat-expansion-panel.mat-expansion-panel .task-outputs clr-icon {
+mat-expansion-panel.mat-expansion-panel .task-inputs mat-icon,
+mat-expansion-panel.mat-expansion-panel .task-outputs mat-icon {
   color: #5C912E;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
+mat-expansion-panel.mat-expansion-panel .task-duration mat-icon {
   padding-left: 5px;
 }
 
@@ -173,7 +173,7 @@ mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
   overflow: visible;
 }
 
-mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded clr-icon {
+mat-expansion-panel.mat-expansion-panel.content  mat-expansion-panel.mat-expansion-panel.mat-expanded mat-icon {
   color: #ccc;
 }
 
@@ -239,27 +239,11 @@ mat-dialog-container.mat-dialog-container {
   color: #333F52;
 }
 
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem 0.5rem;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.65rem;
-  line-height: 0.65rem;
-  color: #fff;
-  display: block;
-  margin: -0.6rem 0.5rem 0 0;
-  height: auto;
-}
-
 ::ng-deep .shards-menu.mat-menu-panel {
   overflow: visible;
 }
 
-::ng-deep .shards-menu.mat-menu-panel clr-tooltip-content {
-  margin-right: 0.25rem;
-}
-
-clr-icon {
+mat-icon {
   margin-right: 1rem;
 }
 
@@ -285,25 +269,28 @@ clr-icon {
   margin-top: 0.8rem;
 }
 
-.shard-status clr-icon {
+.shard-status mat-icon {
   margin-right: 0;
 }
 
-.task-status clr-icon,
-.task-inputs clr-icon,
-.task-outputs clr-icon {
+.task-status mat-icon,
+.task-inputs mat-icon,
+.task-outputs mat-icon {
+  font-size: 1.125rem;
   width: 1.125rem;
   height: 1.125rem;
 }
 
-.task-duration clr-icon {
+.task-duration mat-icon {
+  font-size: 0.875rem;
   width: 0.875rem;
   height: 0.875rem;
   color:rgba(0, 0, 0, 0.54)
 }
 
-.scatter-icon clr-icon {
+.scatter-icon mat-icon {
   color: #5C912E;
+  font-size: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
 }

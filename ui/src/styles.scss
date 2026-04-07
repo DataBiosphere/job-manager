@@ -76,20 +76,9 @@ a {
   font-family: 'Montserrat', sans-serif;
 }
 
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem 0.5rem;
-  display: block;
-  color: #fff;
-  z-index: 888;
-}
-
-clr-tooltip-content.message {
+.mat-mdc-tooltip {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 400;
-  line-height: 1.5rem;
   font-size: 0.65rem;
-  color: #fff;
 }
 
 .mat-checkbox .mat-checkbox-indeterminate.mat-accent .mat-checkbox-background,
@@ -97,24 +86,24 @@ clr-tooltip-content.message {
     background-color: #74AE43;
 }
 
-clr-icon[shape='minus'] {
+mat-icon.job-status-icon.remove {
   color: #333F52;
 }
 
-clr-icon[shape='sync'],
-clr-icon[shape='success-standard']{
+mat-icon.job-status-icon.sync,
+mat-icon.job-status-icon.check_circle {
   color: #5C912E;
 }
 
-clr-icon[shape='error-standard'],
-clr-icon[shape='times-circle'] {
+mat-icon.job-status-icon.error,
+mat-icon.job-status-icon.cancel {
   color: #DB3214;
 }
 
-clr-icon[shape='minus-circle'] {
+mat-icon.job-status-icon.remove_circle {
   color: #F7981C;
 }
 
-.mat-raised-button clr-icon {
+.mat-raised-button mat-icon {
   color: inherit;
 }

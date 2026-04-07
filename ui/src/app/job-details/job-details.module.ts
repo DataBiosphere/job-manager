@@ -15,7 +15,6 @@ import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { RouterModule } from '@angular/router';
-import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 import { GcsService } from '../core/gcs.service';
@@ -35,8 +34,6 @@ import { JobTimingDiagramComponent } from "./tabs/timing-diagram/timing-diagram.
 
 @NgModule({
   imports: [
-    ClrIconModule,
-    ClrTooltipModule,
     CommonModule,
     MatButtonModule,
     MatCardModule,

@@ -17,7 +17,6 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {BehaviorSubject} from 'rxjs';
 
 import {CapabilitiesService} from "../../core/capabilities.service"
@@ -68,8 +67,6 @@ describe('FilterHeaderComponent', () => {
       declarations: [FilterHeaderComponent, TestHeaderComponent, MockFilterChipComponent],
       imports: [
         BrowserAnimationsModule,
-        ClrIconModule,
-        ClrTooltipModule,
         FormsModule,
         MatAutocompleteModule,
         MatButtonModule,

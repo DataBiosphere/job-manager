@@ -19,7 +19,6 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { CapabilitiesService } from '../../core/capabilities.service';
@@ -126,8 +125,6 @@ describe('JobsTableComponent', () => {
       ],
       imports: [
         BrowserAnimationsModule,
-        ClrIconModule,
-        ClrTooltipModule,
         CommonModule,
         MatButtonModule,
         MatCardModule,
@@ -210,8 +207,8 @@ describe('JobsTableComponent', () => {
     let dsubColumns = de.queryAll(By.css('.additional-column'));
     expect(dsubColumns.length).toEqual(7);
     // Unwrap image tag to verify the reflect message
-    const statusIcon = de.query(By.css('.tooltip-trigger'));
-    expect(statusIcon.attributes.shape).toBe("sync");
+    const statusIcon = de.query(By.css('mat-icon.job-status'));
+    expect(statusIcon.nativeElement.textContent.trim()).toBe("sync");
     expect(dsubColumns[2].nativeElement.textContent.trim())
       .toEqual((new ShortDateTimePipe(new DatePipe("en-US"))).transform(jobs[0].submission));
     expect(dsubColumns[3].nativeElement.textContent.trim())

@@ -5,7 +5,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {Injectable} from '@angular/core';
 import {Location} from '@angular/common';
 import {flush, TestBed, fakeAsync, tick, ComponentFixture, waitForAsync} from '@angular/core/testing';
-import {ClrIconModule} from '@clr/angular';
+
 
 import {AppComponent} from './app.component';
 import {CoreModule} from './core/core.module';
@@ -35,7 +35,6 @@ describe('AppComponent', () => {
       ],
       imports: [
         BrowserAnimationsModule,
-        ClrIconModule,
         CoreModule,
         JobListModule,
         JobDetailsModule,
@@ -59,7 +58,7 @@ describe('AppComponent', () => {
   }));
 
   beforeEach(() => {
-    customIconService = TestBed.get(CustomIconService);
+    customIconService = TestBed.inject(CustomIconService);
     fixture = TestBed.createComponent(AppComponent);
     testComponent = fixture.componentInstance;
   });
@@ -70,9 +69,9 @@ describe('AppComponent', () => {
   }));
 
   it('should show an error on initial nav failure', waitForAsync(() => {
-    const location = TestBed.get(Location);
+    const location = TestBed.inject(Location);
     location.replaceState('error');
-    const router: Router = TestBed.get(Router);
+    const router: Router = TestBed.inject(Router);
 
     // Mock the zone to catch unhandled rejections
     spyOn(Zone.current, 'runGuarded').and.callFake((fn: Function) => {

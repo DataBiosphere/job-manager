@@ -9,10 +9,11 @@ import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatSelectModule} from "@angular/material/select";
 import {MatSortModule} from "@angular/material/sort";
+import {MatIconModule} from "@angular/material/icon";
 import {MatTableModule} from "@angular/material/table";
+import {MatTooltipModule} from "@angular/material/tooltip";
 import {GroupedSummaryComponent} from './grouped-summary/grouped-summary.component';
 import {SharedModule} from "../shared/shared.module";
-import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
 
 
 @NgModule({
@@ -22,14 +23,14 @@ import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
     GroupedSummaryComponent
   ],
   imports: [
-    ClrIconModule,
-    ClrTooltipModule,
     CommonModule,
-    MatCardModule,
-    MatTableModule,
-    MatSortModule,
     MatButtonModule,
+    MatCardModule,
+    MatIconModule,
     MatSelectModule,
+    MatSortModule,
+    MatTableModule,
+    MatTooltipModule,
     RouterModule,
     SharedModule,
   ],

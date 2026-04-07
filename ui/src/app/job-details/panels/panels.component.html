@@ -1,39 +1,25 @@
 <div class="content">
   <p class="header">
     {{ job.name }}
-    <clr-tooltip *ngIf="!hasParent() && getTopLevelDirectory()">
-      <a class="log-item" [href]="getTopLevelDirectory()" target="_blank" (click)="$event.stopPropagation()">
-        <clr-icon clrTooltipTrigger shape="folder" class="is-solid"></clr-icon>
-        <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
-          <span>top-level execution directory</span>
-        </clr-tooltip-content>
-      </a>
-    </clr-tooltip>
-    <button *ngIf="canAbort()" (click)="abortJob()" mat-icon-button class="mat-button abort">
-      <clr-tooltip>
-        <clr-icon clrTooltipTrigger shape="times-circle"></clr-icon>
-        <clr-tooltip-content clrPosition="right" clrSize="xs" *clrIfOpen>
-          <span>abort job</span>
-        </clr-tooltip-content>
-      </clr-tooltip>
+    <a *ngIf="!hasParent() && getTopLevelDirectory()" class="log-item"
+       [href]="getTopLevelDirectory()" target="_blank" rel="noopener noreferrer"
+       (click)="$event.stopPropagation()"
+       matTooltip="top-level execution directory" matTooltipPosition="right">
+      <mat-icon>folder</mat-icon>
+    </a>
+    <button *ngIf="canAbort()" (click)="abortJob()" mat-icon-button class="mat-button abort"
+            matTooltip="abort job" matTooltipPosition="right" aria-label="Abort job">
+      <mat-icon>cancel</mat-icon>
     </button>
   </p>
-  <button mat-icon-button class="close" (click)="handleClose()">
-    <clr-tooltip>
-      <clr-icon clrTooltipTrigger shape="times" style="color:#74AE43"></clr-icon>
-      <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-        <span>go back to list view</span>
-      </clr-tooltip-content>
-    </clr-tooltip>
+  <button mat-icon-button class="close" (click)="handleClose()"
+          matTooltip="go back to list view" matTooltipPosition="left" aria-label="Go back to list view">
+    <mat-icon style="color:#74AE43">close</mat-icon>
   </button>
   <button mat-icon-button class="close"
-          *ngIf="hasParent()" (click)="handleNavUp()">
-    <clr-tooltip>
-      <clr-icon clrTooltipTrigger shape="arrow" style="color:#74AE43"></clr-icon>
-      <clr-tooltip-content clrPosition="left" clrSize="xs" *clrIfOpen>
-        <span>go back to parent job</span>
-      </clr-tooltip-content>
-    </clr-tooltip>
+          *ngIf="hasParent()" (click)="handleNavUp()"
+          matTooltip="go back to parent job" matTooltipPosition="left" aria-label="Go back to parent job">
+    <mat-icon style="color:#74AE43">arrow_back</mat-icon>
   </button>
   <div class="job-ids">
     <div class="id-row">
@@ -70,7 +56,7 @@
   </div>
   <mat-card class="card">
     <mat-card-title>Status: <span class="job-status">{{ job.status }}</span>
-      <clr-icon [attr.shape]="getStatusIcon(job.status)"></clr-icon>
+      <mat-icon class="job-status-icon" [ngClass]="getStatusIcon(job.status)">{{getStatusIcon(job.status)}}</mat-icon>
     </mat-card-title>
     <mat-card-content>
       <p><b>

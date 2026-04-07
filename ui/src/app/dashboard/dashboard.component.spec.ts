@@ -26,7 +26,7 @@ import {CapabilitiesResponse} from "../shared/model/CapabilitiesResponse";
 import {CapabilitiesService} from "../core/capabilities.service";
 import {FakeCapabilitiesService} from "../testing/fake-capabilities.service";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
+
 import {SettingsService} from "../core/settings.service";
 import {AuthService} from "../core/auth.service";
 
@@ -152,8 +152,6 @@ describe('DashboardComponent', () => {
         TestJobListComponent,
       ],
       imports: [
-        ClrIconModule,
-        ClrTooltipModule,
         CommonModule,
         BrowserAnimationsModule,
         MatCardModule,
@@ -181,7 +179,7 @@ describe('DashboardComponent', () => {
   beforeEach(fakeAsync(() => {
     fixture = TestBed.createComponent(AppComponent);
     de = fixture.debugElement;
-    const router: Router = TestBed.get(Router);
+    const router: Router = TestBed.inject(Router);
     router.initialNavigation();
 
     router.navigate(['dashboard'], {

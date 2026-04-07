@@ -12,7 +12,6 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { By, DomSanitizer } from '@angular/platform-browser';
 
-import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
 import { MatDialogModule } from '@angular/material/dialog';
@@ -173,8 +172,6 @@ describe('JobTabsComponent', () => {
         TestTasksComponent
     ],
     imports: [BrowserAnimationsModule,
-        ClrIconModule,
-        ClrTooltipModule,
         CommonModule,
         MatButtonModule,
         MatDialogModule,
@@ -200,8 +197,8 @@ describe('JobTabsComponent', () => {
   }));
 
   beforeEach(() => {
-    iconRegistry = TestBed.get(MatIconRegistry);
-    sanitizer = TestBed.get(DomSanitizer);
+    iconRegistry = TestBed.inject(MatIconRegistry);
+    sanitizer = TestBed.inject(DomSanitizer);
     iconRegistry.addSvgIcon('cloud-file', sanitizer.bypassSecurityTrustResourceUrl('/assets/images/icon-cloud-file.svg'));
     fixture = TestBed.createComponent(TestTasksComponent);
     testComponent = fixture.componentInstance;
@@ -223,7 +220,7 @@ describe('JobTabsComponent', () => {
       .toContain(task.name);
     expect(de.queryAll(By.css('a.title-link')).length)
       .toEqual(1);
-    expect(de.queryAll(By.css('.task-status clr-icon'))[0].attributes['shape'])
+    expect(de.queryAll(By.css('.task-status mat-icon'))[0].nativeElement.textContent.trim())
       .toContain('error');
     expect(de.queryAll(By.css('.task-start'))[1].nativeElement.textContent)
       .toContain('Nov 14, 2017');
@@ -237,7 +234,7 @@ describe('JobTabsComponent', () => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
-    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(3) .task-duration clr-icon')).attributes['shape'])
+    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(3) .task-duration mat-icon')).nativeElement.textContent.trim())
       .toEqual('history');
   }));
 
@@ -245,16 +242,16 @@ describe('JobTabsComponent', () => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
-    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(4) .task-inputs clr-icon')).attributes['shape'])
-      .toEqual('import');
+    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(4) .task-inputs mat-icon')).nativeElement.textContent.trim())
+      .toEqual('login');
   }));
 
   it('should display the correct icon if the task has outputs', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
-    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(5) .task-outputs clr-icon')).attributes['shape'])
-      .toEqual('export');
+    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(5) .task-outputs mat-icon')).nativeElement.textContent.trim())
+      .toEqual('logout');
   }));
 
   it('should display attempt rows for each task attempt if there was more than one', waitForAsync(() => {

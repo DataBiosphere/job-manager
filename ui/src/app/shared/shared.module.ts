@@ -17,7 +17,7 @@ import { MatMenuModule } from "@angular/material/menu";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatRadioModule } from "@angular/material/radio";
 import { MatSlideToggleModule } from "@angular/material/slide-toggle";
-import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
+import { MatTooltipModule } from "@angular/material/tooltip";
 import { DurationPipe } from "./pipes/duration.pipe";
 import { ErrorMessageFormatterPipe } from "./pipes/error-message-formatter.pipe";
 import { FullDateTimePipe } from "./pipes/full-date-time.pipe";
@@ -34,8 +34,6 @@ import { FilterHeaderComponent } from "./filter-header/filter-header.component";
 @NgModule({
   imports: [
     ClipboardModule,
-    ClrIconModule,
-    ClrTooltipModule,
     CommonModule,
     FormsModule,
     MatAutocompleteModule,
@@ -51,6 +49,7 @@ import { FilterHeaderComponent } from "./filter-header/filter-header.component";
     MatMenuModule,
     MatNativeDateModule,
     MatPaginatorModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     MatRadioModule,
     MatSlideToggleModule
@@ -73,11 +72,13 @@ import { FilterHeaderComponent } from "./filter-header/filter-header.component";
   exports: [
     ClipboardModule,
     DatetimeComponent,
-    ShortDateTimePipe,
-    FullDateTimePipe,
-    ErrorMessageFormatterPipe,
     DurationPipe,
-    FilterHeaderComponent
+    ErrorMessageFormatterPipe,
+    FilterHeaderComponent,
+    FullDateTimePipe,
+    MatIconModule,
+    MatTooltipModule,
+    ShortDateTimePipe,
   ],
 })
 export class SharedModule {}

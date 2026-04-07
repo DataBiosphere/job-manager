@@ -38,16 +38,13 @@
   display: none;
 }
 
-.query-form clr-icon {
+.query-form mat-icon {
   vertical-align: top;
   padding: 0;
   color: #5C912E;
+  font-size: 1.5rem;
   width: 1.5rem;
   height: 1.5rem;
-}
-
-.query-form clr-icon[shape='filter-2'] {
-  padding: 0 1rem 0 0.5rem;
 }
 
 search-button {
@@ -69,9 +66,10 @@ search-button {
   padding: 0 12px 0 8px;
 }
 
-.mat-raised-button.status-button clr-icon {
+.mat-raised-button.status-button mat-icon {
   margin-right: 3px;
   margin-top: -3px;
+  font-size: 1.125rem;
   width: 1.125rem;
   height: 1.125rem;
 }
@@ -90,7 +88,8 @@ search-button {
   padding: 0 !important;
 }
 
-.settings-icon clr-icon {
+.settings-icon mat-icon {
+  font-size: 1.625rem;
   width: 1.625rem;
   height: 1.625rem;
   color: #5C912E;
@@ -180,7 +179,8 @@ button.clear-query {
   width: 2.5rem;
 }
 
-button.clear-query clr-icon {
+button.clear-query mat-icon {
+  font-size: 1rem;
   width: 1rem;
   height: 1rem;
 }
@@ -209,12 +209,3 @@ button.clear-query clr-icon {
   margin: 0 0 0 10px;
 }
 
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  padding: 0.25rem 0.5rem;
-  font-size: 0.65rem;
-  color: #fff;
-  display: block;
-  font-family: 'Montserrat', sans-serif;
-  line-height: 1rem;
-}

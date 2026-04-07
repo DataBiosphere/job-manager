@@ -1,6 +1,6 @@
 <div class="content">
   <mat-form-field class="query-form">
-    <span matPrefix><clr-icon shape="filter-2"></clr-icon></span>
+    <span matPrefix><mat-icon>filter_list</mat-icon></span>
     <mat-chip-grid #chipGrid>
       <mat-chip-row
         *ngFor="let chipKey of getChipKeys()"
@@ -34,7 +34,7 @@
     </mat-chip-grid>
   </mat-form-field>
   <button *ngIf="hasChipsToClear()" matSuffix mat-icon-button aria-label="Clear" (click)="removeAllChips()" class="clear-query">
-    <clr-icon shape="close"></clr-icon>
+    <mat-icon>close</mat-icon>
   </button>
 
   <div *ngIf="showControls" class="search-table-controls">
@@ -42,7 +42,7 @@
     <div class="status-filter-buttons">
       <ng-container *ngIf="shouldDisplayStatusButtons()">
         <button class="mat-raised-button status-button {{ status | lowercase }}-button" (click)="showJobsWithStatus(status)" *ngFor="let status of buttonStatuses">
-          <clr-icon [attr.shape]="getStatusIcon(status)"></clr-icon>
+          <mat-icon class="job-status-icon" [ngClass]="getStatusIcon(status)">{{getStatusIcon(status)}}</mat-icon>
           {{ status }} <span *ngIf="shouldDisplayStatusCounts()">({{ getJobsCountForStatus(status) }})</span>
         </button>
       </ng-container>
@@ -58,13 +58,9 @@
     </div>
 
     <div class="settings-icon-container">
-      <button mat-icon-button [matMenuTriggerFor]="settingsMenu" class="settings-icon">
-        <clr-tooltip>
-          <clr-icon clrTooltipTrigger shape="cog" class="is-solid"></clr-icon>
-          <clr-tooltip-content clrPosition="left"  clrSize="xs" *clrIfOpen>
-            <span>view settings</span>
-          </clr-tooltip-content>
-        </clr-tooltip>
+      <button mat-icon-button [matMenuTriggerFor]="settingsMenu" class="settings-icon"
+              matTooltip="view settings" matTooltipPosition="left" aria-label="View settings">
+        <mat-icon>settings</mat-icon>
       </button>
       <mat-menu #settingsMenu="matMenu" class="wide-menu settings-menu" xPosition="before" yPosition="below" [overlapTrigger]="false">
         <h2 class="settings-header">Displayed columns</h2>
