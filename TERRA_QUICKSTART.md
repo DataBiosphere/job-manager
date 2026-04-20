@@ -57,7 +57,7 @@ work the same as local testing.
 
 Start by following release instructions in [the README](README.md#build-docker-images-and-releases).
 Once the new version exists in GCR and Github, update the dev environment in Beehive. 
-[Go here](broad.io/beehive/r/chart-release/dev/jobmanager) and follow these steps:
+[Go here](https://broad.io/beehive/r/chart-release/dev/jobmanager) and follow these steps:
  * Click on `On Demand Deployment > Change Versions`
  * In the `Specify App Version > Set Exact Version` box, change the version to the one you just pushed. 
  Make sure you include the EXACT tag you pushed with, it's easy to forget the `v`.
