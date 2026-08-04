@@ -3,10 +3,7 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
-    "module": "ES2022",
-    "types": [
-      "angular"
-    ]
+    "module": "ES2022"
   },
   "exclude": [
     "test.ts",
