@@ -449,7 +449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/animations@npm:20.3.26":
+"@angular/animations@npm:^20.0.0":
   version: 20.3.26
   resolution: "@angular/animations@npm:20.3.26"
   dependencies:
@@ -582,7 +582,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/common@npm:20.3.26":
+"@angular/common@npm:^20.0.0":
   version: 20.3.26
   resolution: "@angular/common@npm:20.3.26"
   dependencies:
@@ -594,7 +594,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/compiler-cli@npm:20.3.26":
+"@angular/compiler-cli@npm:^20.0.0":
   version: 20.3.26
   resolution: "@angular/compiler-cli@npm:20.3.26"
   dependencies:
@@ -619,7 +619,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/compiler@npm:20.3.26":
+"@angular/compiler@npm:^20.0.0":
   version: 20.3.26
   resolution: "@angular/compiler@npm:20.3.26"
   dependencies:
@@ -628,7 +628,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/core@npm:20.3.26":
+"@angular/core@npm:^20.0.0":
   version: 20.3.26
   resolution: "@angular/core@npm:20.3.26"
   dependencies:
@@ -646,7 +646,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/forms@npm:20.3.26":
+"@angular/forms@npm:^20.0.0":
   version: 20.3.26
   resolution: "@angular/forms@npm:20.3.26"
   dependencies:
@@ -660,7 +660,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/language-service@npm:20.3.26":
+"@angular/language-service@npm:^20.0.0":
   version: 20.3.26
   resolution: "@angular/language-service@npm:20.3.26"
   checksum: 0b537fd2fdd1557ad51dc1cc859614aa1a3af078c426b00e64bee27c905fe5cda1e8a1ddeaf232426ff7ca8a583de1b6d6b0e6846350091f1923b5b27fc5b4b7
@@ -683,7 +683,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/platform-browser-dynamic@npm:20.3.26":
+"@angular/platform-browser-dynamic@npm:^20.0.0":
   version: 20.3.26
   resolution: "@angular/platform-browser-dynamic@npm:20.3.26"
   dependencies:
@@ -697,7 +697,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/platform-browser@npm:20.3.26":
+"@angular/platform-browser@npm:^20.0.0":
   version: 20.3.26
   resolution: "@angular/platform-browser@npm:20.3.26"
   dependencies:
@@ -713,7 +713,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/router@npm:20.3.26":
+"@angular/router@npm:^20.0.0":
   version: 20.3.26
   resolution: "@angular/router@npm:20.3.26"
   dependencies:
@@ -7681,19 +7681,19 @@ __metadata:
     "@angular-eslint/eslint-plugin-template": ^20.0.0
     "@angular-eslint/schematics": ^20.0.0
     "@angular-eslint/template-parser": ^20.0.0
-    "@angular/animations": 20.3.26
+    "@angular/animations": ^20.0.0
     "@angular/cdk": ^20.0.0
     "@angular/cli": ^20.0.0
-    "@angular/common": 20.3.26
-    "@angular/compiler": 20.3.26
-    "@angular/compiler-cli": 20.3.26
-    "@angular/core": 20.3.26
-    "@angular/forms": 20.3.26
-    "@angular/language-service": 20.3.26
+    "@angular/common": ^20.0.0
+    "@angular/compiler": ^20.0.0
+    "@angular/compiler-cli": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/language-service": ^20.0.0
     "@angular/material": ^20.0.0
-    "@angular/platform-browser": 20.3.26
-    "@angular/platform-browser-dynamic": 20.3.26
-    "@angular/router": 20.3.26
+    "@angular/platform-browser": ^20.0.0
+    "@angular/platform-browser-dynamic": ^20.0.0
+    "@angular/router": ^20.0.0
     "@eslint/eslintrc": ^3.3.5
     "@eslint/js": ^9.39.4
     "@types/jasmine": ^4.3.0
