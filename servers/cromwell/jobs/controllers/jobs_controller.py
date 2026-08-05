@@ -30,7 +30,8 @@ from jobs.models.task_metadata import TaskMetadata
 from jobs.models.update_job_labels_request import UpdateJobLabelsRequest
 from jobs.models.update_job_labels_response import UpdateJobLabelsResponse
 from werkzeug.exceptions import (BadRequest, Forbidden, InternalServerError,
-                                 NotFound, ServiceUnavailable, Unauthorized)
+                                 NotFound, ServiceUnavailable, Unauthorized,
+                                 UnsupportedMediaType)
 
 # This is needed to support different Python versions - this
 # package structure changed in Python 3.10.
@@ -559,6 +560,8 @@ def handle_error(response):
         raise BadRequest(_get_response_message(response))
     elif response.status_code == Forbidden.code:
         raise Forbidden(_get_response_message(response))
+    elif response.status_code == UnsupportedMediaType.code:
+        raise UnsupportedMediaType(_get_response_message(response))
     elif response.status_code == InternalServerError.code:
         raise InternalServerError(_get_response_message(response))
     elif response.status_code == NotFound.code:

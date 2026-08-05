@@ -30,9 +30,10 @@ import { URLSearchParamsUtils } from '../utils/url-search-params.utils';
 import { FilterChipComponent } from "./chips/filter-chip.component";
 
 @Component({
-  selector: 'jm-filter-header',
-  templateUrl: './filter-header.component.html',
-  styleUrls: ['./filter-header.component.css'],
+    selector: 'jm-filter-header',
+    templateUrl: './filter-header.component.html',
+    styleUrls: ['./filter-header.component.css'],
+    standalone: false
 })
 export class FilterHeaderComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @Input() jobs: BehaviorSubject<JobListView>;

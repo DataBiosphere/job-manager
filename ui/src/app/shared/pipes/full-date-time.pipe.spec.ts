@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { FullDateTimePipe } from "./full-date-time.pipe";
 
 
 describe('FullDateTimeFormat', () => {
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         FullDateTimePipe

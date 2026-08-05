@@ -1,5 +1,5 @@
 import {ActivatedRouteSnapshot, RouterStateSnapshot, Router} from '@angular/router';
-import {CanActivate} from '@angular/router';
+
 import {Injectable} from '@angular/core';
 
 import {AuthService} from './auth.service';
@@ -9,7 +9,7 @@ import {URLSearchParamsUtils} from '../shared/utils/url-search-params.utils'
 
 /** Service wrapper for routing based on current authentication state. */
 @Injectable()
-export class CapabilitiesActivator implements CanActivate {
+export class CapabilitiesActivator  {
 
   private static readonly notActivatedError = new Error('not-activated');
 

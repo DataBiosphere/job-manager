@@ -7,6 +7,7 @@ import os
 from distutils.util import strtobool
 
 import connexion
+from connexion.jsonifier import Jsonifier
 import requests
 from requests.auth import HTTPBasicAuth
 
@@ -54,8 +55,12 @@ else:
     # Allow unknown args if we aren't the main program, these include flags to
     # gunicorn.
     args, _ = parser.parse_known_args()
-options = {"swagger_ui": False}
-app = connexion.App(__name__, specification_dir='./swagger/', options=options)
+
+options = connexion.options.SwaggerUIOptions(swagger_ui=False)
+app = connexion.App(__name__,
+                    specification_dir='./swagger/',
+                    swagger_ui_options=options,
+                    jsonifier=Jsonifier(cls=JSONEncoder))
 DEFAULT_CROMWELL_CREDENTIALS = {'cromwell_user': '', 'cromwell_password': ''}
 
 # Load credentials for cromwell
@@ -95,11 +100,11 @@ def loadCapabilities(capabilities_path):
             capabilities_config)
         return app.app.config['capabilities']
     except IOError as io_err:
-        logger.exception(
+        logger.error(
             'Failed to load capabilities config, using default display fields. %s',
             io_err)
     except TypeError as type_err:
-        logger.exception(
+        logger.error(
             'Failed to load capabilities config, using default display fields. %s',
             type_err)
 
@@ -109,8 +114,9 @@ app.app.config['cromwell_url'] = args.cromwell_url
 app.app.config['sam_url'] = args.sam_url
 app.app.config['use_caas'] = args.use_caas and args.use_caas.lower() == 'true'
 app.app.config['include_subworkflows'] = args.include_subworkflows
-app.app.json_encoder = JSONEncoder
-app.add_api('swagger.yaml', base_path=args.path_prefix)
+app.add_api('swagger.yaml',
+            base_path=args.path_prefix,
+            jsonifier=Jsonifier(cls=JSONEncoder))
 
 
 def run():
@@ -132,4 +138,4 @@ def run():
             logger.critical(err)
             logger.critical('Failed to connect to Cromwell: {}'.format(
                 args.cromwell_url))
-    return app.app
+    return app

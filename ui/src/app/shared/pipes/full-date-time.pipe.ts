@@ -2,7 +2,8 @@ import { DatePipe } from '@angular/common';
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'jmFullDateTime'
+    name: 'jmFullDateTime',
+    standalone: false
 })
 export class FullDateTimePipe implements PipeTransform {
   constructor(private datePipe: DatePipe) {}

@@ -13,9 +13,10 @@ import { URLSearchParamsUtils } from "../shared/utils/url-search-params.utils";
 import { ProjectsService } from './projects.service';
 
 @Component({
-  selector: 'jm-projects',
-  templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.css'],
+    selector: 'jm-projects',
+    templateUrl: './projects.component.html',
+    styleUrls: ['./projects.component.css'],
+    standalone: false
 })
 export class ProjectsComponent implements OnInit {
   projectsControl: FormControl;

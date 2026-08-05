@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import { Component, DebugElement, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from "@angular/material/button";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatIconModule, MatIconRegistry } from "@angular/material/icon";
@@ -12,7 +12,6 @@ import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { By, DomSanitizer } from '@angular/platform-browser';
 
-import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
 import { MatDialogModule } from '@angular/material/dialog';
@@ -161,9 +160,9 @@ describe('JobTabsComponent', () => {
     extensions: { tasks: tasks },
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [
+    declarations: [
         JobAttemptComponent,
         JobDebugIconsComponent,
         JobTabsComponent,
@@ -171,13 +170,9 @@ describe('JobTabsComponent', () => {
         JobResourcesTableComponent,
         JobTimingDiagramComponent,
         TestTasksComponent
-      ],
-      imports: [
-        BrowserAnimationsModule,
-        ClrIconModule,
-        ClrTooltipModule,
+    ],
+    imports: [BrowserAnimationsModule,
         CommonModule,
-        HttpClientModule,
         MatButtonModule,
         MatDialogModule,
         MatExpansionModule,
@@ -188,34 +183,34 @@ describe('JobTabsComponent', () => {
         MatTabsModule,
         MatTooltipModule,
         Ng2GoogleChartsModule,
-        SharedModule
-      ],
-      providers: [
-        {provide: GcsService, useValue: new FakeGcsService('test-bucket', null, null)},
-        {provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null, null, null)},
-        {provide: JobManagerService, useValue: fakeJobService},
-        {provide: CapabilitiesService, useValue: fakeCapabilitiesService},
-        {provide: SamService},
-        {provide: ConfigLoaderService, useValue: new FakeConfigLoaderService()}
-      ]
-    }).compileComponents();
+        SharedModule],
+    providers: [
+        { provide: GcsService, useValue: new FakeGcsService('test-bucket', null, null) },
+        { provide: AuthService, useValue: new AuthService(null, fakeCapabilitiesService, null, null, null, null) },
+        { provide: JobManagerService, useValue: fakeJobService },
+        { provide: CapabilitiesService, useValue: fakeCapabilitiesService },
+        { provide: SamService },
+        { provide: ConfigLoaderService, useValue: new FakeConfigLoaderService() },
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+}).compileComponents();
   }));
 
   beforeEach(() => {
-    iconRegistry = TestBed.get(MatIconRegistry);
-    sanitizer = TestBed.get(DomSanitizer);
+    iconRegistry = TestBed.inject(MatIconRegistry);
+    sanitizer = TestBed.inject(DomSanitizer);
     iconRegistry.addSvgIcon('cloud-file', sanitizer.bypassSecurityTrustResourceUrl('/assets/images/icon-cloud-file.svg'));
     fixture = TestBed.createComponent(TestTasksComponent);
     testComponent = fixture.componentInstance;
   });
 
-  it('should display a row for each task', async(() => {
+  it('should display a row for each task', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.list-row')).length).toEqual(testComponent.job.extensions.tasks.length);
   }));
 
-  it('should display task data in each row', async(() => {
+  it('should display task data in each row', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
@@ -225,7 +220,7 @@ describe('JobTabsComponent', () => {
       .toContain(task.name);
     expect(de.queryAll(By.css('a.title-link')).length)
       .toEqual(1);
-    expect(de.queryAll(By.css('.task-status clr-icon'))[0].attributes['shape'])
+    expect(de.queryAll(By.css('.task-status mat-icon'))[0].nativeElement.textContent.trim())
       .toContain('error');
     expect(de.queryAll(By.css('.task-start'))[1].nativeElement.textContent)
       .toContain('Nov 14, 2017');
@@ -235,31 +230,31 @@ describe('JobTabsComponent', () => {
       .toEqual('');
   }));
 
-  it('should display the correct icon if the task was call cached', async(() => {
+  it('should display the correct icon if the task was call cached', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
-    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(3) .task-duration clr-icon')).attributes['shape'])
+    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(3) .task-duration mat-icon')).nativeElement.textContent.trim())
       .toEqual('history');
   }));
 
-  it('should display the correct icon if the task has inputs', async(() => {
+  it('should display the correct icon if the task has inputs', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
-    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(4) .task-inputs clr-icon')).attributes['shape'])
-      .toEqual('import');
+    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(4) .task-inputs mat-icon')).nativeElement.textContent.trim())
+      .toEqual('login');
   }));
 
-  it('should display the correct icon if the task has outputs', async(() => {
+  it('should display the correct icon if the task has outputs', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
 
-    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(5) .task-outputs clr-icon')).attributes['shape'])
-      .toEqual('export');
+    expect(de.query(By.css('mat-expansion-panel.list-row:nth-child(5) .task-outputs mat-icon')).nativeElement.textContent.trim())
+      .toEqual('logout');
   }));
 
-  it('should display attempt rows for each task attempt if there was more than one', async(() => {
+  it('should display attempt rows for each task attempt if there was more than one', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('mat-expansion-panel.list-row div.task-name')).length)
@@ -270,8 +265,9 @@ describe('JobTabsComponent', () => {
 
   @Component({
     selector: 'jm-test-tasks-component',
-    template: `<jm-tabs [tasks]="job.extensions.tasks" [job]="job"></jm-tabs>`
-  })
+    template: `<jm-tabs [tasks]="job.extensions.tasks" [job]="job"></jm-tabs>`,
+    standalone: false
+})
   class TestTasksComponent {
     public job = job;
     @ViewChild(JobTabsComponent)

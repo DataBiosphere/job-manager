@@ -5,9 +5,10 @@ import {JobStatus} from "../../../shared/model/JobStatus";
 import {JobStatusIcon, objectNotEmpty} from "../../../shared/common";
 
 @Component({
-  selector: 'jm-attempt',
-  templateUrl: './attempt.component.html',
-  styleUrls: ['./attempt.component.css']
+    selector: 'jm-attempt',
+    templateUrl: './attempt.component.html',
+    styleUrls: ['./attempt.component.css'],
+    standalone: false
 })
 export class JobAttemptComponent implements OnInit {
   @Input() attempt: IndividualAttempt;

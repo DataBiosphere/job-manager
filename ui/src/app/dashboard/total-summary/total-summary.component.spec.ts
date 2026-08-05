@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {Component} from "@angular/core";
 import {By} from "@angular/platform-browser";
 import {CommonModule} from "@angular/common";
@@ -10,7 +10,7 @@ import {JobStatus} from "../../shared/model/JobStatus";
 import {StatusCounts} from "../../shared/model/StatusCounts";
 import {ActivatedRoute} from "@angular/router";
 import {RouterTestingModule} from "@angular/router/testing";
-import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
+
 
 const testSummary: StatusCounts = {
   counts: [
@@ -32,15 +32,13 @@ describe('TotalSummaryComponent', () => {
   let testComponent: TotalSummaryComponent;
   let fixture: ComponentFixture<TestHostComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         TotalSummaryComponent,
         TestHostComponent
       ],
       imports: [
-        ClrIconModule,
-        ClrTooltipModule,
         CommonModule,
         MatCardModule,
         MatTableModule,
@@ -71,8 +69,9 @@ describe('TotalSummaryComponent', () => {
 
   @Component({
     selector: `jm-test-host-component`,
-    template: `<jm-total-summary [summary]="componentSummary" [statusArray]="statusArray"></jm-total-summary>`
-  })
+    template: `<jm-total-summary [summary]="componentSummary" [statusArray]="statusArray"></jm-total-summary>`,
+    standalone: false
+})
 
   class TestHostComponent {
     public componentSummary: StatusCounts;

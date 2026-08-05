@@ -11,3 +11,9 @@ p {
   text-align: center;
   position: relative
 }
+
+.sign-in-card .mat-mdc-card-title,
+.sign-in-card .mat-card-title {
+  font-family: 'Montserrat', sans-serif;
+}
+

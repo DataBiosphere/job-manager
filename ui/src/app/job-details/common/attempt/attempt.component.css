@@ -1,14 +1,3 @@
-clr-tooltip-content {
-  background-color: rgba(0, 0, 0, 0.65);
-  text-align: left;
-  color: #fff;
-  padding: 0.25rem 0.5rem;
-  max-width: 29.25rem;
-  z-index: 999;
-  font-size: 0.65rem;
-  line-height: 0.8rem;
-}
-
 mat-expansion-panel.mat-expansion-panel {
   padding: 0;
   margin: 0;
@@ -120,24 +109,26 @@ mat-expansion-panel.mat-expansion-panel .mat-expansion-panel-header[aria-disable
   color: rgba(0, 0, 0, 0.54);
 }
 
-mat-expansion-panel.mat-expansion-panel .task-inputs clr-icon,
-mat-expansion-panel.mat-expansion-panel .task-outputs clr-icon {
+mat-expansion-panel.mat-expansion-panel .task-inputs mat-icon,
+mat-expansion-panel.mat-expansion-panel .task-outputs mat-icon {
   color: #5C912E;
   margin-right: 1rem;
 }
 
-mat-expansion-panel.mat-expansion-panel .task-duration clr-icon {
+mat-expansion-panel.mat-expansion-panel .task-duration mat-icon {
   padding-left: 0.3125rem;
 }
 
-.task-status clr-icon,
-.task-inputs clr-icon,
-.task-outputs clr-icon {
+.task-status mat-icon,
+.task-inputs mat-icon,
+.task-outputs mat-icon {
+  font-size: 1.125rem;
   width: 1.125rem;
   height: 1.125rem;
 }
 
-.task-duration clr-icon {
+.task-duration mat-icon {
+  font-size: 0.875rem;
   width: 0.875rem;
   height: 0.875rem;
 }

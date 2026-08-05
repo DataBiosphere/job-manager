@@ -16,6 +16,13 @@ enum: &TIMEFRAME
   - DAYS_30
   - ALL_TIME
 
+# NOTE!!!
+# Due to the way the Connexion library handles this file, the order in which
+# endpoints are defined is important. More narrowly-defined URL paths must be
+# listed before wider ones. For example, it's important that /jobs/operationDetails
+# is earlier than /jobs/{id} in the below definition. When this is done incorrectly,
+# we get confusing errors about missing or incorrect parameters.
+
 paths:
   '/capabilities':
     get:
@@ -32,6 +39,86 @@ paths:
           $ref: '#/responses/ServerError'
       tags:
         - Capabilities
+
+  '/jobs/operationDetails':
+    get:
+      operationId: GetOperationDetails
+      summary: Call for operation details from the Google Pipelines API
+      parameters:
+        - name: job
+          description: job ID
+          required: true
+          in: query
+          type: string
+        - name: operation
+          description: operation ID
+          type: string
+          in: query
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/JobOperationResponse'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
+
+  '/jobs/tailFile':
+    get:
+      operationId: TailFileContents
+      summary: Get up to a certain amount (from the end) of content from the Google Storage API
+      parameters:
+        - name: bucket
+          description: Google bucket ID
+          required: true
+          in: query
+          type: string
+        - name: object
+          description: ID of the file stored in the Google bucket
+          required: true
+          in: query
+          type: string
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/FileContents'
+        '404':
+          $ref: '#/responses/NotFound'
+        '500':
+          $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
+
+  '/jobs/query':
+    post:
+      # TODO(calbach): Parameterize sort ordering.
+      operationId: QueryJobs
+      summary: |
+        Query jobs by various filter criteria. Returned jobs are ordered from
+        newest to oldest submission time.
+      parameters:
+        - name: body
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/QueryJobsRequest'
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/QueryJobsResponse'
+        '400':
+          $ref: '#/responses/BadRequest'
+        '401':
+          $ref: '#/responses/Unauthorized'
+        '500':
+          $ref: '#/responses/ServerError'
+      tags:
+        - Jobs
 
   '/jobs/{id}/abort':
     post:
@@ -87,33 +174,6 @@ paths:
           $ref: '#/responses/ServerError'
         '501':
           description: Server does not implement this method.
-      tags:
-        - Jobs
-
-  '/jobs/query':
-    post:
-      # TODO(calbach): Parameterize sort ordering.
-      operationId: QueryJobs
-      summary: |
-        Query jobs by various filter criteria. Returned jobs are ordered from
-        newest to oldest submission time.
-      parameters:
-        - name: body
-          required: true
-          in: body
-          schema:
-            $ref: '#/definitions/QueryJobsRequest'
-      responses:
-        '200':
-          description: Success
-          schema:
-            $ref: '#/definitions/QueryJobsResponse'
-        '400':
-          $ref: '#/responses/BadRequest'
-        '401':
-          $ref: '#/responses/Unauthorized'
-        '500':
-          $ref: '#/responses/ServerError'
       tags:
         - Jobs
 
@@ -203,59 +263,6 @@ paths:
           $ref: '#/responses/BadRequest'
         '401':
           $ref: '#/responses/Unauthorized'
-        '404':
-          $ref: '#/responses/NotFound'
-        '500':
-          $ref: '#/responses/ServerError'
-      tags:
-        - Jobs
-
-  '/jobs/operationDetails':
-    get:
-      operationId: GetOperationDetails
-      summary: Call for operation details from the Google Pipelines API
-      parameters:
-        - name: job
-          description: job ID
-          required: true
-          in: query
-          type: string
-        - name: operation
-          description: operation ID
-          type: string
-          in: query
-      responses:
-        '200':
-          description: Success
-          schema:
-            $ref: '#/definitions/JobOperationResponse'
-        '404':
-          $ref: '#/responses/NotFound'
-        '500':
-          $ref: '#/responses/ServerError'
-      tags:
-        - Jobs
-
-  '/jobs/tailFile':
-    get:
-      operationId: TailFileContents
-      summary: Get up to a certain amount (from the end) of content from the Google Storage API
-      parameters:
-        - name: bucket
-          description: Google bucket ID
-          required: true
-          in: query
-          type: string
-        - name: object
-          description: ID of the file stored in the Google bucket
-          required: true
-          in: query
-          type: string
-      responses:
-        '200':
-          description: Success
-          schema:
-            $ref: '#/definitions/FileContents'
         '404':
           $ref: '#/responses/NotFound'
         '500':

@@ -1,4 +1,4 @@
-FROM us.gcr.io/broad-dsp-gcr-public/base/jre:11-debian
+FROM us.gcr.io/broad-dsp-gcr-public/base/jre:21-debian
 
 WORKDIR /job-manager
 
@@ -6,7 +6,7 @@ ADD ./ /job-manager
 
 RUN /bin/bash -c scripts/rebuild_swagger.sh
 
-FROM us.gcr.io/broad-dsp-gcr-public/base/nodejs:18-debian
+FROM us.gcr.io/broad-dsp-gcr-public/base/nodejs:20-debian
 
 WORKDIR /ui
 
@@ -25,5 +25,5 @@ RUN /ui/node_modules/.bin/ng build --configuration=production
 
 FROM us.gcr.io/broad-dsp-gcr-public/base/nginx:mainline-alpine
 
-COPY --from=1 /ui/dist /ui/dist
+COPY --from=1 /ui/dist/browser /ui/dist
 ADD ./ui/nginx.prod.conf /etc/nginx/nginx.conf

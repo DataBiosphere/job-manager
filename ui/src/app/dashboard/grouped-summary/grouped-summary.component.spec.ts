@@ -1,4 +1,4 @@
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
 import {MatButtonModule} from "@angular/material/button";
 import {MatCardModule} from "@angular/material/card";
 import {MatSelectModule} from "@angular/material/select";
@@ -13,7 +13,7 @@ import {JobStatus} from "../../shared/model/JobStatus";
 import {Aggregation} from "../../shared/model/Aggregation";
 import {ActivatedRoute} from "@angular/router";
 import {RouterTestingModule} from "@angular/router/testing";
-import {ClrIconModule, ClrTooltipModule} from "@clr/angular";
+
 import {SharedModule} from "../../shared/shared.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
@@ -119,15 +119,13 @@ describe('GroupedSummaryComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let de: DebugElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         GroupedSummaryComponent,
         TestHostComponent
       ],
       imports: [
-        ClrIconModule,
-        ClrTooltipModule,
         CommonModule,
         BrowserAnimationsModule,
         MatCardModule,
@@ -204,8 +202,9 @@ describe('GroupedSummaryComponent', () => {
   @Component({
     selector: `jm-test-host-component`,
     template: `<jm-grouped-summary [aggregation]="aggregation"
-                                   [statusArray]="statusArray"></jm-grouped-summary>`
-  })
+                                   [statusArray]="statusArray"></jm-grouped-summary>`,
+    standalone: false
+})
 
   class TestHostComponent {
     public aggregation: Aggregation;

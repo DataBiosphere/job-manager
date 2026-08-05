@@ -1,4 +1,4 @@
-import {async, ComponentFixture, fakeAsync, TestBed, tick} from "@angular/core/testing";
+import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from "@angular/core/testing";
 import {By} from "@angular/platform-browser";
 import {Component, DebugElement, Input, ViewChild} from "@angular/core";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
@@ -17,7 +17,6 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {RouterTestingModule} from "@angular/router/testing";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {ClrIconModule, ClrTooltipModule} from '@clr/angular';
 import {BehaviorSubject} from 'rxjs';
 
 import {CapabilitiesService} from "../../core/capabilities.service"
@@ -60,7 +59,7 @@ describe('FilterHeaderComponent', () => {
     queryExtensions: ['projectId']
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     const fakeCapabilitiesService = new FakeCapabilitiesService(capabilities);
     const authService = new AuthService(null, fakeCapabilitiesService, null, snackBar, null, null);
 
@@ -68,8 +67,6 @@ describe('FilterHeaderComponent', () => {
       declarations: [FilterHeaderComponent, TestHeaderComponent, MockFilterChipComponent],
       imports: [
         BrowserAnimationsModule,
-        ClrIconModule,
-        ClrTooltipModule,
         FormsModule,
         MatAutocompleteModule,
         MatButtonModule,
@@ -97,7 +94,7 @@ describe('FilterHeaderComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fixture = TestBed.createComponent(TestHeaderComponent);
     fixture.detectChanges();
     testComponent = fixture.componentInstance.headerComponent;
@@ -107,27 +104,27 @@ describe('FilterHeaderComponent', () => {
       .set('status', 'Running');
   }));
 
-  it('should display a chip for each query filter', async(() => {
+  it('should display a chip for each query filter', waitForAsync(() => {
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
     expect(de.queryAll(By.css('.chipShell')).length).toEqual(3);
   }));
 
-  it('should stage a chip', async ( () => {
+  it('should stage a chip', waitForAsync( () => {
     testComponent.addChip('key');
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('');
     expect(fixture.debugElement.queryAll(By.css('.chipShell')).length).toEqual(4);
   }));
 
-  it('should stage and complete a chip', async (() => {
+  it('should stage and complete a chip', waitForAsync(() => {
     testComponent.addChip('key: value');
     fixture.detectChanges();
     expect(testComponent.chips.get('key')).toEqual('value');
     expect(fixture.debugElement.queryAll(By.css('.chipShell')).length).toEqual(4);
   }));
 
-  it('should not show status buttons', async(() => {
+  it('should not show status buttons', waitForAsync(() => {
     testComponent.chips.set('status', 'list,of,status');
     testComponent.search();
     fixture.detectChanges();
@@ -137,7 +134,7 @@ describe('FilterHeaderComponent', () => {
     });
   }));
 
-  it('should show status buttons', async(() => {
+  it('should show status buttons', waitForAsync(() => {
     testComponent.chips.delete('status');
     testComponent.search();
     fixture.detectChanges();
@@ -147,7 +144,7 @@ describe('FilterHeaderComponent', () => {
     });
   }));
 
-  it('should show status counts', async(() => {
+  it('should show status counts', waitForAsync(() => {
     testComponent.chips.delete('status');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
@@ -164,7 +161,7 @@ describe('FilterHeaderComponent', () => {
     });
   }));
 
-  it('should show hide status counts on non-exhaustive', async(() => {
+  it('should show hide status counts on non-exhaustive', waitForAsync(() => {
     testComponent.chips.delete('status');
     testComponent.jobs.next({
       results: [testJob1, testJob2],
@@ -181,7 +178,7 @@ describe('FilterHeaderComponent', () => {
     });
   }));
 
-  it('should not show length of inexhaustive job streams of unknown length', async(() => {
+  it('should not show length of inexhaustive job streams of unknown length', waitForAsync(() => {
     testComponent.jobs.next({
       results: [testJob1],
       totalSize: undefined,
@@ -190,7 +187,7 @@ describe('FilterHeaderComponent', () => {
     });
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+    expect(de.query(By.css('.mat-mdc-paginator-range-label')).nativeElement.textContent)
       .toContain(' 1 – 1 of many '); // <-- this is an en-dash, not a hyphen
 
     // Transition to exhaustive, "of X" should now display length (even though totalSize is still null).
@@ -201,11 +198,11 @@ describe('FilterHeaderComponent', () => {
       stale: false
     });
     fixture.detectChanges();
-    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+    expect(de.query(By.css('.mat-mdc-paginator-range-label')).nativeElement.textContent)
       .toContain(' 1 – 2 of 2 '); // <-- this is an en-dash, not a hyphen
   }));
 
-  it('should show length of inexhaustive job streams of known length', async(() => {
+  it('should show length of inexhaustive job streams of known length', waitForAsync(() => {
     testComponent.jobs.next({
       results: [testJob1, testJob2],
       totalSize: 25,
@@ -214,7 +211,7 @@ describe('FilterHeaderComponent', () => {
     });
     fixture.detectChanges();
     let de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('.mat-paginator-range-label')).nativeElement.textContent)
+    expect(de.query(By.css('.mat-mdc-paginator-range-label')).nativeElement.textContent)
       .toContain(' 1 – 2 of 25 '); // <-- this is an en-dash, not a hyphen
   }));
 
@@ -234,9 +231,9 @@ describe('FilterHeaderComponent', () => {
 
   @Component({
     selector: 'jm-test-table-component',
-    template:
-      `<jm-filter-header [jobs]="jobs" [pageSize]="2"></jm-filter-header>`
-  })
+    template: `<jm-filter-header [jobs]="jobs" [pageSize]="2"></jm-filter-header>`,
+    standalone: false
+})
   class TestHeaderComponent {
     public jobs = new BehaviorSubject<JobListView>(initJobs);
     @ViewChild(FilterHeaderComponent)
@@ -245,8 +242,9 @@ describe('FilterHeaderComponent', () => {
 
   @Component({
     selector: 'jm-filter-chip',
-    template: ''
-  })
+    template: '',
+    standalone: false
+})
   class MockFilterChipComponent {
     @Input() chipKey: string;
     @Input() initialChipValue: string;

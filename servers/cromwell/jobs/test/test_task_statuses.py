@@ -3,15 +3,14 @@
 from __future__ import absolute_import
 
 import itertools
+import unittest
 
 from jobs.controllers import jobs_controller
 from jobs.controllers.utils import task_statuses
 from jobs.models.shard import Shard
 
-from . import BaseTestCase
 
-
-class TestTaskStatuses(BaseTestCase):
+class TestTaskStatuses(unittest.TestCase):
     # yapf: disable
     def test_cromwell_execution_to_api_maps_all_task_execution_statuses_correctly(self):
         self.assertEqual(task_statuses.cromwell_execution_to_api('NotStarted'), 'Submitted')

@@ -34,7 +34,8 @@ describe("SignInRedirectComponent", () => {
         RouterTestingModule.withRoutes([
           {path: 'redirect-from-oauth', component: SignInRedirectComponent},
           {path: 'sign_in', component: TestSignInComponent},
-          {path: 'return-url', component: TestReturnComponent}
+          {path: 'return-url', component: TestReturnComponent},
+          {path: 'jobs', component: TestReturnComponent}  // Default redirect destination
         ])
       ],
       providers: [
@@ -46,14 +47,15 @@ describe("SignInRedirectComponent", () => {
   beforeEach(fakeAsync(() => {
     fixture = TestBed.createComponent(AppComponent);
     de = fixture.debugElement;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
   }))
 
   it('should create the redirect page', fakeAsync(() => {
     router.initialNavigation();
     router.navigate(["redirect-from-oauth"]);
     tick();
-    const component = de.query(By.css("redirect-from-oauth")).componentInstance;
+    fixture.detectChanges();
+    const component = de.query(By.directive(SignInRedirectComponent));
     expect(component).toBeTruthy();
   }));
 
@@ -83,19 +85,22 @@ describe("SignInRedirectComponent", () => {
 });
 
 @Component({
-  selector: "jm-test-app",
-  template: "<router-outlet></router-outlet>",
+    selector: "jm-test-app",
+    template: "<router-outlet></router-outlet>",
+    standalone: false
 })
 class AppComponent {}
 
 @Component({
-  selector: "jm-test-sign-in",
-  template: "<router-outlet></router-outlet>",
+    selector: "jm-test-sign-in",
+    template: "<router-outlet></router-outlet>",
+    standalone: false
 })
 class TestSignInComponent {}
 
 @Component({
-  selector: "jm-test-return-url",
-  template: "<router-outlet></router-outlet>"
+    selector: "jm-test-return-url",
+    template: "<router-outlet></router-outlet>",
+    standalone: false
 })
 class TestReturnComponent {}

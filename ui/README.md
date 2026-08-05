@@ -13,11 +13,18 @@ Run `ng generate component component-name` to generate a new component. You can 
 ng generate directive|pipe|service|class|guard|interface|enum|module
 ```
 
+# Angular upgrades
+Run the following command to upgrade the Angular version (change versions as needed):
+`ng update @angular/core@20 @angular/cli@20`
+
+This guide will also show a more in-depth list of changes to make when upgrading Angular versions: https://angular.dev/update-guide?v=14.0-19.0&l=2
+
 ## Build
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
 ## Running Tests
-Unit tests are run via [Karma](https://karma-runner.github.io). Tests are typically run in CI after PR creation, not locally.
+Unit tests are run via [Karma](https://karma-runner.github.io). Tests are typically run in CI after PR creation, not locally. 
+To run them locally, CD into the `ui` directory and run:
 ```
 npm test
 ```

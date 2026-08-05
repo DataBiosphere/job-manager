@@ -4,9 +4,10 @@ import {FailureMessage} from "../../../shared/model/FailureMessage";
 import {ActivatedRoute, Params} from "@angular/router";
 
 @Component({
-  selector: 'jm-failures-table',
-  templateUrl: './failures-table.component.html',
-  styleUrls: ['./failures-table.component.css']
+    selector: 'jm-failures-table',
+    templateUrl: './failures-table.component.html',
+    styleUrls: ['./failures-table.component.css'],
+    standalone: false
 })
 export class JobFailuresTableComponent implements OnInit {
   @Input() failures: FailureMessage[];

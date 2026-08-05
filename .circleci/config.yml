@@ -19,7 +19,12 @@ run_secret_setup: &run_secret_setup
     command: |
       git clone https://github.com/awslabs/git-secrets.git
       pushd git-secrets >/dev/null
-      git checkout ad82d68ee924906a0401dfd48de5057731a9bc84
+
+      # 2024-12-09 updated to a new version of git-secrets, the old one
+      # relied `say` command which is unavailable in new CircleCI base image
+      # https://github.com/awslabs/git-secrets/issues/220
+      git checkout 5357e18bc27b42a827b6780564ea873a72ca1f01
+
       popd >/dev/null
       ./minnie-kenny.sh -f
 
@@ -27,14 +32,14 @@ jobs:
   ui:
     <<: *job_defaults
     machine:
-      # latest pinned 20.04 version https://circleci.com/developer/machine/image/ubuntu-2004
-      image: ubuntu-2004:202201-02
+      # latest pinned 24.04 version https://circleci.com/developer/machine/image/ubuntu-2404
+      image: ubuntu-2404:2024.11.1
     steps:
       - checkout
       - <<: *run_env_setup
       - <<: *run_secret_setup
       - restore_cache:
-          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}--{{ checksum "ui/yarn.lock" }}
       - run:
           name: nvm install node and UI dependencies
           # The Circle Ubuntu machine images of yore apparently came with nvm installed, but the current images require
@@ -50,14 +55,16 @@ jobs:
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-            nvm install 14
+            # Angular 20 requires Node >=20.19.0
+            nvm install 22
+
+            # Enable corepack so yarn Berry (3.x) works correctly
+            corepack enable
 
             cd ui
-            npm install
-
-            npm install -g @angular/cli@14.2.1
+            yarn install --immutable
       - save_cache:
-          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}--{{ checksum "ui/yarn.lock" }}
           paths:
             - "ui/node_modules"
       - run:
@@ -71,8 +78,9 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 14
-            npm run eslint
+            nvm install 22
+            corepack enable
+            yarn eslint
       - run:
           name: Type check with tsc
           command: |
@@ -80,8 +88,9 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 14
-            npm run tsc
+            nvm install 22
+            corepack enable
+            yarn tsc
       - run:
           name: Run UI unit tests
           command: |
@@ -89,8 +98,9 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 14
-            ng test --watch=false --source-map=false --browsers=ChromeHeadless
+            nvm install 22
+            corepack enable
+            yarn ng test --watch=false --source-map=false --browsers=ChromeHeadless
       - run:
           name: Ensure the UI builds for prod
           # Target production to emulate deployment, but a dev environment
@@ -101,13 +111,14 @@ jobs:
             # nvm setup commands and Node install reprised
             export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 14
-            ng build --configuration=production
+            nvm install 22
+            corepack enable
+            yarn ng build --configuration=production
 
   backends:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:202201-02
+      image: ubuntu-2404:2024.11.1
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
     steps:
@@ -127,6 +138,11 @@ jobs:
           command: |
             python3 --version
             which python3
+      - run:
+          name: Install Python 3.10
+          command: |
+            pyenv install 3.10
+            pyenv global 3.10
       - run:
           name: Install tox and yapf
           # tox (and detox) fail with older versions of more-itertools: https://github.com/pytest-dev/pytest/issues/4770
@@ -157,7 +173,7 @@ jobs:
   secrets:
     <<: *job_defaults
     machine:
-      image: ubuntu-2004:202201-02
+      image: ubuntu-2404:2024.11.1
     steps:
       - checkout
       - <<: *run_env_setup

@@ -1,20 +1,40 @@
 {
   "displayFields": [
     {
-      "field": "status",
-      "display": "Status"
-    },
-    {
-      "field": "submission",
-      "display": "Submitted"
-    },
-    {
-      "field": "end",
-      "display": "End Time"
+      "field": "name",
+      "display": "Name",
+      "primary": true
     },
     {
       "field": "labels.cromwell-workflow-id",
-      "display": "Workflow ID"
+      "display": "Workflow ID",
+      "primary": true
+    },
+    {
+      "field": "status",
+      "display": "Status",
+      "primary": true
+    },
+    {
+      "field": "submission",
+      "display": "Submitted",
+      "primary": true,
+      "fieldType": "date"
+    },
+    {
+      "field": "labels.submission-id",
+      "display": "Submission ID",
+      "primary": true
+    },
+    {
+      "field": "labels.workspace-id",
+      "display": "Workspace ID",
+      "primary": true
+    },
+    {
+      "field": "end",
+      "display": "End Time",
+      "fieldType": "date"
     },
     {
       "field": "labels.comment",
@@ -27,7 +47,7 @@
       "field": "labels.flag",
       "display": "Flag",
       "editable": true,
-      "bulk_editable": true,
+      "bulkEditable": true,
       "fieldType": "list",
       "validFieldValues": ["archive", "follow-up"]
     }
@@ -35,6 +55,8 @@
   "commonLabels": [
     "cromwell-workflow-id",
     "workflow-name",
+    "submission-id",
+    "workspace-id",
     "comment",
     "flag"
   ],

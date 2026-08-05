@@ -7,9 +7,10 @@ import {JobStatus} from "../../shared/model/JobStatus";
 import {TimeFrame} from "../../shared/model/TimeFrame";
 
 @Component({
-  selector: 'jm-total-summary',
-  templateUrl: './total-summary.component.html',
-  styleUrls: ['./total-summary.component.css']
+    selector: 'jm-total-summary',
+    templateUrl: './total-summary.component.html',
+    styleUrls: ['./total-summary.component.css'],
+    standalone: false
 })
 export class TotalSummaryComponent implements OnInit, OnChanges {
   @Input() summary: StatusCounts;

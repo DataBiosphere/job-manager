@@ -14,9 +14,10 @@ import { JobTimingDiagramComponent } from "./timing-diagram/timing-diagram.compo
 
 
 @Component({
-  selector: 'jm-tabs',
-  templateUrl: './tabs.component.html',
-  styleUrls: ['./tabs.component.css'],
+    selector: 'jm-tabs',
+    templateUrl: './tabs.component.html',
+    styleUrls: ['./tabs.component.css'],
+    standalone: false
 })
 export class JobTabsComponent implements OnInit, OnChanges {
 

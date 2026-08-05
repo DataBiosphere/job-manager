@@ -9,9 +9,10 @@ import {MatMenuTrigger} from "@angular/material/menu";
 import {DatepickerInputComponent} from "./datepicker-input.component";
 
 @Component({
-  selector: 'jm-filter-chip',
-  templateUrl: './filter-chip.component.html',
-  styleUrls: ['./filter-chip.component.css'],
+    selector: 'jm-filter-chip',
+    templateUrl: './filter-chip.component.html',
+    styleUrls: ['./filter-chip.component.css'],
+    standalone: false
 })
 export class FilterChipComponent implements OnInit {
   @Input() chipKey: string;

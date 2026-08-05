@@ -15,9 +15,10 @@ import {SamService} from "../../../core/sam.service";
 import {FileContents} from "../../../shared/model/FileContents";
 
 @Component({
-  selector: 'jm-debug-icons',
-  templateUrl: './debug-icons.component.html',
-  styleUrls: ['./debug-icons.component.css']
+    selector: 'jm-debug-icons',
+    templateUrl: './debug-icons.component.html',
+    styleUrls: ['./debug-icons.component.css'],
+    standalone: false
 })
 export class JobDebugIconsComponent implements OnInit {
   @Input() displayMessage: boolean;
@@ -29,6 +30,8 @@ export class JobDebugIconsComponent implements OnInit {
   logFileData: Map<string, string> = new Map();
   private readonly canGetFileContents:boolean;
   private readonly capabilities: CapabilitiesResponse;
+  private readonly gcpBatchOperationIdRegex = 
+    new RegExp("^projects/\(?<projectId>[^/]+\)/locations/\(?<location>[^/]+\)/jobs/job-\(?<batchJobId>[^/]+\)$", "i");
 
   constructor(private readonly authService: AuthService,
               private readonly gcsService: GcsService,
@@ -76,8 +79,24 @@ export class JobDebugIconsComponent implements OnInit {
     return Object.keys(this.logFileData).includes(fileName) && this.logFileData[fileName] != '';
   }
 
-  hasOperationalDetails(): boolean {
-    return this.capabilities.authentication && this.capabilities.authentication.outsideAuth && !!this.operationId;
+  // Corresponds to running in Terra with the PAPIv2 Google backend. Operation details
+  // are requested from JM server, which gets them from Rawls, which gets them from GCP.
+  // Users are shown a large JSON in a modal. Example operation id:
+  // projects/1088423515928/locations/us-central1/operations/16424150744502
+  hasBackendOperationalDetails(): boolean {
+    return this.capabilities.authentication && this.capabilities.authentication.outsideAuth && !!this.operationId && !this.hasExternalOperationalDetails();
+  }
+
+  // Corresponds to running with the Google Batch backend. We link directly to the GCP console
+  // to show users operation details. 
+  hasExternalOperationalDetails(): boolean {
+    return this.getOperationalDetailsUrl() != '';
+  }
+
+  // Corresponds to running with the Google Batch backend. We link directly to the GCP console
+  // to show users backend logs. 
+  hasExternalLogs(): boolean {
+    return this.getExternalLogsUrl() != '' && !this.backendLog;
   }
 
   showOrLinkTo(e: MouseEvent, url: string): void {
@@ -95,6 +114,30 @@ export class JobDebugIconsComponent implements OnInit {
     } else if (url) {
       window.open(this.getResourceUrl(url));
     }
+  }
+
+  // If this is a GCP Batch operation, transform the operation id into a URL to the appropriate tab on the Batch job details page.
+  // Example input: projects/broad-dsde-cromwell-dev/locations/us-central1/jobs/job-1a4f7cff-3f17-49bf-b9ef-48b8b09c0f39
+  // Example output: https://console.cloud.google.com/batch/jobsDetail/regions/us-central1/jobs/job-1a4f7cff-3f17-49bf-b9ef-48b8b09c0f39/{TAB_NAME}?project=broad-dsde-cromwell-dev  
+  getGcpBatchUrlJobUrl(tabName: string): string {
+    var match = this.gcpBatchOperationIdRegex.exec(this.operationId);
+    if (match != null) {
+      var projectId = match.groups.projectId;
+      var location = match.groups.location;
+      var batchJobId = match.groups.batchJobId;
+      return `https://console.cloud.google.com/batch/jobsDetail/regions/${location}/jobs/job-${batchJobId}/${tabName}?project=${projectId}`;
+    }
+    else {
+      return '';
+    }
+  }
+
+  getOperationalDetailsUrl(): string {
+    return this.getGcpBatchUrlJobUrl('details');
+  }
+
+  getExternalLogsUrl(): string {
+    return this.getGcpBatchUrlJobUrl('logs');
   }
 
   showOperationDetails(e: MouseEvent): void {

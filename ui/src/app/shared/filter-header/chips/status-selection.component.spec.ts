@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import {ComponentFixture, TestBed, waitForAsync} from "@angular/core/testing";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatListModule} from "@angular/material/list";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -12,7 +12,7 @@ describe('StatusSelectionComponent', () => {
   let parentComponent: TestStatusSelectionComponent;
   let testComponent: StatusSelectionComponent;
   let fixture: ComponentFixture<TestStatusSelectionComponent>;
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         StatusSelectionComponent,
@@ -31,20 +31,20 @@ describe('StatusSelectionComponent', () => {
     }).compileComponents();
   }));
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fixture = TestBed.createComponent(TestStatusSelectionComponent);
     parentComponent = fixture.componentInstance;
     fixture.detectChanges();
     testComponent = parentComponent.statusSelectionComponent;
   }));
 
-  it('should set up status list', async(() => {
+  it('should set up status list', waitForAsync(() => {
     expect(testComponent.currentChipValues).toContain("Running");
     expect(testComponent.currentChipValues).toContain("Failed");
     expect(testComponent.currentChipValues.length).toEqual(2);
   }));
 
-  it('should update status list', async( () => {
+  it('should update status list', waitForAsync( () => {
     spyOn(parentComponent, 'updateValueCallback').and.callThrough();
     testComponent.changeStatus('Running', false);
     testComponent.changeStatus('Completed', true);
@@ -58,11 +58,11 @@ describe('StatusSelectionComponent', () => {
 
   @Component({
     selector: 'jm-test-status-selection-component',
-    template:
-      `<jm-status-selection
+    template: `<jm-status-selection
         [initialChipValue]="initialValue"
-        (updateValue)="updateValueCallback($event)"></jm-status-selection>`
-  })
+        (updateValue)="updateValueCallback($event)"></jm-status-selection>`,
+    standalone: false
+})
   class TestStatusSelectionComponent {
     @ViewChild(StatusSelectionComponent)
     public statusSelectionComponent: StatusSelectionComponent;

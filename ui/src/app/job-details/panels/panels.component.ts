@@ -5,7 +5,9 @@ import {
   OnInit,
   Output,
   ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 import {JobMetadataResponse} from '../../shared/model/JobMetadataResponse';
 import {JobStatus} from '../../shared/model/JobStatus';
@@ -19,9 +21,10 @@ import {ErrorMessageFormatterPipe} from "../../shared/pipes/error-message-format
 import {AuthService} from "../../core/auth.service";
 
 @Component({
-  selector: 'jm-panels',
-  templateUrl: './panels.component.html',
-  styleUrls: ['./panels.component.css'],
+    selector: 'jm-panels',
+    templateUrl: './panels.component.html',
+    styleUrls: ['./panels.component.css'],
+    standalone: false
 })
 export class JobPanelsComponent implements OnInit {
 
@@ -43,13 +46,14 @@ export class JobPanelsComponent implements OnInit {
   numRunningTasks: number = 0;
   numTasks: number = 0;
   public readonly numOfErrorsToShow = 4;
-  copyIcon = 'copy-to-clipboard';
   topLevelExecutionDirectory: string;
 
   constructor(
     private readonly authService: AuthService,
     private readonly snackBar: MatSnackBar,
-    private readonly jobManagerService: JobManagerService) { }
+    private readonly jobManagerService: JobManagerService,
+    private readonly clipboard: Clipboard,
+    private readonly viewContainer: ViewContainerRef) { }
 
   async ngOnInit() {
     this.setUpExtensions();
@@ -120,7 +124,10 @@ export class JobPanelsComponent implements OnInit {
 
   hasPrimaryLabels(): boolean {
     if (this.primaryLabels && this.job.labels) {
-      return this.primaryLabels.filter(label => this.job.labels.hasOwnProperty(label)).length > 0;
+      return this.primaryLabels.filter(label => {
+        const labelKey = label.field ? label.field.replace('labels.', '') : label;
+        return this.job.labels.hasOwnProperty(labelKey);
+      }).length > 0;
     }
     return false;
   }
@@ -142,23 +149,43 @@ export class JobPanelsComponent implements OnInit {
   }
 
   copyJobIdToClipboard(): void {
-    try {
-      const jobIdInput = document.querySelector('#job-id') as HTMLInputElement;
-      jobIdInput.select();
-      document.execCommand('copy');
-      this.changeCopyIcon('check');
-    } catch (error) {
-      this.changeCopyIcon('times');
-      console.log(error);
+    const jobId = this.getCleanWorkflowId();
+    if (this.clipboard.copy(jobId)) {
+      this.snackBar.open(
+        'Workflow ID copied to clipboard',
+        'Dismiss',
+        {
+          viewContainerRef: this.viewContainer,
+          duration: 2000
+        });
     }
   }
 
-  changeCopyIcon(newIcon: string): void {
-    this.copyIcon = newIcon;
-    setTimeout(() => {
-      this.copyIcon ='copy-to-clipboard';
-    }, 1500);
+  copyIdToClipboard(id: string, label: string): void {
+    if (this.clipboard.copy(id)) {
+      this.snackBar.open(
+        `${label} copied to clipboard`,
+        'Dismiss',
+        {
+          viewContainerRef: this.viewContainer,
+          duration: 2000
+        });
+    }
   }
+
+  getCleanWorkflowId(): string {
+    // Strip "cromwell-" prefix if present
+    return this.job.id.replace(/^cromwell-/, '');
+  }
+
+  getWorkspaceId(): string {
+    return this.job.labels && this.job.labels['workspace-id'] ? this.job.labels['workspace-id'] : '';
+  }
+
+  getSubmissionId(): string {
+    return this.job.labels && this.job.labels['submission-id'] ? this.job.labels['submission-id'] : '';
+  }
+
 
   getTopLevelDirectory(): string {
     if (this.job.extensions && this.job.extensions.tasks) {

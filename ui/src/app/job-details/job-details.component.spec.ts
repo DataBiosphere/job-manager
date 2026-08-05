@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, DebugElement } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatDialogModule } from "@angular/material/dialog";
@@ -16,7 +16,6 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ClrIconModule, ClrTooltipModule } from '@clr/angular';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 
 import { ActivatedRoute, Router } from '@angular/router';
@@ -61,7 +60,7 @@ describe('JobDetailsComponent', () => {
     };
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     fakeJobService = new FakeJobManagerService([testJob()]);
     let fakeCapabilitiesService: FakeCapabilitiesService = new FakeCapabilitiesService({});
     let authService = new AuthService(null, fakeCapabilitiesService, null, null,null,null);
@@ -84,8 +83,6 @@ describe('JobDetailsComponent', () => {
         JobScatteredAttemptsComponent,
       ],
       imports: [
-        ClrIconModule,
-        ClrTooltipModule,
         CommonModule,
         MatButtonModule,
         MatCardModule,
@@ -124,7 +121,7 @@ describe('JobDetailsComponent', () => {
 
   beforeEach(fakeAsync(() => {
     fixture = TestBed.createComponent(AppComponent);
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
 
     router.initialNavigation();
     router.navigate(['jobs/' + jobId]);
@@ -138,7 +135,9 @@ describe('JobDetailsComponent', () => {
 
   it('renders details', fakeAsync(() => {
     const de: DebugElement = fixture.debugElement;
-    expect(de.query(By.css('#job-id')).nativeElement.value).toContain(jobId);
+    const workflowIdElement = de.query(By.css('.copyable-id'));
+    expect(workflowIdElement.nativeElement.textContent.trim())
+      .toContain(jobId.replace(/^cromwell-/, ''));
   }));
 
   it("navigates to jobs table on close", fakeAsync(() => {
@@ -164,20 +163,23 @@ describe('JobDetailsComponent', () => {
 
   @Component({
     selector: 'jm-test-app',
-    template: '<router-outlet></router-outlet>'
-  })
+    template: '<router-outlet></router-outlet>',
+    standalone: false
+})
   class AppComponent {}
 
   @Component({
     selector: 'jm-test-job-details-component',
-    template: '<jm-job-details></jm-job-details>'
-  })
+    template: '<jm-job-details></jm-job-details>',
+    standalone: false
+})
   class TestJobDetailsComponent {}
 
   @Component({
     selector: 'jm-fake-job-list-component',
-    template: '<div class="fake-jobs"></div>'
-  })
+    template: '<div class="fake-jobs"></div>',
+    standalone: false
+})
   class FakeJobListComponent {
     constructor(public route: ActivatedRoute) {}
   }

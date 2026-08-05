@@ -4,9 +4,10 @@ import {BulkLabelField} from '../../../shared/model/BulkLabelField';
 import {DisplayField} from "../../../shared/model/DisplayField";
 
 @Component({
-  selector: 'jm-bulk-edit-component',
-  templateUrl: 'bulk-edit.component.html',
-  styleUrls: ['bulk-edit.component.css']
+    selector: 'jm-bulk-edit-component',
+    templateUrl: 'bulk-edit.component.html',
+    styleUrls: ['bulk-edit.component.css'],
+    standalone: false
 })
 export class JobsBulkEditComponent {
   // currently Cromwell's limit; if there is some variability in other backends

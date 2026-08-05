@@ -1,9 +1,9 @@
 from six import iteritems
 from jobs.models.base_model_ import Model
-from connexion.apps.flask_app import FlaskJSONEncoder
+from connexion.jsonifier import JSONEncoder as ConnexionJSONEncoder
 
 
-class JSONEncoder(FlaskJSONEncoder):
+class JSONEncoder(ConnexionJSONEncoder):
     include_nulls = False
 
     def default(self, o):
@@ -16,4 +16,4 @@ class JSONEncoder(FlaskJSONEncoder):
                 attr = o.attribute_map[attr]
                 dikt[attr] = value
             return dikt
-        return FlaskJSONEncoder.default(self, o)
+        return ConnexionJSONEncoder.default(self, o)
