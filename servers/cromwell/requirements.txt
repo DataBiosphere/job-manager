@@ -20,6 +20,6 @@ pytz==2022.4
 requests==2.32.5
 six==1.11.0
 swagger-spec-validator==2.7.6
-urllib3==2.7.0
+urllib3==2.8.0
 Werkzeug==3.0.6
 uvicorn==0.32.1
