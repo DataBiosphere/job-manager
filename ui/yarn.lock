@@ -713,17 +713,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/router@npm:^20.0.0":
-  version: 20.3.26
-  resolution: "@angular/router@npm:20.3.26"
+"@angular/router@npm:^20.3.33":
+  version: 20.3.33
+  resolution: "@angular/router@npm:20.3.33"
   dependencies:
     tslib: ^2.3.0
   peerDependencies:
-    "@angular/common": 20.3.26
-    "@angular/core": 20.3.26
-    "@angular/platform-browser": 20.3.26
+    "@angular/common": 20.3.33
+    "@angular/core": 20.3.33
+    "@angular/platform-browser": 20.3.33
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: edf822c75761a042876eb42753b0c17f4ce528a59f373cc354b52359de1fbc7d2bc915e743fe61d335f3e2993ad5a34fd8ca118662bf4d0eb30f406e35caec8e
+  checksum: c88544350b5b65221783c8d205017f10374f2b40aceeea51d4ed14458f12e433e95ed0efad2f048a0ce19ce0a21bf9dbb3cf0cbb54be110e24b73fdfdcb87542
   languageName: node
   linkType: hard
 
@@ -7693,7 +7693,7 @@ __metadata:
     "@angular/material": ^20.0.0
     "@angular/platform-browser": ^20.0.0
     "@angular/platform-browser-dynamic": ^20.0.0
-    "@angular/router": ^20.0.0
+    "@angular/router": ^20.3.33
     "@eslint/eslintrc": ^3.3.5
     "@eslint/js": ^9.39.4
     "@types/jasmine": ^4.3.0
