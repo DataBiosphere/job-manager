@@ -22,7 +22,7 @@
     "@angular/material": "^20.0.0",
     "@angular/platform-browser": "^20.0.0",
     "@angular/platform-browser-dynamic": "^20.0.0",
-    "@angular/router": "^20.0.0",
+    "@angular/router": "^20.3.33",
     "@webcomponents/custom-elements": "^1.5.0",
     "angular-oauth2-oidc": "^20.0.0",
     "rxjs": "^7.5.6",
