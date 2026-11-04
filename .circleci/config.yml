@@ -1,43 +1,73 @@
-# Python CircleCI 2.0 configuration file
+# CircleCI 2.1 configuration file
 #
-# Check https://circleci.com/docs/2.0/language-python/ for more details
+# Check https://circleci.com/docs/configuration-reference/ for more details
 #
-version: 2
+version: 2.1
 
-job_defaults: &job_defaults
-  working_directory: ~/job-manager
-
-run_env_setup: &run_env_setup
-  run:
-    name: Setup Environment Variables
-    command: |
-      echo 'export PATH="${PATH}:${HOME}/job-manager/git-secrets"' >> $BASH_ENV
-
-run_secret_setup: &run_secret_setup
-  run:
-    name: Install git secrets and configure minnie-kenny.sh
-    command: |
-      git clone https://github.com/awslabs/git-secrets.git
-      pushd git-secrets >/dev/null
-
-      # 2024-12-09 updated to a new version of git-secrets, the old one
-      # relied `say` command which is unavailable in new CircleCI base image
-      # https://github.com/awslabs/git-secrets/issues/220
-      git checkout 5357e18bc27b42a827b6780564ea873a72ca1f01
-
-      popd >/dev/null
-      ./minnie-kenny.sh -f
-
-jobs:
-  ui:
-    <<: *job_defaults
+executors:
+  ubuntu:
     machine:
       # latest pinned 24.04 version https://circleci.com/developer/machine/image/ubuntu-2404
       image: ubuntu-2404:2024.11.1
+    working_directory: ~/job-manager
+
+commands:
+  setup_env:
+    description: Setup Environment Variables
+    steps:
+      - run:
+          name: Setup Environment Variables
+          command: |
+            echo 'export PATH="${PATH}:${HOME}/job-manager/git-secrets"' >> $BASH_ENV
+
+  setup_git_secrets:
+    description: Install git secrets and configure minnie-kenny.sh
+    steps:
+      - run:
+          name: Install git secrets and configure minnie-kenny.sh
+          command: |
+            git clone https://github.com/awslabs/git-secrets.git
+            pushd git-secrets >/dev/null
+
+            # 2024-12-09 updated to a new version of git-secrets, the old one
+            # relied `say` command which is unavailable in new CircleCI base image
+            # https://github.com/awslabs/git-secrets/issues/220
+            git checkout 5357e18bc27b42a827b6780564ea873a72ca1f01
+
+            popd >/dev/null
+            ./minnie-kenny.sh -f
+
+  checkout_and_setup:
+    description: Check out the code, set up the environment and install git secrets
     steps:
       - checkout
-      - <<: *run_env_setup
-      - <<: *run_secret_setup
+      - setup_env
+      - setup_git_secrets
+
+  ui_yarn:
+    description: Run a yarn command in ui/ with Node 22 loaded through nvm
+    parameters:
+      step_name:
+        type: string
+      yarn_command:
+        type: string
+    steps:
+      - run:
+          name: << parameters.step_name >>
+          command: |
+            cd ui
+            # nvm setup commands and Node install reprised
+            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+            nvm install 22
+            corepack enable
+            yarn << parameters.yarn_command >>
+
+jobs:
+  ui:
+    executor: ubuntu
+    steps:
+      - checkout_and_setup
       - restore_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}--{{ checksum "ui/yarn.lock" }}
       - run:
@@ -71,60 +101,28 @@ jobs:
           name: Rebuild swagger
           command: |
             /bin/bash ./scripts/rebuild_swagger.sh
-      - run:
-          name: Lint angular code with eslint
-          command: |
-            cd ui
-            # nvm setup commands and Node install reprised
-            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 22
-            corepack enable
-            yarn eslint
-      - run:
-          name: Type check with tsc
-          command: |
-            cd ui
-            # nvm setup commands and Node install reprised
-            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 22
-            corepack enable
-            yarn tsc
-      - run:
-          name: Run UI unit tests
-          command: |
-            cd ui
-            # nvm setup commands and Node install reprised
-            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 22
-            corepack enable
-            yarn ng test --watch=false --source-map=false --browsers=ChromeHeadless
-      - run:
-          name: Ensure the UI builds for prod
-          # Target production to emulate deployment, but a dev environment
-          # because we do not have a prod environment file.
-          # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
-          command: |
-            cd ui
-            # nvm setup commands and Node install reprised
-            export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-            nvm install 22
-            corepack enable
-            yarn ng build --configuration=production
+      - ui_yarn:
+          step_name: Lint angular code with eslint
+          yarn_command: eslint
+      - ui_yarn:
+          step_name: Type check with tsc
+          yarn_command: tsc
+      - ui_yarn:
+          step_name: Run UI unit tests
+          yarn_command: ng test --watch=false --source-map=false --browsers=ChromeHeadless
+      # Target production to emulate deployment, but a dev environment
+      # because we do not have a prod environment file.
+      # https://github.com/angular/angular-cli/wiki/build#--dev-vs---prod-builds
+      - ui_yarn:
+          step_name: Ensure the UI builds for prod
+          yarn_command: ng build --configuration=production
 
   backends:
-    <<: *job_defaults
-    machine:
-      image: ubuntu-2404:2024.11.1
+    executor: ubuntu
     environment:
-      - GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
+      GOOGLE_APPLICATION_CREDENTIALS: /home/circleci/gcloud-service-key.json
     steps:
-      - checkout
-      - <<: *run_env_setup
-      - <<: *run_secret_setup
+      - checkout_and_setup
       - restore_cache:
           key: node-modules-{{ .Branch }}--{{ checksum "servers/cromwell/requirements.txt" }}
       - restore_cache:
@@ -171,20 +169,15 @@ jobs:
             - "servers/jm_utils/.tox"
 
   secrets:
-    <<: *job_defaults
-    machine:
-      image: ubuntu-2404:2024.11.1
+    executor: ubuntu
     steps:
-      - checkout
-      - <<: *run_env_setup
-      - <<: *run_secret_setup
+      - checkout_and_setup
       - run:
           name: Check for git secrets
           command: |
             git secrets --scan-history
 
 workflows:
-  version: 2
   ui_and_backends_and_secrets:
     jobs:
       - ui
